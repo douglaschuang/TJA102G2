@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS -->
+  <th:block th:fragment="extraHead">
+    <style>
+      .preview-img{max-width:160px; max-height:120px; object-fit:cover; border-radius:.25rem;}
+    </style>
+  </th:block>
+
+  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">媽媽手冊｜新增</h3>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/mhb/list}">
+              <i class="bi bi-arrow-left"></i> 回列表
+            </a>
+          </div>
+
+          <div class="card-body">
+            <!-- 一定要 multipart -->
+            <form th:action="@{/mhb/insert}" method="post" th:object="${mhbVO}" enctype="multipart/form-data" class="row g-3">
+              <!-- 供 @NotNull 的 memberId 綁定；日後可改成登入者 id -->
+              <input type="hidden" th:field="*{memberId}" value="1"/>
+              <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+              <div class="col-md-6">
+                <label class="form-label">媽媽姓名</label>
+                <input type="text" th:field="*{motherName}" class="form-control"
+                       th:classappend="${#fields.hasErrors('motherName')}? ' is-invalid'"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('motherName')}" th:errors="*{motherName}"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">媽媽生日</label>
+                <input type="date" th:field="*{motherBirthday}" class="form-control"
+                       th:classappend="${#fields.hasErrors('motherBirthday')}? ' is-invalid'"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('motherBirthday')}" th:errors="*{motherBirthday}"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">最後一次月經</label>
+                <input type="date" th:field="*{lastMcDate}" class="form-control"
+                       th:classappend="${#fields.hasErrors('lastMcDate')}? ' is-invalid'"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('lastMcDate')}" th:errors="*{lastMcDate}"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">預計生產日</label>
+                <input type="date" th:field="*{expectedBirthDate}" class="form-control"
+                       th:classappend="${#fields.hasErrors('expectedBirthDate')}? ' is-invalid'"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('expectedBirthDate')}" th:errors="*{expectedBirthDate}"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">體重</label>
+                <input type="number" th:field="*{weight}" min="0" step="0.01" class="form-control"
+                       th:classappend="${#fields.hasErrors('weight')}? ' is-invalid'"/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">照片</label>
+                <input id="upFiles"
+                       type="file"
+                       th:field="*{upFiles}"
+                       accept="image/*"
+                       class="form-control"
+                       onchange="(function(el){
+                         var img=document.getElementById('preview');
+                         if(!img){return;}
+                         var f=el.files&&el.files[0];
+                         if(!f){ img.classList.add('d-none'); img.removeAttribute('src'); return; }
+                         var ok=(f.type&&f.type.indexOf('image/')===0) || /\.(png|jpe?g|gif|webp|bmp|heic|heif|tiff?)$/i.test(f.name||'');
+                         if(!ok){ img.classList.add('d-none'); img.removeAttribute('src'); return; }
+                         var url=(window.URL||window.webkitURL).createObjectURL(f);
+                         img.onload=function(){ (window.URL||window.webkitURL).revokeObjectURL(url); };
+                         img.src=url;
+                         img.classList.remove('d-none');
+                       })(this)"/>
+                <div class="form-text">接受所有圖片格式（PNG / JPG / GIF / WEBP / HEIC…）</div>
+
+                <!-- 預覽區 -->
+                <div class="mt-2">
+                  <img id="preview" class="img-thumbnail preview-img d-none" alt="預覽圖">
+                </div>
+
+                <div class="text-danger small" th:utext="${errorMessage}"></div>
+              </div>
+
+              <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                  <i class="bi bi-check2-circle"></i> 送出新增
+                </button>
+                <a class="btn btn-outline-secondary" th:href="@{/admin/mhb/list}">取消</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 本頁不需額外 JS -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>

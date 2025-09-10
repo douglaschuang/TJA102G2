@@ -1,0 +1,132 @@
+<!-- templates/admin/layout.html -->
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title th:text="${pageTitle} ?: 'Babymate Admin'">Babymate Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <!-- 你的本地 AdminLTE 靜態檔路徑（依你專案） -->
+  <link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}"/>
+  <link rel="stylesheet" th:href="@{/css/index.css}"/>
+
+  <style>
+    :root{
+      --bs-primary:#FFDCDC;--bs-primary-text-emphasis:#6F4E37;
+      --bs-success:#FFF2EB;--bs-warning:#FFE8CD;--bs-danger:#FFD6BA;--bs-info:#9ECAD6
+    }
+    .bg-primary,.text-bg-primary{background-color:#FFDCDC!important;color:#6F4E37!important;border-color:#6F4E37!important;background-image:none!important}
+    body{min-height:100vh}
+    .app-wrapper{min-height:100vh;display:flex;flex-direction:column}
+    .app-main{flex:1}
+  </style>
+</head>
+<body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+<div th:fragment="layout(content)">
+  <div class="app-wrapper">
+
+    <!-- Header -->
+    <nav class="app-header navbar navbar-expand bg-body">
+      <div class="container-fluid">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" role="button"><i class="bi bi-list"></i></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+              <img th:src="@{/adminlte/assets/img/toy-blocks.png}" class="user-image rounded-circle shadow" alt="U"/>
+              <span class="d-none d-md-inline" th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+              <li class="user-header text-bg-primary">
+                <img th:src="@{/adminlte/assets/img/toy-blocks.png}" class="rounded-circle shadow" alt="U"/>
+                <p><span th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span><small>Babymate admin</small></p>
+              </li>
+              <li class="user-footer">
+                <a th:href="@{/enter_admin/enter_index.html}" class="btn btn-default btn-flat float-end">Sign out</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+      <div class="sidebar-brand">
+        <a th:href="@{/admin}" class="brand-link">
+          <img th:src="@{/adminlte/assets/img/toy-blocks.png}" class="brand-image opacity-75 shadow" alt="Logo"/>
+          <span class="brand-text fw-light">Babymate Admin</span>
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <nav class="mt-2">
+          <ul class="nav sidebar-menu flex-column" role="navigation" data-accordion="false">
+            <li class="nav-item">
+              <a th:href="@{/admin}" class="nav-link">
+                <i class="nav-icon bi bi-speedometer"></i><p>Dashboard</p>
+              </a>
+            </li>
+
+            <li class="nav-item menu-open">
+              <a class="nav-link active">
+                <i class="nav-icon bi bi-book"></i><p>手冊管理<i class="nav-arrow bi bi-chevron-right"></i></p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a th:href="@{/admin/mhb/list}" class="nav-link">
+                    <i class="nav-icon bi bi-circle"></i><p>媽媽手冊管理</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a th:href="@{/admin/mhb/deleted}" class="nav-link">
+                    <i class="nav-icon bi bi-trash3"></i><p>垃圾桶</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- 其它選單… -->
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="app-main">
+      <div class="app-content-header">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6"><h3 class="mb-0" th:text="${pageTitle} ?: 'Dashboard'">Dashboard</h3></div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-end">
+                <li class="breadcrumb-item"><a th:href="@{/admin}">Home</a></li>
+                <li class="breadcrumb-item active" th:text="${pageTitle} ?: 'Dashboard'">Dashboard</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 內頁容器：子頁會把 content fragment 塞進來 -->
+      <div class="app-content">
+        <div class="container-fluid" th:replace="${content}"></div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="float-end d-none d-sm-inline">BabymateAdmin</div>
+      <strong>Copyright &copy; 2025 BabymateAdmin.io.</strong> All rights reserved.
+    </footer>
+  </div>
+</div>
+
+<!-- JS（用你現有的即可） -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
+<script th:src="@{/js/adminlte.js}"></script>
+</body>
+</html>

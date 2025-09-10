@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS -->
+  <th:block th:fragment="extraHead">
+    <style>
+      .photo-lg{ width:100%; max-height:260px; object-fit:cover; border-radius:.5rem; }
+      .field dt{ width: 9rem; }
+      .field dd{ margin-left: 0; }
+      @media (max-width: 576px){ .field dt{ width: 7.5rem; } }
+    </style>
+  </th:block>
+
+  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <!-- 成功訊息（有帶 success 就顯示） -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle"></i>
+          <span th:text="${success}">操作成功</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">媽媽手冊｜詳細資料</h3>
+            <div class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/mhb/list}">
+                <i class="bi bi-arrow-left"></i> 回列表
+              </a>
+
+              <!-- 修改 -->
+              <form th:action="@{/mhb/getOne_For_Update}" method="post" class="d-inline">
+                <input type="hidden" name="mother_handbook_id" th:value="${mhbVO.motherHandbookId}">
+                <button type="submit" class="btn btn-sm btn-primary">
+                  <i class="bi bi-pencil-square"></i> 修改
+                </button>
+              </form>
+
+              <!-- 刪除 -->
+              <form th:action="@{/mhb/delete}" method="post" class="d-inline"
+                    onsubmit="return confirm('確定刪除？');">
+                <input type="hidden" name="mother_handbook_id" th:value="${mhbVO.motherHandbookId}">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i> 刪除
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="row g-4">
+              <!-- 左：欄位資訊 -->
+              <div class="col-lg-8">
+                <dl class="row field mb-0">
+                  <dt class="col-sm-3 text-body-secondary">手冊編號</dt>
+                  <dd class="col-sm-9" th:text="${mhbVO.motherHandbookId}">1</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">會員ID</dt>
+                  <dd class="col-sm-9" th:text="${mhbVO.memberId}">1</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">媽媽姓名</dt>
+                  <dd class="col-sm-9" th:text="${mhbVO.motherName}">王小美</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">媽媽生日</dt>
+                  <dd class="col-sm-9"
+                      th:text="${#temporals.format(mhbVO.motherBirthday,'yyyy-MM-dd')}">1995-05-12</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">最後一次月經</dt>
+                  <dd class="col-sm-9"
+                      th:text="${#temporals.format(mhbVO.lastMcDate,'yyyy-MM-dd')}">2024-07-19</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">預計生產日</dt>
+                  <dd class="col-sm-9"
+                      th:text="${#temporals.format(mhbVO.expectedBirthDate,'yyyy-MM-dd')}">2025-04-25</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">體重</dt>
+                  <dd class="col-sm-9" th:text="${mhbVO.weight}">53.50</dd>
+
+                  <dt class="col-sm-3 text-body-secondary">最後更新</dt>
+                  <dd class="col-sm-9"
+                      th:text="${#dates.format(mhbVO.updateTime,'yyyy-MM-dd HH:mm:ss')}">2024-06-01 12:00:00</dd>
+                </dl>
+              </div>
+
+              <!-- 右：照片 -->
+              <div class="col-lg-4">
+                <img class="photo-lg"
+                     th:if="${mhbVO.upFiles != null}"
+                     th:src="@{'/mhb/photo/' + ${mhbVO.motherHandbookId}}"
+                     alt="媽媽照片">
+                <div th:if="${mhbVO.upFiles == null}"
+                     class="text-center text-body-secondary border rounded p-4">
+                  無照片
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 本頁不需額外 JS -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>

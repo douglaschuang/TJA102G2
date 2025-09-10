@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>媽媽手冊｜垃圾桶</title>
+  <link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}" />
+</head>
+<body>
+<!-- 套用共用版型：content / extraHead / extraJs 三插槽 -->
+<div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraHead}, ~{::extraJs})}">
+
+  <!-- 子頁額外的 <head>（DataTables 的 CSS） -->
+  <th:block th:fragment="extraHead">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.jqueryui.min.css"/>
+  </th:block>
+
+  <!-- 主要內容 -->
+  <div th:fragment="content">
+    <div class="card">
+      <div class="card-header d-flex align-items-center">
+        <h3 class="card-title mb-0">媽媽手冊｜垃圾桶</h3>
+
+        <!-- 右側工具列 -->
+        <div class="ms-auto d-flex gap-2">
+          <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/mhb/list}">
+            <i class="bi bi-arrow-left"></i> 回列表
+          </a>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- 空清單提示 -->
+        <div class="alert alert-info" role="alert"
+             th:if="${#lists.isEmpty(mhbDeletedList)}">
+          垃圾桶目前是空的。
+        </div>
+
+        <!-- 垃圾桶清單表 -->
+        <div th:if="${!#lists.isEmpty(mhbDeletedList)}">
+          <table id="trashTable" class="display" style="width:100%">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>手冊編號</th>
+              <th>會員ID</th>
+              <th>媽媽姓名</th>
+              <th>媽媽生日</th>
+              <th>最後一次月經日</th>
+              <th>預計生產日</th>
+              <th>體重</th>
+              <th>照片</th>
+              <th>最後更新</th>
+              <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="mhb, st : ${mhbDeletedList}">
+              <td th:text="${st.count}">1</td>
+              <td th:text="${mhb.motherHandbookId}">ID</td>
+              <td th:text="${mhb.memberId}">MID</td>
+              <td th:text="${mhb.motherName}">Name</td>
+              <td th:text="${mhb.motherBirthday}">1990-01-01</td>
+              <td th:text="${mhb.lastMcDate}">2025-01-01</td>
+              <td th:text="${mhb.expectedBirthDate}">2025-10-01</td>
+              <td th:text="${mhb.weight}">60.00</td>
+              <td>
+                <img th:src="@{/mhb/photo/{id}(id=${mhb.motherHandbookId})}" width="80" alt="photo"/>
+              </td>
+              <td th:text="${#dates.format(mhb.updateTime,'yyyy-MM-dd HH:mm:ss')}">2025-09-01 12:00:00</td>
+              <td class="text-nowrap">
+                <form method="post" th:action="@{/mhb/restore}" class="d-inline m-0">
+                  <input type="hidden" name="mother_handbook_id" th:value="${mhb.motherHandbookId}"/>
+                  <button type="submit" class="btn btn-sm btn-success">
+                    <i class="bi bi-arrow-counterclockwise"></i> 復原
+                  </button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 子頁額外的 JS（DataTables） -->
+  <th:block th:fragment="extraJs">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script>
+      $(function () {
+        $('#trashTable').DataTable({
+          lengthMenu: [5, 10, 20, 50, 100],
+          searching: true,
+          paging: true,
+          ordering: true,
+          language: {
+            processing: "處理中...",
+            loadingRecords: "載入中...",
+            lengthMenu: "顯示 _MENU_ 筆結果",
+            zeroRecords: "沒有符合的結果",
+            info: "顯示第 _START_ 至 _END_ 筆結果，共 _TOTAL_ 筆",
+            infoEmpty: "顯示第 0 至 0 筆結果，共 0 筆",
+            infoFiltered: "(從 _MAX_ 筆結果中過濾)",
+            search: "搜尋:",
+            paginate: {
+              first: "第一頁", previous: "上一頁", next: "下一頁", last: "最後一頁"
+            },
+            aria: {sortAscending: ": 升冪排列", sortDescending: ": 降冪排列"}
+          }
+        });
+      });
+    </script>
+  </th:block>
+
+</div>
+</body>
+</html>
