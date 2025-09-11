@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<!-- 讓 layout 的 <head> 接手，並把本頁的 extraHead 傳進去 -->
+<head th:replace="~{admin/layout :: head(~{::extraHead})}">
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
+ </head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS（可留空） -->
+  <th:block th:fragment="extraHead"></th:block>
+
+  <!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
+    <section th:fragment="content">
+      <div class="container-fluid">
+     <div class="card">
+      <div class="card-header">
+        <h3>會員列表</h3>
+        
+        <!-- 錯誤表列 -->
+		<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br>
+        
+<!--         <a href="/staff/staffadd" class="btn btn-success mb-3"> -->
+<!--           <i class="fas fa-plus"></i> 新增 -->
+<!--         </a> -->
+      </div>
+      <div class="card-body">
+        <table id="example1" class="table table-bordered table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th>會員ID</th>
+              <th>帳號</th>
+              <th>名稱</th>
+              <th>頭像</th>
+              <th>狀態</th>
+              <th>收件人</th>
+              <th>電話</th>
+              <th>地址</th>
+              <th>性別</th>
+              <th>生日</th>
+              <th>信箱驗證</th>
+              <th>註冊日期</th>
+              <th>最後登入時間</th>
+<!--               <th>信箱驗證代碼</th> -->
+<!--               <th>密碼驗證代碼</th> -->
+<!--               <th>密碼驗證代碼有效期限</th> -->
+<!--               <th>資料更新時間</th> -->
+              <th>修改</th>
+			  <th>停用</th>
+			  <th>密碼變更</th>
+            </tr>
+          </thead>
+          <tbody>
+          	<th:block th:each="memberVO : ${memberListData}">
+            <tr>
+                <td th:text="${memberVO.memberId}"></td>
+				<td th:text="${memberVO.account}"></td>
+				<td th:text="${memberVO.name}"></td>
+				<td><img th:src="@{/util/DBPicReader1} + '?memberId=' + ${memberVO.memberId}" width="100px"></td>
+<!-- 				<td th:text="${memberVO.password}"></td> -->
+				<td th:text="${memberVO.accountStatus}"></td>
+				<td th:text="${memberVO.recipientName}"></td>
+				<td th:text="${memberVO.phone}"></td>
+				<td th:text="${memberVO.address}"></td>
+				<td th:text="${memberVO.gender}"></td>
+				<td th:text="${memberVO.getFormattedDate(memberVO.birthday)}"></td>
+				<td th:text="${memberVO.emailVerified}"></td>
+				<td th:text="${memberVO.getFormattedDate(memberVO.registerDate)}"></td>
+				<td th:text="${memberVO.getFormattedDateTime(memberVO.lastLoginTime)}"></td>
+<!-- 				<td th:text="${memberVO.emailAuthToken}"></td> -->
+<!-- 				<td th:text="${memberVO.pwdResetToken}"></td> -->
+<!-- 				<td th:text="${memberVO.pwdResetExpire}"></td> -->
+<!-- 				<td th:text="${memberVO.getFormattedDateTime(memberVO.updateDate)}"></td> -->
+			<td>
+			  <form method="post" th:action="@{/member/memberEdit}" style="margin-bottom: 0px;">
+			     <input type="submit" value="修改">
+			     <input type="hidden" name="memberId" th:value="${memberVO.memberId}"></form>
+			</td>
+			
+			<td>
+			  <form method="get" th:action="@{/member/memberSuspend}+ '?memberId=' + ${memberVO.memberId}" style="margin-bottom: 0px;">
+			     <input type="submit" value="停用">
+			     <input type="hidden" name="memberId" th:value="${memberVO.memberId}"></form>
+			</td>
+			
+			<td>
+			  <form method="post" th:action="@{/member/memberchangepwd}" style="margin-bottom: 0px;">
+			     <input type="submit" value="密碼變更">
+			     <input type="hidden" name="memberId" th:value="${memberVO.memberId}"></form>
+			</td>
+
+
+<!--                 <td> -->
+<!--                 <a href="/staff/staffedit" class="btn btn-sm btn-primary"> -->
+<!--                   <i class="fas fa-edit"></i> 修改 -->
+<!--                 </a> -->
+<!--                 <button class="btn btn-sm btn-danger" onclick="deleteUser(1)"> -->
+<!--                   <i class="fas fa-trash"></i> 刪除 -->
+<!--                 </button> -->
+<!--                 </td> -->
+            </tr>
+
+            <!-- 可依需求新增更多列 -->
+          </tbody>
+          <tfoot class="thead-light">
+            <tr>
+              <th>會員ID</th>
+              <th>帳號</th>
+              <th>名稱</th>
+              <th>頭像</th>
+              <th>狀態</th>
+              <th>收件人</th>
+              <th>電話</th>
+              <th>地址</th>
+              <th>性別</th>
+              <th>生日</th>
+              <th>信箱驗證</th>
+              <th>註冊日期</th>
+              <th>最後登入時間</th>
+<!--               <th>信箱驗證代碼</th> -->
+<!--               <th>密碼驗證代碼</th> -->
+<!--               <th>密碼驗證代碼有效期限</th> -->
+<!--               <th>資料更新時間</th> -->
+              <th>修改</th>
+			  <th>停用</th>
+			  <th>密碼變更</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+      </div>
+    </section>
+
+  <!-- JS 功能 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+  
+  <script>
+    $(function () {
+      $('#example1').DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print', 'colvis'],
+        ordering: true,
+        searching: true,
+        paging: true,
+        info: true
+      }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+
+    function deleteUser(id) {
+      if (confirm('確定要刪除 ID 為 ' + id + ' 的使用者嗎？')) {
+        alert('已刪除使用者 ID: ' + id);
+        // 你可以在這裡呼叫 API 後端刪除再重新載入畫面
+      }
+    }
+  </script>
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+
+    <!-- 本頁額外 JS（可留空） -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>
