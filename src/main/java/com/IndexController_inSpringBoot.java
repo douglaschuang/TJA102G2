@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.babymate.category.model.CategoryService;
 import com.babymate.category.model.CategoryVO;
+import com.babymate.member.model.MemberVO;
+import com.babymate.member.service.MemberService;
 import com.babymate.product.model.ProductService;
 import com.babymate.product.model.ProductVO;
+import com.babymate.staff.model.StaffVO;
+import com.babymate.staff.service.StaffService;
 
 
 
@@ -24,6 +28,12 @@ public class IndexController_inSpringBoot {
 	
 	// @Autowired (●自動裝配)(Spring ORM 課程)
 	// 目前自動裝配了EmpService --> 供第66使用
+	@Autowired
+	StaffService staffSvc;
+	
+	@Autowired
+	MemberService memberSvc;
+	
 	@Autowired
 	ProductService productSvc;
 	
@@ -52,14 +62,48 @@ public class IndexController_inSpringBoot {
     
   
     //=========== 以下第63~75行是提供給 /src/main/resources/templates/back-end/emp/select_page.html 與 listAllEmp.html 要使用的資料 ===================   
-    @GetMapping("/product/select_page")
-	public String select_page(Model model) {
-		return "back-end/product/select_page";
+//    @GetMapping("/product/select_page")
+//	public String select_page(Model model) {
+//		return "back-end/product/select_page";
+//	}
+//    
+//    @GetMapping("/product/listAllProduct")
+//	public String listAllEmp(Model model) {
+//		return "back-end/product/listAllProduct";
+//	}
+    
+    @GetMapping("/admin")
+	public String listAllStaff(Model model) {
+		return "admin/index";
 	}
     
-    @GetMapping("/product/listAllProduct")
+    @GetMapping("/admin/staff/listAllStaff")
 	public String listAllEmp(Model model) {
-		return "back-end/product/listAllProduct";
+		return "admin/staff/stafflist";
+	}
+    
+    @GetMapping("/admin/login")
+	public String staffLogin(Model model) {
+		return "admin/login";
+	}
+    
+    @GetMapping("/admin/member/listAllMember")
+	public String listAllMember(Model model) {
+		return "admin/member/memberlist";
+	}
+    
+    @ModelAttribute("staffListData")  // for select_page.html 第97 109行用 // for listAllEmp.html 第117 133行用
+	protected List<StaffVO> referenceListDataStaff(Model model) {
+		
+    	List<StaffVO> list = staffSvc.getAll();
+		return list;
+	}
+    
+    @ModelAttribute("memberListData")
+	protected List<MemberVO> referenceListDataMem(Model model) {
+		
+    	List<MemberVO> list = memberSvc.getAll();
+		return list;
 	}
     
     @ModelAttribute("productListData")  // for select_page.html 第97 109行用 // for listAllEmp.html 第85行用

@@ -55,6 +55,10 @@ public class StaffService {
 	public StaffVO login(String account, String hashedPassword) {
         return repository.findByAccountAndPassword(account, hashedPassword);
 	}
+	
+	public StaffVO getOneStaffByAccount(String account) {
+		return repository.findByAccount(account);
+	}
 
 //	public List<Staff> getAll(Map<String, String[]> map) {
 //		return HibernateUtil_CompositeQuery_Emp3.getAllC(map,sessionFactory.openSession());

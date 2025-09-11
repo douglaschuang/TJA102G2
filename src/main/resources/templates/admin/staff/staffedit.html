@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>編輯使用者</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+<script
+	src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+<style>
+body {
+	/*         background-color: #F0EAD6; */
+	/*         font-family: Arial, sans-serif; */
+	/*         color: #5A3E1B;  */
+	/*         margin: 30px; */
+	
+}
+
+h2 {
+	text-align: center;
+	/*         color: #C19A6B; */
+	/*         margin-bottom: 30px; */
+}
+
+form {
+	/*         background-color: #87CEEB;  */
+	max-width: 450px;
+	margin: 0 auto;
+	padding: 25px 30px;
+	border: 3px solid #C19A6B;
+	/*         border-radius: 10px; */
+	/*         box-shadow: 0 0 8px rgba(193,154,107,0.5); */
+}
+
+label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: bold;
+}
+
+input[type="text"], input[type="password"], input[type="number"], input[type="file"]
+	{
+	width: 100%;
+	padding: 8px 10px;
+	margin-bottom: 20px;
+	border: 2px solid #C19A6B;
+	border-radius: 6px;
+	font-size: 1rem;
+	box-sizing: border-box;
+	color: #5A3E1B;
+}
+
+input[type="submit"] {
+	background-color: #C19A6B;
+	border: none;
+	color: white;
+	font-weight: bold;
+	padding: 10px 18px;
+	width: 100%;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 1.1rem;
+	transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+	background-color: #5A3E1B;
+}
+
+select {
+	width: 100%;
+	padding: 8px 10px;
+	margin-bottom: 20px;
+	border: 2px solid #C19A6B;
+	border-radius: 6px;
+	font-size: 1rem;
+	box-sizing: border-box;
+	color: #5A3E1B;
+}
+
+#preview-container {
+	text-align: center;
+	margin-top: 10px;
+}
+
+#preview {
+	max-width: 200px;
+	height: auto;
+	display: inline-block;
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+</style>
+</head>
+<body class="container mt-5">
+
+	<h2>編輯使用者</h2>
+	<form id="editForm" th:action="@{update}" method="post" th:object="${StaffVO}" enctype="multipart/form-data">
+
+		<div class="form-group">
+			員工編號:	<input type="text" th:field="*{staffId}" 
+			style="border:0px ; font-weight: bold;" readonly /> <span
+			th:if="${#fields.hasErrors('staffId')}" th:errors="staffId"
+				class="error" id="staffId.errors"></span>
+		</div>
+
+		<div class="form-group">
+			員工帳號: <input type="text" th:field="*{account}" pattern="[A-Za-z0-9]+"
+				title="僅允許數字或英文大小寫" placeholder="請輸入員工帳號(僅允許數字或英文大小寫)" minlength=3
+				maxlength=20 required /> <span
+				th:if="${#fields.hasErrors('account')}" th:errors="account"
+				class="error" id="account.errors"></span>
+		</div>
+		<div class="form-group">
+			員工暱稱: <input type="text" th:field="*{nickname}" placeholder="請輸入員工暱稱"
+				minlength=3 maxlength=20 required /><span
+				th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"
+				class="error" id="nickname.errors"></span>
+		</div>
+<!-- 		<div class="form-group"> -->
+<!-- 			帳號密碼: <input type="password" th:field="*{password}" -->
+<!-- 				placeholder="如不修改則不需輸入" minlength=6 maxlength=20 /><span -->
+<!-- 				th:if="${#fields.hasErrors('password')}" th:errors="password" -->
+<!-- 				class="error" id="password.errors"></span> -->
+<!-- 		</div> -->
+		<div class="form-group">
+			角色: <input type="text" th:field="*{role}" name="role"
+				placeholder="請輸入角色類型" minlength=3 maxlength=20 required /><span
+				th:if="${#fields.hasErrors('role')}" th:errors="role" class="error"
+				id="role.errors"></span>
+		</div>
+		<div class="form-group">
+			帳號狀態: <select th:field="*{status}" name="status" required>
+				<option value="1">啟用</option>
+				<option value="0">停用</option>
+			</select>
+		</div>
+		<div class="form-group">
+			員工大頭貼: <input type="file" th:field="*{pic}" id="imageInput"
+				accept="image/*" /><span class="error" th:utext="${errorMessage}"
+				id="pic.errors"></span>
+			<div id="preview-container">
+				<img th:if="${StaffVO.base64Pic != null}"
+					th:src="'data:image/jpeg;base64,' + ${StaffVO.base64Pic}"
+					alt="尚未選擇圖片" id="preview" />
+			</div>
+		</div>
+		<button type="submit" class="btn btn-primary">儲存</button>
+		<a href="/backend/staff/listAllStaff" class="btn btn-secondary">取消</a>
+	</form>
+
+</body>
+</html>

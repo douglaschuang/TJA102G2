@@ -22,4 +22,8 @@ public interface StaffRepository extends JpaRepository<StaffVO, Integer> {
 	
 	@Query(value = "from StaffVO where account=?1 and password=?2")
 	StaffVO findByAccountAndPassword(String account, String hashPassword);
+	
+	// 新增staff檢查重複account名稱
+	@Query(value = "from StaffVO where account=?1")
+	StaffVO findByAccount(String account);
 }
