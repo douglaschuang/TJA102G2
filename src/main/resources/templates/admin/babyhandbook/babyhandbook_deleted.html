@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<!-- 讓 layout 的 <head> 接手，並把本頁的 extraHead 傳進去 -->
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS（可留空） -->
+  <th:block th:fragment="extraHead"></th:block>
+
+  <!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">小孩手冊｜垃圾桶</h3>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/babyhandbook/list}">
+              <i class="bi bi-arrow-left"></i> 回列表
+            </a>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th># 手冊編號</th>
+                    <th>會員ID</th>
+                    <th>小孩姓名</th>
+                    <th>小孩性別</th>
+                    <th>小孩生日</th>
+                     <th>照片</th>
+                    <th>刪除時間</th>
+                    <th class="text-end">動作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="babyhandbookVO : ${babyhandbookListData}">
+                    <td th:text="${babyhandbookVO.babyhandbookid}"></td>
+                    <td th:text="${babyhandbookVO.member.memberId}"></td>
+                    <td th:text="${babyhandbookVO.babyname}"></td>
+                    <td th:text="${babyhandbookVO.babygender}"></td>
+                    <td th:text="${#dates.format(babyhandbookVO.babybirthday, 'yyyy/MM/dd')}">2024-02-01</td>
+                    <td>
+                      <img th:if="${babyhandbookVO.babyhandbookfiles != null}"
+                           th:src="@{'/babyhandbook/photo-deleted/' + ${babyhandbookVO.babyhandbookid}}"
+                           alt="photo"
+                           style="width:48px;height:36px;object-fit:cover;border-radius:.25rem;">
+                    </td>
+                    <td th:text="${#temporals.format(babyhandbookVO.deletedAt, 'yyyy-MM-dd HH:mm')}">-</td>
+                    <td class="text-end">
+                      <form th:action="@{/babyhandbook/restore}" method="post" class="d-inline">
+                        <input type="hidden" name="baby_handbook_id" th:value="${babyhandbookVO.babyhandbookid}">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                          <i class="bi bi-arrow-counterclockwise"></i> 復原
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+
+                  <tr th:if="${#lists.isEmpty(babyhandbookDeletedList)}">
+                    <td colspan="9" class="text-center py-4 text-body-secondary">垃圾桶是空的</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    <!-- 本頁額外 JS（可留空） -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>
