@@ -41,6 +41,11 @@ public class ProductService {
 	public List<ProductVO> getAll() {
 		return repository.findAll();
 	}
+	
+	// 查詢商品狀態 1:上架, 0:下架
+	public List<ProductVO> findByStatus(int status){
+		return repository.findByStatus(status);
+	}
 	// 商品編號從B0001開始
 //	public String generateProductNo(int id) {
 //		return "B" + String.format("%04d", id);

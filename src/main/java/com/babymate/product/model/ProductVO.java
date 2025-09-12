@@ -1,9 +1,11 @@
 package com.babymate.product.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
 
 import com.babymate.category.model.CategoryVO;
 
@@ -16,6 +18,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -26,7 +30,7 @@ public class ProductVO implements java.io.Serializable{
 	private String productNo;
 	private String productName;
 	private CategoryVO categoryVO;
-	private Double price;
+	private BigDecimal price;
 	private Integer status;
 	private Timestamp statusUpdateTime;
 	private byte[]  productIcon;
@@ -84,16 +88,19 @@ public class ProductVO implements java.io.Serializable{
 	
 	@Column(name = "PRICE")
 	@NotNull(message="金額不能空白")
-	public Double getPrice() {
+	@Digits(integer = 8, fraction = 2, message = "價格格式錯誤：最多 8 位整數、2 位小數")
+	@DecimalMin(value = "0.00", inclusive = true, message = "價格需 ≥ 0")
+	@NumberFormat(pattern = "#,##0.##") // （可選）只影響顯示/格式化，不是驗證
+	public BigDecimal getPrice() {
 		return price;
 	}
 	
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	
 	@Column(name = "STATUS")
-	@NotNull(message="商品狀態不能空白，只能0:下架、1:上架")
+	@NotNull(message="商品狀態不能空白，只能0：下架、1：上架")
 	public Integer getStatus() {
 		return status;
 	}
@@ -106,7 +113,7 @@ public class ProductVO implements java.io.Serializable{
 	public String getStatusStr() {
 		if(status == null) 
 			return "";
-		return status + "-[" + (status == 1 ? "上架" : "下架") + "]";
+		return status == 1 ? "上架" : "下架";
 	}
 	
 	@CreationTimestamp
@@ -173,7 +180,10 @@ public class ProductVO implements java.io.Serializable{
 		this.remark = remark;
 	}
 	
-	@Column(name = "UPDATE_TIME")
+	@Column(name = "UPDATE_TIME",
+			insertable = false,  // 關鍵：插入時不要帶
+	        updatable = false,   // 如果你希望完全交給 DB 控制，更新也不要帶
+	        nullable = false)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	public Timestamp getUpdateTime() {
 		return updateTime;
