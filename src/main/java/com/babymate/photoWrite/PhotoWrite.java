@@ -11,7 +11,7 @@ class PhotoWrite {
         String url = "jdbc:mysql://localhost:3306/babymate?serverTimezone=Asia/Taipei";
         String userid = "root";
         String passwd = "123456";
-        String photos = "src/main/resources/static/images/product_icon"; 
+        String photos = "src/main/resources/static/assets/images/product_icon"; 
         String update = "UPDATE product SET product_icon = ? WHERE product_id = ?";
 
         try {

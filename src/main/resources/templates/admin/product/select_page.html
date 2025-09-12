@@ -1,0 +1,79 @@
+<!-- <!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+讓 layout 的 <head> 接手，並把本頁的 extraHead 傳進去
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  本頁額外 CSS（可留空）
+  <th:block th:fragment="extraHead"></th:block>
+
+  用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    主要內容（只給 layout 插入，不會在這裡再渲染一次）
+    <section th:fragment="content">
+      <div class="app-content-header">
+				begin::Container
+				<div class="container-fluid">
+					begin::Row
+					<div class="row">
+						<div class="col-sm-6">
+							<h3 class="mb-0">商品資料查詢</h3>
+						</div>
+					</div>
+					end::Row
+				</div>
+				end::Container
+			</div>
+			<div class="app-content">
+				begin::Container
+				<div class="container-fluid">
+					商品介面
+					<div class="card mb-4">
+						<ul>
+							<li>
+								<form method="post" th:action="@{getOne_For_Display}">
+									選擇商品編號： 
+								<select name="product_id">
+									<option th:each="productVO : ${productListData}" th:value="${productVO.productId}" th:text="${productVO.productId}"></option>
+								</select>
+								<input type="submit" style="background-color: #5599FF; color: white" value="送出">
+								</form>
+								<br>
+							</li>
+							
+							<li>
+								<form method="post" th:action="@{getOne_For_Display}">
+									選擇商品名稱： 
+								<select name="product_name">
+									<option th:each="productVO : ${productListData}" th:value="${productVO.productName}" th:text="${productVO.productName}"></option>
+								</select>
+								<input type="submit" style="background-color: #5599FF; color: white" value="送出">
+								</form>
+								<br>
+							</li>
+							
+							<li>
+								<form method="post" th:action="@{getOne_For_Display}">
+									選擇商品類別： 
+								<select name="category_id">
+									<option th:each="categoryVO : ${categoryListData}" th:value="${categoryVO.categoryId}" th:text="${categoryVO.categoryId} + ' - [' + ${categoryVO.categoryName} + ']'"></option>
+								</select>
+								<input type="submit" style="background-color: #5599FF; color: white" value="送出">
+								</form>
+								<br>
+							</li>
+							<li><a th:href="@{listAllProduct}">查詢全部商品資料</a></li>
+						</ul>
+					</div>
+				</div>
+				/.col-md-6
+			</div>
+    </section>
+
+    本頁額外 JS（可留空）
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>
+ -->
