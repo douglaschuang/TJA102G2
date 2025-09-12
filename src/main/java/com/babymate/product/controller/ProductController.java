@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -26,20 +27,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/admin/product")
 public class ProductController {
-
+    
 	@Autowired
 	ProductService productSvc;
 	
 	@Autowired
 	CategoryService categorySvc;
 	
+    //===========addProduct.html=================
 	@GetMapping("addProduct")
 	public String addProduct(ModelMap model) {
 		ProductVO productVO = new ProductVO();
 		model.addAttribute("productVO", productVO);
-		return "back-end/product/addProduct";
+		return "admin/product/addProduct";
 	}
 	
 	/*
@@ -62,7 +64,7 @@ public class ProductController {
 			}
 		}
 		if (result.hasErrors() || parts[0].isEmpty()) {
-			return "back-end/product/addProduct";
+			return "admin/product/addProduct";
 		}
 		/*************************** 2.開始新增資料 *****************************************/
 		// EmpService empSvc = new EmpService();
@@ -71,7 +73,7 @@ public class ProductController {
 		List<ProductVO> list = productSvc.getAll();
 		model.addAttribute("productListData", list); // for listAllEmp.html 第85行用
 		model.addAttribute("success", "- (新增成功)");
-		return "redirect:/product/listAllProduct"; // 新增成功後重導至IndexController_inSpringBoot.java的第58行@GetMapping("/emp/listAllEmp")
+		return "redirect:/admin/product/listAllProduct"; // 新增成功後重導至IndexController_inSpringBoot.java的第58行@GetMapping("/emp/listAllEmp")
 	}
 	
 	/*
@@ -86,9 +88,24 @@ public class ProductController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("productVO", productVO);
-		return "back-end/product/update_product_input"; // 查詢完成後轉交update_emp_input.html
+		return "admin/product/update_product_input"; // 查詢完成後轉交update_emp_input.html
 	}
 
+	// 上架清單
+	@GetMapping("listAllProduct")
+	public String listAllProduct(ModelMap model) {
+		model.addAttribute("productListData", productSvc.findByStatus(1));
+		return "admin/product/listAllProduct";
+	}
+	
+	// 下架清單(下架區)
+	@GetMapping("productRemoveArea")
+	public String productRemoveArea(ModelMap model) {
+		model.addAttribute("productListData", productSvc.findByStatus(0));
+		return "admin/product/productRemoveArea";
+	}
+	
+	
 	/*
 	 * This method will be called on update_product_input.html form submission, handling POST request It also validates the user input
 	 */
@@ -111,7 +128,7 @@ public class ProductController {
 			}
 		}
 		if (result.hasErrors()) {
-			return "back-end/product/update_product_input";
+			return "admin/product/update_product_input";
 		}
 		/*************************** 2.開始修改資料 *****************************************/
 		// ProductService ProductSvc = new ProductService();
@@ -121,24 +138,30 @@ public class ProductController {
 		model.addAttribute("success", "- (修改成功)");
 		productVO = productSvc.getOneProduct(Integer.valueOf(productVO.getProductId()));
 		model.addAttribute("productVO", productVO);
-		return "back-end/product/listOneProduct"; // 修改成功後轉交listOneEmp.html
+		// 區分status上架及下架該去的位置
+		if(Integer.valueOf(0).equals(productVO.getStatus())) {
+			return "redirect:/admin/product/productRemoveArea"; // status=0
+		}else {
+			return "redirect:/admin/product/listAllProduct"; // status=1
+		}
+		
 	}
 
 	/*
 	 * This method will be called on listAllProduct.html form submission, handling POST request
 	 */
-	@PostMapping("delete")
-	public String delete(@RequestParam("productId") String productId, ModelMap model) {
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		/*************************** 2.開始刪除資料 *****************************************/
-		// EmpService empSvc = new EmpService();
-		productSvc.deleteProduct(Integer.valueOf(productId));
-		/*************************** 3.刪除完成,準備轉交(Send the Success view) **************/
-		List<ProductVO> list = productSvc.getAll();
-		model.addAttribute("productListData", list); // for listAllEmp.html 第85行用
-		model.addAttribute("success", "- (刪除成功)");
-		return "back-end/product/listAllProduct"; // 刪除完成後轉交listAllEmp.html
-	}
+//	@PostMapping("delete")
+//	public String delete(@RequestParam("productId") String productId, ModelMap model) {
+//		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+//		/*************************** 2.開始刪除資料 *****************************************/
+//		// EmpService empSvc = new EmpService();
+//		productSvc.deleteProduct(Integer.valueOf(productId));
+//		/*************************** 3.刪除完成,準備轉交(Send the Success view) **************/
+//		List<ProductVO> list = productSvc.getAll();
+//		model.addAttribute("productListData", list); // for listAllEmp.html 第85行用
+//		model.addAttribute("success", "- (刪除成功)");
+//		return "admin/product/listAllProduct"; // 刪除完成後轉交listAllEmp.html
+//	}
 
 	/*
 	 * 第一種作法 Method used to populate the List Data in view. 如 : 

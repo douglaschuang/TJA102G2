@@ -62,14 +62,14 @@ public class IndexController_inSpringBoot {
     
   
     //=========== 以下第63~75行是提供給 /src/main/resources/templates/back-end/emp/select_page.html 與 listAllEmp.html 要使用的資料 ===================   
-//    @GetMapping("/product/select_page")
-//	public String select_page(Model model) {
-//		return "back-end/product/select_page";
-//	}
-//    
-//    @GetMapping("/product/listAllProduct")
-//	public String listAllEmp(Model model) {
-//		return "back-end/product/listAllProduct";
+    @GetMapping("/admin/product/select_page")
+	public String select_page(Model model) {
+		return "admin/product/select_page";
+	}
+    
+//    @GetMapping("/admin/product/listAllProduct")
+//	public String listAllProduct(Model model) {
+//		return "admin/product/listAllProduct";
 //	}
     
     @GetMapping("/admin")

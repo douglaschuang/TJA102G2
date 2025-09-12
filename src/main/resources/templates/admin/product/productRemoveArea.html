@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <!-- 子頁額外樣式：只放 DataTables 的 Bootstrap5 佈景（放在 body 裡，讓 head 的片段替換更穩定） -->
+  <th:block th:fragment="extraHead">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+  </th:block>
+
+  <!-- 用版型把下面兩個片段插入（容器會被整個替換，不會重複渲染） -->
+  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+    <!-- 內容區（fragment） -->
+    <section th:fragment="content">
+			<div class="app-content-header">
+				<div class="container-fluid">
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="container-fluid">
+					<div class="card mb-4">
+						<div class="card-header border-0">
+							<h3 class="mb-0">商品清單</h3>
+						</div>
+						<div class="ms-auto">
+				            	<a class="btn btn-sm btn-primary" th:href="@{addProduct}">
+				            	  <i></i> 新增商品</a>
+				           		 <a class="btn btn-sm btn-primary" th:href="@{listAllProduct}">
+				              	<i></i> 上架區
+				            	</a>
+				         </div>
+						<div class="card-body table-responsive p-0">
+							<table id="productTable"
+								class="table table-striped align-middle productTable display">
+								<thead>
+									<tr>
+										<th style="width:40px">商品ID</th>
+										<th style="width:40px">商品編號</th>
+										<th style="width:100px">商品<br>名稱</th>
+										<th style="width:70px">商品<br>類別ID</th>
+										<th style="width:40px">價格</th>
+										<th style="width:40px">狀態</th>
+										<th style="width:70px">狀態異<br>動時間</th>
+										<th style="width:70px">圖示</th>
+										<th style="width:70px">特色<br>說明</th>
+										<th style="width:40px">規格<br>說明</th>
+										<th style="width:40px">注意<br>事項</th>
+										<th style="width:40px">備註</th>
+										<th style="width:70px">更新<br>時間</th>
+										<th style="width:80px"></th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:each="productVO : ${productListData}">
+										<tr>
+											<td th:text="${productVOStat.count}"></td>
+											<td th:text="${productVO.productNo}"></td>
+											<td th:text="${productVO.productName}"></td>
+											<td th:text="${productVO.categoryVO.categoryId} + '-[' + ${productVO.categoryVO.categoryName} + ']'"></td>
+											<td th:text="${productVO.price}"></td>
+											<td th:text="${productVO.statusStr}"></td>
+											<td th:text="${productVO.statusUpdateTimeStr}"></td>
+											<td><img th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}" width="100px"></td>
+											<td th:text="${productVO.featureDesc}"></td>
+											<td th:text="${productVO.specDesc}"></td>
+											<td th:text="${productVO.note}"></td>
+											<td th:text="${productVO.remark}"></td>
+											<td th:text="${productVO.updateTimeStr}"></td>
+											<td>
+												<form method="post" th:action="@{getOne_For_Update}" style="margin-bottom: 0px;">
+													<button type="submit" class="btn btn-primary btn-sm">
+           												<i class="bi bi-pencil-square"></i> 修改
+       												</button>
+													<input type="hidden" name="product_id" th:value="${productVO.productId}">
+												</form>
+
+												<!-- <form method="post" th:action="@{getOne_For_Update}" class="d-inline">
+											        <button type="submit" class="btn btn-danger btn-sm">
+											            <i class="bi bi-trash"></i> 刪除
+											        </button>
+											        <input type="hidden" name="product_id" th:value="${productVO.productId}">
+											    </form> -->
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+    </section>
+
+    <!-- 本頁 JS（fragment） -->
+    <th:block th:fragment="extraJs">
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const sel = '#productTable';
+          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
+          $(sel).DataTable({
+            retrieve: true,
+            lengthMenu: [3, 5, 10, 20, 50, 100],
+            language: {
+              processing:"處理中...", loadingRecords:"載入中...",
+              lengthMenu:"顯示 _MENU_ 筆結果", zeroRecords:"沒有符合的結果",
+              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
+              infoFiltered:"(從 _MAX_ 筆結果中過濾)", search:"搜尋：",
+              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
+              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
+            }
+          });
+        });
+      </script>
+    </th:block>
+  </div>
+</body>
+</html>
