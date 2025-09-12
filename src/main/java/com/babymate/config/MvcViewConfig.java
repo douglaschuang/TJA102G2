@@ -1,0 +1,37 @@
+package com.babymate.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class MvcViewConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // 首頁
+        registry.addViewController("/").setViewName("frontend/index");
+
+        // 一般頁
+        registry.addViewController("/faq").setViewName("frontend/faq");
+        registry.addViewController("/my-account").setViewName("frontend/my-account");
+        registry.addViewController("/element/google-maps").setViewName("frontend/element-google-maps");
+
+        // Blog
+        registry.addViewController("/blog/full-grid-left")
+                .setViewName("frontend/blog-full-then-grid-left-sidebar");
+        registry.addViewController("/blog/standard-left")
+                .setViewName("frontend/blog-standard-left-sidebar");
+
+        // Shop
+        registry.addViewController("/shop/cart").setViewName("frontend/shop-cart");
+        registry.addViewController("/shop/checkout").setViewName("frontend/shop-checkout");
+        registry.addViewController("/shop/login").setViewName("frontend/shop-customer-login");
+        registry.addViewController("/shop/left").setViewName("frontend/shop-left-sidebar");
+        registry.addViewController("/shop/product-basic").setViewName("frontend/shop-product-basic");
+        registry.addViewController("/shop/wishlist").setViewName("frontend/shop-wishlist");
+
+        // 可選：/shop 轉到某個預設頁
+        // registry.addRedirectViewController("/shop", "/shop/product-basic");
+    }
+}
