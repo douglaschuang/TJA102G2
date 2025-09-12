@@ -16,4 +16,6 @@ public interface ProductRepository extends JpaRepository<ProductVO, Integer>{
 	@Modifying     // 表示更新/刪除功能
 	@Query(value = "delete from product where product_id =?1", nativeQuery = true)  // nativeQuery = true 代表原生SQL查詢
 	void deleteByProductId(int productId);
+
+	List<ProductVO> findByStatus(Integer status); // 1:上架, 0:下架
 }
