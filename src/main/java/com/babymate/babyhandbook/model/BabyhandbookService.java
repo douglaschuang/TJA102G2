@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.babymate.mhb.model.MhbVO;
 
 @Service("babyhandbookService")
 public class BabyhandbookService {
@@ -21,10 +24,6 @@ public class BabyhandbookService {
 		 repository.save(babyhandbookVO);
 	 }
 	 
-	 public void deleteBabyhandbook(Integer babyhandbookid) {
-		 if(repository.existsById(babyhandbookid))
-		 	repository.deleteByBabyhandbookid(babyhandbookid);
-	 }
 
 	 public BabyhandbookVO getOneBabyhandbook(Integer babyhandbookid) {
 		 Optional<BabyhandbookVO> optional = repository.findById(babyhandbookid);
@@ -35,4 +34,31 @@ public class BabyhandbookService {
 		return repository.findAll();
 	 }
 	 
+	 //軟刪除
+	 @Transactional
+	 public void softDelete(Integer babyhandbookid) {
+		 	repository.softDelete(babyhandbookid);
+	 }
+	 
+	 //還原資料
+	 @Transactional
+	  public int restore(Integer babyhandbookid) {
+	        return repository.restoreById(babyhandbookid);
+	  }
+	    
+	 //Admin後台管理用的清單
+      @Transactional(readOnly = true)
+	   public List<BabyhandbookVO> findAllActive() {
+	        return repository.findAllActive();
+	   }
+
+	   @Transactional(readOnly = true)
+	   public List<BabyhandbookVO> findAllDeleted() {
+	        return repository.findAllDeleted();
+	    }
+
+	   @Transactional(readOnly = true)
+	    public byte[] getPhotoBytesRaw(Integer id) {
+	        return repository.findPhotoBytesById(id);
+	    }
 }
