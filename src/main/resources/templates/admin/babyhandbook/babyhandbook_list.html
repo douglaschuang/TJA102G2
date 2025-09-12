@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <!-- 子頁額外樣式：只放 DataTables 的 Bootstrap5 佈景（放在 body 裡，讓 head 的片段替換更穩定） -->
+  <th:block th:fragment="extraHead">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+  </th:block>
+
+  <!-- 用版型把下面兩個片段插入（容器會被整個替換，不會重複渲染） -->
+  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+    <!-- 內容區（fragment） -->
+    <section th:fragment="content">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title mb-0">小孩手冊管理</h3>
+          <div class="ms-auto">
+            <a class="btn btn-sm btn-primary" th:href="@{/babyhandbook/addBabyhandbook}">
+              <i class="bi bi-plus-circle"></i> 新增
+            </a>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/babyhandbook/deleted}">
+              <i class="bi bi-trash3"></i> 垃圾桶
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <table id="babyhandbookTable" class="table table-striped table-bordered align-middle w-100">
+            <thead>
+              <tr>
+                <th># 手冊編號</th>
+                <th>會員ID</th>
+                <th>小孩姓名</th>
+                <th>小孩性別</th>
+                <th>小孩生日</th>
+                <th>照片</th>
+                <th>動作</th>
+              </tr>
+            </thead>
+            <tbody>
+               <tr th:each="babyhandbookVO  : ${babyhandbookListData}">
+                <td th:text="${babyhandbookVO.babyhandbookid}"></td>
+                <td th:text="${babyhandbookVO.member.memberId}"></td>
+                <td th:text="${babyhandbookVO.babyname}"></td>
+                <td th:text="${babyhandbookVO.babygender}"></td>
+                <td th:text="${#dates.format(babyhandbookVO.babybirthday, 'yyyy/MM/dd')}">2024-02-01</td>
+                <td>
+                  <img th:if="${babyhandbookVO.babyhandbookfiles != null}"
+                       th:src="@{|/babyhandbook/photo/${babyhandbookVO.babyhandbookid}}"
+                       alt="photo" style="height:48px"/>
+                </td>
+                <td class="text-nowrap">
+                  <a class="btn btn-sm btn-outline-success"
+                     th:href="@{|/babyhandbook/records?babyhandbookid=${babyhandbookVO.babyhandbookid}|}">
+                    <i class="bi bi-journal-medical"></i> 懷孕紀錄
+                    <span class="badge text-bg-info ms-1"
+                          th:text="${recordCountMap[babyhandbookVO.babyhandbookid]} ?: 0">0</span>
+                  </a>
+                </td>
+                <td class="text-nowrap">
+                  <form th:action="@{/babyhandbook/getOne_For_Update}" method="post" class="d-inline">
+                    <input type="hidden" name="baby_handbook_id" th:value="${babyhandbookVO.babyhandbookid}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-pencil-square"></i> 修改
+                    </button>
+                  </form>
+                  <form th:action="@{/babyhandbook/delete}" method="post" class="d-inline"
+                        onsubmit="return confirm('確定刪除？')">
+                    <input type="hidden" name="baby_handbook_id" th:value="${babyhandbookVO.babyhandbookid}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash"></i> 刪除
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 本頁 JS（fragment） -->
+    <th:block th:fragment="extraJs">
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const sel = '#babyhandbookTable';
+          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
+          $(sel).DataTable({
+            retrieve: true,
+            lengthMenu: [3, 5, 10, 20, 50, 100],
+            language: {
+              processing:"處理中...", loadingRecords:"載入中...",
+              lengthMenu:"顯示 _MENU_ 筆結果", zeroRecords:"沒有符合的結果",
+              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
+              infoFiltered:"(從 _MAX_ 筆結果中過濾)", search:"搜尋：",
+              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
+              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
+            }
+          });
+        });
+      </script>
+    </th:block>
+  </div>
+</body>
+</html>

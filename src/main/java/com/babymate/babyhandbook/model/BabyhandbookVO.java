@@ -2,7 +2,9 @@ package com.babymate.babyhandbook.model;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.babymate.member.model.MemberVO;
@@ -59,7 +61,19 @@ public class BabyhandbookVO implements java.io.Serializable{
 	@UpdateTimestamp
 	private Timestamp updatetime;
 	
+	//軟刪除欄位
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
 	
+	
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	public BabyhandbookVO() {
 		
 	}
