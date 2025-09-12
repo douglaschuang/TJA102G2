@@ -56,13 +56,37 @@
   }
 
   // ---- 固定科別清單 ----
+  //function setupFixedDepartments() {
+    //const sel = byId("dept");
+    //if (!sel) return;
+    //const keepAll = '<option value="">全部</option>';
+    //const fixed = ['小兒科','婦產科','綜合醫院'];
+    //sel.innerHTML = keepAll + fixed.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
+  //}
+  // 取代 setupFixedDepartments()
+  
+  // ---- 動態的科別載入 ----
   function setupFixedDepartments() {
-    const sel = byId("dept");
+    const sel = document.getElementById("dept");
     if (!sel) return;
-    const keepAll = '<option value="">全部</option>';
-    const fixed = ['小兒科','婦產科','綜合醫院'];
-    sel.innerHTML = keepAll + fixed.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
+    // 先清空並放入「全部」
+    sel.innerHTML = '<option value="">全部</option>';
+    fetch('/api/clinics/departments')
+      .then(r => r.json())
+      .then(list => {
+        if (Array.isArray(list)) {
+          sel.innerHTML = '<option value="">全部</option>' +
+            list.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
+        }
+      })
+      .catch(() => {
+        // 後端若還沒就緒，就退回固定選單
+        const fixed = ['小兒科','婦產科','綜合醫院'];
+        sel.innerHTML = '<option value="">全部</option>' +
+          fixed.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
+      });
   }
+
 
   // ---- 只允許距離排序的選單；若 HTML 沒放，這裡自動補一個 ----
   function ensureSortSelect() {

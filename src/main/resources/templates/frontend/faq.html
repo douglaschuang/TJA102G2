@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>BabyMate</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
+
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/ionicons.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/themify-icons.css}">
+<link rel="stylesheet" th:href="@{/assets/css/plugins.css}">
+<link rel="stylesheet" th:href="@{/assets/css/helper.css}">
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
+
+<script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+</head>
+<body>
+	<header class="header header-offcanvas-about header-sticky">
+		<div class="header-bottom pt-md-40 pb-md-40 pt-sm-40 pb-sm-40">
+			<div class="container wide">
+				<div class="header-bottom-container">
+					<div class="logo-with-offcanvas d-flex">
+						<div class="offcanvas-about-icon mr-20 d-none d-lg-block">
+							<a href="javascript:void(0)" id="offcanvas-about-icon"><i
+								class="ion-navicon"></i></a>
+						</div>
+						<div class="logo">
+							<a th:href="@{/}"> <img
+								th:src="@{/assets/images/babymate.png}" class="img-fluid" alt="">
+							</a>
+						</div>
+					</div>
+
+					<div class="header-bottom-navigation">
+						<div class="site-main-nav d-none d-lg-block">
+							<nav class="site-nav center-menu">
+								<ul>
+									<li class="menu-item-has-children"><a href="/shop/left"
+										th:href="@{/shop/left}">商城</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
+										</ul></li>
+									<li class="menu-item-has-children"><a
+										href="javascript:void(0)">尋找診所</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a href="/element/google-maps"
+												th:href="@{/element/google-maps}">診所地圖</a></li>
+										</ul></li>
+									<li class="menu-item-has-children"><a
+										href="javascript:void(0)">會員中心</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a href="/blog/full-grid-left"
+												th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
+											<li><a href="/my-account" th:href="@{/my-account}">我的訂單</a></li>
+											<li><a href="/faq" th:href="@{/faq}">F.A.Q</a></li>
+										</ul></li>
+									<li class="menu-item-has-children "><a
+										href="javascript:void(0)">討論區</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a href="/blog/standard-left"
+												th:href="@{/blog/standard-left}">看板貼文</a></li>
+										</ul></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+
+					<div class="header-right-container">
+						<div
+							class="header-right-icons d-flex justify-content-end align-items-center h-100">
+							<div class="single-icon search">
+								<a href="javascript:void(0)" id="search-icon"><i
+									class="ion-ios-search-strong"></i></a>
+							</div>
+							<div class="single-icon user-login">
+								<a href="/shop/login" th:href="@{/shop/login}"><i
+									class="ion-android-person"></i></a>
+							</div>
+							<div class="single-icon wishlist">
+								<a href="javascript:void(0)" id="offcanvas-wishlist-icon"> <i
+									class="ion-android-favorite-outline"></i><span class="count">2</span>
+								</a>
+							</div>
+							<div class="single-icon cart">
+								<a href="javascript:void(0)" id="offcanvas-cart-icon"> <i
+									class="ion-ios-cart"></i><span class="count">3</span>
+								</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Mobile -->
+				<div class="site-mobile-navigation d-block d-lg-none">
+					<div id="dl-menu" class="dl-menuwrapper site-mobile-nav">
+						<!--Site Mobile Menu Toggle Start-->
+						<button class="dl-trigger hamburger hamburger--spin">
+							<span class="hamburger-box"> <span class="hamburger-inner"></span>
+							</span>
+						</button>
+						<!--Site Mobile Menu Toggle End-->
+						<ul class="dl-menu dl-menu-toggle">
+							<li><a href="#">商城</a>
+								<ul class="dl-submenu">
+									<li class=""><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
+								</ul></li>
+							<li><a href="#">尋找診所</a>
+								<ul class="dl-submenu">
+									<li><a href="/element/google-maps"
+										th:href="@{/element/google-maps}">診所地圖</a></li>
+								</ul></li>
+							<li><a href="#">會員中心</a>
+								<ul class="dl-submenu">
+									<li><a href="/blog/full-grid-left"
+										th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
+									<li><a href="my-account.html" th:href="@{/my-account}">我的訂單</a></li>
+									<li><a href="faq.html" th:href="@{/faq}">F.A.Q</a></li>
+								</ul></li>
+							<li><a href="#">討論區</a>
+								<ul class="dl-submenu">
+									<li><a href="/blog/standard-left"
+										th:href="@{/blog/standard-left}">看板貼文</a></li>
+								</ul></li>
+						</ul>
+					</div>
+				</div>
+				<!-- End Mobile -->
+
+			</div>
+		</div>
+	</header>
+
+	<!-- Breadcrumb -->
+	<div class="breadcrumb-area breadcrumb-bg-1 pt-50 pb-70 mb-100">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="breadcrumb-title">F.A.Q</h1>
+					<ul class="breadcrumb-list">
+						<li class="breadcrumb-list__item"><a th:href="@{/}">HOME</a></li>
+						<li class="breadcrumb-list__item breadcrumb-list__item--active">F.A.Q</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FAQ content -->
+	<div class="faq-area">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="faq-wrapper">
+
+						<div class="single-faq mb-80">
+							<h2 class="faq-title mb-20">Shipping information</h2>
+							<div class="accordion" id="shippingInfo">
+								<div class="card">
+									<div class="card-header" id="headingOne">
+										<h5 class="mb-0">
+											<button class="btn btn-link" data-bs-toggle="collapse"
+												data-bs-target="#collapseOne" aria-expanded="true"
+												aria-controls="collapseOne">What Shipping Methods
+												are Available?</button>
+										</h5>
+									</div>
+									<div id="collapseOne" class="collapse show"
+										aria-labelledby="headingOne" data-bs-parent="#shippingInfo">
+										<div class="card-body">
+											<p>Depending on the item(s) you purchase on
+												garageclothing.com and the location to which the item(s)
+												will be delivered...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingTwo">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+												aria-expanded="false" aria-controls="collapseTwo">
+												Do You Ship Internationally?</button>
+										</h5>
+									</div>
+									<div id="collapseTwo" class="collapse"
+										aria-labelledby="headingTwo" data-bs-parent="#shippingInfo">
+										<div class="card-body">
+											<p>At the moment, we only ship to Canada and the United
+												States...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingThree">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseThree"
+												aria-expanded="false" aria-controls="collapseThree">
+												How to Track My Order?</button>
+										</h5>
+									</div>
+									<div id="collapseThree" class="collapse"
+										aria-labelledby="headingThree" data-bs-parent="#shippingInfo">
+										<div class="card-body">
+											<p>Once your order has been shipped, you will receive an
+												email with your tracking and shipping information...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingFour">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseFour"
+												aria-expanded="false" aria-controls="collapseFour">
+												How Long Will It Take To Get My Package?</button>
+										</h5>
+									</div>
+									<div id="collapseFour" class="collapse"
+										aria-labelledby="headingFour" data-bs-parent="#shippingInfo">
+										<div class="card-body">
+											<p>We ship only on business days. Business days are from
+												Monday to Friday, excluding holidays...</p>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="single-faq mb-80">
+							<h2 class="faq-title mb-20">Payment information</h2>
+							<div class="accordion" id="paymentInfo">
+								<div class="card">
+									<div class="card-header" id="headingFive">
+										<h5 class="mb-0">
+											<button class="btn btn-link" data-bs-toggle="collapse"
+												data-bs-target="#collapseFive" aria-expanded="true"
+												aria-controls="collapseFive">What Payment Methods
+												Are Accepted?</button>
+										</h5>
+									</div>
+									<div id="collapseFive" class="collapse show"
+										aria-labelledby="headingFive" data-bs-parent="#paymentInfo">
+										<div class="card-body">
+											<p>We gladly accept Visa, MasterCard and American
+												Express...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingSix">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseSix"
+												aria-expanded="false" aria-controls="collapseSix">
+												What Happens If There Is A Pricing Error?</button>
+										</h5>
+									</div>
+									<div id="collapseSix" class="collapse"
+										aria-labelledby="headingSix" data-bs-parent="#paymentInfo">
+										<div class="card-body">
+											<p>We do our best to provide accuracy in the pricing and
+												other product information...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingSeven">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseSeven"
+												aria-expanded="false" aria-controls="collapseSeven">
+												What Do You Do With My Information?</button>
+										</h5>
+									</div>
+									<div id="collapseSeven" class="collapse"
+										aria-labelledby="headingSeven" data-bs-parent="#paymentInfo">
+										<div class="card-body">
+											<p>We use your info to fulfil your order accurately and
+												quickly...</p>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div class="single-faq mb-80">
+							<h2 class="faq-title mb-20">Orders and returns</h2>
+							<div class="accordion" id="orderInfo">
+								<div class="card">
+									<div class="card-header" id="headingNine">
+										<h5 class="mb-0">
+											<button class="btn btn-link" data-bs-toggle="collapse"
+												data-bs-target="#collapseNine" aria-expanded="true"
+												aria-controls="collapseNine">How do I place an
+												Order?</button>
+										</h5>
+									</div>
+									<div id="collapseNine" class="collapse show"
+										aria-labelledby="headingNine" data-bs-parent="#orderInfo">
+										<div class="card-body">
+											<p>Click on a Product Photo or Product Name to see more
+												detailed information...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingTen">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseTen"
+												aria-expanded="false" aria-controls="collapseTen">
+												How Can I Cancel Or Change My Order?</button>
+										</h5>
+									</div>
+									<div id="collapseTen" class="collapse"
+										aria-labelledby="headingTen" data-bs-parent="#orderInfo">
+										<div class="card-body">
+											<p>Go to Your Orders. Click Cancel Items...</p>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header" id="headingEleven">
+										<h5 class="mb-0">
+											<button class="btn btn-link collapsed"
+												data-bs-toggle="collapse" data-bs-target="#collapseEleven"
+												aria-expanded="false" aria-controls="collapseEleven">
+												Who Should I Contact If I Have Any Queries?</button>
+										</h5>
+									</div>
+									<div id="collapseEleven" class="collapse"
+										aria-labelledby="headingEleven" data-bs-parent="#orderInfo">
+										<div class="card-body">
+											<p>You can contact our customer support team by provided
+												email or mobile phone...</p>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+					<!-- faq-wrapper -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- CTA -->
+	<div class="cta-area pt-50 pb-50">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="cta-content">
+						<div class="cta-title">
+							<h2>Any unanswered questions?</h2>
+						</div>
+						<div class="cta-button">
+							<button
+								class="lezada-button lezada-button--medium lezada-cta-button">contact
+								us</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<div class="footer-container footer-one pt-100 pb-50">
+		<div class="container wide">
+			<div class="row">
+				<div class="col footer-single-widget">
+					<div class="logo">
+						<img th:src="@{/assets/images/babymate_logo.png}"
+							class="img-fluid" alt="">
+					</div>
+					<div class="copyright-text" th:inline="text">
+						<p>
+							&copy; [[${#dates.format(#dates.createNow(),'yyyy')}]] BABYMATE.
+							<span>All Rights Reserved</span>
+						</p>
+					</div>
+				</div>
+				<div class="col footer-single-widget">
+					<h5 class="widget-title">ABOUT</h5>
+					<div class="footer-nav-container">
+						<nav>
+							<ul>
+								<li><a href="#">About us</a></li>
+								<li><a href="#">Store location</a></li>
+								<li><a href="#">Contact</a></li>
+								<li><a href="#">Orders tracking</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				<div class="col footer-single-widget">
+					<h5 class="widget-title">USEFUL LINKS</h5>
+					<div class="footer-nav-container">
+						<nav>
+							<ul>
+								<li><a href="#">Returns</a></li>
+								<li><a href="#">Support Policy</a></li>
+								<li><a href="#">Size guide</a></li>
+								<li><a href="#">FAQs</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				<div class="col footer-single-widget">
+					<h5 class="widget-title">FOLLOW US ON</h5>
+					<div class="footer-nav-container footer-social-links">
+						<nav>
+							<ul>
+								<li><a href="//twitter.com"><i class="fa fa-twitter"></i>
+										Twitter</a></li>
+								<li><a href="//facebook.com"><i class="fa fa-facebook"></i>
+										Facebook</a></li>
+								<li><a href="//instagram.com"><i
+										class="fa fa-instagram"></i> Instagram</a></li>
+								<li><a href="//youtube.com"><i class="fa fa-youtube"></i>
+										Youtube</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				<div class="col footer-single-widget">
+					<div class="footer-subscription-widget">
+						<h2 class="footer-subscription-title">Subscribe.</h2>
+						<p class="subscription-subtitle">Subscribe to our newsletter
+							to receive news on update.</p>
+						<div class="subscription-form">
+							<form id="mc-form" class="mc-form">
+								<input type="email" placeholder="Your email address" required>
+								<button type="submit">
+									<i class="ion-ios-arrow-thin-right"></i>
+								</button>
+							</form>
+						</div>
+						<div class="mailchimp-alerts">
+							<div class="mailchimp-submitting"></div>
+							<div class="mailchimp-success"></div>
+							<div class="mailchimp-error"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Overlays (same處理，如前略) -->
+	<div class="header-offcanvas about-overlay" id="about-overlay">
+		<div class="overlay-close inactive"></div>
+		<div class="overlay-content">
+			<span class="close-icon" id="about-close-icon"><a
+				href="javascript:void(0)"><i class="ti-close"></i></a></span>
+			<div
+				class="overlay-content-container d-flex flex-column justify-content-between h-100">
+				<div class="widget-wrapper">
+					<div class="single-widget">
+						<h2 class="widget-title">About Us</h2>
+						<p>At Lezada, we put a strong emphasis on simplicity, quality
+							and usefulness of fashion products...</p>
+					</div>
+				</div>
+				<div class="contact-widget">
+					<p class="email">
+						<a href="mailto:contact@lezada.com">contact@lezada.com</a>
+					</p>
+					<p class="phone">(+00) 123 567990</p>
+					<div class="social-icons">
+						<ul>
+							<li><a href="//www.twitter.com" data-tippy="Twitter"
+								target="_blank"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="//www.facebook.com" data-tippy="Facebook"
+								target="_blank"><i class="fa fa-facebook"></i></a></li>
+							<li><a href="//www.instagram.com" data-tippy="Instagram"
+								target="_blank"><i class="fa fa-instagram"></i></a></li>
+							<li><a href="//www.youtube.com" data-tippy="Youtube"
+								target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--=======  wishlist overlay  =======-->
+
+	<div class="wishlist-overlay" id="wishlist-overlay">
+		<div class="wishlist-overlay-close inactive"></div>
+		<div class="wishlist-overlay-content">
+			<!--=======  close icon  =======-->
+
+			<span class="close-icon" id="wishlist-close-icon"> <a
+				href="javascript:void(0)"> <i class="ion-android-close"></i>
+			</a>
+			</span>
+
+			<!--=======  End of close icon  =======-->
+
+			<!--=======  offcanvas wishlist content container  =======-->
+
+			<div class="offcanvas-cart-content-container">
+				<h3 class="cart-title">Wishlist</h3>
+
+				<div class="cart-product-wrapper">
+					<div class="cart-product-container  ps-scroll">
+						<!--=======  single cart product  =======-->
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"> <a href="#"><i
+									class="ti-close"></i></a>
+							</span>
+							<div class="image">
+								<a href="shop-product-basic.html"
+									th:href="@{/shop/product-basic}"> <img
+									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
+									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
+								</a>
+							</div>
+							<div class="content">
+								<h5>
+									<a href="shop-product-basic.html"
+										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
+								</h5>
+								<p>
+									<span class="main-price discounted">$200.00</span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+
+							</div>
+						</div>
+
+						<!--=======  End of single cart product  =======-->
+						<!--=======  single cart product  =======-->
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"> <a href="#"><i
+									class="ti-close"></i></a>
+							</span>
+							<div class="image">
+								<a href="shop-product-basic.html"
+									th:href="@{/shop/product-basic}"> <img
+									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
+									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
+								</a>
+							</div>
+							<div class="content">
+								<h5>
+									<a href="shop-product-basic.html"
+										th:href="@{/shop/product-basic}">Dining Chair</a>
+								</h5>
+								<p>
+									<span class="main-price discounted">$300.00</span> <span
+										class="discounted-price">$220.00</span>
+								</p>
+
+							</div>
+						</div>
+
+						<!--=======  End of single cart product  =======-->
+						<!--=======  single cart product  =======-->
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"> <a href="#"><i
+									class="ti-close"></i></a>
+							</span>
+							<div class="image">
+								<a href="shop-product-basic.html"
+									th:href="@{/shop/product-basic}"> <img
+									src="assets/images/cart-product-image/03.jpg" class="img-fluid"
+									alt="" th:src="@{/assets/images/cart-product-image/03.jpg}">
+								</a>
+							</div>
+							<div class="content">
+								<h5>
+									<a href="shop-product-basic.html"
+										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
+								</h5>
+								<p>
+									<span class="main-price discounted">$100.00</span> <span
+										class="discounted-price">$80.00</span>
+								</p>
+
+							</div>
+						</div>
+
+						<!--=======  End of single cart product  =======-->
+						<!--=======  single cart product  =======-->
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"> <a href="#"><i
+									class="ti-close"></i></a>
+							</span>
+							<div class="image">
+								<a href="shop-product-basic.html"
+									th:href="@{/shop/product-basic}"> <img
+									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
+									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
+								</a>
+							</div>
+							<div class="content">
+								<h5>
+									<a href="shop-product-basic.html"
+										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
+								</h5>
+								<p>
+									<span class="main-price discounted">$200.00</span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+
+							</div>
+						</div>
+
+						<!--=======  End of single cart product  =======-->
+						<!--=======  single cart product  =======-->
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"> <a href="#"><i
+									class="ti-close"></i></a>
+							</span>
+							<div class="image">
+								<a href="shop-product-basic.html"
+									th:href="@{/shop/product-basic}"> <img
+									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
+									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
+								</a>
+							</div>
+							<div class="content">
+								<h5>
+									<a href="shop-product-basic.html"
+										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
+								</h5>
+								<p>
+									<span class="main-price discounted">$200.00</span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+
+							</div>
+						</div>
+
+						<!--=======  End of single cart product  =======-->
+					</div>
+
+					<!--=======  cart buttons  =======-->
+
+					<div class="cart-buttons">
+						<a href="shop-wishlist.html" th:href="@{/shop/wishlist}">view
+							wishlist</a>
+					</div>
+
+					<!--=======  End of cart buttons  =======-->
+				</div>
+			</div>
+
+			<!--=======  End of offcanvas wishlist content container   =======-->
+		</div>
+	</div>
+
+	<!--=======  End of wishlist overlay  =======-->
+
+	<div class="cart-overlay" id="cart-overlay">
+		<div class="cart-overlay-close inactive"></div>
+		<div class="cart-overlay-content">
+			<span class="close-icon" id="cart-close-icon"><a
+				href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
+			<div class="offcanvas-cart-content-container">
+				<h3 class="cart-title">Cart</h3>
+				<div class="cart-product-wrapper">
+					<div class="cart-product-container  ps-scroll">
+						<div class="single-cart-product">
+							<span class="cart-close-icon"><a href="#"><i
+									class="ti-close"></i></a></span>
+							<div class="image">
+								<a th:href="@{/shop/product-basic}"><img
+									th:src="@{/assets/images/cart-product-image/01.jpg}"
+									class="img-fluid" alt=""></a>
+							</div>
+							<div class="content">
+								<h5>
+									<a th:href="@{/shop/product-basic}">Dark Brown Leather
+										Watch</a>
+								</h5>
+								<p>
+									<span class="cart-count">2 x </span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+							</div>
+						</div>
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"><a href="#"><i
+									class="ti-close"></i></a></span>
+							<div class="image">
+								<a th:href="@{/shop/product-basic}"><img
+									th:src="@{/assets/images/cart-product-image/02.jpg}"
+									class="img-fluid" alt=""></a>
+							</div>
+							<div class="content">
+								<h5>
+									<a th:href="@{/shop/product-basic}">Dining Chair</a>
+								</h5>
+								<p>
+									<span class="cart-count">2 x </span> <span
+										class="discounted-price">$220.00</span>
+								</p>
+							</div>
+						</div>
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"><a href="#"><i
+									class="ti-close"></i></a></span>
+							<div class="image">
+								<a th:href="@{/shop/product-basic}"><img
+									th:src="@{/assets/images/cart-product-image/03.jpg}"
+									class="img-fluid" alt=""></a>
+							</div>
+							<div class="content">
+								<h5>
+									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
+								</h5>
+								<p>
+									<span class="cart-count">2 x </span> <span
+										class="discounted-price">$80.00</span>
+								</p>
+							</div>
+						</div>
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"><a href="#"><i
+									class="ti-close"></i></a></span>
+							<div class="image">
+								<a th:href="@{/shop/product-basic}"><img
+									th:src="@{/assets/images/cart-product-image/01.jpg}"
+									class="img-fluid" alt=""></a>
+							</div>
+							<div class="content">
+								<h5>
+									<a th:href="@{/shop/product-basic}">Dark Brown Leather
+										Watch</a>
+								</h5>
+								<p>
+									<span class="cart-count">2 x </span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+							</div>
+						</div>
+
+						<div class="single-cart-product">
+							<span class="cart-close-icon"><a href="#"><i
+									class="ti-close"></i></a></span>
+							<div class="image">
+								<a th:href="@{/shop/product-basic}"><img
+									th:src="@{/assets/images/cart-product-image/02.jpg}"
+									class="img-fluid" alt=""></a>
+							</div>
+							<div class="content">
+								<h5>
+									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
+								</h5>
+								<p>
+									<span class="cart-count">2 x </span> <span
+										class="discounted-price">$180.00</span>
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<p class="cart-subtotal">
+						<span class="subtotal-title">Subtotal:</span> <span
+							class="subtotal-amount">$200.00</span>
+					</p>
+
+					<div class="cart-buttons">
+						<a th:href="@{/shop/cart}">view cart</a> <a
+							th:href="@{/shop/checkout}">checkout</a>
+					</div>
+
+					<p class="free-shipping-text">Free Shipping on All Orders Over
+						$100!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Search overlay -->
+	<div class="search-overlay" id="search-overlay">
+		<span class="close-icon search-close-icon"><a
+			href="javascript:void(0)" id="search-close-icon"><i
+				class="ti-close"></i></a></span>
+		<div class="search-overlay-content">
+			<div class="input-box">
+				<form th:action="@{/}">
+					<input type="search" placeholder="Search Products...">
+				</form>
+			</div>
+			<div class="search-hint">
+				<span># Hit enter to search or ESC to close</span>
+			</div>
+		</div>
+	</div>
+
+	<a href="#" class="scroll-top"></a>
+
+	<script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
+	<script th:src="@{/assets/js/popper.min.js}"></script>
+	<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+	<script th:src="@{/assets/js/plugins.js}"></script>
+	<script th:src="@{/assets/js/main.js}"></script>
+</body>
+</html>
