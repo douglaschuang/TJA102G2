@@ -33,7 +33,7 @@
 	href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0/dist/css/adminlte.css"
 	crossorigin="anonymous" /> -->
 <!-- 本機版 -->
-<link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}"/>
+<link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}" />
 
 <!-- 自訂主題色 -->
 <style>
@@ -108,19 +108,18 @@
 	<div class="app-wrapper">
 		<!-- Header -->
 		<nav class="app-header navbar navbar-expand bg-body">
-  <div class="container-fluid">
-    <!-- 左側：漢堡 -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
-          <i class="bi bi-list"></i>
-        </a>
-      </li>
-    </ul>
+			<div class="container-fluid">
+				<!-- 左側：漢堡 -->
+				<ul class="navbar-nav">
+					<li class="nav-item"><a class="nav-link"
+						data-lte-toggle="sidebar" href="#" role="button"> <i
+							class="bi bi-list"></i>
+					</a></li>
+				</ul>
 
-    <!-- 右側：搜尋 + 使用者選單 -->
-    <ul class="navbar-nav ms-auto">
-      <!-- <!-- 搜尋觸發
+				<!-- 右側：搜尋 + 使用者選單 -->
+				<ul class="navbar-nav ms-auto">
+					<!-- <!-- 搜尋觸發
       <li class="nav-item">
         <a class="nav-link" data-lte-toggle="navbar-search" href="#" role="button">
           <i class="bi bi-search"></i>
@@ -141,30 +140,40 @@
         </div>
       </li> -->
 
-      <!-- 使用者選單 -->
-      <li class="nav-item dropdown user-menu">
-        <a th:href="@{/admin}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-          <img th:src="@{/adminlte/assets/img/bear.png}" class="user-image rounded-circle shadow" alt="User"/>
-          <span class="d-none d-md-inline">
-            <!-- 你要顯示固定字或 session 皆可，二擇一 -->
-            Babymate Admin
-            <!-- 或：<span th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span> -->
-          </span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-          <li class="user-header text-bg-primary">
-            <img th:src="@{/adminlte/assets/img/bear.png}" class="rounded-circle shadow" alt="User"/>
-            <p>Babymate admin</p>
-          </li>
-          <li class="user-footer">
-            <a th:href="@{/}" class="btn btn-default btn-flat float-end">Sign out</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-</nav>
-		
+					<!-- 使用者選單 -->
+					<li class="nav-item dropdown user-menu"><a th:href="@{/admin}"
+						class="nav-link dropdown-toggle d-flex align-items-center"
+						data-bs-toggle="dropdown"> <img
+							th:if="${session.staff != null}"
+							th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
+							class="user-image rounded-circle shadow" alt="User" /> <span
+							class="d-none d-md-inline"> <!-- 你要顯示固定字或 session 皆可，二擇一 -->
+								<!--             Babymate Admin --> <label
+								th:if="${session.staff != null}"
+								th:text="${session.staff.account}">Account</label> <!-- 或：<span th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span> -->
+						</span>
+					</a>
+						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
+							<li class="user-header text-bg-primary">
+								<!--             <img th:src="@{/adminlte/assets/img/bear.png}" class="rounded-circle shadow" alt="User"/> -->
+								<!--             <p>Babymate admin</p> --> <!-- 已登入 --> <img
+								th:if="${session.staff != null}"
+								th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
+								class="rounded-circle shadow" alt="User" />
+								<p th:if="${session.staff != null}"
+									th:text="${session.staff.nickname}">Nickname</p> <!-- 未登入 --> <img
+								th:unless="${session.staff != null}"
+								th:src="@{/adminlte/assets/img/default.png}"
+								class="rounded-circle shadow" alt="User" />
+								<p th:unless="${session.staff != null}">Guest</p>
+							</li>
+							<li class="user-footer"><a th:href="@{/staff/logout}"
+								class="btn btn-default btn-flat float-end">登出</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</nav>
+
 
 		<!-- Sidebar -->
 		<aside class="app-sidebar bg-body-secondary shadow"
@@ -189,10 +198,10 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="#" class="nav-link"> <i
+								<li class="nav-item"><a
+									th:href="@{/admin/staff/listAllStaff}" class="nav-link"><i
 										class="nav-icon bi bi-circle"></i>
-									<p>員工管理</p>
-								</a></li>
+										<p>員工管理</p> </a></li>
 							</ul></li>
 
 						<li class="nav-item menu-open"><a class="nav-link active">
@@ -202,21 +211,22 @@
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="#" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
-									<p>會員管理</p>
+								<li class="nav-item"><a
+									th:href="@{/admin/member/listAllMember}" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
+										<p>會員管理</p>
 								</a></li>
 								<li class="nav-item"><a href="#" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
-									<p>訂單管理</p>
+										<p>訂單管理</p>
 								</a></li>
 								<li class="nav-item"><a href="#" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
-									<p>商品管理</p>
+										<p>商品管理</p>
 								</a></li>
 								<li class="nav-item"><a href="#" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
-									<p>討論區管理</p>
+										<p>討論區管理</p>
 								</a></li>
 							</ul></li>
 
@@ -230,23 +240,24 @@
 								<li class="nav-item">
 									<!-- 連到你現有的媽媽手冊列表 --> <a th:href="@{/admin/mhb/list}"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-									<p>媽媽手冊管理</p>
+										<p>媽媽手冊管理</p>
 								</a>
 
 								</li>
 								<li class="nav-item"><a th:href="@{/admin/babyhandbook/list}" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
-									<p>寶寶手冊管理</p>
+										<p>寶寶手冊管理</p>
 								</a></li>
 							</ul></li>
 
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-question-circle-fill"></i>
-							<p>客服管理</p>
+								<p>客服管理</p>
 						</a></li>
-						<li class="nav-item"><a th:href="@{/}" class="nav-link">
-								<i class="nav-icon bi bi-box-arrow-in-right"></i>
-							<p>登出</p>
+						<li class="nav-item"><a th:href="@{/staff/logout}"
+							class="nav-link"> <i
+								class="nav-icon bi bi-box-arrow-in-right"></i>
+								<p>登出</p>
 						</a></li>
 					</ul>
 				</nav>
@@ -476,7 +487,7 @@
 		crossorigin="anonymous"></script>
 
 	<!-- AdminLTE JS（CDN 版） -->
-		<script th:src="@{/adminlte/js/adminlte.min.js}"></script>
+	<script th:src="@{/adminlte/js/adminlte.min.js}"></script>
 
 	<!-- SortableJS（可選） -->
 	<script
