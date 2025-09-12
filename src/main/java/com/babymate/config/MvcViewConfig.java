@@ -30,8 +30,6 @@ public class MvcViewConfig implements WebMvcConfigurer {
         registry.addViewController("/shop/left").setViewName("frontend/shop-left-sidebar");
         registry.addViewController("/shop/product-basic").setViewName("frontend/shop-product-basic");
         registry.addViewController("/shop/wishlist").setViewName("frontend/shop-wishlist");
-
-        // 可選：/shop 轉到某個預設頁
-        // registry.addRedirectViewController("/shop", "/shop/product-basic");
+        
     }
 }
