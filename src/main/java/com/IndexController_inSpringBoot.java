@@ -49,7 +49,7 @@ public class IndexController_inSpringBoot {
     public String index(Model model) {
     	model.addAttribute("message", message);
         model.addAttribute("myList", myList);
-        return "index"; //view
+        return "frontend/index"; //view
     }
     
     // http://......../hello?name=peter1
@@ -57,7 +57,7 @@ public class IndexController_inSpringBoot {
     public String indexWithParam(
             @RequestParam(name = "name", required = false, defaultValue = "") String name, Model model) {
         model.addAttribute("message", name);
-        return "index"; //view
+        return "frontend/index"; //view
     }
     
   
