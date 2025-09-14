@@ -1,6 +1,7 @@
 package com.babymate.babyhandbook.model;
-import java.sql.Date;
+
 import java.sql.Timestamp;
+import java.util.Date;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -64,7 +65,11 @@ public class BabyhandbookVO implements java.io.Serializable{
 	//軟刪除欄位
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
-	
+
+
+	public BabyhandbookVO() {
+		this.member = new MemberVO();
+	}
 	
 	public boolean isDeleted() {
 		return deleted;
@@ -72,10 +77,6 @@ public class BabyhandbookVO implements java.io.Serializable{
 
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
-	}
-
-	public BabyhandbookVO() {
-		
 	}
 	
 	public Integer getBabyhandbookid() {
