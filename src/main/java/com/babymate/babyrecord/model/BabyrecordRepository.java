@@ -1,5 +1,7 @@
 package com.babymate.babyrecord.model;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +14,7 @@ public interface BabyrecordRepository extends JpaRepository<BabyrecordVO, Intege
 	@Modifying
 	@Query(value = "delete from baby_record where baby_record_id =?1" , nativeQuery = true)
 	void deleteByBabyrecordid(int babyrecordid);
+	
+	@Query("SELECT br.babyhandbook.babyhandbookid, COUNT(br) FROM BabyrecordVO br GROUP BY br.babyhandbook.babyhandbookid")
+    List<Object[]> countRecordsGroupByBabyhandbookId();
 }

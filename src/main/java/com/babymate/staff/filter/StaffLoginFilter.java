@@ -36,7 +36,7 @@ public class StaffLoginFilter implements Filter {
             return;
         }
 
-        System.out.println(session.getAttribute("staff"));
+//        System.out.println(session.getAttribute("staff"));
         
         // 檢查是否登入
         if (session != null && session.getAttribute("staff") != null) {

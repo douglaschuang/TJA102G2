@@ -16,7 +16,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
           <h3 class="card-title mb-0">小孩手冊管理</h3>
           <div class="ms-auto">
-            <a class="btn btn-sm btn-primary" th:href="@{/babyhandbook/addBabyhandbook}">
+            <a class="btn btn-sm btn-primary" th:href="@{/admin/babyhandbook/addBabyhandbook}">
               <i class="bi bi-plus-circle"></i> 新增
             </a>
             <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/babyhandbook/deleted}">
@@ -35,11 +35,12 @@
                 <th>小孩性別</th>
                 <th>小孩生日</th>
                 <th>照片</th>
+                <th>小孩紀錄</th>
                 <th>動作</th>
               </tr>
             </thead>
             <tbody>
-               <tr th:each="babyhandbookVO  : ${babyhandbookListData}">
+               <tr th:each="babyhandbookVO  : ${babyhandbookList}">
                 <td th:text="${babyhandbookVO.babyhandbookid}"></td>
                 <td th:text="${babyhandbookVO.member.memberId}"></td>
                 <td th:text="${babyhandbookVO.babyname}"></td>
@@ -53,21 +54,21 @@
                 <td class="text-nowrap">
                   <a class="btn btn-sm btn-outline-success"
                      th:href="@{|/babyhandbook/records?babyhandbookid=${babyhandbookVO.babyhandbookid}|}">
-                    <i class="bi bi-journal-medical"></i> 懷孕紀錄
+                    <i class="bi bi-journal-medical"></i> 小孩紀錄
                     <span class="badge text-bg-info ms-1"
                           th:text="${recordCountMap[babyhandbookVO.babyhandbookid]} ?: 0">0</span>
                   </a>
                 </td>
                 <td class="text-nowrap">
-                  <form th:action="@{/babyhandbook/getOne_For_Update}" method="post" class="d-inline">
-                    <input type="hidden" name="baby_handbook_id" th:value="${babyhandbookVO.babyhandbookid}"/>
+                  <form th:action="@{/admin/babyhandbook/getOne_For_Update}" method="post" class="d-inline">
+                    <input type="hidden" name="babyhandbookid" th:value="${babyhandbookVO.babyhandbookid}"/>
                     <button type="submit" class="btn btn-sm btn-outline-primary">
                       <i class="bi bi-pencil-square"></i> 修改
                     </button>
                   </form>
-                  <form th:action="@{/babyhandbook/delete}" method="post" class="d-inline"
+                  <form th:action="@{/admin/babyhandbook/delete}" method="post" class="d-inline"
                         onsubmit="return confirm('確定刪除？')">
-                    <input type="hidden" name="baby_handbook_id" th:value="${babyhandbookVO.babyhandbookid}"/>
+                    <input type="hidden" name="babyhandbookid" th:value="${babyhandbookVO.babyhandbookid}"/>
                     <button type="submit" class="btn btn-sm btn-outline-danger">
                       <i class="bi bi-trash"></i> 刪除
                     </button>
