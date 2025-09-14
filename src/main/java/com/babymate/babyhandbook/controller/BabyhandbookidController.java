@@ -29,7 +29,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Controller
 @Validated
-@RequestMapping("/babyhandbook")
+@RequestMapping("/admin/babyhandbook")
 public class BabyhandbookidController {
 
 	@Autowired
@@ -54,20 +54,20 @@ public class BabyhandbookidController {
 		BabyhandbookVO babyhandbookVO = babyhandbookSvc.getOneBabyhandbook(Integer.valueOf(babyhandbookid));
 		
 		List<BabyhandbookVO> list = babyhandbookSvc.getAll();
-		model.addAttribute("babyhandbookListData", list);
+		model.addAttribute("babyhandbookList", list);
 		model.addAttribute("memberVO", new MemberVO());
 		List<MemberVO> list2 = memberSvc.getAll();
 		model.addAttribute("memberListData", list2);
 		
 		if(babyhandbookVO == null) {
 			model.addAttribute("errorMessage", "查無資料");
-			return "back-end/babyhandbook/select_page";
+			return "admin/babyhandbook/select_page";
 		}
 		
 		/***************************3.查詢完成,準備轉交(Send the Success view)*****************/
 		model.addAttribute("babyhandbookVO", babyhandbookVO);
 		
-		return "back-end/babyhandbook/select_page";
+		return "admin/babyhandbook/select_page";
 		
 	}
 	
@@ -80,12 +80,12 @@ public class BabyhandbookidController {
 		}
 		
 		List<BabyhandbookVO> list = babyhandbookSvc.getAll();
-		model.addAttribute("babyhandbookListData", list);
+		model.addAttribute("babyhandbookList", list);
 		model.addAttribute("babyhandbookVO", new BabyhandbookVO());
 		List<MemberVO> list2 = memberSvc.getAll();
 		model.addAttribute("memberListData", list2);
 		String message = strBuilder.toString();
-		return new ModelAndView("back-end/babyhandbook/select_page", "errorMessage", "請修正以下錯誤:<br>" + message);
+		return new ModelAndView("admin/babyhandbook/select_page", "errorMessage", "請修正以下錯誤:<br>" + message);
 		
 		
 	}

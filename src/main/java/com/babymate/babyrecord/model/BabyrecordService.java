@@ -1,6 +1,8 @@
 package com.babymate.babyrecord.model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +37,15 @@ public class BabyrecordService {
 		return repository.findAll();
 	 }
 	 
+	 public Map<Integer, Integer> getCountMap() {
+	        List<Object[]> resultList = repository.countRecordsGroupByBabyhandbookId();
+
+	        Map<Integer, Integer> countMap = new HashMap<>();
+	        for (Object[] row : resultList) {
+	            Integer handbookId = (Integer) row[0];
+	            Long count = (Long) row[1];
+	            countMap.put(handbookId, count.intValue());
+	        }
+	        return countMap;
+	    }
 }
