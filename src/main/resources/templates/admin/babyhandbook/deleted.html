@@ -29,32 +29,26 @@
 							<table class="table table-hover align-middle mb-0">
 								<thead class="table-light">
 									<tr>
-										<th># 手冊編號</th>
-										<th>會員ID</th>
-										<th>小孩姓名</th>
-										<th>小孩性別</th>
-										<th>小孩生日</th>
-										<th>照片</th>
-										<th class="text-start">動作</th>
+										<th class="text-center align-middle"># 手冊編號</th>
+										<th class="text-center align-middle">會員ID</th>
+										<th class="text-center align-middle">小孩姓名</th>
+										<th class="text-center align-middle">小孩性別</th>
+										<th class="text-center align-middle">小孩生日</th>
+										<th class="text-center align-middle">照片</th>
+										<th class="text-center align-middle">動作</th>
 									</tr>
 								</thead>
 
 								<tbody>
 									<tr th:each="babyhandbookVO : ${deletedList}">
-										<td th:text="${babyhandbookVO.babyhandbookid}"></td>
-										<td th:text="${babyhandbookVO.member.memberId}"></td>
-										<td th:text="${babyhandbookVO.babyname}"></td>
-										<td th:text="${babyhandbookVO.babygender}"></td>
-										<td
+										<td class="text-center align-middle" th:text="${babyhandbookVO.babyhandbookid}"></td>
+										<td class="text-center align-middle" th:text="${babyhandbookVO.member.memberId}"></td>
+										<td class="text-center align-middle" th:text="${babyhandbookVO.babyname}"></td>
+										<td class="text-center align-middle" th:text="${babyhandbookVO.babygender}"></td>
+										<td class="text-center align-middle"
 											th:text="${#dates.format(babyhandbookVO.babybirthday, 'yyyy/MM/dd')}">2024-02-01</td>
-										<td><img
-											th:if="${babyhandbookVO.babyhandbookfiles != null}"
-											th:src="@{'/babyhandbook/photo-deleted/' + ${babyhandbookVO.babyhandbookid}}"
-											alt="photo"
-											style="width: 48px; height: 36px; object-fit: cover; border-radius: .25rem;">
-										</td>
-										
-										<td>
+										<td class="text-center align-middle"><img th:src="@{/babyhandbook/DBGifReader(babyhandbookid=${babyhandbookVO.babyhandbookid})}" width="100px" alt="Baby photo"/></td>
+										<td class="text-center align-middle">
 										<form th:action="@{/admin/babyhandbook/restore}" method="post"
 											class="d-inline">
 											<input type="hidden" name="babyhandbookid"
