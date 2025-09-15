@@ -42,7 +42,7 @@
 								th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
 							<div class="col-md-6">
-								<label class="form-label">小孩姓名</label> 
+								<label class="form-label">小孩姓名:</label> 
 								<input type="text"
 									th:field="*{babyname}" class="form-control"
 									th:classappend="${#fields.hasErrors('babyname')}? ' is-invalid'" />
@@ -66,7 +66,7 @@
 							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">小孩生日</label>
+								<label class="form-label">小孩生日:</label>
 								<input type="date"
 									th:field="*{babybirthday}" class="form-control"
 									th:classappend="${#fields.hasErrors('babybirthday')}? ' is-invalid'" />
@@ -78,19 +78,19 @@
 							<div class="col-md-6">
 								<label class="form-label">照片:</label> 
 								<input type="file" class="form-control"
-									th:field="*{babyhandbookfiles}" onclick="previewImage()"
-									onchange="hideContent('babyhandbookfiles.errors');" 
+									th:field="*{babyhandbookfiles}" 
+									onchange="previewImage(); hideContent('babyhandbookfiles.errors');"
 									accept="image/*" />
-									<div class="text-danger small" th:utext="${errorMessage}" id="babyhandbookfiles.errors"></div>
-									<div id="blob_holder"></div>
-							</div>
-
+							
+							<div class="text-danger small" th:utext="${errorMessage}" id="babyhandbookfiles.errors"></div>
+							
 							<!-- 預覽區 -->
 							<div class="mt-2">
 								<img id="preview" class="img-thumbnail preview-img d-none"
 									alt="預覽圖">
 							</div>
-					
+							
+							</div>
 
 							<div class="col-12 d-flex gap-2">
 								<button type="submit" class="btn btn-primary">
