@@ -19,6 +19,14 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 	//● (自訂)條件查詢
 	@Query(value = "from MemberVO where memberId=?1 and account like ?2 and registerDate=?3 order by memberId")
 	List<MemberVO> findByOthers(int memberId , String account , LocalDateTime registerDate);
+	
+	// 根據account去找會員
+	@Query(value = "from MemberVO where account=?1")
+	MemberVO findByAccount(String account);
+	
+	// 根據account和password去找會員
+	@Query(value = "from MemberVO where account=?1 and password=?2")
+	MemberVO findByAccountAndPassword(String account, String hashPassword);	
 
 	// 後台首頁：今日新會員
     long countByRegisterDateBetween(LocalDateTime start, LocalDateTime end);
