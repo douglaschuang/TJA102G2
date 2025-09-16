@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service("babyrecordService")
 public class BabyrecordService {
@@ -29,9 +32,12 @@ public class BabyrecordService {
 	 }
 
 	 public BabyrecordVO getOneBabyrecord(Integer babyrecordid) {
-		 Optional<BabyrecordVO> optional = repository.findById(babyrecordid);
-		 return optional.orElse(null);
-	 }
+		 if (babyrecordid == null) {
+				throw new IllegalArgumentException("babyrecordid 不能為 null");
+			}
+			return repository.findById(babyrecordid)
+					.orElseThrow(() -> new EntityNotFoundException("找不到 babyrecord，id: " + babyrecordid));
+		}
 	 
 	 public List<BabyrecordVO> getAll(){
 		return repository.findAll();
@@ -48,4 +54,15 @@ public class BabyrecordService {
 	        }
 	        return countMap;
 	    }
+	 
+	   @Transactional(readOnly = true)
+	    public byte[] getPhotoBytesRaw(Integer id) {
+	        return repository.findPhotoBytesById(id);
+	    }
+
+	   public List<BabyrecordVO> findByBabyhandbookId(Integer babyhandbookid) {
+		    return repository.findByBabyhandbook_Babyhandbookid(babyhandbookid);
+		}
+	   
+	   
 }

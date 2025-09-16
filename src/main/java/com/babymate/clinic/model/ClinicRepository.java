@@ -66,5 +66,26 @@ public class ClinicRepository {
             rs.getDouble("distanceKm")
         ));
     }
+    
+    public ClinicDto findDtoById(Integer id) {
+        String sql = """
+            SELECT clinic_id, clinic_name, clinic_address,
+                   latitude, longitude, department, clinic_phone
+            FROM clinic
+            WHERE clinic_id = ?
+        """;
+
+        return jdbc.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new ClinicDto(
+            rs.getInt("clinic_id"),
+            rs.getString("clinic_name"),
+            rs.getString("clinic_address"),
+            rs.getDouble("latitude"),
+            rs.getDouble("longitude"),
+            rs.getString("department"),
+            rs.getString("clinic_phone"),
+            null // distanceKm 不需要時可為 null
+        ));
+    }
+    
 }
 
