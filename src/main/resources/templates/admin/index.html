@@ -1,525 +1,141 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Babymate_Admin_index</title>
-
-<!-- 基本設定 -->
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-<meta name="color-scheme" content="light dark" />
-<meta name="theme-color" content="#007bff"
-	media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#1a1a1a"
-	media="(prefers-color-scheme: dark)" />
-
-<!-- Fonts -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-	crossorigin="anonymous" media="print" onload="this.media='all'" />
-
-<!-- OverlayScrollbars -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/styles/overlayscrollbars.min.css"
-	crossorigin="anonymous" />
-
-<!-- Bootstrap Icons -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-	crossorigin="anonymous" />
-
-<!-- AdminLTE（CDN 版） -->
-<!-- <link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0/dist/css/adminlte.css"
-	crossorigin="anonymous" /> -->
-<!-- 本機版 -->
-<link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}" />
-
-<!-- 自訂主題色 -->
-<style>
-:root {
-	--bs-primary: #FFDCDC;
-	--bs-primary-rgb: 255, 220, 220;
-	--bs-primary-text-emphasis: #6F4E37;
-	--bs-success: #FFF2EB;
-	--bs-success-rgb: 255, 242, 235;
-	--bs-success-text-emphasis: #6F4E37;
-	--bs-warning: #FFE8CD;
-	--bs-warning-rgb: 255, 232, 205;
-	--bs-warning-text-emphasis: #6F4E37;
-	--bs-danger: #FFD6BA;
-	--bs-danger-rgb: 255, 214, 186;
-	--bs-danger-text-emphasis: #6F4E37;
-	--bs-info: #9ECAD6;
-	--bs-info-rgb: 158, 202, 214;
-	--bs-info-text-emphasis: #6F4E37;
-}
-
-.small-box-footer.link-dark, .small-box-footer.link-light {
-	color: #6F4E37 !important;
-	text-decoration: none
-}
-
-.small-box-footer.link-dark:hover, .small-box-footer.link-light:hover {
-	color: #A0522D !important
-}
-
-.bg-primary, .text-bg-primary {
-	background-color: #FFDCDC !important;
-	color: #6F4E37 !important;
-	border-color: #6F4E37 !important;
-	background-image: none !important
-}
-
-.bg-success, .text-bg-success, .bg-warning, .text-bg-warning, .bg-danger,
-	.text-bg-danger {
-	color: #6F4E37 !important;
-	border-color: #6F4E37 !important;
-	background-image: none !important
-}
-
-.card.bg-primary .card-header, .card.text-bg-primary .card-header, .card.bg-primary .card-body,
-	.card.text-bg-primary .card-body {
-	background-color: #FFDCDC !important;
-	color: #6F4E37 !important
-}
-
-.card-primary, .bg-primary, .text-bg-primary {
-	--lte-card-variant-bg: #FFDCDC;
-	--lte-card-variant-bg-rgb: 255, 220, 220;
-	--lte-card-variant-color: #6F4E37;
-	--lte-card-variant-color-rgb: 111, 78, 55
-}
-</style>
-
-<!-- ApexCharts（不要圖表可以拿掉） -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-	crossorigin="anonymous" />
-
-<!-- jsVectorMap（不要地圖可以拿掉） -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-	crossorigin="anonymous" />
+<head th:replace="~{admin/layout :: head(~{::extraHead})}">
+  <th:block th:fragment="extraHead">
+    <style>
+      .card-header { cursor: move; }
+    </style>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+          crossorigin="anonymous" />
+  </th:block>
 </head>
 
-<body
-	class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
-	<div class="app-wrapper">
-		<!-- Header -->
-		<nav class="app-header navbar navbar-expand bg-body">
-			<div class="container-fluid">
-				<!-- 左側：漢堡 -->
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link"
-						data-lte-toggle="sidebar" href="#" role="button"> <i
-							class="bi bi-list"></i>
-					</a></li>
-				</ul>
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+    <!-- === content slot === -->
+    <section th:fragment="content" th:with="pageTitle=${pageTitle} ?: 'Dashboard'">
+		<!-- KPI 四格（用 fragment 重複利用） -->
+		<div class="row g-3">
+			<div
+				th:replace="~{fragments/admin :: smallBox('primary', ${stats.newOrdersToday}, '新訂單(今日)', @{/admin/order})}"></div>
+			<div
+				th:replace="~{fragments/admin :: smallBox('success',|${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,'跳出率 (今日)', @{/admin/analytics})}"></div>
 
-				<!-- 右側：搜尋 + 使用者選單 -->
-				<ul class="navbar-nav ms-auto">
-					<!-- <!-- 搜尋觸發
-      <li class="nav-item">
-        <a class="nav-link" data-lte-toggle="navbar-search" href="#" role="button">
-          <i class="bi bi-search"></i>
-        </a>
-        搜尋區塊（按放大鏡顯示/隱藏）
-        <div class="navbar-search-block">
-          <form class="form-inline">
-            <div class="input-group">
-              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-navbar" type="submit">
-                <i class="bi bi-search"></i>
-              </button>
-              <button class="btn btn-navbar" type="button" data-lte-dismiss="navbar-search">
-                <i class="bi bi-x-lg"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-      </li> -->
+			<div
+				th:replace="~{fragments/admin :: smallBox('warning', ${stats.newUsersToday}, '新會員(今日)', @{/admin/member/listAllMember})}"></div>
+			<div
+				th:replace="~{fragments/admin :: smallBox('danger', ${stats.uniqueVisitors7d}, '近7天訪客', @{/admin/analytics})}"></div>
+		</div>
 
-					<!-- 使用者選單 -->
-					<li class="nav-item dropdown user-menu"><a th:href="@{/admin}"
-						class="nav-link dropdown-toggle d-flex align-items-center"
-						data-bs-toggle="dropdown"> <img
-							th:if="${session.staff != null}"
-							th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
-							class="user-image rounded-circle shadow" alt="User" /> <span
-							class="d-none d-md-inline"> <!-- 你要顯示固定字或 session 皆可，二擇一 -->
-								<!--             Babymate Admin --> <label
-								th:if="${session.staff != null}"
-								th:text="${session.staff.account}">Account</label> <!-- 或：<span th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span> -->
-						</span>
-					</a>
-						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<li class="user-header text-bg-primary">
-								<!--             <img th:src="@{/adminlte/assets/img/bear.png}" class="rounded-circle shadow" alt="User"/> -->
-								<!--             <p>Babymate admin</p> --> <!-- 已登入 --> <img
-								th:if="${session.staff != null}"
-								th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
-								class="rounded-circle shadow" alt="User" />
-								<p th:if="${session.staff != null}"
-									th:text="${session.staff.nickname}">Nickname</p> <!-- 未登入 --> <img
-								th:unless="${session.staff != null}"
-								th:src="@{/adminlte/assets/img/default.png}"
-								class="rounded-circle shadow" alt="User" />
-								<p th:unless="${session.staff != null}">Guest</p>
-							</li>
-							<li class="user-footer"><a th:href="@{/staff/logout}"
-								class="btn btn-default btn-flat float-end">登出</a></li>
-						</ul></li>
-				</ul>
-			</div>
-		</nav>
-
-
-		<!-- Sidebar -->
-		<aside class="app-sidebar bg-body-secondary shadow"
-			data-bs-theme="dark">
-			<div class="sidebar-brand">
-				<a th:href="@{/admin}" class="brand-link"> <img
-					th:src="@{/adminlte/assets/img/toy-blocks.png}" alt="Logo"
-					class="brand-image opacity-75 shadow" /> <span
-					class="brand-text fw-light">Babymate Admin</span>
-				</a>
+		<div class="row mt-3">
+			<div class="col-lg-7">
+				<!-- 銷售趨勢 -->
+				<div class="card mb-4">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">銷售趨勢</h3>
+						<a th:href="@{/admin/analytics}"
+							class="btn btn-sm btn-outline-secondary">詳細</a>
+					</div>
+					<div class="card-body">
+						<div id="revenue-chart" style="height: 300px"></div>
+					</div>
+				</div>
 			</div>
 
-			<div class="sidebar-wrapper">
-				<nav class="mt-2">
-					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
-						role="navigation" aria-label="Main navigation"
-						data-accordion="false">
-						<li class="nav-item menu-open"><a class="nav-link active">
-								<i class="nav-icon bi bi-clipboard-fill"></i>
-								<p>
-									內部管理<i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									th:href="@{/admin/staff/listAllStaff}" class="nav-link"><i
-										class="nav-icon bi bi-circle"></i>
-										<p>員工管理</p> </a></li>
-							</ul></li>
+			<div class="col-lg-5">
+				<!-- 最新訂單 -->
+				<div class="card mb-4">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">最新訂單</h3>
+						<a th:href="@{/admin/order}"
+							class="btn btn-sm btn-outline-secondary">全部</a>
+					</div>
+					<div class="card-body p-0">
+						<table class="table mb-0">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>會員</th>
+									<th>金額</th>
+									<th>狀態</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="o : ${latestOrders}">
+									<td th:text="${o.id}">123</td>
+									<td th:text="${o.memberName}">Alice</td>
+									<td th:text="${#numbers.formatDecimal(o.total, 1, 0)}">1,200</td>
+									<td><span class="badge text-bg-primary"
+										th:text="${o.status}">PAID</span></td>
+								</tr>
+								<tr th:if="${#lists.isEmpty(latestOrders)}">
+									<td colspan="4" class="text-center text-muted py-3">目前沒有新訂單</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 
-						<li class="nav-item menu-open"><a class="nav-link active">
-								<i class="nav-icon bi bi-speedometer"></i>
-								<p>
-									頁面管理<i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									th:href="@{/admin/member/listAllMember}" class="nav-link">
-										<i class="nav-icon bi bi-circle"></i>
-										<p>會員管理</p>
-								</a></li>
-								<li class="nav-item"><a href="#" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
-										<p>訂單管理</p>
-								</a></li>
-								<li class="nav-item"><a th:href="@{/admin/product/listAllProduct}" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
-										<p>商品管理</p>
-								</a></li>
-								<li class="nav-item"><a href="#" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
-										<p>討論區管理</p>
-								</a></li>
-							</ul></li>
-
-						<li class="nav-item menu-open"><a class="nav-link active">
-								<i class="nav-icon bi bi-book"></i>
-								<p>
-									手冊管理<i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<!-- 連到你現有的媽媽手冊列表 --> <a th:href="@{/admin/mhb/list}"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>媽媽手冊管理</p>
-								</a>
-
-								</li>
-								<li class="nav-item"><a th:href="@{/admin/babyhandbook/list}" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
-										<p>寶寶手冊管理</p>
-								</a></li>
-							</ul></li>
-
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon bi bi-question-circle-fill"></i>
-								<p>客服管理</p>
-						</a></li>
-						<li class="nav-item"><a th:href="@{/staff/logout}"
-							class="nav-link"> <i
-								class="nav-icon bi bi-box-arrow-in-right"></i>
-								<p>登出</p>
-						</a></li>
+				<!-- 新會員 -->
+				<div class="card mb-4">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">新會員</h3>
+						<a th:href="@{/admin/member/listAllMember}"
+							class="btn btn-sm btn-outline-secondary">全部</a>
+					</div>
+					<ul class="list-group list-group-flush">
+						<li
+							class="list-group-item d-flex justify-content-between align-items-center"
+							th:each="m : ${latestMembers}"><span> <strong
+								th:text="${m.name}">Maggie</strong> <small
+								class="text-muted ms-2" th:text="${m.email}">m@example.com</small>
+						</span> <span class="text-muted"
+							th:text="${#temporals.format(m.joinedAt, 'MM/dd HH:mm')}">09/14
+								10:21</span></li>
+						<li class="list-group-item text-center text-muted"
+							th:if="${#lists.isEmpty(latestMembers)}">最近沒有新會員</li>
 					</ul>
-				</nav>
-			</div>
-		</aside>
+				</div>
 
-		<!-- Main -->
-		<main class="app-main">
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h3 class="mb-0">Dashboard</h3>
-						</div>
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-							</ol>
-						</div>
+				<!-- 30天熱銷TOP5 -->
+				<div class="card mb-4">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">近 30 天熱銷 TOP5</h3>
+						<li
+							class="list-group-item d-flex justify-content-between align-items-center"
+							th:each="p : ${hotProducts}"><span
+							th:text="${p.productName}">商品</span> <span
+							class="badge text-bg-primary" th:text="${p.qty}">0</span></li>
 					</div>
 				</div>
 			</div>
+		</div>
+	</section>
+	<!-- === content slot 結束 === -->
 
-			<div class="app-content">
-				<div class="container-fluid">
-					<div class="row">
-						<!-- 四個卡片示例 -->
-						<div class="col-lg-3 col-6">
-							<div class="small-box text-bg-primary">
-								<div class="inner">
-									<h3>150</h3>
-									<p>New Orders</p>
-								</div>
-								<svg class="small-box-icon" fill="currentColor"
-									viewBox="0 0 24 24" aria-hidden="true">
-									<path
-										d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"></path></svg>
-								<a href="#"
-									class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-									More info <i class="bi bi-link-45deg"></i>
-								</a>
-							</div>
-						</div>
+	<!-- === extraJs slot === -->
+    <th:block th:fragment="extraJs">
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+              crossorigin="anonymous"></script>
+      <script th:inline="javascript">
+        const salesSeries = /*[[${salesSeries}]]*/[];
+        const salesMonths = /*[[${salesMonths}]]*/[];
 
-						<div class="col-lg-3 col-6">
-							<div class="small-box text-bg-success">
-								<div class="inner">
-									<h3>
-										53<sup class="fs-5">%</sup>
-									</h3>
-									<p>Bounce Rate</p>
-								</div>
-								<svg class="small-box-icon" fill="currentColor"
-									viewBox="0 0 24 24" aria-hidden="true">
-									<path
-										d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z"></path></svg>
-								<a href="#"
-									class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-									More info <i class="bi bi-link-45deg"></i>
-								</a>
-							</div>
-						</div>
-
-						<div class="col-lg-3 col-6">
-							<div class="small-box text-bg-warning">
-								<div class="inner">
-									<h3>44</h3>
-									<p>User Registrations</p>
-								</div>
-								<svg class="small-box-icon" fill="currentColor"
-									viewBox="0 0 24 24" aria-hidden="true">
-									<path
-										d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"></path></svg>
-								<a href="#"
-									class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
-									More info <i class="bi bi-link-45deg"></i>
-								</a>
-							</div>
-						</div>
-
-						<div class="col-lg-3 col-6">
-							<div class="small-box text-bg-danger">
-								<div class="inner">
-									<h3>65</h3>
-									<p>Unique Visitors</p>
-								</div>
-								<svg class="small-box-icon" fill="currentColor"
-									viewBox="0 0 24 24" aria-hidden="true">
-                <path clip-rule="evenodd" fill-rule="evenodd"
-										d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"></path>
-                <path clip-rule="evenodd" fill-rule="evenodd"
-										d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"></path>
-              </svg>
-								<a href="#"
-									class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-									More info <i class="bi bi-link-45deg"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-
-					<!-- 下面是圖表區（可依需求刪或保留） -->
-					<div class="row">
-						<div class="col-lg-7 connectedSortable">
-							<div class="card mb-4">
-								<div class="card-header">
-									<h3 class="card-title">Sales Value</h3>
-								</div>
-								<div class="card-body">
-									<div id="revenue-chart"></div>
-								</div>
-							</div>
-							<div class="card direct-chat direct-chat-primary mb-4">
-								<div class="card-header">
-									<h3 class="card-title">Direct Chat</h3>
-									<div class="card-tools">
-										<span title="3 New Messages" class="badge text-bg-primary">
-											3 </span>
-										<button type="button" class="btn btn-tool"
-											data-lte-toggle="card-collapse">
-											<i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i
-												data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-										</button>
-										<button type="button" class="btn btn-tool"
-											data-lte-toggle="card-remove">
-											<i class="bi bi-x-lg"></i>
-										</button>
-									</div>
-								</div>
-								<div class="card-body">
-									<div class="direct-chat-messages">
-										<div class="direct-chat-msg">
-											<div class="direct-chat-infos clearfix">
-												<span class="direct-chat-name float-start"> Alexander
-													Pierce </span> <span class="direct-chat-timestamp float-end">
-													23 Jan 2:00 pm </span>
-											</div>
-											<img class="direct-chat-img"
-												th:src="@{/adminlte/assets/img/bear.png}" alt="user" />
-											<div class="direct-chat-text">Is this template really
-												for free? That's unbelievable!</div>
-										</div>
-										<div class="direct-chat-msg end">
-											<div class="direct-chat-infos clearfix">
-												<span class="direct-chat-name float-end"> Sarah
-													Bullock </span> <span class="direct-chat-timestamp float-start">
-													23 Jan 2:05 pm </span>
-											</div>
-											<img class="direct-chat-img"
-												th:src="@{/adminlte/assets/img/bear.png}" alt="user" />
-											<div class="direct-chat-text">You better believe it!</div>
-										</div>
-									</div>
-								</div>
-								<div class="card-footer">
-									<form action="#" method="post">
-										<div class="input-group">
-											<input type="text" name="message"
-												placeholder="Type Message ..." class="form-control" /> <span
-												class="input-group-append"><button type="button"
-													class="btn btn-primary">Send</button></span>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-lg-5 connectedSortable">
-							<div
-								class="card text-white bg-primary bg-gradient border-primary mb-4">
-								<div class="card-header border-0">
-									<h3 class="card-title">Sales Value</h3>
-									<div class="card-tools">
-										<button type="button" class="btn btn-primary btn-sm"
-											data-lte-toggle="card-collapse">
-											<i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i
-												data-lte-icon="collapse" class="bi bi-dash-lg"></i>
-										</button>
-									</div>
-								</div>
-								<div class="card-body">
-									<div id="world-map" style="height: 220px"></div>
-								</div>
-								<div class="card-footer border-0">
-									<div class="row">
-										<div class="col-4 text-center">
-											<div id="sparkline-1" class="text-dark"></div>
-											<div class="text-white">Visitors</div>
-										</div>
-										<div class="col-4 text-center">
-											<div id="sparkline-2" class="text-dark"></div>
-											<div class="text-white">Online</div>
-										</div>
-										<div class="col-4 text-center">
-											<div id="sparkline-3" class="text-dark"></div>
-											<div class="text-white">Sales</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- /row -->
-				</div>
-			</div>
-		</main>
-
-		<!-- Footer -->
-		<footer class="app-footer">
-			<div class="float-end d-none d-sm-inline">BabymateAdmin</div>
-			<strong>Copyright &copy; 2025 <a href="#"
-				class="text-decoration-none">BabymateAdmin.io</a>.
-			</strong> All rights reserved.
-		</footer>
-	</div>
-
-	<!-- Scripts -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"
-		crossorigin="anonymous"></script>
-
-	<!-- AdminLTE JS（CDN 版） -->
-	<script th:src="@{/adminlte/js/adminlte.min.js}"></script>
-
-	<!-- SortableJS（可選） -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
-		crossorigin="anonymous"></script>
-	<script>
-  new Sortable(document.querySelector('.connectedSortable'), { group: 'shared', handle: '.card-header' });
-  document.querySelectorAll('.connectedSortable .card-header').forEach(h => h.style.cursor = 'move');
-</script>
-
-	<!-- ApexCharts（可選） -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-		crossorigin="anonymous"></script>
-	<script>
-  const sales_chart = new ApexCharts(document.querySelector('#revenue-chart'), {
-    series: [{name:'Digital Goods',data:[28,48,40,19,86,27,90]},{name:'Electronics',data:[65,59,80,81,56,55,40]}],
-    chart:{height:300,type:'area',toolbar:{show:false}}, legend:{show:false},
-    colors:['#0d6efd','#20c997'], dataLabels:{enabled:false}, stroke:{curve:'smooth'},
-    xaxis:{type:'datetime',categories:['2023-01-01','2023-02-01','2023-03-01','2023-04-01','2023-05-01','2023-06-01','2023-07-01']},
-    tooltip:{x:{format:'MMMM yyyy'}}
-  }); sales_chart.render();
-</script>
-
-	<!-- jsVectorMap（可選） -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js"
-		crossorigin="anonymous"></script>
-	<script> new jsVectorMap({ selector:'#world-map', map:'world' }); </script>
-
+        const chart = new ApexCharts(document.querySelector('#revenue-chart'), {
+          series: salesSeries,
+          chart: { height: 300, type: 'area', toolbar: { show: false } },
+          dataLabels: { enabled: false },
+          stroke: { curve: 'smooth' },
+          xaxis: { type: 'datetime', categories: salesMonths },
+          tooltip: { x: { format: 'yyyy-MM' } }
+        });
+        chart.render();
+      </script>
+    </th:block>
 </body>
 </html>

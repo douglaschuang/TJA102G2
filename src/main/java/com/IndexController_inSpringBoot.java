@@ -72,10 +72,10 @@ public class IndexController_inSpringBoot {
 //		return "admin/product/listAllProduct";
 //	}
     
-    @GetMapping("/admin")
-	public String listAllStaff(Model model) {
-		return "admin/index";
-	}
+//    @GetMapping("/admin")
+//	public String listAllStaff(Model model) {
+//		return "admin/index";
+//	}
     
     @GetMapping("/admin/staff/listAllStaff")
 	public String listAllEmp(Model model) {

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}">
+  <th:block th:fragment="extraHead">
+    <style>
+      .card-header { cursor: move; }
+    </style>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+          crossorigin="anonymous" />
+  </th:block>
+</head>
+
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+<section th:fragment="content">
+  <div class="row g-3">
+    <div class="col-lg-3 col-6">
+      <div class="small-box text-bg-primary"><div class="inner">
+        <h3 th:text="${stats.newOrdersToday}">0</h3><p>今日新訂單</p>
+      </div></div>
+    </div>
+    <div class="col-lg-9">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">月營收</h3></div>
+        <div class="card-body"><div id="revenue-chart" style="height:300px"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- === extraJs slot === -->
+    <th:block th:fragment="extraJs">
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+              crossorigin="anonymous"></script>
+      <script th:inline="javascript">
+        const salesSeries = /*[[${salesSeries}]]*/[];
+        const salesMonths = /*[[${salesMonths}]]*/[];
+
+        const chart = new ApexCharts(document.querySelector('#revenue-chart'), {
+          series: salesSeries,
+          chart: { height: 300, type: 'area', toolbar: { show: false } },
+          dataLabels: { enabled: false },
+          stroke: { curve: 'smooth' },
+          xaxis: { type: 'datetime', categories: salesMonths },
+          tooltip: { x: { format: 'yyyy-MM' } }
+        });
+        chart.render();
+      </script>
+    </th:block>
+</body>
+</html>
