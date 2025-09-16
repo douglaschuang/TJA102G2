@@ -1,6 +1,8 @@
 package com.babymate.orders.model;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,15 +25,15 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "ORDERS")
+@Table(name = "orders")
 public class OrdersVO implements java.io.Serializable{
 	private Integer orderId;
 	private MemberVO memberVO;
 	private String orderNo;
-	private Date orderTime;
+	private LocalDateTime orderTime;
 	private Integer status;
-	private Date payTime;
-	private Double amount;
+	private LocalDateTime payTime;
+	private BigDecimal amount;
 	private String recipient;
 	private String address;
 	private String phone;
@@ -72,11 +74,11 @@ public class OrdersVO implements java.io.Serializable{
 	}
 	
 	@Column(name = "ORDER_TIME")
-	public Date getOrderTime() {
+	public LocalDateTime getOrderTime() {
 		return orderTime;
 	}
 	
-	public void setOrderTime(Date orderTime) {
+	public void setOrderTime(LocalDateTime orderTime) {
 		this.orderTime = orderTime;
 	}
 	
@@ -90,20 +92,20 @@ public class OrdersVO implements java.io.Serializable{
 	}
 	
 	@Column(name = "PAY_TIME")
-	public Date getPayTime() {
+	public LocalDateTime getPayTime() {
 		return payTime;
 	}
 	
-	public void setPayTime(Date payTime) {
+	public void setPayTime(LocalDateTime payTime) {
 		this.payTime = payTime;
 	}
 	
 	@Column(name = "AMOUNT")
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 	
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 	

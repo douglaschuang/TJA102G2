@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>睡眠健康測驗 | BabyMate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet">
+<style>
+.q-card {
+	border: 1px solid #eee;
+	border-radius: 12px;
+	padding: 16px;
+	margin-bottom: 16px;
+}
+
+.score-badge {
+	font-size: 1.1rem
+}
+</style>
+</head>
+<body class="bg-light">
+	<div class="container py-4">
+		<div class="d-flex align-items-center justify-content-between mb-3">
+			<h3 class="mb-0">睡眠健康小測驗</h3>
+			<a class="btn btn-outline-secondary btn-sm"
+				th:href="@{/blog/full-grid-left}">回儀表板</a>
+		</div>
+		<p class="text-muted">約 2 分鐘完成。此測驗僅供健康自我檢視，非醫療診斷。</p>
+
+		<form id="quizForm" novalidate>
+			<!-- 範例題目：0=從不/完全無、1=偶爾、2=常常、3=幾乎每天/非常困擾 -->
+			<div class="q-card" data-q="1">
+				<div class="fw-semibold mb-2">1) 入睡是否困難（>30 分鐘才睡著）？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q1" value="0"
+						required> <label class="form-check-label">從不</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q1" value="1">
+					<label class="form-check-label">偶爾</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q1" value="2">
+					<label class="form-check-label">常常</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q1" value="3">
+					<label class="form-check-label">幾乎每天</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="2">
+				<div class="fw-semibold mb-2">2) 夜間醒來（含起夜）次數是否影響睡眠？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q2" value="0"
+						required> <label class="form-check-label">完全不影響</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q2" value="1">
+					<label class="form-check-label">偶爾影響</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q2" value="2">
+					<label class="form-check-label">常常影響</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q2" value="3">
+					<label class="form-check-label">幾乎每天影響</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="3">
+				<div class="fw-semibold mb-2">3) 睡眠時長是否足夠（依自身白天精神判斷）？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q3" value="0"
+						required> <label class="form-check-label">足夠</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q3" value="1">
+					<label class="form-check-label">大多足夠</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q3" value="2">
+					<label class="form-check-label">多半不足</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q3" value="3">
+					<label class="form-check-label">嚴重不足</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="4">
+				<div class="fw-semibold mb-2">4) 打鼾或呼吸中止（他人觀察或裝置提示）問題？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q4" value="0"
+						required> <label class="form-check-label">無</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q4" value="1">
+					<label class="form-check-label">輕微</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q4" value="2">
+					<label class="form-check-label">中等</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q4" value="3">
+					<label class="form-check-label">明顯/常被提醒</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="5">
+				<div class="fw-semibold mb-2">5) 白天嗜睡（開會、滑手機、看電視時想睡）的頻率？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q5" value="0"
+						required> <label class="form-check-label">幾乎沒有</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q5" value="1">
+					<label class="form-check-label">偶爾</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q5" value="2">
+					<label class="form-check-label">常常</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q5" value="3">
+					<label class="form-check-label">幾乎每天</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="6">
+				<div class="fw-semibold mb-2">6) 睡前 2–3 小時內使用 3C、咖啡因或抽菸？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q6" value="0"
+						required> <label class="form-check-label">幾乎不會</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q6" value="1">
+					<label class="form-check-label">偶爾</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q6" value="2">
+					<label class="form-check-label">常常</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q6" value="3">
+					<label class="form-check-label">幾乎每天</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="7">
+				<div class="fw-semibold mb-2">7) 起床是否常頭痛、口乾或不清爽？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q7" value="0"
+						required> <label class="form-check-label">沒有</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q7" value="1">
+					<label class="form-check-label">偶爾</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q7" value="2">
+					<label class="form-check-label">常常</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q7" value="3">
+					<label class="form-check-label">幾乎每天</label>
+				</div>
+			</div>
+
+			<div class="q-card" data-q="8">
+				<div class="fw-semibold mb-2">8) 睡眠規律性（固定就寢與起床時間）如何？</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q8" value="0"
+						required> <label class="form-check-label">非常規律</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q8" value="1">
+					<label class="form-check-label">大致規律</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q8" value="2">
+					<label class="form-check-label">偶爾不規律</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="q8" value="3">
+					<label class="form-check-label">很不規律</label>
+				</div>
+			</div>
+
+			<div class="d-grid d-sm-flex gap-2">
+				<button type="submit" class="btn btn-primary">看結果</button>
+				<button type="button" class="btn btn-outline-secondary"
+					id="resetBtn">重新作答</button>
+			</div>
+		</form>
+
+		<div id="resultCard" class="q-card mt-3 d-none">
+			<div class="d-flex align-items-center justify-content-between">
+				<div>
+					<div class="fw-bold">
+						你的總分：<span id="totalScore" class="score-badge badge bg-secondary">0</span>
+						/ 24
+					</div>
+					<div class="mt-1" id="levelText">—</div>
+				</div>
+				<div class="d-flex gap-2">
+					<a class="btn btn-sm btn-success" th:href="@{/element/google-maps}"
+						target="_blank" id="clinicBtn">尋找診所</a> <a
+						class="btn btn-sm btn-outline-primary" id="shareBtn">複製結果</a>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<ul class="mb-0 small" id="adviceList"></ul>
+		<p class="text-muted mt-4 small">*
+		本工具不提供醫療建議；如有嚴重睡眠困擾、打鼾或呼吸中止風險，請諮詢耳鼻喉/睡眠醫學專科。</p>
+	</div>
+
+	
+
+	<script>
+(function(){
+  const form = document.getElementById('quizForm');
+  const result = document.getElementById('resultCard');
+  const scoreSpan = document.getElementById('totalScore');
+  const levelText = document.getElementById('levelText');
+  const adviceList = document.getElementById('adviceList');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    // 檢查是否有題目未選
+    const requiredGroups = Array.from(form.querySelectorAll('[name^="q"]'));
+    const names = [...new Set(requiredGroups.map(i=>i.name))];
+    for (const n of names){
+      if (!form.querySelector(`input[name="${n}"]:checked`)){
+        alert('還有題目未作答喔！');
+        return;
+      }
+    }
+    // 計分
+    let total = 0;
+    names.forEach(n=>{
+      total += parseInt(form.querySelector(`input[name="${n}"]:checked`).value, 10);
+    });
+    scoreSpan.textContent = total;
+
+    // 等級與建議
+    let level = '', cls = 'bg-secondary', tips = [];
+    if (total <= 6) { level='良好'; cls='bg-success';
+      tips = ['維持規律作息與運動','睡前避免 3C 與咖啡因'];
+    } else if (total <= 10) { level='普通'; cls='bg-info';
+      tips = ['建立固定就寢/起床時段','晚餐後減少含咖啡因飲料'];
+    } else if (total <= 15) { level='欠佳'; cls='bg-warning';
+      tips = ['嘗試睡眠衛教：固定起床、睡前放鬆','若白天嗜睡明顯，建議安排門診'];
+    } else { level='建議就醫評估'; cls='bg-danger';
+      tips = ['可能存在睡眠呼吸障礙或失眠問題','請諮詢睡眠專科，必要時進一步檢查'];
+    }
+    scoreSpan.className = `score-badge badge ${cls}`;
+    levelText.textContent = `整體評估：${level}`;
+    adviceList.innerHTML = tips.map(t=>`<li>${t}</li>`).join('');
+    result.classList.remove('d-none');
+    window.scrollTo({top: result.offsetTop - 20, behavior: 'smooth'});
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    form.reset();
+    result.classList.add('d-none');
+  });
+
+  document.getElementById('shareBtn').addEventListener('click', ()=>{
+    const txt = `我的睡眠健康小測驗分數：${document.getElementById('totalScore').textContent}/24（${document.getElementById('levelText').textContent.replace('整體評估：','')}）`;
+    navigator.clipboard?.writeText(txt);
+    alert('已複製結果，可直接貼給朋友！');
+  });
+})();
+</script>
+
+	<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+</body>
+</html>
