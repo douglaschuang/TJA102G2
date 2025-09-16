@@ -32,7 +32,7 @@ public class MemberVO implements Serializable {
 	@Column(name = "password", nullable = false, length = 50)
 	private String password;
 	
-	@Column(name = "name", nullable = false)
+	@Column(name = "name")
 	private String name;
 	
 	@Column(name = "email_verified", nullable = false)
@@ -41,7 +41,7 @@ public class MemberVO implements Serializable {
 	@Column(name = "register_date", nullable = false)
 	private LocalDateTime registerDate;
 	
-	@Column(name = "last_login_time", nullable = false)
+	@Column(name = "last_login_time")
 	private LocalDateTime lastLoginTime;
 	
 	@Column(name = "account_status", nullable = false)
@@ -56,12 +56,12 @@ public class MemberVO implements Serializable {
 	@Column(name = "address")
 	private String address;
 	
-	@Column(name = "gender", nullable = false)
+	@Column(name = "gender")
 	@Enumerated(EnumType.STRING)
 	private Gender gender; 
 	
-	@Column(name = "birthday", nullable = false)
-	private LocalDateTime birthday;
+	@Column(name = "birthday")
+	private LocalDate birthday;
 	
 	@Lob
 	@Column(name = "profile_picture", columnDefinition = "LONGBLOB")
@@ -173,11 +173,11 @@ public class MemberVO implements Serializable {
 		this.gender = gender;
 	}
 
-	public LocalDateTime getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(LocalDateTime birthday) {
+	public void setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 	}
 
@@ -239,11 +239,6 @@ public class MemberVO implements Serializable {
 	
 //	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="cartVO")
 //	@OrderBy("memberId asc")
-//	//註1:【現在是設定成 cascade="all" lazy="false" inverse="true"之意】
-//	//註2:【mappedBy="多方的關聯屬性名"：用在雙向關聯中，把關係的控制權反轉】【deptVO是EmpVO的屬性】
-//	//註3:【原預設為@OneToMany(fetch=FetchType.LAZY, mappedBy="deptVO")之意】--> 【是指原為  lazy="true"  inverse="true"之意】
-//	//FetchType.EAGER : Defines that data must be eagerly fetched
-//	//FetchType.LAZY  : Defines that data can be lazily fetched
 //	public Set<CartVO> getCarts() {
 //		return this.carts;
 //	}
