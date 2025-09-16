@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>修改文章</title>
+  <!-- CKEditor5 官方 CDN -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+    }
+
+    #editor {
+      flex: 1;
+      margin-top: 10px;
+    }
+
+    .ck-editor__editable[role="textbox"] {
+      min-height: 200px;
+      height: calc(100vh - 180px); /* 減去上方欄位 + 按鈕 */
+      box-sizing: border-box;
+    }
+
+    .ck.ck-editor {
+      width: 100%;
+    }
+
+    .submit-btn {
+      margin-top: 20px;
+      display: block;
+      width: 120px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 8px 15px;
+      background: #2a72d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .submit-btn:hover {
+      background: #1d52a3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>修改文章</h2>
+
+  <form th:action="@{/admin/forum/updatePost}" method="post" th:object="${postVO}">
+    <input type="hidden" th:field="*{postId}" />
+
+    <label for="postTitle">標題：</label>
+    <input type="text" id="postTitle" th:field="*{postTitle}" required />
+        <label for="board">選擇板塊：</label>
+<select id="board" name="boardId">
+    <option th:each="b : ${boards}"
+            th:value="${b.boardId}"
+            th:text="${b.boardName}"
+            th:selected="${postVO.boardVO != null} ? ${b.boardId == postVO.boardVO.boardId} : false">
+    </option>
+</select>
+
+    <label for="editor">內容：</label>
+    <textarea id="editor" th:field="*{postLine}"></textarea>
+
+    <button type="submit" class="submit-btn">送出修改</button>
+  </form>
+
+<script>
+ClassicEditor
+    .create(document.querySelector('#editor'), {
+        ckfinder: {
+            // 不需要實際 URL，使用 Base64
+            uploadUrl: ''
+        }
+    })
+    .then(editor => {
+        window.editor = editor;
+
+        // 安裝 Base64 上傳插件
+        editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+            return {
+                upload: () => loader.file
+                    .then(file => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve({ default: reader.result });
+                        reader.onerror = error => reject(error);
+                        reader.readAsDataURL(file);
+                    })),
+                abort: () => {}
+            };
+        };
+
+        // 高度自動調整
+        const resizeHandler = () => {
+            editor.ui.view.editable.element.style.height = (window.innerHeight - 180) + 'px';
+        };
+        resizeHandler();
+        window.addEventListener('resize', resizeHandler);
+    })
+    .catch(error => console.error(error));
+</script>
+</body>
+</html>
