@@ -20,6 +20,8 @@ import com.babymate.product.model.ProductVO;
 import com.babymate.staff.model.StaffVO;
 import com.babymate.staff.service.StaffService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 
 //@PropertySource("classpath:application.properties") // 於https://start.spring.io建立Spring Boot專案時, application.properties文件預設已經放在我們的src/main/resources 目錄中，它會被自動檢測到
@@ -91,6 +93,16 @@ public class IndexController_inSpringBoot {
 	public String listAllMember(Model model) {
 		return "admin/member/memberlist";
 	}
+    
+    @GetMapping("/my-account")
+    public String myAccount(HttpSession session, Model model) {
+        MemberVO member = (MemberVO) session.getAttribute("member");
+        if (member == null) {
+            return "redirect:/shop/login";
+        }
+        model.addAttribute("MemberVO", member);
+        return "frontend/my-account";
+    }
     
     @ModelAttribute("staffListData")  // for select_page.html 第97 109行用 // for listAllEmp.html 第117 133行用
 	protected List<StaffVO> referenceListDataStaff(Model model) {
