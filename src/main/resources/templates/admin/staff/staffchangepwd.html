@@ -1,142 +1,76 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8" />
-<title>使用者變更密碼</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
-<script
-	src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
-<style>
-body {
-	/*         background-color: #F0EAD6; */
-	/*         font-family: Arial, sans-serif; */
-	/*         color: #5A3E1B;  */
-	/*         margin: 30px; */
-	
-}
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
-h2 {
-	text-align: center;
-	/*         color: #C19A6B; */
-	/*         margin-bottom: 30px; */
-}
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS -->
+  <th:block th:fragment="extraHead">
+    <style>
+      .preview-img{max-width:160px; max-height:120px; object-fit:cover; border-radius:.25rem;}
+    </style>
+  </th:block>
 
-form {
-	/*         background-color: #87CEEB;  */
-	max-width: 450px;
-	margin: 0 auto;
-	padding: 25px 30px;
-	border: 3px solid #C19A6B;
-	/*         border-radius: 10px; */
-	/*         box-shadow: 0 0 8px rgba(193,154,107,0.5); */
-}
+  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
 
-label {
-	display: block;
-	margin-bottom: 6px;
-	font-weight: bold;
-}
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">員工管理｜密碼變更</h3>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/staff/listAllStaff}">
+              <i class="bi bi-arrow-left"></i> 回列表
+            </a>
+          </div>
 
-input[type="text"], input[type="password"], input[type="number"], input[type="file"]
-	{
-	width: 100%;
-	padding: 8px 10px;
-	margin-bottom: 20px;
-	border: 2px solid #C19A6B;
-	border-radius: 6px;
-	font-size: 1rem;
-	box-sizing: border-box;
-	color: #5A3E1B;
-}
+          <div class="card-body">
+            <form id="changePwdForm" th:action="@{update}" method="post" th:object="${StaffVO}" 
+              enctype="multipart/form-data" class="row g-3">
 
-input[type="submit"] {
-	background-color: #C19A6B;
-	border: none;
-	color: white;
-	font-weight: bold;
-	padding: 10px 18px;
-	width: 100%;
-	border-radius: 6px;
-	cursor: pointer;
-	font-size: 1.1rem;
-	transition: background-color 0.3s ease;
-}
-
-input[type="submit"]:hover {
-	background-color: #5A3E1B;
-}
-
-select {
-	width: 100%;
-	padding: 8px 10px;
-	margin-bottom: 20px;
-	border: 2px solid #C19A6B;
-	border-radius: 6px;
-	font-size: 1rem;
-	box-sizing: border-box;
-	color: #5A3E1B;
-}
-
-#preview-container {
-	text-align: center;
-	margin-top: 10px;
-}
-
-#preview {
-	max-width: 200px;
-	height: auto;
-	display: inline-block;
-	border: 1px solid #ccc;
-	padding: 5px;
-}
-</style>
-</head>
-<body class="container mt-5">
-
-	<h2>使用者變更密碼</h2>
-	<form id="changePwdForm" th:action="@{update}" method="post" th:object="${StaffVO}" enctype="multipart/form-data">
-
-		<div class="form-group">
+		<div class="col-md-6">
 			員工編號:	<input type="text" th:field="*{staffId}" 
-			style="border:0px ; font-weight: bold;" readonly /> <span
+			style="border:0px ; font-weight: bold;" readonly class="form-control" /> <span
 			th:if="${#fields.hasErrors('staffId')}" th:errors="staffId"
 				class="error" id="staffId.errors"></span>
 		</div>
 
-		<div class="form-group">
+		<div class="col-md-6">
 			員工帳號: <input type="text" th:field="*{account}" 
-			style="border:0px ; font-weight: bold;" readonly /> <span
+			style="border:0px ; font-weight: bold;" readonly class="form-control" /> <span
 				th:if="${#fields.hasErrors('account')}" th:errors="account"
 				class="error" id="account.errors"></span>
 		</div>
-		<div class="form-group" style="display: none;">
+		<div class="col-md-6" style="display: none;">
 			員工暱稱: <input type="hidden" th:field="*{nickname}" placeholder="請輸入員工暱稱"
-				minlength=3 maxlength=20 required /><span
+				minlength=3 maxlength=20 required class="form-control" /><span
 				th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"
 				class="error" id="nickname.errors"></span>
 		</div>
-		<div class="form-group">
-			帳號密碼: <input type="password" th:field="*{password}"
-				placeholder="請輸入新密碼" minlength=6 maxlength=20 /><span
+		<div class="col-md-6">
+			新密碼: <input type="password" th:field="*{password}"
+				placeholder="請輸入新密碼" minlength=6 maxlength=20 class="form-control" /><span
 				th:if="${#fields.hasErrors('password')}" th:errors="password"
 				class="error" id="password.errors"></span>
 		</div>
-		<div class="form-group" style="display: none;">
-			角色: <input type="hidden" th:field="*{role}" name="role"
-				placeholder="請輸入角色類型" minlength=3 maxlength=20 required /><span
-				th:if="${#fields.hasErrors('role')}" th:errors="role" class="error"
-				id="role.errors"></span>
+		<div class="col-md-6" style="display: none;">
+		角色: <select th:field="*{role}" name="role" class="form-control" required>
+				<option value="管理員">管理員</option>
+				<option value="客服">客服</option>
+			</select>
+<!-- 			角色: <input type="hidden" th:field="*{role}" name="role" -->
+<!-- 				placeholder="請輸入角色類型" minlength=3 maxlength=20 required class="form-control" /><span -->
+<!-- 				th:if="${#fields.hasErrors('role')}" th:errors="role" class="error" -->
+<!-- 				id="role.errors"></span> -->
 		</div>
-		<div class="form-group" style="display: none;">
-			帳號狀態: <select th:field="*{status}" name="status" required>
+		<div class="col-md-6" style="display: none;">
+			帳號狀態: <select th:field="*{status}" name="status" class="form-control" required>
 				<option value="1">啟用</option>
 				<option value="0">停用</option>
 			</select>
 		</div>
-		<div class="form-group" style="display: none;">
+		<div class="col-md-6" style="display: none;">
 			 員工大頭貼: <input type="file" th:field="*{pic}" id="imageInput" 
-				accept="image/*" /><span class="error" th:utext="${errorMessage}"
+				accept="image/*" class="form-control" /><span class="error" th:utext="${errorMessage}"
 				id="pic.errors"></span>
 			<div id="preview-container">
 				<img th:if="${StaffVO.base64Pic != null}"
@@ -144,9 +78,38 @@ select {
 					alt="尚未選擇圖片" id="preview" />
 			</div>
 		</div>
+		<div class="col-12 d-flex gap-2">
 		<button type="submit" class="btn btn-primary">儲存</button>
-		<a href="/backend/staff/listAllStaff" class="btn btn-secondary">取消</a>
+		<a href="/admin/staff/listAllStaff" class="btn btn-secondary">取消</a>
+		</div>
 	</form>
+	
+		<script>
+		// javascript: 讀取選擇的圖片檔案並顯示於頁面
+		document.getElementById('imageInput').addEventListener('change',function(event) {
+			const file = event.target.files[0];
+			if (!file)
+				return;
 
+			const reader = new FileReader();
+			reader.readAsDataURL(file); // 讀取圖案內容
+			reader.onload = function(e) {
+				document.getElementById('preview').src = e.target.result;
+				document.getElementById('preview').alt = "已載入圖片："+ file.name;
+			};
+			reader.onerror = function() {
+				alert("讀取圖片時發生錯誤！");
+			};
+		});
+	</script>
+	
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 本頁不需額外 JS -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.babymate.member.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.babymate.member.model.MemberVO;
+import com.babymate.staff.model.StaffVO;
+import com.babymate.util.EncodingUtil;
+import com.babymate.util.SimpleCaptchaGenerator;
 import com.babymate.member.model.MemberRepository;
 
 //import hibernate.util.CompositeQuery.HibernateUtil_CompositeQuery_Emp3;
@@ -30,14 +34,20 @@ public class MemberService {
 		repository.save(memberVO);
 	}
 
-	public void deleteMember(Integer memberVO) {
-		if (repository.existsById(memberVO))
-			repository.deleteByMemberId(memberVO);
+	public void deleteMember(Integer memberId) {
+		if (repository.existsById(memberId))
+			repository.deleteByMemberId(memberId);
 //		    repository.deleteById(memberVO);
 	}
 
-	public MemberVO getOneMember(Integer memberVO) {
-		Optional<MemberVO> optional = repository.findById(memberVO);
+	public MemberVO getOneMember(Integer memberId) {
+		Optional<MemberVO> optional = repository.findById(memberId);
+//		return optional.get();
+		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
+	}
+	
+	public MemberVO getOneMember(String account) {
+		Optional<MemberVO> optional = Optional.ofNullable(repository.findByAccount(account));
 //		return optional.get();
 		return optional.orElse(null);  // public T orElse(T other) : 如果值存在就回傳其值，否則回傳other的值
 	}
@@ -46,6 +56,27 @@ public class MemberService {
 		return repository.findAll();
 	}
 
+	public MemberVO initMember(String account, String authcode) {
+		MemberVO initMemVO = new MemberVO();
+		
+		initMemVO.setAccount(account);
+		initMemVO.setPassword(EncodingUtil.hashMD5(account)); // default password
+		initMemVO.setEmailVerified((byte) 0); // 未通過
+		initMemVO.setRegisterDate(LocalDateTime.now()); // 註冊時間
+		initMemVO.setAccountStatus((byte) 0); // 未啟用
+		initMemVO.setEmailAuthToken(authcode); // 產生六位數驗證碼
+		initMemVO.setUpdateDate(LocalDateTime.now());
+		
+		repository.save(initMemVO); // 新增會員
+		
+		return initMemVO;
+		
+	}
+	
+	public MemberVO login(String account, String hashedPassword) {
+        return repository.findByAccountAndPassword(account, hashedPassword);
+	}
+	
 //	public List<Staff> getAll(Map<String, String[]> map) {
 //		return HibernateUtil_CompositeQuery_Emp3.getAllC(map,sessionFactory.openSession());
 //	}

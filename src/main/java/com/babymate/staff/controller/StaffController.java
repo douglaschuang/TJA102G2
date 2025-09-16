@@ -170,6 +170,9 @@ public class StaffController {
 	    if (staffVO.getPassword() == null || staffVO.getPassword().isEmpty()) {
 	        staffVO.setPassword(originalStaff.getPassword());
 //	        System.out.println("staffVO="+staffVO.getPassword()+" original="+originalStaff.getPassword());
+	    } else {
+	    	// Hash加密編碼
+	    	staffVO.setPassword(EncodingUtil.hashMD5(staffVO.getPassword()));
 	    }
 		
 		if (result.hasErrors()) {
