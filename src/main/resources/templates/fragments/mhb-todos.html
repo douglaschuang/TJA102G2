@@ -1,0 +1,29 @@
+<div th:fragment="mhbTodos(mhb, todos)">
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h4 class="mb-3">代辦事項</h4>
+
+      <div th:if="${todos == null or #lists.isEmpty(todos)}" class="text-muted">
+        目前沒有代辦。
+      </div>
+
+      <div th:if="${todos != null and !#lists.isEmpty(todos)}" class="table-responsive">
+        <table class="table table-sm align-middle">
+          <thead class="table-light">
+            <tr><th>狀態</th><th>事項</th><th>到期日</th></tr>
+          </thead>
+          <tbody>
+            <tr th:each="t : ${todos}">
+              <td><span th:text="${t.done ? '✔' : '✗'}">✗</span></td>
+              <td th:text="${t.title}">準備待產包</td>
+              <td th:text="${t.dueDate != null ? #temporals.format(t.dueDate,'yyyy/MM/dd') : '-'}">-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 之後再掛新增按鈕 -->
+      <!-- <a class="btn btn-primary btn-sm" th:href="@{/todos/new(mhbId=${mhb.motherHandbookId})}">新增代辦</a> -->
+    </div>
+  </div>
+</div>

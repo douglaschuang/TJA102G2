@@ -1,0 +1,32 @@
+<div th:fragment="mhbTabs(activeTab, mhb)">
+  <ul class="nav nav-pills mb-3">
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='mhb' ? ' active' : ''"
+         th:href="@{/blog/full-grid-left(tab='mhb', mhbId=${mhb != null ? mhb.motherHandbookId : null})}">
+        媽媽手冊
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='mhb-records' ? ' active' : ''"
+         th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb != null ? mhb.motherHandbookId : null})}">
+        媽媽懷孕紀錄
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='mhb-charts' ? ' active' : ''"
+         th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb != null ? mhb.motherHandbookId : null})}">
+        身體指數紀錄圖表
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='todos' ? ' active' : ''"
+         th:href="@{/blog/full-grid-left(tab='todos', mhbId=${mhb != null ? mhb.motherHandbookId : null})}">
+        代辦事項
+      </a>
+    </li>
+  </ul>
+</div>

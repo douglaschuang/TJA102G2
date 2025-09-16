@@ -4,16 +4,13 @@
 <meta charset="utf-8" />
 <title th:text="${pageTitle} ?: 'Babymate Admin'">Babymate Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-
 <!-- AdminLTE CSS（本機） -->
 <link rel="stylesheet" th:href="@{/adminlte/css/adminlte.css}" />
 <!-- Bootstrap Icons -->
 <link rel="stylesheet"
 	th:href="@{/bootstrap-icons/bootstrap-icons.min.css}" />
-
 <!-- 子頁額外樣式插槽 -->
 <th:block th:replace="${extraHead}"></th:block>
-
 <style>
 :root {
 	--bs-primary: #FFDCDC;
@@ -61,13 +58,10 @@ body {
 }
 </style>
 </head>
-
 <body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
-
 	<!-- body 版型 fragment -->
 	<div th:fragment="layout(content, extraJs)">
 		<div class="app-wrapper">
-
 			<!-- Sidebar（左） -->
 			<aside class="app-sidebar bg-body-secondary shadow"
 				data-bs-theme="dark">
@@ -93,9 +87,8 @@ body {
 									<li class="nav-item"><a
 										th:href="@{/admin/staff/listAllStaff}" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>員工管理</p></a></li>
+											<p>員工管理</p></a></li>
 								</ul></li>
-
 							<li class="nav-item menu-open"><a class="nav-link active">
 									<i class="nav-icon bi bi-speedometer"></i>
 									<p>
@@ -106,18 +99,18 @@ body {
 									<li class="nav-item"><a
 										th:href="@{/admin/member/listAllMember}" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>會員管理</p></a></li>
+											<p>會員管理</p></a></li>
 									<li class="nav-item"><a href="#" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>訂單管理</p></a></li>
-									<li class="nav-item"><a th:href="@{/admin/product/listAllProduct}" class="nav-link"><i
+											<p>訂單管理</p></a></li>
+									<li class="nav-item"><a
+										th:href="@{/admin/product/listAllProduct}" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>商品管理</p></a></li>
+											<p>商品管理</p></a></li>
 									<li class="nav-item"><a href="#" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>討論區管理</p></a></li>
+											<p>討論區管理</p></a></li>
 								</ul></li>
-
 							<li class="nav-item menu-open"><a class="nav-link active">
 									<i class="nav-icon bi bi-book"></i>
 									<p>
@@ -130,21 +123,19 @@ body {
 										<p>媽媽手冊管理</p></a></li>
 									<li class="nav-item"><a th:href="@{/admin/babyhandbook/list}" class="nav-link"><i
 											class="nav-icon bi bi-circle"></i>
-										<p>寶寶手冊管理</p></a></li>
+											<p>寶寶手冊管理</p></a></li>
 								</ul></li>
-
 							<li class="nav-item"><a href="#" class="nav-link"><i
 									class="nav-icon bi bi-question-circle-fill"></i>
-								<p>客服管理</p></a></li>
+									<p>客服管理</p></a></li>
 							<li class="nav-item"><a th:href="@{/staff/logout}"
 								class="nav-link"><i
 									class="nav-icon bi bi-box-arrow-in-right"></i>
-								<p>登出</p></a></li>
+									<p>登出</p></a></li>
 						</ul>
 					</nav>
 				</div>
 			</aside>
-
 			<!-- 右側：Header + Main + Footer -->
 			<div class="app-content">
 				<!-- Header（右上，與 index.html 同版） -->
@@ -156,43 +147,26 @@ body {
 									class="bi bi-list"></i>
 							</a></li>
 						</ul>
-
 						<ul class="navbar-nav ms-auto">
-							<!-- <li class="nav-item">
-
-              <a class="nav-link" data-lte-toggle="navbar-search" href="#" role="button">
-                <i class="bi bi-search"></i>
-              </a>
-              <div class="navbar-search-block">
-                <form class="form-inline">
-                  <div class="input-group">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-navbar" type="submit"><i class="bi bi-search"></i></button>
-                    <button class="btn btn-navbar" type="button" data-lte-dismiss="navbar-search"><i class="bi bi-x-lg"></i></button>
-                  </div>
-                </form>
-              </div>
-            </li> -->
-
+							<!-- <li class="nav-item"> <a class="nav-link" data-lte-toggle="navbar-search" href="#" role="button"> <i class="bi bi-search"></i> </a> <div class="navbar-search-block"> <form class="form-inline"> <div class="input-group"> <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search"> <button class="btn btn-navbar" type="submit"><i class="bi bi-search"></i></button> <button class="btn btn-navbar" type="button" data-lte-dismiss="navbar-search"><i class="bi bi-x-lg"></i></button> </div> </form> </div> </li> -->
 							<li class="nav-item dropdown user-menu"><a href="#"
 								class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-									<!--                 <img th:src="@{/adminlte/assets/img/bear.png}" class="user-image rounded-circle shadow" alt="User"/> -->
-									<!--                 <span class="d-none d-md-inline" th:text="${session.ADMIN_EMAIL} ?: 'Babymate Admin'">Babymate Admin</span> -->
+									<!-- <img th:src="@{/adminlte/assets/img/bear.png}" class="user-image rounded-circle shadow" alt="User"/> -->
+									<!-- <span class="d-none d-md-inline" th:text="${session.ADMIN_EMAIL} ?: 'Babymate Admin'">Babymate Admin</span> -->
 									<img th:if="${session.staff != null}"
 									th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
 									class="user-image rounded-circle shadow" alt="User" /> <span
 									class="d-none d-md-inline"> <!-- 你要顯示固定字或 session 皆可，二擇一 -->
-										<!--             Babymate Admin --> <label
+										<!-- Babymate Admin --> <label
 										th:if="${session.staff != null}"
 										th:text="${session.staff.account}">Account</label> <!-- 或：<span th:text="${session.ADMIN_EMAIL} ?: 'Guest'">Guest</span> -->
 								</span>
-
 							</a>
 								<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 									<li class="user-header text-bg-primary">
-										<!--                   <img th:src="@{/adminlte/assets/img/bear.png}" class="rounded-circle shadow" alt="User"/> -->
-										<!--                   <p>Babymate admin</p> --> <!--                 </li> -->
-										<!--                 <li class="user-footer"> --> <!--                   <a th:href="@{/}" class="btn btn-default btn-flat float-end">Sign out</a> -->
+										<!-- <img th:src="@{/adminlte/assets/img/bear.png}" class="rounded-circle shadow" alt="User"/> -->
+										<!-- <p>Babymate admin</p> --> <!-- </li> --> <!-- <li class="user-footer"> -->
+										<!-- <a th:href="@{/}" class="btn btn-default btn-flat float-end">Sign out</a> -->
 										<!-- 已登入 --> <img th:if="${session.staff != null}"
 										th:src="@{/util/DBPicReader(staffId=${session.staff.staffId})}"
 										class="rounded-circle shadow" alt="User" />
@@ -209,7 +183,6 @@ body {
 						</ul>
 					</div>
 				</nav>
-
 				<!-- Main 區域 -->
 				<main class="app-main">
 					<div class="app-content-header">
@@ -228,10 +201,8 @@ body {
 							</div>
 						</div>
 					</div>
-
 					<div class="container-fluid" th:replace="${content}"></div>
 				</main>
-
 				<footer class="app-footer">
 					<div class="float-end d-none d-sm-inline">BabymateAdmin</div>
 					<strong>Copyright &copy; 2025 BabymateAdmin.io.</strong> All rights
@@ -239,14 +210,12 @@ body {
 				</footer>
 			</div>
 		</div>
-
 		<!-- 共用 JS：放在 fragment 裡，子頁用 th:replace 才能吃到 -->
 		<script
 			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js"></script>
 		<script th:src="@{/adminlte/js/adminlte.min.js}"></script>
-
 		<!-- 子頁額外 JS 插槽（如 DataTables 初始化） -->
 		<th:block th:replace="${extraJs}"></th:block>
 	</div>
