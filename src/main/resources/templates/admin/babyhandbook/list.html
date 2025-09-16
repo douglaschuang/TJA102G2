@@ -49,7 +49,7 @@
    				<td class="text-center align-middle"><img th:src="@{/babyhandbook/DBGifReader(babyhandbookid=${babyhandbookVO.babyhandbookid})}" width="100px" alt="Baby photo"/></td>
                 <td class="text-nowrap">
                   <a class="btn btn-sm btn-outline-success"
-                     th:href="@{|/babyhandbook/records?babyhandbookid=${babyhandbookVO.babyhandbookid}|}">
+                     th:href="@{|/admin/babyrecord/records?babyhandbookid=${babyhandbookVO.babyhandbookid}|}">
                     <i class="bi bi-journal-medical"></i> 小孩紀錄
                     <span class="badge text-bg-info ms-1"
                           th:text="${recordCountMap[babyhandbookVO.babyhandbookid]} ?: 0">0</span>

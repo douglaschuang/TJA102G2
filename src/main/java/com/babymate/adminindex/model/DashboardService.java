@@ -90,3 +90,4 @@ public class DashboardService {
 				.map(r -> new HotRow((Integer) r[0], (String) r[1], ((Number) r[2]).longValue())).toList();
 	}
 }
+

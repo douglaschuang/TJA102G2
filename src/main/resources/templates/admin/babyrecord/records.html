@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
+  <!-- 子頁額外樣式：只放 DataTables 的 Bootstrap5 佈景（放在 body 裡，讓 head 的片段替換更穩定） -->
+  <th:block th:fragment="extraHead">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+  </th:block>
+
+  <!-- 用版型把下面兩個片段插入（容器會被整個替換，不會重複渲染） -->
+  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+    <!-- 內容區（fragment） -->
+    <section th:fragment="content">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-title mb-0">小孩紀錄管理
+				— <span th:text="${babyhandbook != null ? babyhandbook.babyname : '未知'}">小孩姓名</span>
+ 				 <small class="text-muted">（手冊 #<span th:text="${babyhandbook != null ? babyhandbook.babyhandbookid : '無資料'}">ID</span>）</small>
+          </h3>
+          <div class="ms-auto">
+            <a class="btn btn-sm btn-primary" th:href="@{/admin/babyrecord/addBabyrecord}">
+              <i class="bi bi-plus-circle"></i> 新增
+            </a>
+<!--             <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/babyrecord/deleted}">
+              <i class="bi bi-trash3"></i> 
+            </a>
+-->
+          </div>
+        </div>
+
+        <div class="card-body">
+          <table id="babyrecordTable" class="table table-striped table-bordered align-middle w-100">
+            <thead>
+              <tr>
+                <th class="text-center align-middle"># 小孩紀錄編號</th>
+                <th class="text-center align-middle">小孩手冊編號</th>
+                <th class="text-center align-middle">小孩週數</th>
+                <th class="text-center align-middle">檢查日</th>
+                <th class="text-center align-middle">診所 ID</th>
+                <th class="text-center align-middle">檢查記錄</th>
+                <th class="text-center align-middle">下次檢查日</th>
+                <th class="text-center align-middle">下次提醒</th>
+                <th class="text-center align-middle">身高</th>
+                <th class="text-center align-middle">體重</th>
+                <th class="text-center align-middle">頭圍</th>
+                <th class="text-center align-middle">照片</th>
+                <th class="text-center align-middle">更新時間</th>
+                <th class="text-center align-middle">動作</th>
+              </tr>
+            </thead>
+            <tbody>
+               <tr th:each="babyrecordVO  : ${babyrecordList}">
+                <td class="text-center align-middle" th:text="${babyrecordVO.babyrecordid}"></td>
+                <td class="text-center align-middle" th:text="${babyrecordVO.babyhandbook.babyhandbookid}"></td>
+                <td class="text-center align-middle" th:text="${babyrecordVO.babyweek}"></td>
+                <td class="text-center align-middle" th:text="${#dates.format(babyrecordVO.visitdate, 'yyyy/MM/dd')}">2024-02-01</td>
+                <td class="text-center align-middle" th:text="${clinicDtoMap[babyrecordVO.clinicid]?.clinicName}"></td>
+                <td class="text-center align-middle" th:text="${babyrecordVO.bodycondition}"></td>
+                <td class="text-center align-middle" th:text="${babyrecordVO.nextcheckdate != null ? #dates.format(babyrecordVO.nextcheckdate, 'yyyy/MM/dd') : '—'}">2024-02-01</td>         
+                <td class="text-center align-middle" th:text="${babyrecordVO.nextreminder}"></td>                
+                <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.height, 1, 2)}"></td>                
+                <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.weight, 1, 2)}"></td>                
+                <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.hc, 1, 2)}"></td>                
+   				<td class="text-center align-middle"><img th:src="@{/admin/babyrecord/photo/{id}(id=${babyrecordVO.babyrecordid})}" width="100px" alt="photo"/></td>
+           		<td class="text-center align-middle" th:text="${babyrecordVO.updatetime}"></td>              
+                <td class="text-nowrap">
+                  <form th:action="@{/admin/babyrecord/getOne_For_Update}" method="post" class="d-inline">
+                    <input type="hidden" name="babyrecordid" th:value="${babyrecordVO.babyrecordid}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-pencil-square"></i> 修改
+                    </button>
+                  </form>
+                  <form th:action="@{/admin/babyrecord/delete}" method="post" class="d-inline"
+                        onsubmit="return confirm('確定刪除？')">
+                    <input type="hidden" name="babyrecordid" th:value="${babyrecordVO.babyrecordid}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash"></i> 刪除
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 本頁 JS（fragment） -->
+    <th:block th:fragment="extraJs">
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const sel = '#babyrecordTable';
+          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
+          $(sel).DataTable({
+            retrieve: true,
+            lengthMenu: [3, 5, 10, 20, 50, 100],
+            language: {
+              processing:"處理中...", loadingRecords:"載入中...",
+              lengthMenu:"顯示 _MENU_ 筆結果", zeroRecords:"沒有符合的結果",
+              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
+              infoFiltered:"(從 _MAX_ 筆結果中過濾)", search:"搜尋：",
+              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
+              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
+            }
+          });
+        });
+      </script>
+    </th:block>
+  </div>
+</body>
+</html>
