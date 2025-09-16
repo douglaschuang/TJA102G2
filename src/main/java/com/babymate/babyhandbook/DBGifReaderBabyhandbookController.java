@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 import com.babymate.babyhandbook.model.BabyhandbookService;
 
-@Controller("gifReaderrBabyhandbookController")
+@Controller("gifReaderBabyhandbookController")
 @RequestMapping("/babyhandbook")
 public class DBGifReaderBabyhandbookController {
 	
@@ -24,10 +24,10 @@ public class DBGifReaderBabyhandbookController {
 	/*
 	 * This method will serve as listOneEmp.html , listAllEmp.html handler.
 	 */
-	@GetMapping("DBGifReader")
+	@GetMapping("/DBGifReader")
 	public void dBGifReader(@RequestParam("babyhandbookid") String babyhandbookid, HttpServletRequest req, HttpServletResponse res)
 			                                                                                          throws IOException {
-		res.setContentType("image/gif");
+		res.setContentType("image/*");
 		ServletOutputStream out = res.getOutputStream();
 
 		try {
