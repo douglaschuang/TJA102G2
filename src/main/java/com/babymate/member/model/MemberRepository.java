@@ -17,6 +17,12 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 	void deleteByMemberId(int memberId);
 
 	//● (自訂)條件查詢
-	@Query(value = "from MemberVO where memberId=?1 and account like?2 and registerDate=?3 order by memberId")
+	@Query(value = "from MemberVO where memberId=?1 and account like ?2 and registerDate=?3 order by memberId")
 	List<MemberVO> findByOthers(int memberId , String account , LocalDateTime registerDate);
+
+	// 後台首頁：今日新會員
+    long countByRegisterDateBetween(LocalDateTime start, LocalDateTime end);
+
+    // 後台首頁：最新會員 TOP5
+    List<MemberVO> findTop5ByOrderByRegisterDateDesc();
 }

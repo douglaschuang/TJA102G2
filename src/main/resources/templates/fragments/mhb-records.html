@@ -1,0 +1,51 @@
+<div th:fragment="mhbRecords(mhb, records, pregnancyWeek)">
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h4 class="mb-0">媽媽懷孕紀錄</h4>
+				<a class="btn btn-outline-primary btn-sm" th:if="${mhb != null}"
+					th:href="@{/pregnancy/records(mhbId=${mhb.motherHandbookId})}">
+					檢視完整列表 </a>
+			</div>
+
+			<div th:if="${records == null or #lists.isEmpty(records)}"
+				class="text-muted">尚無紀錄。</div>
+
+			<div th:if="${records != null and !#lists.isEmpty(records)}"
+				class="table-responsive">
+				<table class="table table-sm align-middle">
+					<thead class="table-light">
+						<tr>
+							<th>就診日</th>
+							<th>孕週</th>
+							<th>體重(kg)</th>
+							<th>血壓</th>
+							<th>胎心音</th>
+							<th>身體狀況</th>
+							<th>下次回診</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="r : ${records}">
+							<td th:text="${#temporals.format(r.visitDate,'yyyy/MM/dd')}">2025/09/13</td>
+							<td th:text="${r.pregnancyWeek + ' 週'}">12 週</td>
+							<td th:text="${r.weight != null ? r.weight : '-'}">-</td>
+							<td><span
+								th:text="${r.sp != null && r.dp != null ? r.sp + '/' + r.dp : '-'}">-</span>
+							</td>
+							<td th:text="${r.fhs != null ? r.fhs : '-'}">-</td>
+							<td th:text="${r.bodyCondition != null ? r.bodyCondition : '-'}">-</td>
+							<td
+								th:text="${r.nextCheckDate != null ? #temporals.format(r.nextCheckDate,'yyyy/MM/dd') : '-'}">-</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- 這裡原本可放「新增紀錄」按鈕，等你有新增頁面後再掛上去 -->
+			<a class="btn btn-primary btn-sm" th:if="${mhb != null}"
+				th:href="@{/u/preg/new(mhbId=${mhb.motherHandbookId})}"> 新增紀錄 </a>
+
+		</div>
+	</div>
+</div>
