@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 public class MemberController {
 	
 	@Autowired
-	MemberService memberSvc;
+	MemberService memberSvc; 
 
 	/*
 	 * This method will be called on select_page.html form submission, handling POST
