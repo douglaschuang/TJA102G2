@@ -24,8 +24,8 @@ public interface MemberRepository extends JpaRepository<MemberVO, Integer> {
 	@Query(value = "from MemberVO where account=?1")
 	MemberVO findByAccount(String account);
 	
-	// 根據account和password去找會員
-	@Query(value = "from MemberVO where account=?1 and password=?2")
+	// 根據account和password去找會員 // JPQL，查整個 Entity
+	@Query("FROM MemberVO where account=?1 and password=?2")
 	MemberVO findByAccountAndPassword(String account, String hashPassword);	
 
 	// 後台首頁：今日新會員
