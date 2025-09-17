@@ -389,6 +389,12 @@
 	    })
 	    .then(data => {
 	      console.log("後端回應:", data);
+	      
+	      if (!data.success) {
+	    	    alert(data.message || "發送失敗");
+	    	    return;
+	    	  }
+	      
 	      alert("驗證碼已寄出，請查看信箱");
 
 	      // 如果後端成功，才開始倒數

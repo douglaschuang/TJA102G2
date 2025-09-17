@@ -223,8 +223,9 @@ public class MemberController {
 		
 		if (account.isEmpty()) {
 		  response.put("success", false);
-          response.put("message", "未取得正確的E-Mail");
-          return ResponseEntity.badRequest().body(response);
+          response.put("message", "未取得正確的E-Mail, 請重新輸入.");
+//          return ResponseEntity.badRequest().body(response);
+          return ResponseEntity.ok(response);
 //		  model.addAttribute("errorMessage", "未取得正確的E-Mail");
 //		  return "redirect:/shop/login";
 		}
@@ -233,13 +234,17 @@ public class MemberController {
 		String authCode = "";
 		
 		if (memberVO != null) {
-			byte accountStatus = memberVO.getAccountStatus();
+			
+			Byte accountStatus = memberVO.getAccountStatus();
 			if ( accountStatus == 0) {
+				System.out.println("accountStatus == 0");
 				authCode = memberVO.getEmailAuthToken();
 			} else {
+				System.out.println("accountStatus != 0");
 				response.put("success", false);
-		        response.put("message", "會員已經完成註冊驗證, 請登入.");
-		        return ResponseEntity.badRequest().body(response);
+		        response.put("message", account+"已經完成註冊驗證, 請前往登入.");
+		        return ResponseEntity.ok(response);
+//		        return ResponseEntity.badRequest().body(response);
 //				model.addAttribute("errorMessage", "會員已經完成註冊驗證, 請登入.");
 //				return "redirect:/shop/login";
 			}
