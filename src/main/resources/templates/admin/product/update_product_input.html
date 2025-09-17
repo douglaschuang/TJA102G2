@@ -33,7 +33,8 @@
 						<h3>修改商品：</h3>
 						<form th:action="@{update}" method="post" th:object="${productVO}"
 							enctype="multipart/form-data">
-  							<input type="hidden" th:field="*{productId}"/>
+							<!-- 修改商品一定要有綁定主鍵，否則會變成自動在新增一筆！！！ -->
+  							<input type="hidden" th:field="*{productId}"/> 
 							
 							<div>
 								<label class="col-sm-2 col-form-label">商品編號：</label> 
@@ -125,11 +126,8 @@
 							
 
 							<div>
-								<div></div>
-								<div>
-									<button type="submit" id="submit">送出修改</button>
-								</div>
-								<div></div>
+								<button class="btn btn-primary" type="submit" id="submit" style="height: 40px; width:100px">送出修改</button>
+								<a class="btn btn-sm btn-primary" th:href="@{listAllProduct}" style="height: 40px; line-height:30px; width:100px"><i></i>返回</a>
 							</div>
 						</form>
 					</div>

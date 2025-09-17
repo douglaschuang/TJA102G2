@@ -20,64 +20,38 @@
 				<div class="container-fluid">
 					<div class="card mb-4">
 						<div class="card-header border-0">
-							<h3 class="mb-0">商品清單</h3>
+							<h3 class="mb-0">商品類別清單</h3>
 						</div>
 						<div class="ms-auto">
-							<a class="btn btn-sm btn-primary" th:href="@{/admin/category/addCategory}"><i></i> 新增商品類別</a>
-				            <a class="btn btn-sm btn-primary" th:href="@{addProduct}"><i></i> 新增商品</a>
-				           	<a class="btn btn-sm btn-primary" th:href="@{listAllProduct}"><i></i> 上架區</a>
+							<a class="btn btn-sm btn-primary" th:href="@{addCategory}"><i></i> 新增商品類別</a>
+				            <a class="btn btn-sm btn-primary" th:href="@{/admin/product/listAllProduct}"><i></i> 返回商品清單</a>
+				           	<!-- <a class="btn btn-sm btn-primary" th:href="@{productRemoveArea}"><i></i> 下架區</a> -->
 				        </div>
 						<div class="card-body table-responsive p-0">
-							<table id="productRemoveAreaTable"
+							<table id="categoryTable"
 								class="table table-striped table-bordered align-middle w-100">
 								<thead>
 									<tr>
-										<th style="width:40px">商品ID</th>
-										<th style="width:40px">商品編號</th>
-										<th style="width:100px">商品<br>名稱</th>
-										<th style="width:70px">商品<br>類別ID</th>
-										<th style="width:40px">價格</th>
-										<th style="width:40px">狀態</th>
-										<th style="width:70px">狀態異<br>動時間</th>
-										<th style="width:70px">圖示</th>
-										<th style="width:70px">特色<br>說明</th>
-										<th style="width:40px">規格<br>說明</th>
-										<th style="width:40px">注意<br>事項</th>
-										<th style="width:40px">備註</th>
-										<th style="width:70px">更新<br>時間</th>
-										<th style="width:80px"></th>
+										<th style="width:40px">商品類別ID</th>
+										<th style="width:100px">類別名稱</th>
+										<th style="width:70px">更新時間</th>
+										<th style="width:80px">修改</th>
+										<!-- <th style="width:80px">刪除</th> -->
 									</tr>
 								</thead>
 								<tbody>
-									<th:block th:each="productVO : ${productListData}">
+									<th:block th:each="categoryVO : ${categoryListData}">
 										<tr>
-											<td th:text="${productVOStat.count}"></td>
-											<td th:text="${productVO.productNo}"></td>
-											<td th:text="${productVO.productName}"></td>
-											<td th:text="${productVO.categoryVO.categoryId} + '-[' + ${productVO.categoryVO.categoryName} + ']'"></td>
-											<td th:text="${productVO.price}"></td>
-											<td th:text="${productVO.statusStr}"></td>
-											<td th:text="${productVO.statusUpdateTimeStr}"></td>
-											<td><img th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}" width="100px"></td>
-											<td th:text="${productVO.featureDesc}"></td>
-											<td th:text="${productVO.specDesc}"></td>
-											<td th:text="${productVO.note}"></td>
-											<td th:text="${productVO.remark}"></td>
-											<td th:text="${productVO.updateTimeStr}"></td>
+											<td th:text="${categoryVOStat.count}"></td>
+											<td th:text="${categoryVO.categoryName}"></td>
+											<td th:text="${categoryVO.updateTimeStr}"></td>
 											<td>
 												<form method="post" th:action="@{getOne_For_Update}" style="margin-bottom: 0px;">
 													<button type="submit" class="btn btn-primary btn-sm">
            												<i class="bi bi-pencil-square"></i> 修改
        												</button>
-													<input type="hidden" name="product_id" th:value="${productVO.productId}">
+													<input type="hidden" name="category_id" th:value="${categoryVO.categoryId}">
 												</form>
-
-												<!-- <form method="post" th:action="@{getOne_For_Update}" class="d-inline">
-											        <button type="submit" class="btn btn-danger btn-sm">
-											            <i class="bi bi-trash"></i> 刪除
-											        </button>
-											        <input type="hidden" name="product_id" th:value="${productVO.productId}">
-											    </form> -->
 											</td>
 										</tr>
 									</th:block>
@@ -96,7 +70,7 @@
       <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
       <script>
         document.addEventListener('DOMContentLoaded', function () {
-          const sel = '#productTable';
+          const sel = '#categoryTable';
           if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
           $(sel).DataTable({
             retrieve: true,

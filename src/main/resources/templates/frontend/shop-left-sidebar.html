@@ -44,9 +44,8 @@
 							</a>
 						</div>
 						<div class="logo">
-							<a th:href="@{/}"> <img
-								th:src="@{/assets/images/babymate.png}" class="img-fluid"
-								alt="BabyMate 首頁">
+							<a th:href="@{/}">
+								<img th:src="@{/assets/images/babymate.png}" class="img-fluid" alt="BabyMate 首頁">
 							</a>
 						</div>
 					</div>
@@ -142,7 +141,8 @@
 								<ul class="dl-submenu">
 									<li><a href="/blog/standard-left"
 										th:href="@{/blog/standard-left}">看板貼文</a></li>
-								</ul></li>
+								</ul>
+							</li>
 						</ul>
 					</div>
 				</div>
@@ -160,7 +160,7 @@
 					<h1 class="breadcrumb-title">BabyMate商城</h1>
 					<ul class="breadcrumb-list">
 						<li class="breadcrumb-list__item"><a
-							th:href="@{/shop/left-sidebar}">首頁</a></li>
+							th:href="@{/shop/left}">首頁</a></li>
 					</ul>
 				</div>
 			</div>
@@ -204,10 +204,10 @@
 									href="javascript:void(0)"><i class="ti-view-list"
 									aria-hidden="true"></i></a>
 							</div>
-							<div class="single-icon advance-filter-icon">
+							<!-- <div class="single-icon advance-filter-icon">
 								<a href="javascript:void(0)" id="advance-filter-active-btn"><i
 									class="ion-android-funnel" aria-hidden="true"></i> 篩選</a>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
@@ -215,7 +215,7 @@
 		</div>
 
 		<!-- advance filter -->
-		<div class="shop-advance-filter-area" id="shop-advance-filter-area">
+		<!-- <div class="shop-advance-filter-area" id="shop-advance-filter-area">
 			<div class="shop-advance-filter-wrapper pt-50">
 				<div class="container">
 					<div class="row">
@@ -239,7 +239,7 @@
 								<ul
 									class="single-filter-widget--list single-filter-widget--list--category">
 									<li class="has-children"><a
-										th:href="@{/shop/left-sidebar}">奶粉類</a> <span class="quantity">5</span>
+										th:href="@{/shop/left}">奶粉類</a> <span class="quantity">5</span>
 										<ul>
 											<li><a th:href="@{/shop/left-sidebar}">For body</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Make up</a></li>
@@ -290,11 +290,11 @@
 							</div>
 						</div>
 
-					</div>
+					</div> -->
 					<!-- /row -->
-				</div>
+				<!-- </div>
 			</div>
-		</div>
+		</div> -->
 		<!-- /advance filter -->
 
 		<!-- content -->
@@ -317,26 +317,64 @@
 
 							<div class="single-sidebar-widget mb-40">
 								<h2 class="single-sidebar-widget--title">全站商品分類</h2>
-								<ul
+								<ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
+									<!-- 全部 -->
+									<li>
+										<a th:href="@{/shop/left(minPrice=${minPrice}, max=${maxPrice})}" th:classappend="${selectedCategoryId} == null ? 'active' : ''">全部</a>
+										<span class="quantity" th:text="${allCount}"></span>
+									</li>
+									<!-- 其餘分類 -->
+									<li th:each="c : ${categories}">
+										<a th:href="@{/shop/left(
+												categoryId=${c.categoryId},
+												minPrice=${minPrice},
+												maxPrice=${maxPrice})}"
+											th:text="${c.categoryName}"
+											th:classappend="${selectedCategoryId} == ${c.categoryId} ? 'active' : ''">
+										</a>
+										<span class="quantity" th:text="${c.count}"></span>
+									</li>
+								</ul>
+							</div>
+
+							<div class="single-sidebar-widget mb-40">
+								<h2 class="single-sidebar-widget--title">價格範圍搜尋</h2>
+									<form th:action="@{/shop/left}" method="get" class="output-wrapper mt-20">
+									    <!-- 保留目前分類 -->
+									    <input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
+									    <!-- 最低 / 最高價 -->
+							            <div>
+							            	<input type="number" name="minPrice" placeholder="最低價格" th:value="${minPrice}" style="width: 100px;" />
+							            	<span>－</span>
+							  	        	<input type="number" name="maxPrice" placeholder="最高價格" th:value="${maxPrice}" style="width: 100px;"/>
+							  	        </div>
+									    <button type="submit" class="price-range-button">
+									    	<i class="ion-android-funnel" aria-hidden="true"></i> 篩選
+									    </button>
+								    </form>
+							</div>
+								
+								
+								<!-- <ul
 									class="single-sidebar-widget--list single-sidebar-widget--list--category">
-									<li class="has-children"><a
-										th:href="@{/shop/left-sidebar}">奶粉類</a> <span class="quantity">5</span>
-										<ul>
+									<li><a
+										th:href="@{/shop/left-sidebar}">奶粉類</a> <span class="quantity">5</span> -->
+										<!-- <ul>
 											<li><a th:href="@{/shop/left-sidebar}">For body</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Make up</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">New</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Perfumes</a></li>
-										</ul></li>
-									<li class="has-children"><a
+										</ul> </li>-->
+									<!-- <li><a
 										th:href="@{/shop/left-sidebar}">母嬰日用品類</a> <span
-										class="quantity">23</span>
-										<ul>
+										class="quantity">23</span> -->
+										<!-- <ul>
 											<li><a th:href="@{/shop/left-sidebar}">Sofas</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Armchairs</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Desk Chairs</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Dining Chairs</a></li>
-										</ul></li>
-									<li><a th:href="@{/shop/left-sidebar}">桌椅類</a> <span
+										</ul> </li>-->
+									<!-- <li><a th:href="@{/shop/left-sidebar}">桌椅類</a> <span
 										class="quantity">12</span></li>
 								</ul>
 							</div>
@@ -351,15 +389,47 @@
 											class="ion-android-funnel" aria-hidden="true"></i> 篩選</a>
 									</div>
 								</div>
-							</div>
+							</div> -->
 
 							<!-- 熱門商品 -->
 							<div class="single-sidebar-widget mb-40">
-								<h2 class="single-sidebar-widget--title">熱門商品</h2>
+								<!-- <h2 class="single-sidebar-widget--title">熱門商品</h2> -->
 								<div class="widget-product-wrapper">
 
+									<!-- 熱銷  -->
+									<!-- <div class="single-widget-product-wrapper">
+										<th:block th:each="p : ${hotProducts}">
+											<div class="single-widget-product">
+												<div class="single-widget-product__image">
+													<a th:href="@{/shop/product-basic(id=${p.productId})}">
+														<img th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}"
+															 class="img-fluid" alt="${p.prouctName}"
+															 loading="lazy" decoding="async">
+													</a>
+												</div>
+												<div class="single-widget-product__content">
+													<div class="single-widget-product__content__top">
+														<h3 class="product-title">
+															<a th:href="@{/shop/product-basic(id=${p.productId})}">商品名稱</a>
+														</h3>
+														<div class="price">
+															<span class="main-price" th:text="'NT$' + {p.price}">NT$0</span>
+														</div>
+														<div class="rating" aria-label="評分 4/5">
+															<i class="ion-android-star" aria-hidden="true"></i> <i
+																class="ion-android-star" aria-hidden="true"></i> <i
+																class="ion-android-star" aria-hidden="true"></i> <i
+																class="ion-android-star" aria-hidden="true"></i> <i
+																class="ion-android-star-outline" aria-hidden="true"></i>
+														</div>
+													</div>
+												</div>
+											</div>
+										</th:block>
+									</div> -->
+
 									<!-- 熱銷 1 -->
-									<div class="single-widget-product-wrapper">
+									<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -387,10 +457,10 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 
 									<!-- 熱銷 2 -->
-									<div class="single-widget-product-wrapper">
+									<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -417,10 +487,10 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 
 									<!-- 熱銷 3 -->
-									<div class="single-widget-product-wrapper">
+									<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -447,7 +517,7 @@
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> -->
 
 								</div>
 								<!-- /widget-product-wrapper -->
@@ -459,1264 +529,89 @@
 					<div class="col-lg-9 order-1 order-lg-2 mb-md-80 mb-sm-80">
 						<div class="row product-isotope shop-product-wrap four-column">
 
-							<!-- 多功能嬰兒餐椅 - 米色 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test1.jpg}"
-											class="img-fluid" alt="多功能嬰兒餐椅 - 米色" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-chair-beige" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
+							<!-- 商品區 -->
+							<th:block  th:each="p, stat : ${hotProducts}">
+								<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
+									<!-- Grid 版 -->
+									<div class="single-product">
+										<div class="single-product__image">
+											<a class="image-wrap" th:href="@{/shop/product-basic(id=${p.productId})}">
+												<img th:src="@{/product/DBGifReader(productId=${p.productId})}"
+													 class="img-fluid" th:alt="${p.productName}" loading="lazy"
+													 decoding="async">
+											</a>
+											<div class="single-product__floating-icons">
+												<span class="wishlist">
+													<a href="#" aria-label="加入收藏">
+														<i class="ion-android-favorite-outline" aria-hidden="true"></i>
+													</a>
+												</span>
+												<span class="compare">
+													<a href="#" aria-label="加入比較">
+														<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+													</a>
+												</span>
+												<span class="quickview">
+													<a class="cd-trigger" th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
+														<i class="ion-ios-search-strong" aria-hidden="true"></i>
+													</a>
+												</span>
+											</div>
+										</div>
+										<div class="single-product__content">
+											<div class="title">
+												<h3>
+													<a th:href="@{/shop/product-basic(id=${p.productId})}" th:text="${p.productName}">商品名稱</a>
+												</h3>
+											</div>
+											<div class="price">
+												<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
+											</div>
 										</div>
 									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">多功能嬰兒餐椅 - 米色</a>
-											</h3>
+									
+									<!-- List 版 -->
+									<div class="single-product--list">
+										<div class="single-product__image">
+											<a class="image-wrap" th:href="@{/shop/product-basic(id=${p.productId})}">
+												<img th:src="@{/product/DBGifReader(productId=${p.productId})}"
+													 class="img-fluid" th:alt="${p.productName}" loading="lazy"
+													 decoding="async">
+											</a>
+											<div class="single-product__floating-icons">
+												<span class="wishlist">
+													<a href="#" aria-label="加入收藏">
+														<i class="ion-android-favorite-outline" aria-hidden="true"></i>
+													</a>
+												</span>
+												<span class="compare">
+													<a href="#" aria-label="加入比較">
+														<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+													</a>
+												</span>
+												<span class="quickview">
+													<a class="cd-trigger" href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
+														<i class="ion-ios-search-strong" aria-hidden="true"></i>
+													</a>
+												</span>
+											</div>
 										</div>
-										<div class="price">
-											<span class="main-price">NT$2,680</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test1.jpg}"
-											class="img-fluid" alt="多功能嬰兒餐椅 - 米色" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-chair-beige" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">多功能嬰兒餐椅 - 米色</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$2,680</span>
-										</div>
-										<p class="short-desc">多功能嬰兒餐椅 - 米色</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Simba 嬰兒濕紙巾 90抽x3包 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test2.jpg}"
-											class="img-fluid" alt="Simba 嬰兒濕紙巾 90抽x3包" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-wipes-90x3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 嬰兒濕紙巾 90抽x3包</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$189</span>
+										<div class="single-product__content">
+											<div class="title">
+												<h3>
+													<a th:href="@{/shop/product-basic(id=${p.productId})}" th:text="${p.productName}">商品名稱</a>
+												</h3>
+											</div>
+											<div class="price">
+												<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
+											</div>
+											<p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
+											<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
 										</div>
 									</div>
 								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test2.jpg}"
-											class="img-fluid" alt="Simba 嬰兒濕紙巾 90抽x3包" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-wipes-90x3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 嬰兒濕紙巾 90抽x3包</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$189</span>
-										</div>
-										<p class="short-desc">Simba 嬰兒濕紙巾 90抽x3包</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Baby City 超強吸收護理墊 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test3.jpg}"
-											class="img-fluid" alt="Baby City 超強吸收護理墊" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-pad" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Baby City 超強吸收護理墊</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$199</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test3.jpg}"
-											class="img-fluid" alt="Baby City 超強吸收護理墊" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-pad" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Baby City 超強吸收護理墊</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$199</span>
-										</div>
-										<p class="short-desc">Baby City 超強吸收護理墊</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Simba PPSU 奶瓶 300ml -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 new">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test4.jpg}"
-											class="img-fluid" alt="Simba PPSU 奶瓶 300ml" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-ppsu-300" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba PPSU 奶瓶 300ml</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$329</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test4.jpg}"
-											class="img-fluid" alt="Simba PPSU 奶瓶 300ml" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-ppsu-300" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba PPSU 奶瓶 300ml</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$329</span>
-										</div>
-										<p class="short-desc">Simba PPSU 奶瓶 300ml</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 以下略同，保留你所有商品，已全部改為 th:href/th:src、NT$、唯一 quickview 錨點與可及性 -->
-							<!-- Simba 綠茶奶瓶清潔劑 2入組 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test5.jpg}"
-											class="img-fluid" alt="Simba 綠茶奶瓶清潔劑 2入組" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-cleaner-2" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 綠茶奶瓶清潔劑 2入組</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$299</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test5.jpg}"
-											class="img-fluid" alt="Simba 綠茶奶瓶清潔劑 2入組" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-cleaner-2" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 綠茶奶瓶清潔劑 2入組</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$299</span>
-										</div>
-										<p class="short-desc">Simba 綠茶奶瓶清潔劑 2入組</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- MamyPoko 母乳墊 108片 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test6.jpg}"
-											class="img-fluid" alt="MamyPoko 母乳墊 108片" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-milkpad-108" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">MamyPoko 母乳墊 108片</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$259</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test6.jpg}"
-											class="img-fluid" alt="MamyPoko 母乳墊 108片" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-milkpad-108" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">MamyPoko 母乳墊 108片</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$259</span>
-										</div>
-										<p class="short-desc">MamyPoko 母乳墊 108片</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Pigeon 貝親安撫奶嘴 L號 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 new">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test7.jpg}"
-											class="img-fluid" alt="Pigeon 貝親安撫奶嘴 L號" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-pigeon-l" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Pigeon 貝親安撫奶嘴 L號</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$139</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test7.jpg}"
-											class="img-fluid" alt="Pigeon 貝親安撫奶嘴 L號" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-pigeon-l" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Pigeon 貝親安撫奶嘴 L號</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$139</span>
-										</div>
-										<p class="short-desc">Pigeon 貝親安撫奶嘴 L號</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Puku 矽膠圍兜 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test8.jpg}"
-											class="img-fluid" alt="Puku 矽膠圍兜" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-puku-bib" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Puku 矽膠圍兜</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$179</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test8.jpg}"
-											class="img-fluid" alt="Puku 矽膠圍兜" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-puku-bib" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Puku 矽膠圍兜</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$179</span>
-										</div>
-										<p class="short-desc">Puku 矽膠圍兜</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Simba 母乳儲存袋 150ml/60入 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test9.jpg}"
-											class="img-fluid" alt="Simba 母乳儲存袋 150ml/60入" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-milkbag-150" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 母乳儲存袋
-													150ml/60入</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$269</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test9.jpg}"
-											class="img-fluid" alt="Simba 母乳儲存袋 150ml/60入" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-milkbag-150" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Simba 母乳儲存袋
-													150ml/60入</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$269</span>
-										</div>
-										<p class="short-desc">Simba 母乳儲存袋 150ml/60入</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 嬰兒短袖包屁衣 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test10.jpg}"
-											class="img-fluid" alt="嬰兒短袖包屁衣" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-onesie" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">嬰兒短袖包屁衣</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$199</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test10.jpg}"
-											class="img-fluid" alt="嬰兒短袖包屁衣" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-onesie" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">嬰兒短袖包屁衣</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$199</span>
-										</div>
-										<p class="short-desc">嬰兒短袖包屁衣</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Vbebe 嬰兒澡盆 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test11.jpg}"
-											class="img-fluid" alt="Vbebe 嬰兒澡盆" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-bath" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Vbebe 嬰兒澡盆</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$699</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test11.jpg}"
-											class="img-fluid" alt="Vbebe 嬰兒澡盆" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-bath" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Vbebe 嬰兒澡盆</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$699</span>
-										</div>
-										<p class="short-desc">Vbebe 嬰兒澡盆</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Combi 兒童安全汽座 ISOFIX(3-12Y) -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 new">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test12.jpg}"
-											class="img-fluid" alt="Combi 兒童安全汽座 ISOFIX(3-12Y)"
-											loading="lazy" decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-combi-isofix" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Combi 兒童安全汽座
-													ISOFIX(3-12Y)</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$8,990</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test12.jpg}"
-											class="img-fluid" alt="Combi 兒童安全汽座 ISOFIX(3-12Y)"
-											loading="lazy" decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-combi-isofix" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Combi 兒童安全汽座
-													ISOFIX(3-12Y)</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$8,990</span>
-										</div>
-										<p class="short-desc">Combi 兒童安全汽座 ISOFIX(3-12Y)</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Seebaby 多段調整餐椅 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test13.jpg}"
-											class="img-fluid" alt="Seebaby 多段調整餐椅" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-seebaby-chair" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Seebaby 多段調整餐椅</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$3,280</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test13.jpg}"
-											class="img-fluid" alt="Seebaby 多段調整餐椅" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-seebaby-chair" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Seebaby 多段調整餐椅</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$3,280</span>
-										</div>
-										<p class="short-desc">Seebaby 多段調整餐椅</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- Combi 電動餐搖椅 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test14.jpg}"
-											class="img-fluid" alt="Combi 電動餐搖椅" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-combi-swing" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Combi 電動餐搖椅</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$12,800</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test14.jpg}"
-											class="img-fluid" alt="Combi 電動餐搖椅" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-combi-swing" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">Combi 電動餐搖椅</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$12,800</span>
-										</div>
-										<p class="short-desc">Combi 電動餐搖椅</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 兒童動物造型餐具組 -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 new">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test15.jpg}"
-											class="img-fluid" alt="兒童動物造型餐具組" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-kids-utensils" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">兒童動物造型餐具組</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$499</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test15.jpg}"
-											class="img-fluid" alt="兒童動物造型餐具組" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-kids-utensils" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">兒童動物造型餐具組</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$499</span>
-										</div>
-										<p class="short-desc">兒童動物造型餐具組</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 能恩水解 3號 800g -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test16.jpg}"
-											class="img-fluid" alt="能恩水解 3號 800g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-nan-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">能恩水解 3號 800g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$780</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test16.jpg}"
-											class="img-fluid" alt="能恩水解 3號 800g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-nan-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">能恩水解 3號 800g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$780</span>
-										</div>
-										<p class="short-desc">能恩水解 3號 800g</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 愛他美 Profutura 2號 800g -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test17.jpg}"
-											class="img-fluid" alt="愛他美 Profutura 2號 800g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-aptamil-2" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">愛他美 Profutura 2號
-													800g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$820</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test17.jpg}"
-											class="img-fluid" alt="愛他美 Profutura 2號 800g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-aptamil-2" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">愛他美 Profutura 2號
-													800g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$820</span>
-										</div>
-										<p class="short-desc">愛他美 Profutura 2號 800g</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 諾優能 金版 3號 900g -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test18.jpg}"
-											class="img-fluid" alt="諾優能 金版 3號 900g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-nutrilon-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">諾優能 金版 3號 900g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$890</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test18.jpg}"
-											class="img-fluid" alt="諾優能 金版 3號 900g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-nutrilon-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">諾優能 金版 3號 900g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$890</span>
-										</div>
-										<p class="short-desc">諾優能 金版 3號 900g</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 心美力 親護水解 3號 820g -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test19.jpg}"
-											class="img-fluid" alt="心美力 親護水解 3號 820g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-similac-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">心美力 親護水解 3號 820g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$830</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test19.jpg}"
-											class="img-fluid" alt="心美力 親護水解 3號 820g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-similac-3" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">心美力 親護水解 3號 820g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$830</span>
-										</div>
-										<p class="short-desc">心美力 親護水解 3號 820g</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
-							<!-- 美強生 鉑睿 1號 850g -->
-							<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 sale">
-								<div class="single-product">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test20.jpg}"
-											class="img-fluid" alt="美強生 鉑睿 1號 850g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-enfa-1" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">美強生 鉑睿 1號 850g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$850</span>
-										</div>
-									</div>
-								</div>
-								<div class="single-product--list">
-									<div class="single-product__image">
-										<a class="image-wrap" th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/test20.jpg}"
-											class="img-fluid" alt="美強生 鉑睿 1號 850g" loading="lazy"
-											decoding="async">
-										</a>
-										<div class="single-product__floating-icons">
-											<span class="wishlist"><a href="#" aria-label="加入收藏"><i
-													class="ion-android-favorite-outline" aria-hidden="true"></i></a></span>
-											<span class="compare"><a href="#" aria-label="加入比較"><i
-													class="ion-ios-shuffle-strong" aria-hidden="true"></i></a></span> <span
-												class="quickview"><a class="cd-trigger"
-												href="#qv-enfa-1" aria-label="快速瀏覽"><i
-													class="ion-ios-search-strong" aria-hidden="true"></i></a></span>
-										</div>
-									</div>
-									<div class="single-product__content">
-										<div class="title">
-											<h3>
-												<a th:href="@{/shop/product-basic}">美強生 鉑睿 1號 850g</a>
-											</h3>
-										</div>
-										<div class="price">
-											<span class="main-price">NT$850</span>
-										</div>
-										<p class="short-desc">美強生 鉑睿 1號 850g</p>
-										<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
-									</div>
-								</div>
-							</div>
-
+							</th:block>
 						</div>
-
-						<div class="row">
-							<div class="col-lg-12 text-center mt-30">
-								<a
-									class="lezada-button lezada-button--medium lezada-button--icon--left"
-									href="#"><i class="ion-android-add" aria-hidden="true"></i>
-									顯示更多</a>
-							</div>
-						</div>
-
 					</div>
 				</div>
 			</div>
