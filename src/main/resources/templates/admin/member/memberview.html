@@ -1,48 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS -->
+  <th:block th:fragment="extraHead">
+    <style>
+      .preview-img{max-width:160px; max-height:120px; object-fit:cover; border-radius:.25rem;}
+    </style>
+  </th:block>
 
+  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
 
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">會員管理｜資料檢視</h3>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/member/listAllMember}">
+              <i class="bi bi-arrow-left"></i> 回列表
+            </a>
+          </div>
+					<div class="card-body">
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">ID</div>
+							<div class="col-md-9" th:text="${memberVO.memberId}"></div>
+						</div>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">帳號</div>
+							<div class="col-md-9" th:text="${memberVO.account}"></div>
+						</div>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">名稱</div>
+							<div class="col-md-9" th:text="${memberVO.name}"></div>
+						</div>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">生日</div>
+							<div class="col-md-9" th:text="${memberVO.birthday}"></div>
+						</div>
 
+						<hr>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">狀態</div>
+							<div class="col-md-9" th:switch="${memberVO.accountStatus}">
+  								<span th:case="0" class="badge bg-secondary">未啟用</span>
+  								<span th:case="1" class="badge bg-success">已啟用</span>
+  								<span th:case="2" class="badge bg-danger">已停用</span>
+  								<span th:case="*" class="badge bg-dark">未知狀態</span>
+							</div>
+						</div>
 
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>會員資料</title>
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">註冊日期</div>
+							<div class="col-md-9" th:text="${memberVO.getFormattedDateTime(memberVO.registerDate)}"></div>
+						</div>
 
-<head></head>
-<body>
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">最後登入時間</div>
+							<div class="col-md-9" th:text="${memberVO.getFormattedDateTime(memberVO.lastLoginTime)}"></div>
+						</div>
 
-<nav class="navbar navbar-expand-md navbar-dark bg-success fixed-top justify-content-center">
-		 <div align="center"> <h2>會員資料</h2>
-		 <h3><a class="navbar-brand" th:href="@{/admin/member/listAllMember}">回查詢頁<label></label></a></h3></div>
-</nav>
+						<hr>
 
-<!-- 	<div align="center" th:fragment="listOneStaff-div"> 此div被select_page.html第158行insert用 -->
-	<div align="center" > <!-- 此div被select_page.html第158行insert用 -->
-		<h3><span>查詢結果 :</span></h3>		
-		<span>Account:</span><span th:text="${memberVO.account}"></span><br/>
-		<span>Password:</span><span th:text="${memberVO.password}"></span><br/>
-		<span>Name:</span><span th:text="${memberVO.name}"></span><br/>
-		<span>EmailVerified:</span><span th:text="${memberVO.emailVerified}"></span><br/>
-		<span>RegisterDate:</span><span th:text="${memberVO.registerDate}"></span><br/>
-		<span>LastLoginTime:</span><span th:text="${memberVO.lastLoginTime}"></span><br/>
-		<span>Phone:</span><span th:text="${memberVO.phone}"></span><br/>
-		<span>RecipientName:</span><span th:text="${memberVO.recipientName}"></span><br/>
-		<span>Address:</span><span th:text="${memberVO.address}"></span><br/>
-		<span>Gender:</span><span th:text="${memberVO.gender}"></span><br/>
-		<span>Birthday:</span><span th:text="${memberVO.birthday}"></span><br/>
-		<span>EmailAuthToken:</span><span th:text="${memberVO.emailAuthToken}"></span><br/>
-		<span>PwdResetToken:</span><span th:text="${memberVO.pwdResetToken}"></span><br/>
-		<span>PwdResetExpire:</span><span th:text="${memberVO.pwdResetExpire}"></span><br/>
-		<span>UpdateDate:</span><span th:text="${memberVO.updateDate}"></span><br/>
-		<span>照片:</span><span><img th:src="@{/util/DBPicReader1} + '?memberId=' + ${memberVO.memberId}" width="100px"></span><br/>
-	</div>
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">收件人</div>
+							<div class="col-md-9" th:text="${memberVO.recipientName}"></div>
+						</div>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">電話</div>
+							<div class="col-md-9" th:text="${memberVO.phone}"></div>
+						</div>
 
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">地址</div>
+							<div class="col-md-9" th:text="${memberVO.address}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">性別</div>
+							<div class="col-md-9" th:text="${memberVO.gender}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">照片</div>
+							<div class="col-md-9">
+								<img
+									th:src="@{/util/DBPicReader1} + '?memberId=' + ${memberVO.memberId}"
+									class="preview-img">
+							</div>
+						</div>
+
+					</div>
+				</div>
+      </div>
+    </section>
+
+    <!-- 本頁不需額外 JS -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
 </body>
 </html>

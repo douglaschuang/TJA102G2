@@ -43,6 +43,7 @@ import com.babymate.util.SimpleCaptchaGenerator;
 import com.babymate.valid.UpdateGroup;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -132,7 +133,115 @@ public class MemberController {
 		
 		return "redirect:/my-account";
 	}
+	
+	@PostMapping("updateBasicInfo")
+	public String updateBasicInfo(@Validated(UpdateGroup.class) @ModelAttribute("MemberVO") MemberVO memberVO, BindingResult result, ModelMap model,
+			@RequestParam(name = "pic", required = false) MultipartFile[] parts, HttpSession session, RedirectAttributes redirectAttrs) throws IOException {
 
+		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		// 去除BindingResult中pic欄位的FieldError紀錄 --> 見第172行
+		result = removeFieldError(memberVO, result, "pic");
+
+		if (parts == null || parts.length == 0 || parts[0].isEmpty()) { // 使用者未選擇要上傳的新圖片時
+			// EmpService empSvc = new EmpService();
+			byte[] pic = memberSvc.getOneMember(memberVO.getMemberId()).getProfilePicture();
+			memberVO.setProfilePicture(pic);
+		} else {
+			for (MultipartFile multipartFile : parts) {
+				byte[] pic = multipartFile.getBytes();
+				memberVO.setProfilePicture(pic);
+			}
+		}
+		
+		// 因為input type=password會帶出時會自動改為null, 所以若未重新輸入, 則維持原密碼
+		MemberVO originalMember = memberSvc.getOneMember(memberVO.getMemberId());
+//		// 若密碼欄位空白，保留原始密碼
+	    if (memberVO.getPassword() == null || memberVO.getPassword().isEmpty()) {
+	        memberVO.setPassword(originalMember.getPassword());
+//	        System.out.println("staffVO="+staffVO.getPassword()+" original="+originalStaff.getPassword());
+	    } else {
+	    	// Hash加密編碼
+	    	memberVO.setPassword(EncodingUtil.hashMD5(memberVO.getPassword()));
+	    }
+		
+		if (result.hasErrors()) {
+			model.addAttribute("MemberVO", memberVO);
+			return "my-account";
+		}
+		/*************************** 2.開始修改資料 *****************************************/
+		// 載入其他欄位資訊
+		memberVO.setAccount(originalMember.getAccount());
+		memberVO.setEmailAuthToken(originalMember.getEmailAuthToken());
+		memberVO.setEmailVerified(originalMember.getEmailVerified());
+		memberVO.setLastLoginTime(originalMember.getLastLoginTime());
+		memberVO.setPwdResetExpire(originalMember.getPwdResetExpire());
+		memberVO.setPwdResetToken(originalMember.getPwdResetToken());
+		memberVO.setRegisterDate(originalMember.getRegisterDate());
+		// 更新時間
+		memberVO.setUpdateDate(LocalDateTime.now());
+		memberSvc.updateMember(memberVO);
+
+		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+		model.addAttribute("success", "- (修改成功)");
+		memberVO = memberSvc.getOneMember(Integer.valueOf(memberVO.getMemberId()));
+		model.addAttribute("memberVO", memberVO);
+		
+		session.setAttribute("member", memberVO);
+		redirectAttrs.addFlashAttribute("successMessage", "會員資料已更新！");
+		
+		return "redirect:/my-account";
+	}
+
+	@PostMapping("updatePassword")
+	public String updatePassword(@Validated(UpdateGroup.class) @ModelAttribute("MemberVO") MemberVO memberVO, BindingResult result, ModelMap model,
+			@RequestParam(name = "newPassword", required = true) String newPassword,
+	        @RequestParam(name = "confirmPassword", required = true) String confirmPassword,
+	        HttpSession session, RedirectAttributes redirectAttrs) throws IOException {
+
+		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		// 去除BindingResult中password欄位的FieldError紀錄
+		result = removeFieldError(memberVO, result, "password");
+
+		// 新密碼和確認密碼不相同
+		if (!newPassword.equals(confirmPassword)) {
+			redirectAttrs.addFlashAttribute("errorMessage", "新密碼與確認新密碼不相同, 請確認.");
+			redirectAttrs.addFlashAttribute("newPassword", newPassword);
+			redirectAttrs.addFlashAttribute("confirmPassword", confirmPassword);
+			return "redirect:/my-account#password-info";
+		}
+		
+		// 取得會員
+		MemberVO originalMember = memberSvc.getOneMember(memberVO.getMemberId());
+		// 密碼驗證失敗
+		if (!originalMember.getPassword().equals(EncodingUtil.hashMD5(memberVO.getPassword()))) {
+			redirectAttrs.addFlashAttribute("errorMessage", "原密碼輸入錯誤, 請確認.");
+			redirectAttrs.addFlashAttribute("newPassword", newPassword);
+			redirectAttrs.addFlashAttribute("confirmPassword", confirmPassword);
+			return "redirect:/my-account#password-info";
+		} 
+		
+		if (result.hasErrors()) {
+			model.addAttribute("MemberVO", memberVO);
+			return "my-account";
+		}
+		/*************************** 2.開始修改資料 *****************************************/
+     	// Hash加密編碼(新密碼)
+		originalMember.setPassword(EncodingUtil.hashMD5(newPassword));
+		// 更新時間
+		originalMember.setUpdateDate(LocalDateTime.now());
+		memberSvc.updateMember(originalMember);
+
+		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+		model.addAttribute("success", "- (修改成功)");
+		memberVO = memberSvc.getOneMember(Integer.valueOf(originalMember.getMemberId()));
+		model.addAttribute("memberVO", originalMember);
+		
+		session.setAttribute("member", originalMember);
+		redirectAttrs.addFlashAttribute("successMessage", "會員資料已更新！");
+		
+		return "redirect:/my-account";
+	}
+	
 	@GetMapping("memberSuspend")
 	public String memberSuspend(@RequestParam("memberId") String memberId, ModelMap model)
 	{
@@ -281,6 +390,7 @@ public class MemberController {
 	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account, hashedPwd));
 	    if (member.isPresent()) {
 	        session.setAttribute("member", member.get());
+	        System.out.println(member);
 	        return "redirect:/my-account";
 	    } else {
 	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
