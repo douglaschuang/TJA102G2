@@ -32,11 +32,16 @@ public class CategoryService {
 		return optional.orElse(null);
 	}
 	
+	// 查詢所有商品類別
 	public List<CategoryVO> getAll(){
 		return repository.findAll();
 	}
 	
 	public Set<ProductVO> getEmpsByCategory_id(Integer category_id){
 		return getOneCategory(category_id).getProducts();
+	}
+	
+	public List<CategoryCountDTO> listWithCount(){
+		return repository.listWithCount();
 	}
 }
