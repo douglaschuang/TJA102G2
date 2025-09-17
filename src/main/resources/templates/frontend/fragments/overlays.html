@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="commonOverlays()">
+  <!-- about overlay -->
+  <div class="header-offcanvas about-overlay" id="about-overlay">
+    <div class="overlay-close inactive"></div>
+    <div class="overlay-content">
+      <span class="close-icon" id="about-close-icon"><a href="javascript:void(0)"><i class="ti-close"></i></a></span>
+      <div class="overlay-content-container d-flex flex-column justify-content-between h-100">
+        <div class="widget-wrapper">
+          <div class="single-widget">
+            <h2 class="widget-title">About Us</h2>
+            <p>At Lezada, we put a strong emphasis on simplicity, quality and usefulness...</p>
+          </div>
+        </div>
+        <div class="contact-widget">
+          <p class="email"><a href="mailto:contact@lezada.com">contact@lezada.com</a></p>
+          <p class="phone">(+00) 123 567990</p>
+          <div class="social-icons">
+            <ul>
+              <li><a href="//www.twitter.com" target="_blank"><i class="fa fa-twitter"></i></a></li>
+              <li><a href="//www.facebook.com" target="_blank"><i class="fa fa-facebook"></i></a></li>
+              <li><a href="//www.instagram.com" target="_blank"><i class="fa fa-instagram"></i></a></li>
+              <li><a href="//www.youtube.com" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- wishlist overlay（保留你原本的結構與 id） -->
+  <div class="wishlist-overlay" id="wishlist-overlay">
+    <div class="wishlist-overlay-close inactive"></div>
+    <div class="wishlist-overlay-content">
+      <span class="close-icon" id="wishlist-close-icon"><a href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
+      <div class="offcanvas-cart-content-container">
+        <h3 class="cart-title">Wishlist</h3>
+        <div class="cart-product-wrapper">
+          <div class="cart-product-container ps-scroll">
+            <!-- 此處放你原本的單品項目（略） -->
+          </div>
+          <div class="cart-buttons"><a th:href="@{/shop/wishlist}">view wishlist</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- cart overlay -->
+  <div class="cart-overlay" id="cart-overlay">
+    <div class="cart-overlay-close inactive"></div>
+    <div class="cart-overlay-content">
+      <span class="close-icon" id="cart-close-icon"><a href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
+      <div class="offcanvas-cart-content-container">
+        <h3 class="cart-title">Cart</h3>
+        <div class="cart-product-wrapper">
+          <div class="cart-product-container ps-scroll">
+            <!-- 此處放你原本的單品項目（略） -->
+          </div>
+          <p class="cart-subtotal"><span class="subtotal-title">Subtotal:</span> <span class="subtotal-amount">$200.00</span></p>
+          <div class="cart-buttons"><a th:href="@{/shop/cart}">view cart</a> <a th:href="@{/shop/checkout}">checkout</a></div>
+          <p class="free-shipping-text">Free Shipping on All Orders Over $100!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- search overlay -->
+  <div class="search-overlay" id="search-overlay">
+    <span class="close-icon search-close-icon"><a href="javascript:void(0)" id="search-close-icon"><i class="ti-close"></i></a></span>
+    <div class="search-overlay-content">
+      <div class="input-box"><form th:action="@{/}"><input type="search" placeholder="Search Products..."></form></div>
+      <div class="search-hint"><span># Hit enter to search or ESC to close</span></div>
+    </div>
+  </div>
+
+  <!-- scroll to top -->
+  <a href="#" class="scroll-top"></a>
+</div>
+</body>
+</html>
