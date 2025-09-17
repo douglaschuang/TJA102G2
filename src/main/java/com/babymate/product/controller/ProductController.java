@@ -1,14 +1,11 @@
 package com.babymate.product.controller;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -19,11 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.babymate.category.model.CategoryService;
 import com.babymate.category.model.CategoryVO;
 import com.babymate.product.model.ProductService;
 import com.babymate.product.model.ProductVO;
-import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.validation.Valid;
 
 @Controller
@@ -88,7 +86,7 @@ public class ProductController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("productVO", productVO);
-		return "admin/product/update_product_input"; // 查詢完成後轉交update_emp_input.html
+		return "admin/product/update_product_input"; // 查詢完成後轉交update_product_input.html
 	}
 
 	// 上架清單

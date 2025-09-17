@@ -1,8 +1,7 @@
 package com.babymate.product.model;
 
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.hibernate.SessionFactory;
@@ -43,12 +42,21 @@ public class ProductService {
 	}
 	
 	// 查詢商品狀態 1:上架, 0:下架
-	public List<ProductVO> findByStatus(int status){
+	public List<ProductVO> findByStatus(Integer status){
 		return repository.findByStatus(status);
 	}
 	// 商品編號從B0001開始
 //	public String generateProductNo(int id) {
 //		return "B" + String.format("%04d", id);
 //	}
+	public List<ProductVO> findHotProducts(Integer fronetEndProduct) {
+		var all = repository.findByStatusOrderByUpdateTimeDesc(1);
+		return all.stream().limit(fronetEndProduct).toList();
+	}
+	
+	// 商品類別篩選條件查詢
+	public List<ProductVO> productPriceSearch(Integer categoryId, BigDecimal mixPrice, BigDecimal maxPrice) {
+		return repository.productPriceSearch(categoryId, mixPrice, maxPrice);
+	}
 
 }
