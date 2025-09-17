@@ -1,709 +1,111 @@
-<!DOCTYPE html>
-<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>BabyMate</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Favicon -->
-<link rel="icon" href="/assets/images/mother_baby_icon.ico"
-	th:href="@{/assets/images/mother_baby_icon.ico}">
-
-<!-- CSS ======================== -->
-<link href="/assets/css/bootstrap.min.css" rel="stylesheet"
-	th:href="@{/assets/css/bootstrap.min.css}">
-<link href="/assets/css/font-awesome.min.css" rel="stylesheet"
-	th:href="@{/assets/css/font-awesome.min.css}">
-<link href="/assets/css/ionicons.min.css" rel="stylesheet"
-	th:href="@{/assets/css/ionicons.min.css}">
-<link href="/assets/css/themify-icons.css" rel="stylesheet"
-	th:href="@{/assets/css/themify-icons.css}">
-<link href="/assets/css/plugins.css" rel="stylesheet"
-	th:href="@{/assets/css/plugins.css}">
-<link href="/assets/css/helper.css" rel="stylesheet"
-	th:href="@{/assets/css/helper.css}">
-<link href="/assets/css/main.css" rel="stylesheet"
-	th:href="@{/assets/css/main.css}">
-
-<!-- Modernizer JS -->
-<script src="/assets/js/vendor/modernizr-2.8.3.min.js"
-	th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
-</head>
-
-<body>
-
-	<!-- Header -->
-	<header class="header header-transparent-background header-sticky">
-		<div class="header-bottom">
-			<div class="container wide">
-				<div class="header-bottom-container">
-
-					<div class="logo-with-offcanvas d-flex">
-						<div class="logo">
-							<a href="/" th:href="@{/}"> <img
-								src="/assets/images/babymate.png" class="img-fluid" alt=""
-								th:src="@{/assets/images/babymate.png}"> <img
-								src="/assets/images/babymate.png" class="img-fluid" alt=""
-								th:src="@{/assets/images/babymate.png}">
-							</a>
-						</div>
-					</div>
-
-					<div class="header-bottom-navigation">
-						<div class="site-main-nav d-none d-lg-block">
-							<nav class="site-nav center-menu">
-								<ul>
-									<li class="menu-item-has-children"><a href="/shop/left"
-										th:href="@{/shop/left}">商城</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">尋找診所</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/element/google-maps"
-												th:href="@{/element/google-maps}">診所地圖</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">會員中心</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/full-grid-left"
-												th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-											<li><a href="/my-account" th:href="@{/my-account}">我的訂單</a></li>
-											<li><a href="/faq" th:href="@{/faq}">F.A.Q</a></li>
-										</ul></li>
-									<li class="menu-item-has-children "><a
-										href="javascript:void(0)">討論區</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/standard-left"
-												th:href="@{/blog/standard-left}">看板貼文</a></li>
-										</ul></li>
-								</ul>
-							</nav>
-						</div>
-					</div>
-
-					<div class="header-right-container">
-						<div
-							class="header-right-icons d-flex justify-content-end align-items-center h-100">
-							<div class="single-icon search">
-								<a href="javascript:void(0)" id="search-icon"><i
-									class="ion-ios-search-strong"></i></a>
-							</div>
-							<div class="single-icon user-login">
-								<a href="/shop/login" th:href="@{/shop/login}"><i
-									class="ion-android-person"></i></a>
-							</div>
-							<div class="single-icon wishlist">
-								<a href="javascript:void(0)" id="offcanvas-wishlist-icon"> <i
-									class="ion-android-favorite-outline"></i><span class="count">2</span>
-								</a>
-							</div>
-							<div class="single-icon cart">
-								<a href="javascript:void(0)" id="offcanvas-cart-icon"> <i
-									class="ion-ios-cart"></i><span class="count">3</span>
-								</a>
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<!-- Mobile Navigation -->
-				<div class="site-mobile-navigation d-block d-lg-none">
-					<div id="dl-menu" class="dl-menuwrapper site-mobile-nav">
-						<!--Site Mobile Menu Toggle Start-->
-						<button class="dl-trigger hamburger hamburger--spin">
-							<span class="hamburger-box"> <span class="hamburger-inner"></span>
-							</span>
-						</button>
-						<!--Site Mobile Menu Toggle End-->
-						<ul class="dl-menu dl-menu-toggle">
-							<li><a href="#">商城</a>
-								<ul class="dl-submenu">
-									<li class=""><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-								</ul></li>
-							<li><a href="#">尋找診所</a>
-								<ul class="dl-submenu">
-									<li><a href="/element/google-maps"
-										th:href="@{/element/google-maps}">診所地圖</a></li>
-								</ul></li>
-							<li><a href="#">會員中心</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/full-grid-left"
-										th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-									<li><a href="my-account.html" th:href="@{/my-account}">我的訂單</a></li>
-									<li><a href="faq.html" th:href="@{/faq}">F.A.Q</a></li>
-								</ul></li>
-							<li><a href="#">討論區</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/standard-left"
-										th:href="@{/blog/standard-left}">看板貼文</a></li>
-								</ul></li>
-						</ul>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</header>
-	<!-- End Header -->
-
-	<!-- lookbook home page content -->
-	<div
-		class="homepage-content--lookbook homepage-content--lookbook-overlay">
-
-		<div class="single-lookbook-section lookbook-bg-6">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-10 offset-lg-1">
-						<div
-							class="lookbook-content-wrapper d-flex flex-column justify-content-center">
-							<div class="lookbook-content text-center">
-								<p class="tag">#商城 #育兒好物 #寶寶成長月月必備</p>
-								<h2 class="lookbook-title">育兒嚴選補給站</h2>
-								<a href="/shop/left" th:href="@{/shop/left}"
-									class="lezada-button lezada-button--medium lookbook-btn">逛逛商城</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="single-lookbook-section lookbook-bg-7">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-7 offset-lg-5 col-md-8 offset-md-4">
-						<div
-							class="lookbook-content-wrapper d-flex flex-column justify-content-center">
-							<div class="lookbook-content text-center">
-								<p class="tag">#尋找診所 #附近門診 #即刻看診不迷路</p>
-								<h2 class="lookbook-title">附近好診所一下就找</h2>
-								<a href="/element/google-maps" th:href="@{/element/google-maps}"
-									class="lezada-button lezada-button--medium lookbook-btn">開啟地圖</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="single-lookbook-section lookbook-bg-8">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-10 offset-lg-1">
-						<div
-							class="lookbook-content-wrapper d-flex flex-column justify-content-center">
-							<div class="lookbook-content text-center">
-								<p class="tag">#會員中心 #個人化服務 #提醒與追蹤更貼心</p>
-								<h2 class="lookbook-title">我的寶寶帳本</h2>
-								<a href="/my-account" th:href="@{/my-account}"
-									class="lezada-button lezada-button--medium lookbook-btn">前往會員中心</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="single-lookbook-section lookbook-bg-9">
-			<div class="container">
-				<div class="row">
-					<div class="col-xl-6 col-lg-7 col-md-8">
-						<div
-							class="lookbook-content-wrapper d-flex flex-column justify-content-center">
-							<div class="lookbook-content text-center">
-								<p class="tag">#討論區 #爸媽互助 #真實心得不藏私</p>
-								<h2 class="lookbook-title">爸媽交流站</h2>
-								<a href="/blog/standard-left" th:href="@{/blog/standard-left}"
-									class="lezada-button lezada-button--medium lookbook-btn">進入討論區</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</div>
-	<!-- end lookbook home page content -->
-
-	<!-- footer -->
-	<div class="footer-container dark-bg footer-one pt-100 pb-50">
-		<div class="container wide">
-			<div class="row">
-				<div class="col footer-single-widget">
-					<div class="logo">
-						<img src="/assets/images/babymate_logo.png" class="img-fluid"
-							alt="" th:src="@{/assets/images/babymate_logo.png}">
-					</div>
-					<div class="copyright-text">
-						<p>
-							&copy;
-							<script>
-								document.write(new Date().getFullYear() + ' ');
-							</script>
-							BABYMATE. <span>All Rights Reserved</span>
-						</p>
-					</div>
-				</div>
-
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">ABOUT</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">About us</a></li>
-								<li><a href="#">Store location</a></li>
-								<li><a href="#">Contact</a></li>
-								<li><a href="#">Orders tracking</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">USEFUL LINKS</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Support Policy</a></li>
-								<li><a href="#">Size guide</a></li>
-								<li><a href="#">FAQs</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">FOLLOW US ON</h5>
-					<div class="footer-nav-container footer-social-links">
-						<nav>
-							<ul>
-								<li><a href="//twitter.com"><i class="fa fa-twitter"></i>
-										Twitter</a></li>
-								<li><a href="//facebook.com"><i class="fa fa-facebook"></i>
-										Facebook</a></li>
-								<li><a href="//instagram.com"><i
-										class="fa fa-instagram"></i> Instagram</a></li>
-								<li><a href="//youtube.com"><i class="fa fa-youtube"></i>
-										Youtube</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-
-				<div class="col footer-single-widget">
-					<div class="footer-subscription-widget">
-						<h2 class="footer-subscription-title">Subscribe.</h2>
-						<p class="subscription-subtitle">Subscribe to our newsletter
-							to receive news on update.</p>
-
-						<div class="subscription-form">
-							<form id="mc-form" class="mc-form">
-								<input type="email" placeholder="Your email address" required>
-								<button type="submit">
-									<i class="ion-ios-arrow-thin-right"></i>
-								</button>
-							</form>
-						</div>
-
-						<div class="mailchimp-alerts">
-							<div class="mailchimp-submitting"></div>
-							<div class="mailchimp-success"></div>
-							<div class="mailchimp-error"></div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-	</div>
-	<!-- end footer -->
-
-	<!-- overlay items (保留原樣的導航/文字內容) -->
-	<div class="overlay-navigation-menu overlay-navigation-inactive"
-		id="overlay-navigation-menu">
-		<span class="close-icon overlay-menu-close-icon"> <a
-			href="javascript:void(0)" id="overlay-menu-close-icon"><i
-				class="ti-close"></i></a>
-		</span>
-		<div class="overlay-navigation-menu-container">
-			<!-- 這區含許多 demo 連結，若未實作可保留或自行刪減 -->
-			<!-- 原始清單略 -->
-		</div>
-	</div>
-
-	<div class="header-offcanvas about-overlay" id="about-overlay">
-		<div class="overlay-close inactive"></div>
-		<div class="overlay-content">
-			<span class="close-icon" id="about-close-icon"><a
-				href="javascript:void(0)"><i class="ti-close"></i></a></span>
-			<div
-				class="overlay-content-container d-flex flex-column justify-content-between h-100">
-				<div class="widget-wrapper">
-					<div class="single-widget">
-						<h2 class="widget-title">About Us</h2>
-						<p>At Lezada, we put a strong emphasis on simplicity, quality
-							and usefulness of fashion products over other factors. Our
-							fashion items never get outdated. They are not short-lived as
-							normal fashion clothes.</p>
-					</div>
-				</div>
-				<div class="contact-widget">
-					<p class="email">
-						<a href="mailto:contact@lezada.com">contact@lezada.com</a>
-					</p>
-					<p class="phone">(+00) 123 567990</p>
-					<div class="social-icons">
-						<ul>
-							<li><a href="//www.twitter.com" target="_blank"><i
-									class="fa fa-twitter"></i></a></li>
-							<li><a href="//www.facebook.com" target="_blank"><i
-									class="fa fa-facebook"></i></a></li>
-							<li><a href="//www.instagram.com" target="_blank"><i
-									class="fa fa-instagram"></i></a></li>
-							<li><a href="//www.youtube.com" target="_blank"><i
-									class="fa fa-youtube-play"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--=======  wishlist overlay  =======-->
-
-	<div class="wishlist-overlay" id="wishlist-overlay">
-		<div class="wishlist-overlay-close inactive"></div>
-		<div class="wishlist-overlay-content">
-			<!--=======  close icon  =======-->
-
-			<span class="close-icon" id="wishlist-close-icon"> <a
-				href="javascript:void(0)"> <i class="ion-android-close"></i>
-			</a>
-			</span>
-
-			<!--=======  End of close icon  =======-->
-
-			<!--=======  offcanvas wishlist content container  =======-->
-
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Wishlist</h3>
-
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$300.00</span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/03.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/03.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$100.00</span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-					</div>
-
-					<!--=======  cart buttons  =======-->
-
-					<div class="cart-buttons">
-						<a href="shop-wishlist.html" th:href="@{/shop/wishlist}">view
-							wishlist</a>
-					</div>
-
-					<!--=======  End of cart buttons  =======-->
-				</div>
-			</div>
-
-			<!--=======  End of offcanvas wishlist content container   =======-->
-		</div>
-	</div>
-
-	<!--=======  End of wishlist overlay  =======-->
-
-	<div class="cart-overlay" id="cart-overlay">
-		<div class="cart-overlay-close inactive"></div>
-		<div class="cart-overlay-content">
-			<span class="close-icon" id="cart-close-icon"><a
-				href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Cart</h3>
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/03.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<p class="cart-subtotal">
-						<span class="subtotal-title">Subtotal:</span> <span
-							class="subtotal-amount">$200.00</span>
-					</p>
-
-					<div class="cart-buttons">
-						<a th:href="@{/shop/cart}">view cart</a> <a
-							th:href="@{/shop/checkout}">checkout</a>
-					</div>
-
-					<p class="free-shipping-text">Free Shipping on All Orders Over
-						$100!</p>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Search overlay -->
-	<div class="search-overlay" id="search-overlay">
-		<span class="close-icon search-close-icon"><a
-			href="javascript:void(0)" id="search-close-icon"><i
-				class="ti-close"></i></a></span>
-		<div class="search-overlay-content">
-			<div class="input-box">
-				<form th:action="@{/}">
-					<input type="search" placeholder="Search Products...">
-				</form>
-			</div>
-			<div class="search-hint">
-				<span># Hit enter to search or ESC to close</span>
-			</div>
-		</div>
-	</div>
-
-	<!-- scroll to top -->
-	<a href="#" class="scroll-top"></a>
-
-	<!-- JS ============================================ -->
-	<script src="/assets/js/vendor/jquery.min.js"
-		th:src="@{/assets/js/vendor/jquery.min.js}"></script>
-	<script src="/assets/js/popper.min.js"
-		th:src="@{/assets/js/popper.min.js}"></script>
-	<script src="/assets/js/bootstrap.min.js"
-		th:src="@{/assets/js/bootstrap.min.js}"></script>
-	<script src="/assets/js/plugins.js" th:src="@{/assets/js/plugins.js}"></script>
-	<script src="/assets/js/main.js" th:src="@{/assets/js/main.js}"></script>
-
-</body>
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+  <!-- 用 layout 的 head，第二個參數是這頁專屬的 extraHead 插槽 -->
+  <head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+    <!-- 首頁若有自己的 <style> 或額外 CSS，在這裡放 -->
+    <th:block th:fragment="extraHead">
+      <!-- 範例：如果要覆寫 lookbook 背景圖，可以這裡寫 -->
+      <!--
+      <style>
+        .lookbook-bg-6{ background-image:url('/assets/images/hero/hero-1.jpg'); }
+        .lookbook-bg-7{ background-image:url('/assets/images/hero/hero-2.jpg'); }
+        .lookbook-bg-8{ background-image:url('/assets/images/hero/hero-3.jpg'); }
+        .lookbook-bg-9{ background-image:url('/assets/images/hero/hero-4.jpg'); }
+      </style>
+      -->
+    </th:block>
+  </head>
+
+  <!-- 用 layout 的主體；參數依序為：headerType, content, extraJs, footerClass -->
+  <body th:replace="~{frontend/layout :: layout('transparent', ~{::content}, ~{::extraJs}, 'dark-bg footer-one')}">
+
+    <!-- 把「純內容」放進 content 插槽（不要再放 header/footer/overlays 了） -->
+    <th:block th:fragment="content">
+
+      <!-- lookbook home page content -->
+      <div class="homepage-content--lookbook homepage-content--lookbook-overlay">
+
+        <div class="single-lookbook-section lookbook-bg-6">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-10 offset-lg-1">
+                <div class="lookbook-content-wrapper d-flex flex-column justify-content-center">
+                  <div class="lookbook-content text-center">
+                    <p class="tag">#商城 #育兒好物 #寶寶成長月月必備</p>
+                    <h2 class="lookbook-title">育兒嚴選補給站</h2>
+                    <a th:href="@{/shop/left}" class="lezada-button lezada-button--medium lookbook-btn">逛逛商城</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="single-lookbook-section lookbook-bg-7">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-7 offset-lg-5 col-md-8 offset-md-4">
+                <div class="lookbook-content-wrapper d-flex flex-column justify-content-center">
+                  <div class="lookbook-content text-center">
+                    <p class="tag">#尋找診所 #附近門診 #即刻看診不迷路</p>
+                    <h2 class="lookbook-title">附近好診所一下就找</h2>
+                    <a th:href="@{/element/google-maps}" class="lezada-button lezada-button--medium lookbook-btn">開啟地圖</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="single-lookbook-section lookbook-bg-8">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-10 offset-lg-1">
+                <div class="lookbook-content-wrapper d-flex flex-column justify-content-center">
+                  <div class="lookbook-content text-center">
+                    <p class="tag">#會員中心 #個人化服務 #提醒與追蹤更貼心</p>
+                    <h2 class="lookbook-title">我的寶寶帳本</h2>
+                    <a th:href="@{/my-account}" class="lezada-button lezada-button--medium lookbook-btn">前往會員中心</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="single-lookbook-section lookbook-bg-9">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl-6 col-lg-7 col-md-8">
+                <div class="lookbook-content-wrapper d-flex flex-column justify-content-center">
+                  <div class="lookbook-content text-center">
+                    <p class="tag">#討論區 #爸媽互助 #真實心得不藏私</p>
+                    <h2 class="lookbook-title">爸媽交流站</h2>
+                    <a th:href="@{/blog/standard-left}" class="lezada-button lezada-button--medium lookbook-btn">進入討論區</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- end lookbook home page content -->
+
+      <!-- 首頁不需要 breadcrumb；若之後要用可這樣插：
+      <div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('頁面標題')}"></div>
+      -->
+
+    </th:block>
+
+    <!-- 如果首頁需要額外 JS（只給這一頁用），放這個插槽 -->
+    <th:block th:fragment="extraJs">
+      <!-- 例：首頁小互動 -->
+      <!--
+      <script th:inline="javascript">
+        // 這裡寫首頁專屬的 JS
+      </script>
+      -->
+    </th:block>
+  </body>
 </html>
