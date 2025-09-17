@@ -102,12 +102,14 @@
 								<div class="col-lg-12 mb-30">
 									<label for="regPassword">密碼 (Password) <span
 										class="required">*</span>
-									</label> <input type="password" id="regPassword" name="password" maxlength="20" autocomplete="current-password" required>
+									</label> <input type="password" id="regPassword" name="password" maxlength="20" 
+									  pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫"  autocomplete="current-password" required>
 								</div>
 								<div class="col-lg-12 mb-30">
 									<label for="regPassword">確認密碼 (Password Confirmation) <span
 										class="required">*</span>
-									</label> <input type="password" id="reRegPassword" maxlength="20" autocomplete="current-password" required>
+									</label> <input type="password" id="reRegPassword" maxlength="20" 
+									  pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" autocomplete="current-password" required>
 								</div>
 								<div class="col-lg-12 text-center">
 									<button type="submit" class="lezada-button lezada-button--medium">註冊</button>
