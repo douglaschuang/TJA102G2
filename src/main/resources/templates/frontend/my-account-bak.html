@@ -263,12 +263,27 @@
                         </div>
                       </div>
                     </form>
+                    <!-- 錯誤表列 -->
+					<p></p>
+<!-- 					<div class="errorblock  text-left" th:if="${errorMessage}" th:text="${errorMessage}"></div> -->
+<!-- 					<div class="successblock  text-left" th:if="${logoutMessage}" th:text="${logoutMessage}"></div> -->
+					<div class="alert alert-danger d-flex align-items-center mt-4" role="alert" th:if="${errorMessage}">
+  						<i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem;"></i>
+  						<span th:text="${errorMessage}"></span>
+					</div>
+					<div class="alert alert-success fade-in d-flex align-items-center mt-4" role="alert" th:if="${successMessage}">
+  						<i class="bi bi-check-circle-fill me-2" style="font-size: 1.5rem;"></i>
+  						<span th:text="${successMessage}"></span>
+					</div>
+					<!-- 錯誤表列 -->
                   </div>
                 </div>
               </div>
               <!-- /Account Info -->
 
 			  <!-- Password Info -->
+			  
+			  
 			  <div class="tab-pane fade" id="password-info" role="tabpanel">
                 <div class="myaccount-content">
                   <h3>密碼變更</h3>
@@ -316,6 +331,19 @@
                         </div>
                       </div>
                     </form>
+                    <!-- 錯誤表列 -->
+					<p></p>
+<!-- 					<div class="errorblock  text-left" th:if="${errorMessage}" th:text="${errorMessage}"></div> -->
+<!-- 					<div class="successblock  text-left" th:if="${logoutMessage}" th:text="${logoutMessage}"></div> -->
+					<div class="alert alert-danger d-flex align-items-center mt-4" role="alert" th:if="${errorMessage}">
+  						<i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem;"></i>
+  						<span th:text="${errorMessage}"></span>
+					</div>
+					<div class="alert alert-success fade-in d-flex align-items-center mt-4" role="alert" th:if="${successMessage}">
+  						<i class="bi bi-check-circle-fill me-2" style="font-size: 1.5rem;"></i>
+  						<span th:text="${successMessage}"></span>
+					</div>
+					<!-- 錯誤表列 -->
                 </div>
               </div>
 			  <!-- /Password Info -->
@@ -787,5 +815,31 @@
       reader.readAsDataURL(event.target.files[0]);
     }
   </script>
+  
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+
+    if (hash) {
+      // 移除所有 tab 的 active 樣式
+      document.querySelectorAll('.myaccount-tab-menu a').forEach(function (tabLink) {
+        tabLink.classList.remove('active');
+      });
+
+      document.querySelectorAll('.tab-pane').forEach(function (tabPane) {
+        tabPane.classList.remove('show', 'active');
+      });
+
+      // 套用新的 active 樣式
+      const targetTabLink = document.querySelector(`.myaccount-tab-menu a[href="${hash}"]`);
+      const targetTabPane = document.querySelector(hash);
+
+      if (targetTabLink && targetTabPane) {
+        targetTabLink.classList.add('active');
+        targetTabPane.classList.add('show', 'active');
+      }
+    }
+  });
+</script>
 </body>
 </html>
