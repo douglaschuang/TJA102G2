@@ -156,21 +156,21 @@ public class MemberController {
 		// 因為input type=password會帶出時會自動改為null, 所以若未重新輸入, 則維持原密碼
 		MemberVO originalMember = memberSvc.getOneMember(memberVO.getMemberId());
 //		// 若密碼欄位空白，保留原始密碼
-	    if (memberVO.getPassword() == null || memberVO.getPassword().isEmpty()) {
-	        memberVO.setPassword(originalMember.getPassword());
-//	        System.out.println("staffVO="+staffVO.getPassword()+" original="+originalStaff.getPassword());
-	    } else {
-	    	// Hash加密編碼
-	    	memberVO.setPassword(EncodingUtil.hashMD5(memberVO.getPassword()));
-	    }
+//	    if (memberVO.getPassword() == null || memberVO.getPassword().isEmpty()) {
+//	        memberVO.setPassword(originalMember.getPassword());
+//	    } else {
+//	    	// Hash加密編碼
+//	    	memberVO.setPassword(EncodingUtil.hashMD5(memberVO.getPassword()));
+//	    }
 		
 		if (result.hasErrors()) {
 			model.addAttribute("MemberVO", memberVO);
-			return "my-account";
+			return "my-account#account-info";
 		}
 		/*************************** 2.開始修改資料 *****************************************/
 		// 載入其他欄位資訊
 		memberVO.setAccount(originalMember.getAccount());
+		memberVO.setPassword(originalMember.getPassword());
 		memberVO.setEmailAuthToken(originalMember.getEmailAuthToken());
 		memberVO.setEmailVerified(originalMember.getEmailVerified());
 		memberVO.setLastLoginTime(originalMember.getLastLoginTime());
@@ -189,7 +189,7 @@ public class MemberController {
 		session.setAttribute("member", memberVO);
 		redirectAttrs.addFlashAttribute("successMessage", "會員資料已更新！");
 		
-		return "redirect:/my-account";
+		return "redirect:/my-account#account-info";
 	}
 
 	@PostMapping("updatePassword")
@@ -237,9 +237,9 @@ public class MemberController {
 		model.addAttribute("memberVO", originalMember);
 		
 		session.setAttribute("member", originalMember);
-		redirectAttrs.addFlashAttribute("successMessage", "會員資料已更新！");
+		redirectAttrs.addFlashAttribute("successMessage", "密碼已更新！");
 		
-		return "redirect:/my-account";
+		return "redirect:/my-account#password-info";
 	}
 	
 	@GetMapping("memberSuspend")
@@ -268,6 +268,7 @@ public class MemberController {
 		if ((memberTemp != null) && (memberTemp.getAccountStatus() != 0)) {
 //			model.addAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
 			redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
+			redirectAttributes.addFlashAttribute("errorSource", "register");
 			redirectAttributes.addFlashAttribute("account", account);
 		    redirectAttributes.addFlashAttribute("captcha", captcha);
 			return "redirect:/shop/login";
@@ -283,6 +284,7 @@ public class MemberController {
 			mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", messageText);
 //			model.addAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼點選驗證完成");
 			redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
+			redirectAttributes.addFlashAttribute("errorSource", "register");
 			redirectAttributes.addFlashAttribute("account", account);
 		    redirectAttributes.addFlashAttribute("captcha", captcha);
 			return "redirect:/shop/login";
@@ -291,6 +293,7 @@ public class MemberController {
 			// 未輸入驗證碼
 			if (captcha.isEmpty()) {
 				redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
+				redirectAttributes.addFlashAttribute("errorSource", "register");
 				redirectAttributes.addFlashAttribute("account", account);
 				return "redirect:/shop/login";
 			} else {
@@ -299,6 +302,7 @@ public class MemberController {
 				if (!(memberTemp.getEmailAuthToken().equals(captcha))) {
 //					model.addAttribute("errorMessage", "驗證碼不相符, 請確認");
 					redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
+					redirectAttributes.addFlashAttribute("errorSource", "register");
 					redirectAttributes.addFlashAttribute("account", account);
 				    redirectAttributes.addFlashAttribute("captcha", captcha);
 					return "redirect:/shop/login";
@@ -317,6 +321,7 @@ public class MemberController {
 //		model.addAttribute("memberVO", memberTemp);
 		
 		redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
+		redirectAttributes.addFlashAttribute("logoutSource", "register");
     
 		// 回登入頁面, 引導用戶登入
 	    return "redirect:/shop/login";
@@ -394,6 +399,7 @@ public class MemberController {
 	        return "redirect:/my-account";
 	    } else {
 	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
+	    	redirectAttributes.addFlashAttribute("errorSource", "login");
 //	        model.addAttribute("error", "帳號或密碼錯誤");
 	        return "redirect:/shop/login";
 	    }
@@ -408,6 +414,7 @@ public class MemberController {
 	    }
 	 
 	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
+	    redirectAttributes.addFlashAttribute("logoutMessage", "login");
 	    return "redirect:/shop/login"; // 返回登入頁
 	}
 	
