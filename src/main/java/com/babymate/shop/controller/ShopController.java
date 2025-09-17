@@ -1,6 +1,7 @@
 package com.babymate.shop.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.babymate.category.model.CategoryCountDTO;
 import com.babymate.category.model.CategoryService;
 import com.babymate.product.model.ProductService;
+import com.babymate.product.model.ProductVO;
 
 @Controller
 public class ShopController {
@@ -29,14 +31,15 @@ public class ShopController {
 	// 前台商城篩選商品列表頁，對應 /templates/frontend/shop-left-sidebar.html
 	@GetMapping("/shop/left")
 	public String shopLeftSidebar(
+			@RequestParam(defaultValue = "newProduct") String sort,
 			@RequestParam(required = false) Integer categoryId,
 			@RequestParam(required = false) BigDecimal minPrice,
 			@RequestParam(required = false) BigDecimal maxPrice,
 			ModelMap model) {
-		
 		// 商品清單(依分類與價格篩選)
-		var products = productSvc.productPriceSearch(categoryId, minPrice, maxPrice);
-		model.addAttribute("hotProducts", products);
+		var products = productSvc.findByCondition(categoryId, minPrice, maxPrice, sort);
+	    model.addAttribute("hotProducts", products);
+	    model.addAttribute("sort", sort);
 		
 		// 分類清單(含每個分類的商品數量)
 		var categories = categorySvc.listWithCount();
@@ -50,12 +53,7 @@ public class ShopController {
 		model.addAttribute("selectCategoryId", categoryId);
 		model.addAttribute("minPrice", minPrice);
 		model.addAttribute("maxPrice", maxPrice);
-		
-		// 只撈出上架商品
-//		List<ProductVO> hot = productSvc.findByStatus(1);
-//		model.addAttribute("hotProducts",hot);
-//		System.out.println("hotProducts size = " + hot.size());
-		
+			
 		return "frontend/shop-left-sidebar";
 	}
 }
