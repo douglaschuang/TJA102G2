@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<!-- 讓 layout 的 <head> 接手，並把本頁的 extraHead 傳進去 -->
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS（可留空） -->
+  <th:block th:fragment="extraHead"></th:block>
+
+  <!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
+    <section th:fragment="content">
+      <main class="app-main">
+			<!--begin::App Content Header-->
+			<div class="app-content-header">
+				<!--begin::Container-->
+				<div class="container-fluid">
+					<!--begin::Row-->
+					<div class="row">
+						<div class="col-sm-6">
+							<h3 class="mb-0">商品類別新增</h3>
+						</div>
+					</div>
+					<!--end::Row-->
+				</div>
+				<!--end::Container-->
+			</div>
+			<div class="app-content">
+				<!--begin::Container-->
+				<div class="container-fluid">
+					<!-- 商品介面 -->
+					<div class="card mb-4">
+						<h3>新增商品類別：</h3>
+						<form th:action="@{insert}" method="post" th:object="${categoryVO}"
+							enctype="multipart/form-data">
+							<div>
+								<label class="col-sm-2 col-form-label">類別名稱：</label> 
+								<input type="text" th:field="*{categoryName}" onclick="hideContent('category_name.errors');" /> 
+								<span th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}"
+									class="error" id="categoryName.errors"></span>
+							</div>
+							<div>
+								<button class="btn btn-primary" type="submit" id="submit" style="height: 40px; width:100px">送出新增</button>
+								<a class="btn btn-sm btn-primary" th:href="@{listAllCategory}" style="height: 40px; line-height:30px; width:100px"><i></i>返回</a>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- /.col-md-6 -->
+			</div>
+    </section>
+
+    <!-- 本頁額外 JS（可留空） -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>
