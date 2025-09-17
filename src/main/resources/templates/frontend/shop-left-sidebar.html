@@ -176,23 +176,35 @@
 					<div class="col-12 col-lg-7 col-md-10 d-none d-md-block">
 						<div class="filter-title filter-title--type-two">
 							<ul class="product-filter-menu">
-								<li data-filter=".hot">熱銷商品</li>
-								<li data-filter=".new">新上架商品</li>
-								<li data-filter=".sale">限時特價</li>
+								<!-- <li data-filter=".hot">熱銷商品</li> -->
+								<!-- <li data-filter=".new">新上架商品</li> -->
+								<!-- <li data-filter=".sale">限時特價</li> -->
+								<li>
+									<a th:href="@{/shop/left}">綜合排名</a>
+								</li>
+								<li th:classappend="${sort} == 'newProduct' ? '' ">
+									<a th:href="@{/shop/left(sort='newProduct')}">最新</a>
+								</li>
+								<li th:classappend="${sort} == 'priceAsc' ? '' ">
+									<a th:href="@{/shop/left(sort='priceAsc')}">價格: 由低到高</a>
+								</li>
+								<li th:classappend="${sort} == 'priceDesc' ? '' ">
+									<a th:href="@{/shop/left(sort='priceDesc')}">價格: 由高到低</a>
+								</li>
 							</ul>
 						</div>
 					</div>
 					<div class="col-12 col-lg-5 col-md-2">
 						<div class="filter-icons">
-							<div class="single-icon filter-dropdown">
+							<!-- <div class="single-icon filter-dropdown">
 								<select class="nice-select" aria-label="排序">
 									<option value="0">綜合排名</option>
 									<option value="1">最新</option>
 									<option value="2">熱銷推薦</option>
 									<option value="3">價格: 由低到高</option>
-									<option value="4">價格: 由高到低</option>
+									<option value="4">價格: 由低到高</option>
 								</select>
-							</div>
+							</div> -->
 							<div class="single-icon grid-icons" aria-label="版型切換">
 								<a data-target="five-column" href="javascript:void(0)"><i
 									class="ti-layout-grid4-alt" aria-hidden="true"></i></a> <a
@@ -304,7 +316,7 @@
 					<!-- sidebar -->
 					<div class="col-lg-3 order-2 order-lg-1">
 						<div class="page-sidebar">
-							<div class="single-sidebar-widget mb-40">
+							<!-- <div class="single-sidebar-widget mb-40">
 								<div class="search-widget">
 									<form action="#" role="search" aria-label="站內商品搜尋">
 										<input type="search" placeholder="請輸入商品..." aria-label="搜尋關鍵字">
@@ -313,7 +325,7 @@
 										</button>
 									</form>
 								</div>
-							</div>
+							</div> -->
 
 							<div class="single-sidebar-widget mb-40">
 								<h2 class="single-sidebar-widget--title">全站商品分類</h2>
@@ -610,6 +622,50 @@
 										</div>
 									</div>
 								</div>
+								
+								
+								<!-- 點選商品搜尋icon 快速查看商品 -->
+								<div th:id="'qv-' + ${p.productId}" class="cd-quick-view">
+									<div class="cd-slider-wrapper">
+										<ul class="cd-slider">
+											<li class="selected"><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 2"></li>
+											<li><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 1"></li>
+										</ul> <!-- cd-slider -->
+							
+										<ul class="cd-slider-pagination">
+											<li class="active"><a href="#0">1</a></li>
+											<li><a href="#1">2</a></li>
+										</ul> <!-- cd-slider-pagination -->
+							
+										<ul class="cd-slider-navigation">
+											<li><a class="cd-prev" href="#0">Prev</a></li>
+											<li><a class="cd-next" href="#0">Next</a></li>
+										</ul> <!-- cd-slider-navigation -->
+									</div> <!-- cd-slider-wrapper -->
+							
+									<div class="lezada-item-info cd-item-info ps-scroll">
+							
+										<h2 class="item-title" th:text="${p.productName}"></h2>
+										<p class="price">
+											<span class="discounted-price" th:text="'NT$' + ${p.price}"></span>
+										</p>
+							
+										<p class="description" th:text="${p.featureDesc}"></p>
+							
+										<span class="quickview-title">數量：</span>
+										<div class="pro-qty d-inline-block mb-40">
+											<input type="text" value="1">
+										</div>
+							
+										<div class="add-to-cart-btn mb-25">
+							
+											<button class="lezada-button lezada-button--medium">加入購物車</button>
+										</div>
+									</div> <!-- cd-item-info -->
+									<a href="#0" class="cd-close">Close</a>
+								</div>
+								<!-- End 點選商品搜尋icon 快速查看商品 -->
+								
 							</th:block>
 						</div>
 					</div>
@@ -619,6 +675,8 @@
 		<!-- /content -->
 	</div>
 	<!-- /shop page wrapper -->
+
+	
 
 	<!-- footer -->
 	<div class="footer-container footer-one pt-100 pb-50">
@@ -709,7 +767,6 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>

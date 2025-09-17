@@ -19,21 +19,60 @@ public interface ProductRepository extends JpaRepository<ProductVO, Integer>{
 
 	List<ProductVO> findByStatus(Integer status); // 1:上架, 0:下架
 	
-	List<ProductVO> findByStatusOrderByUpdateTimeDesc(Integer status); // 前台熱門商品用
+	// 最新(上架商品用updateTime Desc來排列)
+	List<ProductVO> findByStatusOrderByUpdateTimeDesc(Integer status); 
 	
-	// :categoryId IS NULL -> 沒分類直接查全部
-	@Query("""
-			SELECT p FROM ProductVO p
-			LEFT JOIN p.categoryVO c
-			WHERE p.status = 1
-			AND (:categoryId IS NULL OR c.categoryId = :categoryId)
-			AND (:minPrice IS NULL OR p.price >= :minPrice)
-			AND (:maxPrice IS NULL OR p.price <= :maxPrice)
-			ORDER BY p.updateTime DESC
-			""")
-	List<ProductVO> productPriceSearch(
-			@Param("categoryId") Integer categoryId,
-			@Param("minPrice") BigDecimal minPrice,
-			@Param("maxPrice") BigDecimal maxPrice
-	);
+	// 價格由高到低(只針對有上架商品)
+	List<ProductVO> findByStatusOrderByPriceDesc(Integer status);
+	
+	// 價格由低到高(只針對有上架商品)
+	List<ProductVO> findByStatusOrderByPriceAsc(Integer status);
+
+	// 排序：最新（預設）
+    @Query("""
+        SELECT p FROM ProductVO p
+        LEFT JOIN p.categoryVO c
+        WHERE p.status = 1
+          AND (:categoryId IS NULL OR c.categoryId = :categoryId)
+          AND (:minPrice IS NULL OR p.price >= :minPrice)
+          AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+        ORDER BY p.updateTime DESC
+    """)
+    List<ProductVO> findByConditionOrderByUpdateTimeDesc(
+        @Param("categoryId") Integer categoryId,
+        @Param("minPrice") BigDecimal minPrice,
+        @Param("maxPrice") BigDecimal maxPrice
+    );
+	
+	// 排序：價格由低到高
+    @Query("""
+        SELECT p FROM ProductVO p
+        LEFT JOIN p.categoryVO c
+        WHERE p.status = 1
+          AND (:categoryId IS NULL OR c.categoryId = :categoryId)
+          AND (:minPrice IS NULL OR p.price >= :minPrice)
+          AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+        ORDER BY p.price ASC
+    """)
+    List<ProductVO> findByConditionOrderByPriceAsc(
+        @Param("categoryId") Integer categoryId,
+        @Param("minPrice") BigDecimal minPrice,
+        @Param("maxPrice") BigDecimal maxPrice
+    );
+
+    // 排序：價格由高到低
+    @Query("""
+        SELECT p FROM ProductVO p
+        LEFT JOIN p.categoryVO c
+        WHERE p.status = 1
+          AND (:categoryId IS NULL OR c.categoryId = :categoryId)
+          AND (:minPrice IS NULL OR p.price >= :minPrice)
+          AND (:maxPrice IS NULL OR p.price <= :maxPrice)
+        ORDER BY p.price DESC
+    """)
+    List<ProductVO> findByConditionOrderByPriceDesc(
+        @Param("categoryId") Integer categoryId,
+        @Param("minPrice") BigDecimal minPrice,
+        @Param("maxPrice") BigDecimal maxPrice
+    );
 }

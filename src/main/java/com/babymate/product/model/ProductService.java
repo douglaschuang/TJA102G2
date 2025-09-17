@@ -45,18 +45,37 @@ public class ProductService {
 	public List<ProductVO> findByStatus(Integer status){
 		return repository.findByStatus(status);
 	}
-	// 商品編號從B0001開始
-//	public String generateProductNo(int id) {
-//		return "B" + String.format("%04d", id);
-//	}
+
 	public List<ProductVO> findHotProducts(Integer fronetEndProduct) {
 		var all = repository.findByStatusOrderByUpdateTimeDesc(1);
 		return all.stream().limit(fronetEndProduct).toList();
 	}
-	
-	// 商品類別篩選條件查詢
-	public List<ProductVO> productPriceSearch(Integer categoryId, BigDecimal mixPrice, BigDecimal maxPrice) {
-		return repository.productPriceSearch(categoryId, mixPrice, maxPrice);
-	}
 
+	// 取上架商品最新時間排列
+	public List<ProductVO> getAllByNewProduct(){
+		return repository.findByStatusOrderByUpdateTimeDesc(1);
+	}
+	
+	// 取上架商品金額由高到低
+	public List<ProductVO> getAllByPriceDesc(){
+		return repository.findByStatusOrderByPriceDesc(1);
+	}
+	
+	// 取上架商品金額由低到高
+	public List<ProductVO> getAllByPriceAsc(){
+		return repository.findByStatusOrderByPriceAsc(1);
+	}
+	
+	// 前台篩選及排列
+	public List<ProductVO> findByCondition(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String sort) {
+	    switch (sort) {
+	        case "priceAsc":
+	            return repository.findByConditionOrderByPriceAsc(categoryId, minPrice, maxPrice);
+	        case "priceDesc":
+	            return repository.findByConditionOrderByPriceDesc(categoryId, minPrice, maxPrice);
+	        case "newProduct":
+	        default:
+	            return repository.findByConditionOrderByUpdateTimeDesc(categoryId, minPrice, maxPrice);
+	    }
+	}
 }
