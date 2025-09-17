@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="siteFooter(footerClass)"
+     class="footer-container pt-100 pb-50"
+     th:classappend="${footerClass} != null ? ' ' + ${footerClass} : ' footer-one'">
+  <div class="container wide">
+    <div class="row">
+      <div class="col footer-single-widget">
+        <div class="logo"><img class="img-fluid" th:src="@{/assets/images/babymate_logo.png}" alt=""></div>
+        <div class="copyright-text">
+          <p>&copy; <script>document.write(new Date().getFullYear()+' ');</script> BABYMATE. <span>All Rights Reserved</span></p>
+        </div>
+      </div>
+
+      <div class="col footer-single-widget">
+        <h5 class="widget-title">ABOUT</h5>
+        <div class="footer-nav-container"><nav><ul>
+          <li><a href="#">About us</a></li>
+          <li><a href="#">Store location</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Orders tracking</a></li>
+        </ul></nav></div>
+      </div>
+
+      <div class="col footer-single-widget">
+        <h5 class="widget-title">USEFUL LINKS</h5>
+        <div class="footer-nav-container"><nav><ul>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Support Policy</a></li>
+          <li><a href="#">Size guide</a></li>
+          <li><a href="#">FAQs</a></li>
+        </ul></nav></div>
+      </div>
+
+      <div class="col footer-single-widget">
+        <h5 class="widget-title">FOLLOW US ON</h5>
+        <div class="footer-nav-container footer-social-links"><nav><ul>
+          <li><a href="//twitter.com"><i class="fa fa-twitter"></i> Twitter</a></li>
+          <li><a href="//facebook.com"><i class="fa fa-facebook"></i> Facebook</a></li>
+          <li><a href="//instagram.com"><i class="fa fa-instagram"></i> Instagram</a></li>
+          <li><a href="//youtube.com"><i class="fa fa-youtube"></i> Youtube</a></li>
+        </ul></nav></div>
+      </div>
+
+      <div class="col footer-single-widget">
+        <div class="footer-subscription-widget">
+          <h2 class="footer-subscription-title">Subscribe.</h2>
+          <p class="subscription-subtitle">Subscribe to our newsletter to receive news on update.</p>
+          <div class="subscription-form">
+            <form id="mc-form" class="mc-form">
+              <input type="email" placeholder="Your email address" required>
+              <button type="submit"><i class="ion-ios-arrow-thin-right"></i></button>
+            </form>
+          </div>
+          <div class="mailchimp-alerts">
+            <div class="mailchimp-submitting"></div>
+            <div class="mailchimp-success"></div>
+            <div class="mailchimp-error"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

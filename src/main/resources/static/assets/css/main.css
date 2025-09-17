@@ -12731,3 +12731,20 @@ nav.site-nav > ul > li ul.mega-menu-column-5 > li .mega-sub-menu li:last-child a
 }
 
 /*=====  End of 41. compare  ======*/
+
+/* 基本：預設只顯示深色版，隱藏淺色版 */
+.logo-img{height:40px;vertical-align:middle;transition:opacity .2s ease;}
+.logo-light{display:none;}
+.logo-dark{display:inline-block;}
+
+/* 首頁透明版頭：顯示淺色版、隱藏深色版 */
+.header-transparent-background .logo-light{display:inline-block;}
+.header-transparent-background .logo-dark{display:none;}
+
+/* 滑鼠移入（變實心樣式時）：切回顯示深色版 */
+.header-transparent-background:hover .logo-light{display:none;}
+.header-transparent-background:hover .logo-dark{display:inline-block;}
+
+/* 如果有「黏住」的 class（捲動後的實心狀態），也顯示深色版 */
+.header-sticky.is-sticky .logo-light{display:none;}
+.header-sticky.is-sticky .logo-dark{display:inline-block;}

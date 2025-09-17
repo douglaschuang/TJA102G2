@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<body>
+	<header th:fragment="siteHeader(type)" class="header header-sticky"
+		th:classappend="${type}=='transparent' ? ' header-transparent-background' : ' header-offcanvas-about'">
+		<div class="header-bottom"
+			th:classappend="${type}=='transparent' ? '' : ' pt-md-40 pb-md-40 pt-sm-40 pb-sm-40'">
+			<div class="container wide">
+				<div class="header-bottom-container">
+
+					<!-- logo + offcanvas -->
+					<div class="logo-with-offcanvas d-flex">
+						<div class="offcanvas-about-icon mr-20 d-none d-lg-block"
+							th:if="${type}!='transparent'">
+							<a href="javascript:void(0)" id="offcanvas-about-icon"><i
+								class="ion-navicon"></i></a>
+						</div>
+						<!-- <div class="logo">
+							<a th:href="@{/}"> <img
+								th:src="@{/assets/images/babymate.png}" class="img-fluid"
+								alt="BabyMate">
+							</a>
+						</div> -->
+						<div class="logo">
+							<a th:href="@{/}"> <!-- 透明背景時用（通常是白色或淺色） --> <img
+								class="img-fluid logo-img logo-light"
+								th:src="@{/assets/images/babymate-light.png}" alt="BabyMate">
+								<!-- 實心背景時用（通常是彩色或深色） --> <img
+								class="img-fluid logo-img logo-dark"
+								th:src="@{/assets/images/babymate-dark.png}" alt="BabyMate">
+							</a>
+						</div>
+
+
+					</div>
+
+					<!-- nav -->
+					<div class="header-bottom-navigation">
+						<div class="site-main-nav d-none d-lg-block">
+							<nav class="site-nav center-menu">
+								<ul>
+									<li class="menu-item-has-children"><a
+										th:href="@{/shop/left}">商城</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a th:href="@{/shop/left}">查看所有商品</a></li>
+										</ul></li>
+									<li class="menu-item-has-children"><a
+										href="javascript:void(0)">尋找診所</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a th:href="@{/element/google-maps}">診所地圖</a></li>
+										</ul></li>
+									<li class="menu-item-has-children"><a
+										href="javascript:void(0)">會員中心</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
+											<li><a th:href="@{/my-account}">我的訂單</a></li>
+											<li><a th:href="@{/faq}">F.A.Q</a></li>
+										</ul></li>
+									<li class="menu-item-has-children"><a
+										href="javascript:void(0)">討論區</a>
+										<ul class="sub-menu single-column-menu">
+											<li><a th:href="@{/blog/standard-left}">看板貼文</a></li>
+										</ul></li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+
+					<!-- right icons -->
+					<div class="header-right-container">
+						<div
+							class="header-right-icons d-flex justify-content-end align-items-center h-100">
+							<div class="single-icon search">
+								<a href="javascript:void(0)" id="search-icon"><i
+									class="ion-ios-search-strong"></i></a>
+							</div>
+							<div class="single-icon user-login">
+								<a th:href="@{/shop/login}"><i class="ion-android-person"></i></a>
+							</div>
+							<div class="single-icon wishlist">
+								<a href="javascript:void(0)" id="offcanvas-wishlist-icon"><i
+									class="ion-android-favorite-outline"></i><span class="count">2</span></a>
+							</div>
+							<div class="single-icon cart">
+								<a href="javascript:void(0)" id="offcanvas-cart-icon"><i
+									class="ion-ios-cart"></i><span class="count">3</span></a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- mobile nav -->
+				<div class="site-mobile-navigation d-block d-lg-none">
+					<div id="dl-menu" class="dl-menuwrapper site-mobile-nav">
+						<button class="dl-trigger hamburger hamburger--spin">
+							<span class="hamburger-box"><span class="hamburger-inner"></span></span>
+						</button>
+						<ul class="dl-menu dl-menu-toggle">
+							<li><a href="#">商城</a>
+								<ul class="dl-submenu">
+									<li><a th:href="@{/shop/left}">查看所有商品</a></li>
+								</ul></li>
+							<li><a href="#">尋找診所</a>
+								<ul class="dl-submenu">
+									<li><a th:href="@{/element/google-maps}">診所地圖</a></li>
+								</ul></li>
+							<li><a href="#">會員中心</a>
+								<ul class="dl-submenu">
+									<li><a th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
+									<li><a th:href="@{/my-account}">我的訂單</a></li>
+									<li><a th:href="@{/faq}">F.A.Q</a></li>
+								</ul></li>
+							<li><a href="#">討論區</a>
+								<ul class="dl-submenu">
+									<li><a th:href="@{/blog/standard-left}">看板貼文</a></li>
+								</ul></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</header>
+</body>
+</html>
