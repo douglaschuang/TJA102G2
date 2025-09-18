@@ -52,16 +52,16 @@
 
 		<!-- section title -->
 		<div class="section-title-container mb-70">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="section-title section-title--one text-center">
-						<h1>尋找您附近的診所吧！</h1>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="section-title section-title--one text-center">
+							<h1>尋找您附近的診所吧！</h1>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 		<!-- filters -->
 		<div class="container mb-3">
@@ -81,11 +81,20 @@
 				<div class="col-auto">
 					<label class="me-1">科別</label> <select id="dept"
 						class="form-select form-select-sm">
+						<option value="">全部</option>
+						<option value="婦產科">婦產科</option>
+						<option value="小兒科">小兒科</option>
+						<option value="綜合醫院">綜合醫院</option>
+						<option value="身心科診所">身心科診所</option>
+					</select>
+
+					<!-- <select id="dept"
+						class="form-select form-select-sm">
 						<option value="" selected>全部</option>
 						<option>婦產科</option>
 						<option>小兒科</option>
 						<option>綜合醫院</option>
-					</select>
+					</select> -->
 				</div>
 				<div class="col-auto">
 					<label class="me-1">排序</label> <select id="sort-by"
@@ -123,8 +132,8 @@
 	</section>
 
 	<th:block th:fragment="extraJs">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script th:src="@{/assets/js/map.js}"></script>
-  </th:block>
+		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+		<script th:src="@{/assets/js/map.js}"></script>
+	</th:block>
 </body>
 </html>
