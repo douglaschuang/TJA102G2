@@ -96,14 +96,18 @@
 											<div class="shop-product__block__title">數量：</div>
 											<div class="shop-product__block__value">
 												<div class="pro-qty d-inline-block mx-0 pt-0">
-													<input type="text" value="1">
+ 													<!-- <input type="text" value="1"> -->
+													<!-- 這裡加上 id 或 data-product-id，方便 JS 讀取 -->
+      												<input type="number" class="cart-qty" value="1" min="1" 
+      												th:attr="data-product-id=${product.productId}" >
 												</div>
 											</div>
 										</div>
 	
 										<!-- buttons -->
 										<div class="shop-product__buttons mb-40">
-											<a class="lezada-button lezada-button--medium" href="#">加入購物車</a>
+											<a class="lezada-button lezada-button--medium add-to-cart-btn" href="#"
+											  th:attr="data-product-id=${product.productId}" >加入購物車</a>
 											<!-- <a class="lezada-compare-button ml-20" href="#"
 												data-tippy="Compare" data-tippy-inertia="true"
 												data-tippy-animation="shift-away" data-tippy-delay="50"
@@ -334,6 +338,37 @@
 <th:block th:fragment="extraJs">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $(".add-to-cart-btn").click(function(e) {
+    e.preventDefault(); // 阻止 <a> 預設跳轉
+
+    const productId = $(this).data("product-id");
+    const qty = $("input.cart-qty[data-product-id='" + productId + "']").val();
+    console.log(productId);
+    console.log(qty);
+
+    $.ajax({
+      url: "/api/cart/addToCart",  // 後端 Controller 會自動判斷會員或訪客
+      type: "POST",
+//       contentType: "application/json",
+      data: {
+          productId: productId,
+          quantity: qty
+        },
+      success: function() {
+        alert("已加入購物車！");
+        // 可選：刷新購物車 icon 顯示數量
+      },
+      error: function(xhr) {
+        alert("加入購物車失敗：" + xhr.responseText);
+      }
+    });
+  });
+});
+</script>
+    
   </th:block>
 </body>
 </html>
