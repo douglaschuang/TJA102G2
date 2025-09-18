@@ -29,16 +29,18 @@ import jakarta.validation.Valid;
 public class ProductController {
     
 	@Autowired
-	ProductService productSvc;
+	private ProductService productSvc;
 	
 	@Autowired
-	CategoryService categorySvc;
+	private CategoryService categorySvc;
 	
     //===========addProduct.html=================
 	@GetMapping("addProduct")
 	public String addProduct(ModelMap model) {
 		ProductVO productVO = new ProductVO();
 		model.addAttribute("productVO", productVO);
+		// 商品管理標題＿新增商品資料
+		model.addAttribute("pageTitle", "商品管理｜新增商品資料");
 		return "admin/product/addProduct";
 	}
 	
@@ -86,20 +88,26 @@ public class ProductController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("productVO", productVO);
+		// 商品管理標題＿修改商品資料
+		model.addAttribute("pageTitle", "商品管理｜修改商品資料");
 		return "admin/product/update_product_input"; // 查詢完成後轉交update_product_input.html
 	}
 
-	// 上架清單
 	@GetMapping("listAllProduct")
 	public String listAllProduct(ModelMap model) {
+		// 上架清單
 		model.addAttribute("productListData", productSvc.findByStatus(1));
+		// 商品管理標題＿上架區
+		model.addAttribute("pageTitle", "商品管理｜上架區");
 		return "admin/product/listAllProduct";
 	}
 	
-	// 下架清單(下架區)
 	@GetMapping("productRemoveArea")
 	public String productRemoveArea(ModelMap model) {
+		// 下架清單(下架區)
 		model.addAttribute("productListData", productSvc.findByStatus(0));
+		// 商品管理標題＿下架區
+		model.addAttribute("pageTitle", "商品管理｜下架區");
 		return "admin/product/productRemoveArea";
 	}
 	
