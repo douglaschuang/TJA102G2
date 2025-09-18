@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+	<!-- 本頁額外 CSS -->
+	<th:block th:fragment="extraHead">
+		<style>
+.preview-img {
+	width: 120px;
+	height: 90px;
+	object-fit: cover;
+	border-radius: .25rem
+}
+</style>
+	</th:block>
+
+	<!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+	<div
+		th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+		<section th:fragment="content">
+			<div class="container-fluid">
+				<div class="card">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">訂單明細｜修改</h3>
+						<a class="btn btn-sm btn-outline-secondary"
+							th:href="@{/admin/orders/list}"> <i
+							class="bi bi-arrow-left"></i> 回列表
+						</a>
+					</div>
+
+					<div class="card-body">
+						<form th:action="@{/admin/orders/update}" method="post"
+							th:object="${ordersVO}" enctype="multipart/form-data"
+							class="row g-3">
+							
+							<input type="hidden" th:field="*{orderId}" />
+							
+							<input type="hidden" th:field="*{orderId}" value="1" /> 
+							<input
+								th:if="${_csrf != null}" type="hidden"
+								th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+							<div class="col-md-6">
+								<label class="form-label">訂單ID:</label> 
+								<input type="text"
+									th:field="*{orderId}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							
+							<div class="col-md-6">
+								<label class="form-label">會員ID:</label> 
+								<input type="text"
+									th:field="*{memberVO.memberId}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							
+							<div class="col-md-6">
+								<label class="form-label">訂單編號:</label> 
+								<input type="text"
+									th:field="*{orderNo}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label">訂單成立時間:</label> 
+								    <p class="form-control-plaintext fw-semibold" 
+								       th:text="${ordersVO.orderTime != null ? #temporals.format(ordersVO.orderTime, 'yyyy年MM月dd日 HH:mm') : ''}">
+								    </p>
+								    <input type="hidden" th:field="*{orderTime}" />					
+							</div>
+							
+							<div class="col-md-6">
+   								<label class="form-label">狀態:</label>
+								<select th:field="*{status}" class="form-control"
+						      	    th:classappend="${#fields.hasErrors('status')}? ' is-invalid'">
+						   		 <option th:each="entry : ${status}" 
+						            th:value="${entry.key}" 
+						            th:text="${entry.value}">
+						  		</option>
+							</select>
+							</div>
+							
+							<div class="col-md-6">
+								<label class="form-label">付款時間:</label> 
+					 				 <p class="form-control-plaintext fw-semibold" 
+								       th:text="${ordersVO.payTime != null ? #temporals.format(ordersVO.payTime, 'yyyy年MM月dd日 HH:mm') : ''}">
+								    </p>
+								    <input type="hidden" th:field="*{payTime}" />	
+							</div>
+							
+							<div class="col-md-6">
+								<label class="form-label">付款金額:</label> 
+								<input type="text"
+									th:field="*{amount}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">收件人:</label> 
+								<input type="text"
+									th:field="*{recipient}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">地址:</label> 
+								<input type="text"
+									th:field="*{address}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">電話:</label> 
+								<input type="text"
+									th:field="*{phone}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">Email:</label> 
+								<input type="text"
+									th:field="*{email}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+							<div class="col-md-6">
+								<label class="form-label">備註:</label> 
+								<input type="text"
+									th:field="*{remark}"
+									class="form-control-plaintext fw-semibold" readonly />
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label">更新時間:</label> 
+     				 				 <p class="form-control-plaintext fw-semibold" 
+								       th:text="${ordersVO.updateTime != null ? #temporals.format(ordersVO.updateTime, 'yyyy年MM月dd日 HH:mm') : ''}">
+								    </p>
+								    <input type="hidden" th:field="*{updateTime}" />
+							</div>
+														
+							<div class="col-12 d-flex gap-2">
+								<button type="submit" class="btn btn-primary">
+									<i class="bi bi-save"></i> 送出修改
+								</button>
+								<a class="btn btn-outline-secondary"
+									th:href="@{/admin/orders/list}">取消</a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- 本頁不需額外 JS -->
+		<th:block th:fragment="extraJs"></th:block>
+	</div>
+</body>
+</html>

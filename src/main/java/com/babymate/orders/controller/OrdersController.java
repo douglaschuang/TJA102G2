@@ -1,0 +1,159 @@
+package com.babymate.orders.controller;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.babymate.babyhandbook.model.BabyhandbookVO;
+import com.babymate.babyrecord.model.BabyrecordVO;
+import com.babymate.orderDetail.model.OrderDetailService;
+import com.babymate.orders.model.OrdersService;
+import com.babymate.orders.model.OrdersVO;
+
+import jakarta.validation.Valid;
+
+@Controller
+@RequestMapping("/admin/orders")
+public class OrdersController {
+	
+	@Autowired
+	OrdersService ordersSvc;
+	
+	@Autowired
+	OrderDetailService orderDetailSvc;
+
+	public OrdersController(OrdersService ordersSvc, OrderDetailService orderDetailSvc) {
+		super();
+		this.ordersSvc = ordersSvc;
+		this.orderDetailSvc = orderDetailSvc;
+	}
+	
+	@PostMapping("getOne_For_Update")
+	public String getOne_For_Update(@RequestParam("orderId") String orderId, ModelMap model) {
+		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		/*************************** 2.開始查詢資料 *****************************************/
+		OrdersVO ordersVO = ordersSvc.getOneOrder(Integer.valueOf(orderId));
+
+		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
+		model.addAttribute("ordersVO", ordersVO);
+		return "admin/orders/update_orders_input";
+	}
+
+	@PostMapping("update")
+	public String update(@Valid @ModelAttribute("ordersVO") OrdersVO ordersVO, BindingResult result, ModelMap model
+		    ) throws IOException {
+
+		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		// 去除BindingResult中upFiles欄位的FieldError紀錄 --> 見第143行
+//		result = removeFieldError(ordersVO, result, null);
+
+	    if (result.hasErrors()) {
+	        // 若有錯誤，回到編輯頁
+	        return "admin/orders/update_orders_input";
+	    }
+	    
+	    // 從資料庫撈原本資料
+	    OrdersVO originalOrders = ordersSvc.getOneOrder(ordersVO.getOrderId());
+	    // 將不會從表單送出但必須有的欄位補上
+	    ordersVO.setOrderTime(originalOrders.getOrderTime());
+	    ordersVO.setPayTime(originalOrders.getPayTime());
+	    ordersVO.setUpdateTime(LocalDateTime.now()); // 也可以改成更新時的現在時間
+		
+	    /*************************** 2.開始修改資料 *****************************************/
+
+		ordersSvc.updateOrders(ordersVO);
+
+		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+
+		model.addAttribute("success", "修改成功");
+
+	    return "redirect:/admin/orders/list";
+
+	}
+
+	
+	 /* Method used to populate the Map Data in view. 如 : 
+	 * <form:select path="deptno" id="deptno" items="${depMapData}" />
+	 */
+	@ModelAttribute("status") //
+	protected Map<Integer, String> referenceMapData() {
+		Map<Integer, String> map = new LinkedHashMap<Integer, String>();
+		map.put(0, "已取消");
+		map.put(1, "未付款");
+		map.put(2, "已付款");
+		map.put(3, "已出貨");
+		map.put(4, "已收貨");
+		map.put(5, "退款中");
+		map.put(6, "已退款");
+		return map;
+	}
+	 
+	// 去除BindingResult中某個欄位的FieldError紀錄
+		public BindingResult removeFieldError(OrdersVO ordersVO, BindingResult result,
+				String removedFieldname) {
+			List<FieldError> errorsListToKeep = result.getFieldErrors().stream()
+					.filter(fieldname -> !fieldname.getField().equals(removedFieldname)).collect(Collectors.toList());
+			result = new BeanPropertyBindingResult(ordersVO, "ordersVO");
+			for (FieldError fieldError : errorsListToKeep) {
+				result.addError(fieldError);
+			}
+			return result;
+		}
+		
+		@GetMapping("list")
+		public String listAllOrders(@RequestParam(value = "orderId", required = false) Integer orderId, Model model) {
+		    
+		    List<OrdersVO> list;
+		    
+		    if (orderId != null) {
+		        OrdersVO orders = ordersSvc.getOneOrder(orderId);
+		        model.addAttribute("orders", orders);
+
+		        list = ordersSvc.findByorderId(orderId);
+		    } else {
+		        list = ordersSvc.getAll();
+		    }
+		 
+		 // 確保 list 不為 null
+		    list = (list != null) ? list : Collections.emptyList();
+		    
+		 // 新增 listCountMap
+		    Map<Integer, Integer> listCountMap = new HashMap<>();
+		    for (OrdersVO order : list) {
+		        listCountMap.put(order.getOrderId(), 
+		                         order.getOrderDetails() != null ? order.getOrderDetails().size() : 0);
+		    }
+
+		    model.addAttribute("ordersList", list);
+		    model.addAttribute("orderId", orderId);
+		    model.addAttribute("listCountMap", listCountMap); 
+
+		    return "admin/orders/list";
+		}
+		
+		
+}

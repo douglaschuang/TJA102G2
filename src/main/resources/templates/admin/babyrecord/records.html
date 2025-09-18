@@ -62,8 +62,8 @@
                 <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.height, 1, 2)}"></td>                
                 <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.weight, 1, 2)}"></td>                
                 <td class="text-center align-middle" th:text="${#numbers.formatDecimal(babyrecordVO.hc, 1, 2)}"></td>                
-   				<td class="text-center align-middle"><img th:src="@{/admin/babyrecord/photo/{id}(id=${babyrecordVO.babyrecordid})}" width="100px" alt="photo"/></td>
-           		<td class="text-center align-middle" th:text="${babyrecordVO.updatetime}"></td>              
+   				<td class="text-center align-middle"><img th:src="@{/admin/babyrecord/photo/{id}(id=${babyrecordVO.babyrecordid})}" width="100px" alt="photo"/></td>  
+           		<td class="text-center align-middle" th:text="${#dates.format(babyrecordVO.updatetime, 'yyyy/MM/dd HH:mm:ss')}"></td>      
                 <td class="text-nowrap">
                   <form th:action="@{/admin/babyrecord/getOne_For_Update}" method="post" class="d-inline">
                     <input type="hidden" name="babyrecordid" th:value="${babyrecordVO.babyrecordid}"/>
