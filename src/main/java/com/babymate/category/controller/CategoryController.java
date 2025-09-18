@@ -31,6 +31,8 @@ public class CategoryController {
 	public String addCategory(Model model) { 
 		CategoryVO categoryVO = new CategoryVO();
 		model.addAttribute("categoryVO", categoryVO);
+		// 商品管理標題＿類別新增
+		model.addAttribute("pageTitle", "商品管理｜新增類別");
 		return "admin/category/addCategory";
 	}
 	
@@ -55,6 +57,8 @@ public class CategoryController {
 	public String listAllCategory(ModelMap model) {
 		List<CategoryVO> list = categorySvc.getAll();
 		model.addAttribute("categoryListData", list);
+		// 商品管理標題＿類別清單
+		model.addAttribute("pageTitle", "商品管理｜類別清單");
 		return "admin/category/listAllCategory";
 	}
 	
@@ -68,6 +72,8 @@ public class CategoryController {
 		
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("categoryVO", categoryVO);
+		// 商品管理標題＿類別修改
+		model.addAttribute("pageTitle", "商品管理｜修改類別");
 		return "admin/category/updateCategory";
 	}
 	
