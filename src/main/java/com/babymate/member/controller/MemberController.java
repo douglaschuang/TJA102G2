@@ -80,8 +80,8 @@ public class MemberController {
 		}
 		
 		/***************************3.查詢完成,準備轉交(Send the Success view)*****************/
-		model.addAttribute("memberVO", memberVO); // for1 --> listOneEmp.html 的第37~44行用
-                                            // for2 --> select_page.html的第156用
+		model.addAttribute("memberVO", memberVO); 
+        model.addAttribute("pageTitle", "會員管理｜檢視會員");
 		return "admin/member/memberview";   // 查詢完成後轉交listOneEmp.html
 	}
 	
@@ -242,19 +242,62 @@ public class MemberController {
 		return "redirect:/my-account#password-info";
 	}
 	
-	@GetMapping("memberSuspend")
+	@PostMapping("memberSuspend")
 	public String memberSuspend(@RequestParam("memberId") String memberId, ModelMap model)
 	{
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		/*************************** 2.開始查詢資料 *****************************************/
 		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
-		memberVO.setAccountStatus((byte) 2);
+
+	    if (memberVO != null) {
+	        // 切換狀態
+		  byte currentStatus = memberVO.getAccountStatus();
+          if (currentStatus == 1) {
+            memberVO.setAccountStatus((byte) 2); // 停用
+          } else if (currentStatus == 2) {
+            memberVO.setAccountStatus((byte) 1); // 啟用
+          }
+	    }
+
 		memberSvc.updateMember(memberVO);
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
-		model.addAttribute("success", "- (修改成功)");
+		model.addAttribute("successMessage", "ID: "+memberId+" 狀態變更成功");
 		model.addAttribute("memberVO", memberVO);
 //		return "back-end/staff/listAllStaff"; // 修改成功後轉交listAllStaff.html
-		return "redirect:/backend/member/listAllMember";
+//		return "redirect:/backend/member/listAllMember";
+		
+		// 返回會員清單, 重新抓取所有會員資料
+		List<MemberVO> memberList = memberSvc.getAll();
+		model.addAttribute("memberListData", memberList);
+		model.addAttribute("pageTitle", "會員管理｜列表");
+		
+		return "admin/member/memberlist";
+//		return "redirect:/admin/member/listAllMember";
+	}
+	
+	@PostMapping("memberResetPwd")
+	public String memberResetPwd(@RequestParam("memberId") String memberId, ModelMap model)
+	{
+		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
+		String newPwd = SimpleCaptchaGenerator.generateCaptcha(6); // 產生新密碼
+		memberVO.setPassword(EncodingUtil.hashMD5(newPwd)); // 將密碼Hash編碼後寫入memberVO
+		memberVO.setPwdResetToken(newPwd);
+		memberVO.setUpdateDate(LocalDateTime.now());
+		
+		memberSvc.updateMember(memberVO);
+		
+		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+		MailService mailSvc = new MailService();
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+		
+		model.addAttribute("successMessage", "ID: "+memberId+" 密碼重設成功");
+		model.addAttribute("memberVO", memberVO);
+		
+		// 返回會員清單, 重新抓取所有會員資料
+		List<MemberVO> memberList = memberSvc.getAll();
+		model.addAttribute("memberListData", memberList);
+		model.addAttribute("pageTitle", "會員管理｜列表");
+		
+		return "admin/member/memberlist";
+//		return "redirect:/admin/member/listAllMember";
 	}
 	
 	@PostMapping("registerCheck")
