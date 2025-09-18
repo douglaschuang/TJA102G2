@@ -15,6 +15,7 @@ public class MvcViewConfig implements WebMvcConfigurer {
         // 一般頁
         registry.addViewController("/faq").setViewName("frontend/faq");
         registry.addViewController("/my-account").setViewName("frontend/my-account");
+        registry.addViewController("/my-orders").setViewName("frontend/my-orders");
         registry.addViewController("/element/google-maps").setViewName("frontend/element-google-maps");
 
         // Blog

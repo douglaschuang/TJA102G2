@@ -1,141 +1,171 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/layout :: head(~{::extraHead})}">
-  <th:block th:fragment="extraHead">
-    <style>
-      .card-header { cursor: move; }
-    </style>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-          crossorigin="anonymous" />
-  </th:block>
+<th:block th:fragment="extraHead">
+	<style>
+.card-header {
+	cursor: move;
+}
+</style>
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
+		crossorigin="anonymous" />
+</th:block>
 </head>
 
 <body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
-  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
-    <!-- === content slot === -->
-    <section th:fragment="content" th:with="pageTitle=${pageTitle} ?: 'Dashboard'">
-		<!-- KPI 四格（用 fragment 重複利用） -->
-		<div class="row g-3">
-			<div
-				th:replace="~{fragments/admin :: smallBox('primary', ${stats.newOrdersToday}, '新訂單(今日)', @{/admin/order})}"></div>
-			<div
-				th:replace="~{fragments/admin :: smallBox('success',|${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,'跳出率 (今日)', @{/admin/analytics})}"></div>
+	<div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+		<!-- === content slot === -->
+		<section th:fragment="content"
+			th:with="pageTitle=${pageTitle} ?: 'Dashboard'">
+			<!-- KPI 四格（用 fragment 重複利用） -->
+			<div class="row g-3">
+				<div
+					th:replace="~{fragments/admin :: smallBox('primary', ${stats.newOrdersToday}, '新訂單(今日)', @{/admin/order})}"></div>
+				<div
+					th:replace="~{fragments/admin :: smallBox('success',|${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,'跳出率 (今日)', @{/admin/analytics})}"></div>
 
-			<div
-				th:replace="~{fragments/admin :: smallBox('warning', ${stats.newUsersToday}, '新會員(今日)', @{/admin/member/listAllMember})}"></div>
-			<div
-				th:replace="~{fragments/admin :: smallBox('danger', ${stats.uniqueVisitors7d}, '近7天訪客', @{/admin/analytics})}"></div>
-		</div>
-
-		<div class="row mt-3">
-			<div class="col-lg-7">
-				<!-- 銷售趨勢 -->
-				<div class="card mb-4">
-					<div
-						class="card-header d-flex justify-content-between align-items-center">
-						<h3 class="card-title mb-0">銷售趨勢</h3>
-						<a th:href="@{/admin/analytics}"
-							class="btn btn-sm btn-outline-secondary">詳細</a>
-					</div>
-					<div class="card-body">
-						<div id="revenue-chart" style="height: 300px"></div>
-					</div>
-				</div>
+				<div
+					th:replace="~{fragments/admin :: smallBox('warning', ${stats.newUsersToday}, '新會員(今日)', @{/admin/member/listAllMember})}"></div>
+				<div
+					th:replace="~{fragments/admin :: smallBox('danger', ${stats.uniqueVisitors7d}, '近7天訪客', @{/admin/analytics})}"></div>
 			</div>
 
-			<div class="col-lg-5">
-				<!-- 最新訂單 -->
-				<div class="card mb-4">
-					<div
-						class="card-header d-flex justify-content-between align-items-center">
-						<h3 class="card-title mb-0">最新訂單</h3>
-						<a th:href="@{/admin/order}"
-							class="btn btn-sm btn-outline-secondary">全部</a>
-					</div>
-					<div class="card-body p-0">
-						<table class="table mb-0">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>會員</th>
-									<th>金額</th>
-									<th>狀態</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="o : ${latestOrders}">
-									<td th:text="${o.id}">123</td>
-									<td th:text="${o.memberName}">Alice</td>
-									<td th:text="${#numbers.formatDecimal(o.total, 1, 0)}">1,200</td>
-									<td><span class="badge text-bg-primary"
-										th:text="${o.status}">PAID</span></td>
-								</tr>
-								<tr th:if="${#lists.isEmpty(latestOrders)}">
-									<td colspan="4" class="text-center text-muted py-3">目前沒有新訂單</td>
-								</tr>
-							</tbody>
-						</table>
+			<div class="row mt-3">
+				<div class="col-lg-7">
+					<!-- 銷售趨勢 -->
+					<div class="card mb-4">
+						<div
+							class="card-header d-flex justify-content-between align-items-center">
+							<h3 class="card-title mb-0">銷售趨勢</h3>
+							<a th:href="@{/admin/analytics}"
+								class="btn btn-sm btn-outline-secondary">詳細</a>
+						</div>
+						<div class="card-body">
+							<div id="revenue-chart" style="height: 300px"></div>
+						</div>
 					</div>
 				</div>
 
-				<!-- 新會員 -->
-				<div class="card mb-4">
-					<div
-						class="card-header d-flex justify-content-between align-items-center">
-						<h3 class="card-title mb-0">新會員</h3>
-						<a th:href="@{/admin/member/listAllMember}"
-							class="btn btn-sm btn-outline-secondary">全部</a>
+				<div class="col-lg-5">
+					<!-- 最新訂單 -->
+					<div class="card mb-4">
+						<div
+							class="card-header d-flex justify-content-between align-items-center">
+							<h3 class="card-title mb-0">最新訂單</h3>
+							<a th:href="@{/admin/order}"
+								class="btn btn-sm btn-outline-secondary">全部</a>
+						</div>
+						<div class="card-body p-0">
+							<table class="table mb-0">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>會員</th>
+										<th>金額</th>
+										<th>狀態</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="o : ${latestOrders}">
+										<td th:text="${o.id}">123</td>
+										<td th:text="${o.memberName}">Alice</td>
+										<td th:text="${#numbers.formatDecimal(o.total, 1, 0)}">1,200</td>
+										<td><span class="badge text-bg-primary"
+											th:text="${o.status}">PAID</span></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(latestOrders)}">
+										<td colspan="4" class="text-center text-muted py-3">目前沒有新訂單</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-					<ul class="list-group list-group-flush">
-						<li
-							class="list-group-item d-flex justify-content-between align-items-center"
-							th:each="m : ${latestMembers}"><span> <strong
-								th:text="${m.name}">Maggie</strong> <small
-								class="text-muted ms-2" th:text="${m.email}">m@example.com</small>
-						</span> <span class="text-muted"
-							th:text="${#temporals.format(m.joinedAt, 'MM/dd HH:mm')}">09/14
-								10:21</span></li>
-						<li class="list-group-item text-center text-muted"
-							th:if="${#lists.isEmpty(latestMembers)}">最近沒有新會員</li>
-					</ul>
-				</div>
 
-				<!-- 30天熱銷TOP5 -->
-				<div class="card mb-4">
-					<div
-						class="card-header d-flex justify-content-between align-items-center">
-						<h3 class="card-title mb-0">近 30 天熱銷 TOP5</h3>
-						<li
-							class="list-group-item d-flex justify-content-between align-items-center"
-							th:each="p : ${hotProducts}"><span
-							th:text="${p.productName}">商品</span> <span
-							class="badge text-bg-primary" th:text="${p.qty}">0</span></li>
+					<!-- 新會員 -->
+					<div class="card mb-4">
+						<div
+							class="card-header d-flex justify-content-between align-items-center">
+							<h3 class="card-title mb-0">新會員</h3>
+							<a th:href="@{/admin/member/listAllMember}"
+								class="btn btn-sm btn-outline-secondary">全部</a>
+						</div>
+						<ul class="list-group list-group-flush">
+							<li
+								class="list-group-item d-flex justify-content-between align-items-center"
+								th:each="m : ${latestMembers}"><span> <strong
+									th:text="${m.name}">Maggie</strong> <small
+									class="text-muted ms-2" th:text="${m.email}">m@example.com</small>
+							</span> <span class="text-muted"
+								th:text="${#temporals.format(m.joinedAt, 'MM/dd HH:mm')}">09/14
+									10:21</span></li>
+							<li class="list-group-item text-center text-muted"
+								th:if="${#lists.isEmpty(latestMembers)}">最近沒有新會員</li>
+						</ul>
 					</div>
+
+					<!-- 30天熱銷TOP5 -->
+					<div class="card mb-4">
+						<div
+							class="card-header d-flex justify-content-between align-items-center">
+							<h3 class="card-title mb-0">近 30 天熱銷 TOP5</h3>
+							<a th:href="@{/admin/analytics}"
+								class="btn btn-sm btn-outline-secondary">詳細</a>
+						</div>
+
+						<ul class="list-group list-group-flush">
+							<li
+								class="list-group-item d-flex justify-content-between align-items-center"
+								th:each="p : ${hotProducts}"><span
+								th:text="${p.productName}">商品</span> <span
+								class="badge text-bg-primary" th:text="${p.qty}">0</span></li>
+							<li class="list-group-item text-center text-muted"
+								th:if="${#lists.isEmpty(hotProducts)}">近 30 天沒有銷售紀錄</li>
+						</ul>
+					</div>
+
 				</div>
 			</div>
-		</div>
-	</section>
-	<!-- === content slot 結束 === -->
+		</section>
+		<!-- === content slot 結束 === -->
 
-	<!-- === extraJs slot === -->
-    <th:block th:fragment="extraJs">
-      <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
-              crossorigin="anonymous"></script>
-      <script th:inline="javascript">
-        const salesSeries = /*[[${salesSeries}]]*/[];
-        const salesMonths = /*[[${salesMonths}]]*/[];
+		<!-- === extraJs slot === -->
+		<th:block th:fragment="extraJs">
+			<script
+				src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+				crossorigin="anonymous"></script>
+			<script th:inline="javascript">
+				const salesSeries = /*[[${salesSeries}]]*/[];
+				const salesMonths = /*[[${salesMonths}]]*/[];
 
-        const chart = new ApexCharts(document.querySelector('#revenue-chart'), {
-          series: salesSeries,
-          chart: { height: 300, type: 'area', toolbar: { show: false } },
-          dataLabels: { enabled: false },
-          stroke: { curve: 'smooth' },
-          xaxis: { type: 'datetime', categories: salesMonths },
-          tooltip: { x: { format: 'yyyy-MM' } }
-        });
-        chart.render();
-      </script>
-    </th:block>
+				const chart = new ApexCharts(document
+						.querySelector('#revenue-chart'), {
+					series : salesSeries,
+					chart : {
+						height : 300,
+						type : 'area',
+						toolbar : {
+							show : false
+						}
+					},
+					dataLabels : {
+						enabled : false
+					},
+					stroke : {
+						curve : 'smooth'
+					},
+					xaxis : {
+						type : 'datetime',
+						categories : salesMonths
+					},
+					tooltip : {
+						x : {
+							format : 'yyyy-MM'
+						}
+					}
+				});
+				chart.render();
+			</script>
+		</th:block>
 </body>
 </html>
