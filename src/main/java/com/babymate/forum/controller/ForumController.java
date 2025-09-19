@@ -63,10 +63,11 @@ public class ForumController {
         postService.updatePost(id, post);  // 交給 service
         return "redirect:/forum/post/" + id;
     }
- // 軟刪除文章
+ // 軟刪除文章22222
     @GetMapping("/post/delete/{id}")
     public String deletePost(@PathVariable Integer id) {
         postService.softDeletePost(id);  // 交給 service
         return "redirect:/forum";
     }
+
 }
