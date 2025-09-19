@@ -81,6 +81,7 @@ public class IndexController_inSpringBoot {
     
     @GetMapping("/admin/staff/listAllStaff")
 	public String listAllEmp(Model model) {
+    	model.addAttribute("pageTitle", "員工管理｜列表");
 		return "admin/staff/stafflist";
 	}
     
@@ -91,6 +92,7 @@ public class IndexController_inSpringBoot {
     
     @GetMapping("/admin/member/listAllMember")
 	public String listAllMember(Model model) {
+    	model.addAttribute("pageTitle", "會員管理｜列表");
 		return "admin/member/memberlist";
 	}
     

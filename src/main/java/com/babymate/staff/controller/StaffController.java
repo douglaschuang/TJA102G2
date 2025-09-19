@@ -85,6 +85,7 @@ public class StaffController {
 	public String staffAdd(Model model) {
     	StaffVO staff = new StaffVO(); 
     	model.addAttribute("StaffVO", staff);
+    	model.addAttribute("pageTitle", "員工管理｜新增員工");
 		return "admin/staff/staffadd";
 	}
 	
@@ -140,6 +141,7 @@ public class StaffController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("StaffVO", staffVO);
+		model.addAttribute("pageTitle", "員工管理｜編輯員工");
 		return "admin/staff/staffedit"; // 查詢完成後轉交update_emp_input.html
 	}
 	/*
@@ -199,6 +201,7 @@ public class StaffController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("StaffVO", staffVO);
+		model.addAttribute("pageTitle", "員工管理｜密碼變更");
 		return "admin/staff/staffchangepwd"; // 查詢完成後轉交staffchangepwd.html
 	}
 	

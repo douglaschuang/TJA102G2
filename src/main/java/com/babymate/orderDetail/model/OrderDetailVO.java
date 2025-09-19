@@ -1,6 +1,6 @@
 package com.babymate.orderDetail.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,20 +15,41 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ORDER_DETAIL")
 public class OrderDetailVO implements java.io.Serializable{
-	private Integer orderDetailId;
-	private OrdersVO ordersVO;
-	private ProductVO productVO;
-	private Integer quantity;
-	private Double price;
-	private Date updateTime;
 	
 	@Id
 	@Column(name = "ORDER_DETAIL_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer orderDetailId;
+	
+	@ManyToOne
+	@JoinColumn(name = "ORDER_ID")
+	@NotNull
+	private OrdersVO ordersVO;
+	
+	@ManyToOne
+	@JoinColumn(name = "PRODUCT_ID")
+	@NotNull
+	private ProductVO productVO;
+	
+	@Column(name = "QUANTITY")
+	@NotNull
+	private Integer quantity;
+	
+	@Column(name = "PRICE")
+	@NotNull
+	private Double price;
+	
+	@Column(name = "UPDATE_TIME")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@NotNull
+	private LocalDateTime updateTime;
+	
+
 	public Integer getOrderDetailId() {
 		return orderDetailId;
 	}
@@ -37,8 +58,6 @@ public class OrderDetailVO implements java.io.Serializable{
 		this.orderDetailId = orderDetailId;
 	}
 	
-	@ManyToOne
-	@JoinColumn(name = "ORDER_ID")
 	public OrdersVO getOrdersVO() {
 		return ordersVO;
 	}
@@ -47,8 +66,6 @@ public class OrderDetailVO implements java.io.Serializable{
 		this.ordersVO = ordersVO;
 	}
 	
-	@ManyToOne
-	@JoinColumn(name = "PRODUCT_ID")
 	public ProductVO getProductVO() {
 		return productVO;
 	}
@@ -57,7 +74,6 @@ public class OrderDetailVO implements java.io.Serializable{
 		this.productVO = productVO;
 	}
 	
-	@Column(name = "QUANTITY")
 	public Integer getQuantity() {
 		return quantity;
 	}
@@ -66,7 +82,6 @@ public class OrderDetailVO implements java.io.Serializable{
 		this.quantity = quantity;
 	}
 	
-	@Column(name = "PRICE")
 	public Double getPrice() {
 		return price;
 	}
@@ -74,16 +89,14 @@ public class OrderDetailVO implements java.io.Serializable{
 	public void setPrice(Double price) {
 		this.price = price;
 	}
-	
-	@Column(name = "UPDATE_TIME")
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	public Date getUpdateTime() {
+
+	public LocalDateTime getUpdateTime() {
 		return updateTime;
 	}
-	
-	public void setUpdateTime(Date updateTime) {
+
+	public void setUpdateTime(LocalDateTime updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
 	
 }
