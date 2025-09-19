@@ -31,9 +31,7 @@ public class PostController {
     @Autowired
     BoardService boardSvc;
 
-    /*
-     * 新增文章頁面
-     */
+/*=====新增文章頁面===========================================================================*/
     @GetMapping("addPost")
     public String addPost(ModelMap model) {
         PostVO postVO = new PostVO();
@@ -156,15 +154,14 @@ public class PostController {
     }
     
     
-    /**
-     * 後台文章管理首頁
-     */
+/*====後台文章管理首頁======================================================================================================*/
     @GetMapping("/admin/forum/index")
     public String listAllPostsForAdmin(ModelMap model) {
         List<PostVO> list = postSvc.getAllWithMemberAndBoard();
         model.addAttribute("postListData", list);
         return "admin/forum/index";
     }
+
 
 //    /*
 //     * 提供看板資料給前端下拉選單 (新增/修改文章用)
