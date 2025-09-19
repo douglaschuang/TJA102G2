@@ -31,5 +31,15 @@ public class PregnancyRecordService {
 	public PregnancyRecord save(PregnancyRecord r) {
 		return repo.saveAndFlush(r);
 	}
+	
+	// 🔹 新增
+    public PregnancyRecord getOne(Integer id) {
+        return repo.findById(id).orElse(null);
+    }
+
+    // 🔹 新增
+    public void delete(Integer id) {
+        repo.deleteById(id);
+    }
 
 }

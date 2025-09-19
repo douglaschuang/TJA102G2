@@ -5,21 +5,33 @@
 <title>睡眠健康測驗 | BabyMate</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet">
-<style>
+<style th:inline="css">
 .q-card {
-	border: 1px solid #eee;
-	border-radius: 12px;
-	padding: 16px;
-	margin-bottom: 16px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.score-badge { font-size: 1.1rem }
+
+/* 背景圖（全站） */
+body{
+  background: url([[@{/assets/images/sleep5.jpg}]]) center/cover fixed no-repeat;
 }
 
-.score-badge {
-	font-size: 1.1rem
+/* 毛玻璃容器 */
+.glass {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 </style>
+
 </head>
 <body class="bg-light">
-	<div class="container py-4">
+	<div class="container py-4 glass">
 		<div class="d-flex align-items-center justify-content-between mb-3">
 			<h3 class="mb-0">睡眠健康小測驗</h3>
 			<a class="btn btn-outline-secondary btn-sm"

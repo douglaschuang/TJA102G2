@@ -56,6 +56,11 @@ public interface MhbRepository extends JpaRepository<MhbVO, Integer> {
 	// （可選）若你想列出該會員的所有手冊，依更新時間排序
 	List<MhbVO> findByMemberIdAndDeletedFalseOrderByUpdateTimeDesc(Integer memberId);
 	
+	long countByMemberIdAndDeletedFalse(Integer memberId);
+	
+	// MhbRepository.java
+	boolean existsByMotherHandbookIdAndDeletedFalse(Integer motherHandbookId);
+	MhbVO findByMotherHandbookIdAndDeletedFalse(Integer motherHandbookId);
 
 	/*=== native SQL ===*/
 	// ★ 取某會員「最新」的一本（當作 Active）
