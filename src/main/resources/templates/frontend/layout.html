@@ -1,50 +1,58 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head(title, extraHead)">
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title th:text="${title} ?: 'BabyMate'">BabyMate</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
-  <!-- 共用 CSS -->
-  <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/ionicons.min.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/themify-icons.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/plugins.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/helper.css}">
-  <link rel="stylesheet" th:href="@{/assets/css/main.css}">
-  
-  <script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title th:text="${title} ?: 'BabyMate'">BabyMate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
+<!-- 共用 CSS -->
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/ionicons.min.css}">
+<link rel="stylesheet" th:href="@{/assets/css/themify-icons.css}">
+<link rel="stylesheet" th:href="@{/assets/css/plugins.css}">
+<link rel="stylesheet" th:href="@{/assets/css/helper.css}">
+<link rel="stylesheet" th:href="@{/assets/css/main.css}">
 
-  <!-- 頁面可額外塞 CSS 或 <style> -->
-  <th:block th:replace="${extraHead}"></th:block>
+<!-- Font Awesome 6（整包，含 solid/regular/brands） -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+
+<!-- 頁面可額外塞 CSS 或 <style> -->
+<th:block th:replace="${extraHead}"></th:block>
 </head>
 
 <body th:fragment="layout(headerType, content, extraJs, footerClass)">
 
-  <!-- Header（可切換樣式） -->
-  <header th:replace="~{frontend/fragments/header :: siteHeader(${headerType})}"></header>
+	<!-- Header（可切換樣式） -->
+	<header
+		th:replace="~{frontend/fragments/header :: siteHeader(${headerType})}"></header>
 
-  <!-- 內容插槽 -->
-  <main>
-    <th:block th:replace="${content}"></th:block>
-  </main>
+	<!-- 內容插槽 -->
+	<main>
+		<th:block th:replace="${content}"></th:block>
+	</main>
 
-  <!-- Footer（可傳入不同 class，如 'footer-one dark-bg'） -->
-  <div th:replace="~{frontend/fragments/footer :: siteFooter(${footerClass})}"></div>
+	<!-- Footer（可傳入不同 class，如 'footer-one dark-bg'） -->
+	<div
+		th:replace="~{frontend/fragments/footer :: siteFooter(${footerClass})}"></div>
 
-  <!-- overlays（about、wishlist、cart、search） -->
-  <div th:replace="~{frontend/fragments/overlays :: commonOverlays()}"></div>
+	<!-- overlays（about、wishlist、cart、search） -->
+	<div th:replace="~{frontend/fragments/overlays :: commonOverlays()}"></div>
 
-  <!-- 共用 JS -->
-  <script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
-  <script th:src="@{/assets/js/popper.min.js}"></script>
-  <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-  <script th:src="@{/assets/js/plugins.js}"></script>
-  <script th:src="@{/assets/js/main.js}"></script>
+	<!-- 共用 JS -->
+	<script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
+	<script th:src="@{/assets/js/popper.min.js}"></script>
+	<script th:src="@{/assets/js/bootstrap.min.js}"></script>
+	<script th:src="@{/assets/js/plugins.js}"></script>
+	<script th:src="@{/assets/js/main.js}"></script>
 
-  <!-- 頁面可額外塞 JS（例如 Leaflet、Chart.js、自訂腳本） -->
-  <th:block th:replace="${extraJs}"></th:block>
+	<!-- 頁面可額外塞 JS（例如 Leaflet、Chart.js、自訂腳本） -->
+	<th:block th:replace="${extraJs}"></th:block>
 </body>
 </html>

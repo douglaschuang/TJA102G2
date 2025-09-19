@@ -26,7 +26,7 @@ public class FrontDiaryController {
 
 	@GetMapping("/new")
 	public String newForm(HttpSession session, Model model) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		model.addAttribute("now", java.time.LocalDateTime.now().toString().substring(0, 16)); // yyyy-MM-ddTHH:mm
@@ -38,7 +38,7 @@ public class FrontDiaryController {
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "tags", required = false) String tags,
 			@RequestParam(value = "writtenAt", required = false) String writtenAtStr, HttpSession session) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		if (content == null || content.isBlank())
@@ -59,7 +59,7 @@ public class FrontDiaryController {
 	/** 編輯表單 */
 	@GetMapping("/{id}/edit")
 	public String editForm(@PathVariable Integer id, HttpSession session, Model model) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		Optional<DiaryEntry> opt = service.findById(id);
@@ -75,7 +75,7 @@ public class FrontDiaryController {
 			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "tags", required = false) String tags,
 			@RequestParam(value = "writtenAt", required = false) String writtenAtStr, HttpSession session) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		Optional<DiaryEntry> opt = service.findById(id);
@@ -96,7 +96,7 @@ public class FrontDiaryController {
 	/** 刪除 */
 	@PostMapping("/{id}/delete")
 	public String delete(@PathVariable Integer id, HttpSession session) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		service.findById(id).ifPresent(e -> {
@@ -109,7 +109,7 @@ public class FrontDiaryController {
 	/** 單篇顯示（原本就有的話保留） */
 	@GetMapping("/{id}")
 	public String show(@PathVariable Integer id, HttpSession session, Model model) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		Optional<DiaryEntry> opt = service.findById(id);

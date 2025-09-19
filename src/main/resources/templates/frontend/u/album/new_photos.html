@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>批次上傳照片</title>
-  <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+<meta charset="UTF-8">
+<title>批次上傳照片</title>
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
 </head>
 <body class="container py-4">
-  <h4 class="mb-3">批次上傳照片</h4>
-  <form th:action="@{/u/album/batch}" method="post" enctype="multipart/form-data" class="row g-3">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+	<h4 class="mb-3">批次上傳照片</h4>
+	<form th:action="@{/u/album/batch}" method="post"
+		enctype="multipart/form-data" class="row g-3">
+		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+		<input type="hidden" th:if="${_csrf != null}"
+			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
 
-    <div class="col-12">
-      <label class="form-label">選擇圖片（可多選）</label>
-      <input class="form-control" type="file" name="files" accept="image/*" multiple required>
-      <div class="form-text">按住 Ctrl/⌘ 或 Shift 可多選。</div>
-    </div>
 
-    <div class="col-12">
-      <button class="btn btn-primary" type="submit">上傳</button>
-      <a class="btn btn-outline-secondary" th:href="@{/blog/full-grid-left(tab='album')}">返回相簿</a>
-    </div>
-  </form>
+		<div class="col-12">
+			<label class="form-label">選擇圖片（可多選）</label> <input
+				class="form-control" type="file" name="files" accept="image/*"
+				multiple required>
+			<div class="form-text">按住 Ctrl/⌘ 或 Shift 可多選。</div>
+		</div>
+
+		<div class="col-12">
+			<button class="btn btn-primary" type="submit">上傳</button>
+			<a class="btn btn-outline-secondary"
+				th:href="@{/blog/full-grid-left(tab='album')}">返回相簿</a>
+		</div>
+	</form>
 </body>
 </html>

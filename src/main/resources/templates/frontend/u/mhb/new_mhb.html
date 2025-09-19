@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8"><title>新增媽媽手冊</title>
   <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+  <style>
+  .countdown-background{
+    background: #f8f9fa; /* 或放你的背景圖 class: countdown-bg-1 */
+  }
+  .deal-countdown{
+    letter-spacing: .5px;
+  }
+</style>
+  
 </head>
 <body class="container py-4">
   <h4 class="mb-3">新增媽媽手冊</h4>
@@ -12,7 +21,12 @@
   </div>
 
   <form th:action="@{/u/mhb}" th:object="${mhbVO}" method="post" enctype="multipart/form-data" class="row g-3">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
+	<input type="hidden"
+       th:if="${_csrf != null}"
+       th:name="${_csrf?.parameterName}"
+       th:value="${_csrf?.token}" />
+    
 
     <div class="col-md-4">
       <label class="form-label">媽媽姓名</label>
@@ -36,7 +50,7 @@
     </div>
     <div class="col-md-8">
       <label class="form-label">封面圖（可選）</label>
-      <input class="form-control" type="file" name="upFiles" accept="image/*">
+      <input class="form-control" type="file" name="up" accept="image/*">
     </div>
 
     <div class="col-12">
@@ -44,5 +58,52 @@
       <a class="btn btn-outline-secondary" th:href="@{/blog/full-grid-left(tab='mhb')}">返回儀表板</a>
     </div>
   </form>
+  <!-- 臨時診斷：看得到就知道表單有 render 到 -->
+<div class="text-muted small">DEBUG form action: <span th:text="@{/u/mhb}"></span></div>
+<script>
+(function(){
+  if (window.__bmCountdownInit) return;
+  window.__bmCountdownInit = true;
+
+  function pad(n){ return (n<10?'0':'') + n; }
+
+  function formatDDHHMMSS(diffMs){
+    if (diffMs <= 0) return null;
+    const totalSec = Math.floor(diffMs / 1000);
+    const days  = Math.floor(totalSec / 86400);
+    const hours = Math.floor((totalSec % 86400) / 3600);
+    const mins  = Math.floor((totalSec % 3600) / 60);
+    const secs  = totalSec % 60;
+    return {days, hours, mins, secs};
+  }
+
+  function updateOne(el){
+    const targetStr = el.getAttribute('data-countdown'); // e.g. "2025/12/31 00:00:00"
+    if (!targetStr) return;
+
+    // 以瀏覽器本地時間解析（你站點在台灣，通常就是 +08:00）
+    const target = new Date(targetStr.replace(/-/g,'/')); // 保險處理
+    const now = new Date();
+    const diff = target.getTime() - now.getTime();
+
+    const parts = formatDDHHMMSS(diff);
+    if (!parts){
+      el.textContent = '已到預產期，祝平安順產！';
+      el.classList.add('text-success');
+      return;
+    }
+    el.textContent = parts.days + ' 天 ' + pad(parts.hours) + ':' + pad(parts.mins) + ':' + pad(parts.secs);
+  }
+
+  function tick(){
+    document.querySelectorAll('.deal-countdown').forEach(updateOne);
+  }
+
+  // 先跑一次，然後每秒跑
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+
 </body>
 </html>
