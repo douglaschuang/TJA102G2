@@ -1,8 +1,11 @@
-package com.babymate.web;
+package com.babymate.forum.controller;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,19 +15,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.babymate.forum.model.PostService;
 import com.babymate.forum.model.PostVO;
 
-
 @Controller
-@RequestMapping("/forum")
+@RequestMapping("")
 public class ForumController {
 	
 	@Autowired
 	private PostService postService;
 	
-    // 論壇首頁
-    @GetMapping({ "", "/" })
-    public String forumHome(Model model) {
-        model.addAttribute("posts", postService.getAll());
-        return "forum/index";
+	/*====前台文章首頁==========================================================================================================*/
+    @GetMapping("/forum")
+    public String listAllPosts(ModelMap model) {
+        List<PostVO> list = postService.getAllWithMemberAndBoard();
+        model.addAttribute("postListData", list);
+        return "frontend/forum";
     }
 	
     // 查看單篇文章
@@ -60,10 +63,11 @@ public class ForumController {
         postService.updatePost(id, post);  // 交給 service
         return "redirect:/forum/post/" + id;
     }
- // 軟刪除文章
+ // 軟刪除文章22222222
     @GetMapping("/post/delete/{id}")
     public String deletePost(@PathVariable Integer id) {
         postService.softDeletePost(id);  // 交給 service
         return "redirect:/forum";
     }
+
 }
