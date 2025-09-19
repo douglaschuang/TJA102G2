@@ -7,7 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.babymate.babyrecord.model.BabyrecordVO;
+
 public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
+
+  List<OrdersVO> findByOrderId(Integer orderId);
 	
   // 今日訂單數
   long countByOrderTimeBetween(LocalDateTime start, LocalDateTime end);
@@ -37,4 +41,5 @@ public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
     LIMIT 5
   """, nativeQuery = true)
   List<Object[]> topSellingProductsSince(@Param("since") LocalDateTime since);
+
 }
