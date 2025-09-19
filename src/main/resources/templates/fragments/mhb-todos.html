@@ -10,20 +10,78 @@
       <div th:if="${todos != null and !#lists.isEmpty(todos)}" class="table-responsive">
         <table class="table table-sm align-middle">
           <thead class="table-light">
-            <tr><th>狀態</th><th>事項</th><th>到期日</th></tr>
+          <tr>
+            <th style="width:120px">狀態</th>
+            <th style="width:140px">事項</th>
+            <th style="width:140px">到期日</th>
+            <th style="width:45%">備註</th>
+            <th style="width:130px">操作</th>
+          </tr>
           </thead>
           <tbody>
-            <tr th:each="t : ${todos}">
-              <td><span th:text="${t.done ? '✔' : '✗'}">✗</span></td>
-              <td th:text="${t.title}">準備待產包</td>
-              <td th:text="${t.dueDate != null ? #temporals.format(t.dueDate,'yyyy/MM/dd') : '-'}">-</td>
-            </tr>
+          <tr th:each="t : ${todos}">
+            <!-- 狀態＋逾期標示 -->
+            <td>
+              <span th:text="${t.done ? '✔' : '✗'}"
+                    th:classappend="${t.done} ? 'text-success' : 'text-secondary'">✗</span>
+              <span class="badge border text-danger ms-1"
+                    th:if="${!t.done and t.dueDate != null and t.dueDate.isBefore(T(java.time.LocalDate).now())}">
+                逾期
+              </span>
+            </td>
+
+            <td th:text="${t.title}">準備待產包</td>
+            <td th:text="${t.dueDate != null ? #temporals.format(t.dueDate,'yyyy/MM/dd') : '-'}">-</td>
+            <td>
+              <span class="d-inline-block text-truncate" style="max-width: 100%;"
+                    th:text="${t.note != null and !#strings.isEmpty(t.note) ? t.note : '—'}"
+                    th:title="${t.note}">—</span>
+            </td>
+
+            <!-- 操作：切換完成 / 編輯 / 刪除 -->
+            <td>
+              <div class="d-flex gap-2">
+                <!-- 勾選切換完成（POST） -->
+                <form th:action="@{'/u/todos/' + ${t.todoId} + '/toggle'}" method="post" class="d-inline">
+                  <input type="hidden" name="mhbId" th:value="${mhb.motherHandbookId}">
+                  <input type="hidden" th:if="${_csrf != null}"
+                         th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button class="btn btn-sm"
+                          th:classappend="${t.done} ? 'btn-outline-secondary' : 'btn-outline-success'"
+                          th:title="${t.done} ? '標記為未完成' : '標記為已完成'">
+                    <i class="fa-regular" th:classappend="${t.done} ? ' fa-square-check' : ' fa-square'"></i>
+                  </button>
+                </form>
+
+                <!-- 編輯 -->
+                <a class="btn btn-sm btn-outline-primary"
+                   th:href="@{'/u/todos/' + ${t.todoId} + '/edit'(mhbId=${mhb.motherHandbookId})}"
+                   title="編輯">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+
+                <!-- 刪除（POST） -->
+                <form th:action="@{'/u/todos/' + ${t.todoId} + '/delete'}" method="post" class="d-inline"
+                      onsubmit="return confirm('確定刪除這筆代辦？');">
+                  <input type="hidden" name="mhbId" th:value="${mhb.motherHandbookId}">
+                  <input type="hidden" th:if="${_csrf != null}"
+                         th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                  <button class="btn btn-sm btn-outline-danger" title="刪除">
+                    <i class="fa-regular fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- 之後再掛新增按鈕 -->
-      <!-- <a class="btn btn-primary btn-sm" th:href="@{/todos/new(mhbId=${mhb.motherHandbookId})}">新增代辦</a> -->
+      <!-- 新增 -->
+      <a class="btn btn-primary btn-sm" th:if="${mhb != null}"
+         th:href="@{/u/todos/new(mhbId=${mhb.motherHandbookId})}">
+        新增代辦
+      </a>
     </div>
   </div>
 </div>

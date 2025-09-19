@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>編輯代辦事項</title>
+  <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+</head>
+<body class="container py-4">
+<h4 class="mb-1">編輯代辦事項</h4>
+<div class="text-muted mb-3" th:if="${mhb != null}">
+  <span th:text="'手冊 #' + ${mhb.motherHandbookId} + ' — ' + ${mhb.motherName}"></span>
+</div>
+
+<form th:action="@{'/u/todos/' + ${todo.todoId} + '/edit'}"
+      th:object="${todo}" method="post" class="row g-3">
+  <input type="hidden" name="mhbId" th:value="${mhb.motherHandbookId}">
+  <input type="hidden" th:if="${_csrf != null}"
+         th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+  <div class="col-md-8">
+    <label class="form-label">事項</label>
+    <input class="form-control" type="text" th:field="*{title}" required>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">到期日</label>
+    <input class="form-control" type="date" th:field="*{dueDate}">
+  </div>
+
+  <div class="col-12">
+    <label class="form-label">備註</label>
+    <textarea class="form-control" rows="3" th:field="*{note}"></textarea>
+  </div>
+
+  <div class="col-12 form-check">
+    <input id="done" class="form-check-input" type="checkbox" th:field="*{done}">
+    <label for="done" class="form-check-label">已完成</label>
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary" type="submit">儲存</button>
+    <a class="btn btn-outline-secondary"
+       th:href="@{/blog/full-grid-left(tab='todos', mhbId=${mhb.motherHandbookId})}">
+      返回
+    </a>
+  </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>編輯懷孕紀錄</title>
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+</head>
+<body class="container py-4">
+	<h4 class="mb-1">編輯懷孕紀錄</h4>
+	<div class="text-muted mb-3" th:if="${mhb != null}">
+		<span
+			th:text="'手冊 #' + ${mhb.motherHandbookId} + ' — ' + ${mhb.motherName}"></span>
+	</div>
+
+	<form
+		th:action="@{'/u/preg/' + ${record.pregnancyRecordId} + '/edit'(mhbId=${mhb.motherHandbookId})}"
+		th:object="${record}" method="post" class="row g-3">
+		<input type="hidden" th:if="${_csrf != null}"
+			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
+
+		<div class="col-md-4">
+			<label class="form-label">就診日</label> <input class="form-control"
+				type="date" th:field="*{visitDate}" required>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">孕週</label> <input class="form-control"
+				type="number" th:field="*{pregnancyWeek}">
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">體重(kg)</label> <input class="form-control"
+				type="number" step="0.01" min="0" th:field="*{weight}">
+		</div>
+
+		<div class="col-md-3">
+			<label class="form-label">收縮壓 SP</label> <input class="form-control"
+				type="number" min="50" max="250" th:field="*{sp}">
+		</div>
+		<div class="col-md-3">
+			<label class="form-label">舒張壓 DP</label> <input class="form-control"
+				type="number" min="30" max="150" th:field="*{dp}">
+		</div>
+		<div class="col-md-3">
+			<label class="form-label">胎心音 FHS</label> <input class="form-control"
+				type="text" th:field="*{fhs}">
+		</div>
+
+		<div class="col-md-12">
+			<label class="form-label">身體狀況 / 醫囑</label>
+			<textarea class="form-control" rows="3" th:field="*{bodyCondition}"></textarea>
+		</div>
+
+		<div class="col-md-4">
+			<label class="form-label">下次回診日</label> <input class="form-control"
+				type="date" th:field="*{nextCheckDate}">
+		</div>
+		<div class="col-md-8">
+			<label class="form-label">下次提醒</label> <input class="form-control"
+				type="text" th:field="*{nextReminder}">
+		</div>
+
+		<div class="col-12">
+			<button class="btn btn-primary" type="submit">儲存變更</button>
+			<a class="btn btn-outline-secondary"
+				th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb.motherHandbookId})}">
+				取消 </a>
+		</div>
+	</form>
+	<!-- 這裡也可保留你「依就診日自動帶孕週」的那段 JS（可複用 new_record.html 的） -->
+	<script th:inline="javascript">
+    (function(){
+      const visit = document.querySelector('[name="visitDate"]');
+      const week = document.querySelector('[name="pregnancyWeek"]');
+      const lmp = /*[[${mhb != null ? mhb.lastMcDate : null}]]*/ null;
+      const edd = /*[[${mhb != null ? mhb.expectedBirthDate : null}]]*/ null;
+
+      function strToDate(s){ if(!s) return null; const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+      function iso(d){ return d.toISOString().slice(0,10); }
+
+      function recompute(){
+        let base = lmp || (edd ? iso(new Date(new Date(edd).getTime() - 40*7*86400000)) : null);
+        if(!base || !visit.value){ week.value=''; return; }
+        const l = strToDate(base), v = strToDate(visit.value);
+        const days = Math.floor((v - l)/86400000);
+        week.value = (days < 0) ? '' : Math.floor(days/7)+1;
+      }
+      visit && visit.addEventListener('change', recompute);
+      recompute();
+    })();
+  </script>
+</body>
+</html>

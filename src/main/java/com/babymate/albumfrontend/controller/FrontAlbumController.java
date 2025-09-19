@@ -34,7 +34,7 @@ public class FrontAlbumController {
 	/** 表單：批次上傳 */
 	@GetMapping("/u/album/new")
 	public String newForm(HttpSession session, Model model) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		return "frontend/u/album/new_photos"; // ← 換成新的多檔表單
@@ -43,7 +43,7 @@ public class FrontAlbumController {
 	/** 送出：批次建立（多檔） */
 	@PostMapping("/u/album/batch")
 	public String batch(@RequestParam("files") MultipartFile[] files, HttpSession session) throws IOException {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 
@@ -66,7 +66,7 @@ public class FrontAlbumController {
 	/** 刪除單張（限本人） */
 	@PostMapping("/u/album/{id}/delete")
 	public String delete(@PathVariable Integer id, HttpSession session) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return "redirect:/shop/login";
 		service.findById(id).ifPresent(p -> {
@@ -79,7 +79,7 @@ public class FrontAlbumController {
 	/** 取圖（原本的） */
 	@GetMapping("/album/photo/{id}")
 	public ResponseEntity<byte[]> photo(@PathVariable Integer id, HttpSession session) {
-		MemberVO login = (MemberVO) session.getAttribute("loginMember");
+		MemberVO login = (MemberVO) session.getAttribute("member");
 		if (login == null)
 			return ResponseEntity.status(302).header(HttpHeaders.LOCATION, "/shop/login").build();
 
