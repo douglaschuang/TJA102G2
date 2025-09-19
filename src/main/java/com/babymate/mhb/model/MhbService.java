@@ -40,6 +40,19 @@ public class MhbService {
         // 或 native：
         // return repository.findLatestByMemberIdNative(memberId);
     }
+    
+ // MhbService.java
+    @Transactional(readOnly = true)
+    public boolean existsActiveById(Integer mhbId) {
+        return mhbId != null && repository.existsByMotherHandbookIdAndDeletedFalse(mhbId);
+    }
+
+    @Transactional(readOnly = true)
+    public MhbVO findActiveById(Integer mhbId) {
+        if (mhbId == null) return null;
+        return repository.findByMotherHandbookIdAndDeletedFalse(mhbId);
+    }
+
 
 
     /* ========= Admin 用清單 ========= */
@@ -60,4 +73,9 @@ public class MhbService {
     public byte[] getPhotoBytesRaw(Integer id) {
         return repository.findPhotoBytesByIdNative(id);
     }
+    
+    public boolean hasAnyForMember(Integer memberId) {
+        return repository.countByMemberIdAndDeletedFalse(memberId) > 0;
+    }
+
 }

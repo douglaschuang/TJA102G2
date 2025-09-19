@@ -1,357 +1,261 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
-  <th:block th:fragment="extraHead"></th:block>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead"></th:block>
 </head>
 
-<body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
-<section th:fragment="content">
-<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('會員儀表板')}"></div>
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div
+			th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('會員儀表板')}"></div>
 
 
 
-	<!-- page wrapper -->
-	<div class="blog-page-wrapper mb-100">
-		<div class="container">
-			<div class="row">
-				<!-- sidebar -->
-				<div class="col-lg-3 order-2 order-lg-1">
-					<div class="page-sidebar">
-						<div class="single-sidebar-widget mb-40">
-							<div class="search-widget">
-								<form action="#" th:action="@{/}">
-									<input type="search" placeholder="搜尋您的育兒與生活紀錄">
-									<button type="button">
-										<i class="ion-android-search"></i>
-									</button>
-								</form>
-							</div>
-						</div>
-
-						<div class="single-sidebar-widget mb-40">
-							<h2 class="single-sidebar-widget--title">育兒與生活</h2>
-							<ul
-								class="single-sidebar-widget--list single-sidebar-widget--list--category">
-								<li class="has-children"><a
-									th:href="@{/blog/full-grid-left(tab='mhb')}">媽媽手冊</a>
-									<ul>
-										<li><a
-											th:href="@{/blog/full-grid-left(tab='mhb-records')}">媽媽懷孕紀錄</a></li>
-										<li><a
-											th:href="@{/blog/full-grid-left(tab='mhb-charts')}">身體指數紀錄圖表</a></li>
-										<li><a th:href="@{/blog/full-grid-left(tab='todos')}">代辦事項</a></li>
-									</ul></li>
-
-								<li class="has-children"><a href="/shop/left"
-									th:href="@{/shop/left}">寶寶手冊</a>
-									<ul>
-										<li><a href="/shop/left" th:href="@{/shop/left}">寶寶成長紀錄</a></li>
-										<li><a href="/shop/left" th:href="@{/shop/left}">寶寶生長圖表</a></li>
-										<li><a href="/shop/left" th:href="@{/shop/left}">代辦事項</a></li>
-									</ul></li>
-								<li><a href="/shop/left" th:href="@{/shop/left}">我的日曆</a></li>
-								<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
-								<li><a th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a></li>
-								<li><a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a></li>
-								<li><a href="/shop/left" th:href="@{/shop/left}">通知</a></li>
-							</ul>
-						</div>
-
-						<div class="single-sidebar-widget mb-40">
-							<h2 class="single-sidebar-widget--title">最新日記</h2>
-
-							<!-- 空狀態（未登入或沒有文章） -->
-							<div th:if="${#lists.isEmpty(latestDiary)}"
-								class="text-muted small">
-								<span th:if="${session.loginMember == null}"> 請先<a
-									th:href="@{/shop/login}">登入</a>，登入後會顯示你的最新日記。
-								</span> <span th:if="${session.loginMember != null}"> 還沒有日記～<a
-									th:href="@{/u/diary/new}">寫第一篇</a>！
-								</span>
-							</div>
-
-							<!-- 最新三篇 -->
-							<div class="widget-post-wrapper"
-								th:if="${!#lists.isEmpty(latestDiary)}">
-								<div class="single-widget-post" th:each="d : ${latestDiary}">
-									<div class="content">
-										<h3 class="widget-post-title">
-											<a th:href="@{'/u/diary/' + ${d.id}}"
-												th:text="${d.title != null ? d.title : '（無標題）'}">日記標題</a>
-										</h3>
-										<p class="widget-post-date"
-											th:text="${#temporals.format(d.writtenAt != null ? d.writtenAt : d.createdAt, 'yyyy-MM-dd')}">
-											2025-01-01</p>
-										<p class="small text-muted"
-											th:text="${#strings.abbreviate(d.content, 60)}">內容摘要</p>
-									</div>
-								</div>
-								<div class="mt-2">
-									<a class="btn btn-xs btn-outline-secondary"
-										th:href="@{/blog/full-grid-left(tab='diary')}">更多日記</a>
+		<!-- page wrapper -->
+		<div class="blog-page-wrapper mb-100">
+			<div class="container">
+				<div class="row">
+					<!-- sidebar -->
+					<div class="col-lg-3 order-2 order-lg-1">
+						<div class="page-sidebar">
+							<div class="single-sidebar-widget mb-40">
+								<div class="search-widget">
+									<form action="#" th:action="@{/}">
+										<input type="search" placeholder="搜尋您的育兒與生活紀錄">
+										<button type="button">
+											<i class="ion-android-search"></i>
+										</button>
+									</form>
 								</div>
 							</div>
-						</div>
 
+							<div class="single-sidebar-widget mb-40">
+								<h2 class="single-sidebar-widget--title">育兒與生活</h2>
+								<ul
+									class="single-sidebar-widget--list single-sidebar-widget--list--category">
+									<li class="has-children"><a
+										th:href="@{/blog/full-grid-left(tab='mhb')}">媽媽手冊</a>
+										<ul>
+											<li><a
+												th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}">媽媽懷孕紀錄</a></li>
+											<li><a
+												th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb?.motherHandbookId})}">身體指數紀錄圖表</a></li>
+											<li><a th:href="@{/blog/full-grid-left(tab='todos')}">代辦事項</a></li>
+										</ul></li>
 
-					</div>
-				</div>
+									<li class="has-children"><a href="/shop/left"
+										th:href="@{/shop/left}">寶寶手冊</a>
+										<ul>
+											<li><a href="/shop/left" th:href="@{/shop/left}">寶寶成長紀錄</a></li>
+											<li><a href="/shop/left" th:href="@{/shop/left}">寶寶生長圖表</a></li>
+											<li><a href="/shop/left" th:href="@{/shop/left}">代辦事項</a></li>
+										</ul></li>
+									<li><a href="/shop/left" th:href="@{/shop/left}">我的日曆</a></li>
+									<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
+									<li><a th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a></li>
+									<li><a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a></li>
+									<li><a href="/shop/left" th:href="@{/shop/left}">通知</a></li>
+								</ul>
+							</div>
 
-				<!-- main -->
-				<div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70"
-					th:with="activeTab=${tab != null ? tab : (param.tab != null ? param.tab[0] : null)}"
-					th:switch="${activeTab}">
+							<div class="single-sidebar-widget mb-40">
+								<h2 class="single-sidebar-widget--title">最新日記</h2>
 
-					<!-- 媽媽手冊 -->
-					<div th:case="'mhb'">
-						<div
-							th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
-						<div th:if="${mhb == null}" class="alert alert-info">
-							目前尚未建立媽媽手冊。<a class="btn btn-primary btn-sm ms-2"
-								th:href="@{/u/mhb/new}">建立媽媽手冊</a>
-						</div>
-						<div th:if="${mhb != null}"
-							th:replace="~{fragments/mhb-detail :: mhbDetail(${mhb}, ${pregnancyWeek})}"></div>
-					</div>
+								<!-- 空狀態（未登入或沒有文章） -->
+								<div th:if="${#lists.isEmpty(latestDiary)}"
+									class="text-muted small">
+									<span th:if="${session.member == null}"> 請先<a
+										th:href="@{/shop/login}">登入</a>，登入後會顯示你的最新日記。
+									</span> <span th:if="${session.member != null}"> 還沒有日記～<a
+										th:href="@{/u/diary/new}">寫第一篇</a>！
+									</span>
+								</div>
 
-					<!-- 媽媽懷孕紀錄 -->
-					<div th:case="'mhb-records'">
-						<div
-							th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
-						<div
-							th:replace="~{fragments/mhb-records :: mhbRecords(${mhb}, ${records}, ${pregnancyWeek})}"></div>
-					</div>
-
-					<!-- 身體指數紀錄圖表 -->
-					<div th:case="'mhb-charts'">
-						<div
-							th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
-						<div
-							th:replace="~{fragments/mhb-charts :: mhbCharts(${mhb}, ${chartLabels}, ${chartWeights}, ${chartSp}, ${chartDp}, ${chartFhs})}"></div>
-					</div>
-
-					<!-- 代辦事項 -->
-					<div th:case="'todos'">
-						<div
-							th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
-						<div
-							th:replace="~{fragments/mhb-todos :: mhbTodos(${mhb}, ${todos})}"></div>
-					</div>
-
-					<!-- 我的相簿 -->
-					<div th:case="'album'">
-						<div
-							class="d-flex justify-content-between align-items-center mb-3">
-							<h4 class="mb-0">我的相簿</h4>
-							<a class="btn btn-primary btn-sm" th:href="@{/u/album/new}">上傳照片</a>
-						</div>
-
-						<!-- 空狀態 -->
-						<div th:if="${photos == null or #lists.isEmpty(photos)}"
-							class="alert alert-info">
-							目前還沒有照片～<a class="btn btn-primary btn-sm ms-2"
-								th:href="@{/u/album/new}">立即上傳</a>
-						</div>
-
-						<!-- 照片格狀牆 -->
-						<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"
-							th:if="${photos != null and !#lists.isEmpty(photos)}">
-							<div class="col" th:each="p : ${photos}">
-								<div class="card h-100 shadow-sm">
-									<a th:href="@{'/album/photo/' + ${p.id}}" target="_blank">
-										<img class="card-img-top"
-										th:src="@{'/album/photo/' + ${p.id}}" alt="photo">
-									</a>
-									<div class="card-body py-2">
-										<div class="small text-muted"
-											th:text="${#temporals.format(p.takenAt != null ? p.takenAt : p.createdAt, 'yyyy-MM-dd')}">
-											2025-01-01</div>
-										<div class="small text-truncate" th:text="${p.caption}">說明</div>
+								<!-- 最新三篇 -->
+								<div class="widget-post-wrapper"
+									th:if="${!#lists.isEmpty(latestDiary)}">
+									<div class="single-widget-post" th:each="d : ${latestDiary}">
+										<div class="content">
+											<h3 class="widget-post-title">
+												<a th:href="@{'/u/diary/' + ${d.id}}"
+													th:text="${d.title != null ? d.title : '（無標題）'}">日記標題</a>
+											</h3>
+											<p class="widget-post-date"
+												th:text="${#temporals.format(d.writtenAt != null ? d.writtenAt : d.createdAt, 'yyyy-MM-dd')}">
+												2025-01-01</p>
+											<p class="small text-muted"
+												th:text="${#strings.abbreviate(d.content, 60)}">內容摘要</p>
+										</div>
 									</div>
-									<div class="card-footer bg-transparent border-0 pt-0">
-										<form th:action="@{'/u/album/' + ${p.id} + '/delete'}"
-											method="post" class="d-inline">
+									<div class="mt-2">
+										<a class="btn btn-xs btn-outline-secondary"
+											th:href="@{/blog/full-grid-left(tab='diary')}">更多日記</a>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+
+					<!-- main -->
+					<div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70"
+						th:with="activeTab=${tab != null ? tab : (param.tab != null ? param.tab[0] : null)}"
+						th:switch="${activeTab}">
+
+						<!-- 媽媽手冊 -->
+						<div th:case="'mhb'">
+							<div
+								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
+							<div th:if="${mhb == null}" class="alert alert-info">
+								目前尚未建立媽媽手冊。<a class="btn btn-primary btn-sm ms-2"
+									th:href="@{/u/mhb/new}">建立媽媽手冊</a>
+							</div>
+
+							<div th:if="${mhb != null}">
+								<div
+									th:replace="~{fragments/mhb-detail :: mhbDetail(${mhb}, ${pregnancyWeek})}"></div>
+
+								<!-- 新增 CTA 區塊 -->
+								<!-- <div class="mt-3 d-flex gap-2">
+									<a class="btn btn-outline-primary btn-sm"
+										th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb.motherHandbookId})}">
+										檢視懷孕紀錄 </a> <a class="btn btn-outline-secondary btn-sm"
+										th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb.motherHandbookId})}">
+										查看圖表 </a>
+								</div> -->
+							</div>
+						</div>
+
+						<!-- 媽媽懷孕紀錄 -->
+						<div th:case="'mhb-records'">
+							<div
+								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
+							<div
+								th:replace="~{fragments/mhb-records :: mhbRecords(${mhb}, ${records}, ${pregnancyWeek})}"></div>
+						</div>
+
+						<!-- 身體指數紀錄圖表 -->
+						<div th:case="'mhb-charts'">
+							<div
+								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
+							<div
+								th:replace="~{fragments/mhb-charts :: mhbCharts(${mhb}, ${chartLabels}, ${chartWeights}, ${chartSp}, ${chartDp}, ${chartFhs})}"></div>
+						</div>
+
+						<!-- 代辦事項 -->
+						<div th:case="'todos'">
+							<div
+								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
+							<div
+								th:replace="~{fragments/mhb-todos :: mhbTodos(${mhb}, ${todos})}"></div>
+						</div>
+
+						<!-- 我的相簿 -->
+						<div th:case="'album'">
+							<div
+								class="d-flex justify-content-between align-items-center mb-3">
+								<h4 class="mb-0">我的相簿</h4>
+								<a class="btn btn-primary btn-sm" th:href="@{/u/album/new}">上傳照片</a>
+							</div>
+
+							<!-- 空狀態 -->
+							<div th:if="${photos == null or #lists.isEmpty(photos)}"
+								class="alert alert-info">
+								目前還沒有照片～<a class="btn btn-primary btn-sm ms-2"
+									th:href="@{/u/album/new}">立即上傳</a>
+							</div>
+
+							<!-- 照片格狀牆 -->
+							<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"
+								th:if="${photos != null and !#lists.isEmpty(photos)}">
+								<div class="col" th:each="p : ${photos}">
+									<div class="card h-100 shadow-sm">
+										<a th:href="@{'/album/photo/' + ${p.id}}" target="_blank">
+											<img class="card-img-top"
+											th:src="@{'/album/photo/' + ${p.id}}" alt="photo">
+										</a>
+										<div class="card-body py-2">
+											<div class="small text-muted"
+												th:text="${#temporals.format(p.takenAt != null ? p.takenAt : p.createdAt, 'yyyy-MM-dd')}">
+												2025-01-01</div>
+											<div class="small text-truncate" th:text="${p.caption}">說明</div>
+										</div>
+										<div class="card-footer bg-transparent border-0 pt-0">
+											<form th:action="@{'/u/album/' + ${p.id} + '/delete'}"
+												method="post" class="d-inline">
+												<input type="hidden" th:name="${_csrf?.parameterName}"
+													th:value="${_csrf?.token}">
+												<button class="btn btn-sm btn-outline-danger"
+													onclick="return confirm('確定刪除這張照片？')">刪除</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<!-- 我的日記 -->
+						<div th:case="'diary'">
+							<div
+								class="d-flex justify-content-between align-items-center mb-3">
+								<h4 class="mb-0">我的日記</h4>
+								<a class="btn btn-primary btn-sm" th:href="@{/u/diary/new}">新增日記</a>
+							</div>
+
+							<!-- 空狀態 -->
+							<div th:if="${entries == null or #lists.isEmpty(entries)}"
+								class="alert alert-info">
+								還沒有日記～<a class="btn btn-primary btn-sm ms-2"
+									th:href="@{/u/diary/new}">寫第一篇</a>
+							</div>
+
+							<!-- 日記清單 -->
+							<div class="list-group"
+								th:if="${entries != null and !#lists.isEmpty(entries)}">
+								<div class="list-group-item py-3" th:each="e : ${entries}">
+									<div class="d-flex w-100 justify-content-between">
+										<h6 class="mb-1"
+											th:text="${e.title != null ? e.title : '（無標題）'}">日記標題</h6>
+										<small class="text-muted"
+											th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">
+											2025-01-01 12:00 </small>
+									</div>
+									<p class="mb-2 text-muted"
+										th:text="${#strings.abbreviate(e.content, 120)}">內容前幾行預覽…</p>
+									<small class="text-muted d-block mb-2"
+										th:if="${e.tags != null}" th:text="${e.tags}">#tag</small>
+
+									<div class="d-flex gap-2">
+										<a class="btn btn-sm btn-outline-secondary"
+											th:href="@{'/u/diary/' + ${e.id}}">查看</a> <a
+											class="btn btn-sm btn-outline-primary"
+											th:href="@{'/u/diary/' + ${e.id} + '/edit'}">編輯</a>
+										<form th:action="@{'/u/diary/' + ${e.id} + '/delete'}"
+											method="post" onsubmit="return confirm('確定刪除這篇日記？')">
 											<input type="hidden" th:name="${_csrf?.parameterName}"
 												th:value="${_csrf?.token}">
-											<button class="btn btn-sm btn-outline-danger"
-												onclick="return confirm('確定刪除這張照片？')">刪除</button>
+											<button class="btn btn-sm btn-outline-danger">刪除</button>
 										</form>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-
-
-					<!-- 我的日記 -->
-					<div th:case="'diary'">
-						<div
-							class="d-flex justify-content-between align-items-center mb-3">
-							<h4 class="mb-0">我的日記</h4>
-							<a class="btn btn-primary btn-sm" th:href="@{/u/diary/new}">新增日記</a>
-						</div>
-
-						<!-- 空狀態 -->
-						<div th:if="${entries == null or #lists.isEmpty(entries)}"
-							class="alert alert-info">
-							還沒有日記～<a class="btn btn-primary btn-sm ms-2"
-								th:href="@{/u/diary/new}">寫第一篇</a>
-						</div>
-
-						<!-- 日記清單 -->
-						<div class="list-group"
-							th:if="${entries != null and !#lists.isEmpty(entries)}">
-							<div class="list-group-item py-3" th:each="e : ${entries}">
-								<div class="d-flex w-100 justify-content-between">
-									<h6 class="mb-1"
-										th:text="${e.title != null ? e.title : '（無標題）'}">日記標題</h6>
-									<small class="text-muted"
-										th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">
-										2025-01-01 12:00 </small>
-								</div>
-								<p class="mb-2 text-muted"
-									th:text="${#strings.abbreviate(e.content, 120)}">內容前幾行預覽…</p>
-								<small class="text-muted d-block mb-2" th:if="${e.tags != null}"
-									th:text="${e.tags}">#tag</small>
-
-								<div class="d-flex gap-2">
-									<a class="btn btn-sm btn-outline-secondary"
-										th:href="@{'/u/diary/' + ${e.id}}">查看</a> <a
-										class="btn btn-sm btn-outline-primary"
-										th:href="@{'/u/diary/' + ${e.id} + '/edit'}">編輯</a>
-									<form th:action="@{'/u/diary/' + ${e.id} + '/delete'}"
-										method="post" onsubmit="return confirm('確定刪除這篇日記？')">
-										<input type="hidden" th:name="${_csrf?.parameterName}"
-											th:value="${_csrf?.token}">
-										<button class="btn btn-sm btn-outline-danger">刪除</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
 
 
 
-					<div th:case="*">
-						<div class="row">
-							<div class="col-md-12 mb-60">
-								<div
-									class="single-slider-post single-slider-post--sticky text-center pb-60">
-
-
-									<!-- category block 1 -->
+						<div th:case="*">
+							<div class="row">
+								<div class="col-md-12 mb-60">
 									<div
-										class="product-category-container mb-100 mb-md-90 mb-sm-90">
-										<div class="container wide">
-											<div class="row">
-												<div class="col-lg-3 col-md-6 col-12">
-													<div
-														class="single-category single-category--one wow zoomIn">
-														<div
-															class="single-category__image single-category__image--one">
-															<img src="/assets/images/category/book3.jpg"
-																class="img-fluid" alt=""
-																th:src="@{/assets/images/category/book3.jpg}">
-														</div>
-														<div
-															class="single-category__content single-category__content--one mt-25 mb-25">
-															<div class="title">
-																<p>媽媽手冊</p>
-																<a href="/blog/full-grid-left?tab=mhb"
-																	th:href="@{/blog/full-grid-left(tab='mhb')}">+
-																	查看媽媽手冊</a>
-															</div>
-															<p class="product-count">孕程路上貼心陪伴</p>
-														</div>
-														<a href="/blog/full-grid-left(tab='mhb')"
-															class="banner-link"
-															th:href="@{/blog/full-grid-left(tab='mhb')}"></a>
-													</div>
-												</div>
+										class="single-slider-post single-slider-post--sticky text-center pb-60">
 
-												<div class="col-lg-3 col-md-6 col-12">
-													<div
-														class="single-category single-category--one wow zoomIn">
-														<div
-															class="single-category__content single-category__content--one mt-25 mb-25">
-															<div class="title">
-																<p>媽媽懷孕紀錄</p>
-																<a th:href="@{/blog/full-grid-left(tab='mhb-records')}">+
-																	檢視懷孕紀錄</a>
-															</div>
-															<p class="product-count">每週變化一目了然</p>
-														</div>
-														<div
-															class="single-category__image single-category__image--one">
-															<img src="/assets/images/category/category-summer.jpg"
-																class="img-fluid" alt=""
-																th:src="@{/assets/images/category/category-summer.jpg}">
-														</div>
-														<a href="/blog/full-grid-left(tab='mhb-records')"
-															class="banner-link"
-															th:href="@{/blog/full-grid-left(tab='mhb-records')}"></a>
-													</div>
-												</div>
 
-												<div class="col-lg-3 col-md-6 col-12">
-													<div
-														class="single-category single-category--one wow zoomIn">
-														<div
-															class="single-category__image single-category__image--one">
-															<img src="/assets/images/category/category-women.jpg"
-																class="img-fluid" alt=""
-																th:src="@{/assets/images/category/category-women.jpg}">
-														</div>
-														<div
-															class="single-category__content single-category__content--one mt-25 mb-25">
-															<div class="title">
-																<p>身體指數紀錄圖表</p>
-																<a th:href="@{/blog/full-grid-left(tab='mhb-charts')}">+
-																	查看圖表</a>
-															</div>
-															<p class="product-count">視覺化追蹤才安心</p>
-														</div>
-														<a href="/blog/full-grid-left(tab='mhb-charts')"
-															class="banner-link"
-															th:href="@{/blog/full-grid-left(tab='mhb-charts')}"></a>
-													</div>
-												</div>
-
-												<div class="col-lg-3 col-md-6 col-12">
-													<div
-														class="single-category single-category--one wow zoomIn">
-														<div
-															class="single-category__content single-category__content--one mt-25 mb-25">
-															<div class="title">
-																<p>代辦事項</p>
-																<a th:href="@{/blog/full-grid-left(tab='todos')}">+
-																	查看代辦事項</a>
-															</div>
-															<p class="product-count">媽媽的行程秘書</p>
-														</div>
-														<div
-															class="single-category__image single-category__image--one">
-															<img src="/assets/images/category/category-bags.jpg"
-																class="img-fluid" alt=""
-																th:src="@{/assets/images/category/category-bags.jpg}">
-														</div>
-														<a href="/blog/full-grid-left(tab='todos')"
-															class="banner-link"
-															th:href="@{/blog/full-grid-left(tab='todos')}"></a>
-													</div>
-												</div>
-
-											</div>
-										</div>
-									</div>
-									<!-- end category block 1 -->
-
-									<!-- content block -->
-									<div
-										class="single-slider-post__content single-slider-post--sticky__content">
-
-										<!-- category block 2 -->
+										<!-- category block 1 -->
 										<div
 											class="product-category-container mb-100 mb-md-90 mb-sm-90">
 											<div class="container wide">
@@ -361,21 +265,23 @@
 															class="single-category single-category--one wow zoomIn">
 															<div
 																class="single-category__image single-category__image--one">
-																<img src="/assets/images/category/bluebook.jpg"
+																<img src="/assets/images/category/book3.jpg"
 																	class="img-fluid" alt=""
-																	th:src="@{/assets/images/category/bluebook.jpg}">
+																	th:src="@{/assets/images/category/book3.jpg}">
 															</div>
 															<div
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
-																	<p>寶寶手冊</p>
-																	<a href="/shop/left" th:href="@{/shop/left}">+
-																		查看寶寶手冊</a>
+																	<p>媽媽手冊</p>
+																	<a href="/blog/full-grid-left?tab=mhb"
+																		th:href="@{/blog/full-grid-left(tab='mhb')}">+
+																		查看媽媽手冊</a>
 																</div>
-																<p class="product-count">成長足跡一手掌握</p>
+																<p class="product-count">孕程路上貼心陪伴</p>
 															</div>
-															<a href="/shop/left" class="banner-link"
-																th:href="@{/shop/left}"></a>
+															<a href="/blog/full-grid-left(tab='mhb')"
+																class="banner-link"
+																th:href="@{/blog/full-grid-left(tab='mhb')}"></a>
 														</div>
 													</div>
 
@@ -385,20 +291,22 @@
 															<div
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
-																	<p>寶寶成長紀錄</p>
-																	<a href="/shop/left" th:href="@{/shop/left}">+
-																		查看成長紀錄</a>
+																	<p>媽媽懷孕紀錄</p>
+																	<a
+																		th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}">+
+																		檢視懷孕紀錄</a>
 																</div>
-																<p class="product-count">紀錄寶寶每個里程碑</p>
+																<p class="product-count">每週變化一目了然</p>
 															</div>
 															<div
 																class="single-category__image single-category__image--one">
-																<img src="/assets/images/category/category-men.jpg"
+																<img src="/assets/images/category/category-summer.jpg"
 																	class="img-fluid" alt=""
-																	th:src="@{/assets/images/category/category-men.jpg}">
+																	th:src="@{/assets/images/category/category-summer.jpg}">
 															</div>
-															<a href="/shop/left" class="banner-link"
-																th:href="@{/shop/left}"></a>
+															<!-- href="/blog/full-grid-left(tab='mhb-records')" -->
+															<a class="banner-link"
+																th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}"></a>
 														</div>
 													</div>
 
@@ -407,20 +315,22 @@
 															class="single-category single-category--one wow zoomIn">
 															<div
 																class="single-category__image single-category__image--one">
-																<img src="/assets/images/category/category-shoes.jpg"
+																<img src="/assets/images/category/category-women.jpg"
 																	class="img-fluid" alt=""
-																	th:src="@{/assets/images/category/category-shoes.jpg}">
+																	th:src="@{/assets/images/category/category-women.jpg}">
 															</div>
 															<div
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
-																	<p>寶寶生長圖表</p>
-																	<a href="/shop/left" th:href="@{/shop/left}">+ 查看圖表</a>
+																	<p>身體指數紀錄圖表</p>
+																	<a th:href="@{/blog/full-grid-left(tab='mhb-charts')}">+
+																		查看圖表</a>
 																</div>
-																<p class="product-count">成長軌跡看得見</p>
+																<p class="product-count">視覺化追蹤才安心</p>
 															</div>
-															<a href="/shop/left" class="banner-link"
-																th:href="@{/shop/left}"></a>
+															<a href="/blog/full-grid-left(tab='mhb-charts')"
+																class="banner-link"
+																th:href="@{/blog/full-grid-left(tab='mhb-charts')}"></a>
 														</div>
 													</div>
 
@@ -431,35 +341,142 @@
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
 																	<p>代辦事項</p>
-																	<a href="/shop/left" th:href="@{/shop/left}">+
+																	<a th:href="@{/blog/full-grid-left(tab='todos')}">+
 																		查看代辦事項</a>
 																</div>
-																<p class="product-count">育兒行程小幫手</p>
+																<p class="product-count">媽媽的行程秘書</p>
 															</div>
 															<div
 																class="single-category__image single-category__image--one">
-																<img src="/assets/images/category/bluememo.jpg"
+																<img src="/assets/images/category/category-bags.jpg"
 																	class="img-fluid" alt=""
-																	th:src="@{/assets/images/category/bluememo.jpg}">
+																	th:src="@{/assets/images/category/category-bags.jpg}">
 															</div>
-															<a href="/shop/left" class="banner-link"
-																th:href="@{/shop/left}"></a>
+															<a href="/blog/full-grid-left(tab='todos')"
+																class="banner-link"
+																th:href="@{/blog/full-grid-left(tab='todos')}"></a>
 														</div>
 													</div>
 
 												</div>
 											</div>
 										</div>
-										<!-- end category block 2 -->
+										<!-- end category block 1 -->
 
-										<!-- slider block -->
-										<div class="product-category-container mb-90">
-											<div class="container wide">
-												<div class="row">
-													<div class="col-lg-12">
-														<div
-															class="lezada-slick-slider product-category-slider wow fadeInUp"
-															data-slick-setting='{
+										<!-- content block -->
+										<div
+											class="single-slider-post__content single-slider-post--sticky__content">
+
+											<!-- category block 2 -->
+											<div
+												class="product-category-container mb-100 mb-md-90 mb-sm-90">
+												<div class="container wide">
+													<div class="row">
+														<div class="col-lg-3 col-md-6 col-12">
+															<div
+																class="single-category single-category--one wow zoomIn">
+																<div
+																	class="single-category__image single-category__image--one">
+																	<img src="/assets/images/category/bluebook.jpg"
+																		class="img-fluid" alt=""
+																		th:src="@{/assets/images/category/bluebook.jpg}">
+																</div>
+																<div
+																	class="single-category__content single-category__content--one mt-25 mb-25">
+																	<div class="title">
+																		<p>寶寶手冊</p>
+																		<a href="/shop/left" th:href="@{/shop/left}">+
+																			查看寶寶手冊</a>
+																	</div>
+																	<p class="product-count">成長足跡一手掌握</p>
+																</div>
+																<a href="/shop/left" class="banner-link"
+																	th:href="@{/shop/left}"></a>
+															</div>
+														</div>
+
+														<div class="col-lg-3 col-md-6 col-12">
+															<div
+																class="single-category single-category--one wow zoomIn">
+																<div
+																	class="single-category__content single-category__content--one mt-25 mb-25">
+																	<div class="title">
+																		<p>寶寶成長紀錄</p>
+																		<a href="/shop/left" th:href="@{/shop/left}">+
+																			查看成長紀錄</a>
+																	</div>
+																	<p class="product-count">紀錄寶寶每個里程碑</p>
+																</div>
+																<div
+																	class="single-category__image single-category__image--one">
+																	<img src="/assets/images/category/category-men.jpg"
+																		class="img-fluid" alt=""
+																		th:src="@{/assets/images/category/category-men.jpg}">
+																</div>
+																<a href="/shop/left" class="banner-link"
+																	th:href="@{/shop/left}"></a>
+															</div>
+														</div>
+
+														<div class="col-lg-3 col-md-6 col-12">
+															<div
+																class="single-category single-category--one wow zoomIn">
+																<div
+																	class="single-category__image single-category__image--one">
+																	<img src="/assets/images/category/category-shoes.jpg"
+																		class="img-fluid" alt=""
+																		th:src="@{/assets/images/category/category-shoes.jpg}">
+																</div>
+																<div
+																	class="single-category__content single-category__content--one mt-25 mb-25">
+																	<div class="title">
+																		<p>寶寶生長圖表</p>
+																		<a href="/shop/left" th:href="@{/shop/left}">+
+																			查看圖表</a>
+																	</div>
+																	<p class="product-count">成長軌跡看得見</p>
+																</div>
+																<a href="/shop/left" class="banner-link"
+																	th:href="@{/shop/left}"></a>
+															</div>
+														</div>
+
+														<div class="col-lg-3 col-md-6 col-12">
+															<div
+																class="single-category single-category--one wow zoomIn">
+																<div
+																	class="single-category__content single-category__content--one mt-25 mb-25">
+																	<div class="title">
+																		<p>代辦事項</p>
+																		<a href="/shop/left" th:href="@{/shop/left}">+
+																			查看代辦事項</a>
+																	</div>
+																	<p class="product-count">育兒行程小幫手</p>
+																</div>
+																<div
+																	class="single-category__image single-category__image--one">
+																	<img src="/assets/images/category/bluememo.jpg"
+																		class="img-fluid" alt=""
+																		th:src="@{/assets/images/category/bluememo.jpg}">
+																</div>
+																<a href="/shop/left" class="banner-link"
+																	th:href="@{/shop/left}"></a>
+															</div>
+														</div>
+
+													</div>
+												</div>
+											</div>
+											<!-- end category block 2 -->
+
+											<!-- slider block -->
+											<div class="product-category-container mb-90">
+												<div class="container wide">
+													<div class="row">
+														<div class="col-lg-12">
+															<div
+																class="lezada-slick-slider product-category-slider wow fadeInUp"
+																data-slick-setting='{
                                  "slidesToShow": 3,
                                  "arrows": true,
                                  "autoplay": true,
@@ -468,7 +485,7 @@
                                  "prevArrow": {"buttonClass": "slick-prev", "iconClass": "ion-ios-arrow-thin-left" },
                                  "nextArrow": {"buttonClass": "slick-next", "iconClass": "ion-ios-arrow-thin-right" }
                                }'
-															data-slick-responsive='[
+																data-slick-responsive='[
                                  {"breakpoint":1501, "settings": {"slidesToShow": 3} },
                                  {"breakpoint":1199, "settings": {"slidesToShow": 3} },
                                  {"breakpoint":991, "settings": {"slidesToShow": 2, "arrows": false} },
@@ -477,133 +494,133 @@
                                  {"breakpoint":479, "settings": {"slidesToShow": 1, "arrows": false} }
                                ]'>
 
-															<div class="col">
-																<div class="single-category single-category--two">
-																	<div
-																		class="single-category__image single-category__image--two">
-																		<img src="/assets/images/category/sunglasses.jpg"
-																			class="img-fluid" alt=""
-																			th:src="@{/assets/images/category/sunglasses.jpg}">
-																	</div>
-																	<div
-																		class="single-category__content single-category__content--two mt-25">
-																		<div class="title">
-																			<a href="/shop/left" th:href="@{/shop/left}">我的日曆</a>
+																<div class="col">
+																	<div class="single-category single-category--two">
+																		<div
+																			class="single-category__image single-category__image--two">
+																			<img src="/assets/images/category/sunglasses.jpg"
+																				class="img-fluid" alt=""
+																				th:src="@{/assets/images/category/sunglasses.jpg}">
 																		</div>
-																		<p class="product-count"></p>
-																	</div>
-																	<a href="/shop/left" class="banner-link"
-																		th:href="@{/shop/left}"></a>
-																</div>
-															</div>
-
-															<div class="col">
-																<div class="single-category single-category--two">
-																	<div
-																		class="single-category__image single-category__image--two">
-																		<img src="/assets/images/category/women.jpg"
-																			class="img-fluid" alt=""
-																			th:src="@{/assets/images/category/women.jpg}">
-																	</div>
-																	<div
-																		class="single-category__content single-category__content--two mt-25">
-																		<div class="title">
-																			<a href="/blog/full-grid-left(tab='diary')"
-																				th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a>
+																		<div
+																			class="single-category__content single-category__content--two mt-25">
+																			<div class="title">
+																				<a href="/shop/left" th:href="@{/shop/left}">我的日曆</a>
+																			</div>
+																			<p class="product-count"></p>
 																		</div>
-																		<p class="product-count"></p>
+																		<a href="/shop/left" class="banner-link"
+																			th:href="@{/shop/left}"></a>
 																	</div>
-																	<a href="/blog/full-grid-left(tab='diary')"
-																		class="banner-link"
-																		th:href="@{/blog/full-grid-left(tab='diary')}"></a>
 																</div>
-															</div>
 
-															<div class="col">
-																<div class="single-category single-category--two">
-																	<div
-																		class="single-category__image single-category__image--two">
-																		<img src="/assets/images/category/cat-look-book.jpg"
-																			class="img-fluid" alt=""
-																			th:src="@{/assets/images/category/cat-look-book.jpg}">
-																	</div>
-																	<div
-																		class="single-category__content single-category__content--two mt-25">
-																		<div class="title">
-																			<a href="/blog/full-grid-left(tab='album')"
-																				th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a>
+																<div class="col">
+																	<div class="single-category single-category--two">
+																		<div
+																			class="single-category__image single-category__image--two">
+																			<img src="/assets/images/category/women.jpg"
+																				class="img-fluid" alt=""
+																				th:src="@{/assets/images/category/women.jpg}">
 																		</div>
-																		<p class="product-count"></p>
-																	</div>
-																	<a href="/blog/full-grid-left(tab='album')"
-																		class="banner-link"
-																		th:href="@{/blog/full-grid-left(tab='album')}"></a>
-																</div>
-															</div>
-
-															<div class="col">
-																<div class="single-category single-category--two">
-																	<div
-																		class="single-category__image single-category__image--two">
-																		<img src="/assets/images/category/men.jpg"
-																			class="img-fluid" alt=""
-																			th:src="@{/assets/images/category/men.jpg}">
-																	</div>
-																	<div
-																		class="single-category__content single-category__content--two mt-25">
-																		<div class="title">
-																			<a href="/shop/left" th:href="@{/shop/left}">通知</a>
+																		<div
+																			class="single-category__content single-category__content--two mt-25">
+																			<div class="title">
+																				<a href="/blog/full-grid-left(tab='diary')"
+																					th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a>
+																			</div>
+																			<p class="product-count"></p>
 																		</div>
-																		<p class="product-count"></p>
+																		<a href="/blog/full-grid-left(tab='diary')"
+																			class="banner-link"
+																			th:href="@{/blog/full-grid-left(tab='diary')}"></a>
 																	</div>
-																	<a href="/shop/left" class="banner-link"
-																		th:href="@{/shop/left}"></a>
 																</div>
-															</div>
 
-															<div class="col">
-																<div class="single-category single-category--two">
-																	<div
-																		class="single-category__image single-category__image--two">
-																		<img src="/assets/images/category/shoes.jpg"
-																			class="img-fluid" alt=""
-																			th:src="@{/assets/images/category/shoes.jpg}">
-																	</div>
-																	<div
-																		class="single-category__content single-category__content--two mt-25">
-																		<div class="title">
-																			<a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a>
+																<div class="col">
+																	<div class="single-category single-category--two">
+																		<div
+																			class="single-category__image single-category__image--two">
+																			<img src="/assets/images/category/cat-look-book.jpg"
+																				class="img-fluid" alt=""
+																				th:src="@{/assets/images/category/cat-look-book.jpg}">
 																		</div>
-																		<p class="product-count"></p>
+																		<div
+																			class="single-category__content single-category__content--two mt-25">
+																			<div class="title">
+																				<a href="/blog/full-grid-left(tab='album')"
+																					th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a>
+																			</div>
+																			<p class="product-count"></p>
+																		</div>
+																		<a href="/blog/full-grid-left(tab='album')"
+																			class="banner-link"
+																			th:href="@{/blog/full-grid-left(tab='album')}"></a>
 																	</div>
-																	<a href="/sleep/quiz" class="banner-link"
-																		th:href="@{/sleep/quiz}"></a>
 																</div>
-															</div>
 
+																<div class="col">
+																	<div class="single-category single-category--two">
+																		<div
+																			class="single-category__image single-category__image--two">
+																			<img src="/assets/images/category/men.jpg"
+																				class="img-fluid" alt=""
+																				th:src="@{/assets/images/category/men.jpg}">
+																		</div>
+																		<div
+																			class="single-category__content single-category__content--two mt-25">
+																			<div class="title">
+																				<a href="/shop/left" th:href="@{/shop/left}">通知</a>
+																			</div>
+																			<p class="product-count"></p>
+																		</div>
+																		<a href="/shop/left" class="banner-link"
+																			th:href="@{/shop/left}"></a>
+																	</div>
+																</div>
+
+																<div class="col">
+																	<div class="single-category single-category--two">
+																		<div
+																			class="single-category__image single-category__image--two">
+																			<img src="/assets/images/category/shoes.jpg"
+																				class="img-fluid" alt=""
+																				th:src="@{/assets/images/category/shoes.jpg}">
+																		</div>
+																		<div
+																			class="single-category__content single-category__content--two mt-25">
+																			<div class="title">
+																				<a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a>
+																			</div>
+																			<p class="product-count"></p>
+																		</div>
+																		<a href="/sleep/quiz" class="banner-link"
+																			th:href="@{/sleep/quiz}"></a>
+																	</div>
+																</div>
+
+															</div>
+															<!-- slider -->
 														</div>
-														<!-- slider -->
 													</div>
 												</div>
 											</div>
+											<!-- end slider block -->
 										</div>
-										<!-- end slider block -->
+										<!-- end content block -->
 									</div>
-									<!-- end content block -->
 								</div>
 							</div>
 						</div>
 					</div>
+					<!-- end main -->
 				</div>
-				<!-- end main -->
 			</div>
 		</div>
-	</div>
-	<!-- end page wrapper -->
-</section>
-<th:block th:fragment="extraJs">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
-  </th:block>
+		<!-- end page wrapper -->
+	</section>
+	<th:block th:fragment="extraJs">
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+	</th:block>
 </body>
 </html>

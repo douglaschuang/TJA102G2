@@ -1,54 +1,207 @@
-<div th:fragment="mhbCharts(mhb, chartLabels, chartWeights, chartSp, chartDp, chartFhs)">
-  <div class="card shadow-sm border-0">
-    <div class="card-body">
-      <h4 class="mb-3">身體指數紀錄圖表</h4>
+<div
+	th:fragment="mhbCharts(mhb, chartLabels, chartWeights, chartSp, chartDp, chartFhs)">
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<h4 class="mb-3">身體指數紀錄圖表</h4>
 
-      <!-- ===== 體重折線圖 ===== -->
-      <div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}">
-        <h6 class="mb-2">體重</h6>
-        <div class="ratio ratio-16x9 mb-3">
-          <canvas id="mhbWeightChart"></canvas>
-        </div>
-      </div>
-      <div th:if="${chartLabels == null or #lists.isEmpty(chartLabels)}" class="text-muted mb-4">
-        尚無體重資料。請先在「媽媽懷孕紀錄」頁籤新增含體重的紀錄。
-      </div>
+			<!-- ===== 體重折線圖 ===== -->
+			<div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}">
+				<h6 class="mb-2">體重</h6>
+				<div class="ratio ratio-16x9 mb-3">
+					<canvas id="mhbWeightChart"></canvas>
+				</div>
+			</div>
+			<div th:if="${chartLabels == null or #lists.isEmpty(chartLabels)}"
+				class="text-muted mb-4">尚無體重資料。請先在「媽媽懷孕紀錄」頁籤新增含體重的紀錄。</div>
 
-      <!-- ===== 血壓/胎心音（雙 y 軸） ===== -->
-      <div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}">
-        <h6 class="mb-2">血壓 / 胎心音</h6>
-        <div class="ratio ratio-16x9 mb-3">
-          <canvas id="mhbBpFhsChart"></canvas>
-        </div>
-      </div>
-      <div th:if="${chartLabels == null or #lists.isEmpty(chartLabels)}" class="text-muted">
-        尚無血壓/胎心音資料。
-      </div>
+			<!-- ===== 血壓/胎心音（雙 y 軸） ===== -->
+			<div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}">
+				<h6 class="mb-2">血壓 / 胎心音</h6>
+				<div class="ratio ratio-16x9 mb-3">
+					<canvas id="mhbBpFhsChart"></canvas>
+				</div>
+			</div>
+			<div th:if="${chartLabels == null or #lists.isEmpty(chartLabels)}"
+				class="text-muted">尚無血壓/胎心音資料。</div>
 
-      <!-- 簡易表格（對應 BP/FHS），方便沒載入 Chart.js 時也能看 -->
-      <div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}" class="table-responsive">
-        <table class="table table-sm align-middle">
-          <thead class="table-light">
-            <tr><th>日期</th><th>收縮壓</th><th>舒張壓</th><th>胎心音</th></tr>
-          </thead>
-          <tbody>
-            <tr th:each="i: ${#numbers.sequence(0, chartLabels.size()-1)}">
-              <td th:text="${chartLabels[i]}">2025-09-01</td>
-              <td th:text="${chartSp != null ? chartSp[i] : null}">-</td>
-              <td th:text="${chartDp != null ? chartDp[i] : null}">-</td>
-              <td th:text="${chartFhs != null ? chartFhs[i] : null}">-</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+			<!-- 簡易表格（對應 BP/FHS），方便沒載入 Chart.js 時也能看 -->
+			<div th:if="${chartLabels != null and !#lists.isEmpty(chartLabels)}"
+				class="table-responsive">
+				<table class="table table-sm align-middle">
+					<thead class="table-light">
+						<tr>
+							<th>日期</th>
+							<th>收縮壓</th>
+							<th>舒張壓</th>
+							<th>胎心音</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="i: ${#numbers.sequence(0, chartLabels.size()-1)}">
+							<td th:text="${chartLabels[i]}">2025-09-01</td>
+							<td th:text="${chartSp != null ? chartSp[i] : null}">-</td>
+							<td th:text="${chartDp != null ? chartDp[i] : null}">-</td>
+							<td th:text="${chartFhs != null ? chartFhs[i] : null}">-</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 
-    </div>
-  </div>
+		</div>
+	</div>
 
-  <!-- 若未全站載入 Chart.js，請在 layout 或這裡加 CDN -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+	<!-- 若未全站載入 Chart.js，請在 layout 或這裡加 CDN -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+	<script th:inline="javascript">
+		(function() {
+			// 等待 Chart.js 載入
+			function ready(fn) {
+				if (document.readyState !== 'loading')
+					fn();
+				else
+					document.addEventListener('DOMContentLoaded', fn);
+			}
+			function waitForChart(cb) {
+				if (window.Chart)
+					cb();
+				else
+					setTimeout(function() {
+						waitForChart(cb);
+					}, 50);
+			}
 
-  <script th:inline="javascript">
+			ready(function() {
+				waitForChart(initCharts);
+			});
+
+			function initCharts() {
+				var labels = /*[[${chartLabels}]]*/[];
+				var weights = /*[[${chartWeights}]]*/[];
+				var sps = /*[[${chartSp}]]*/[];
+				var dps = /*[[${chartDp}]]*/[];
+				var fhs = /*[[${chartFhs}]]*/[];
+
+				// 體重
+				var wctx = document.getElementById('mhbWeightChart');
+				if (wctx) {
+					new Chart(wctx, {
+						type : 'line',
+						data : {
+							labels : labels,
+							datasets : [ {
+								label : '體重(kg)',
+								data : weights,
+								spanGaps : false,
+								tension : 0.3
+							} ]
+						},
+						options : {
+							responsive : true,
+							maintainAspectRatio : false,
+							interaction : {
+								mode : 'index',
+								intersect : false
+							},
+							scales : {
+								y : {
+									title : {
+										display : true,
+										text : 'kg'
+									}
+								},
+								x : {
+									ticks : {
+										autoSkip : true
+									}
+								}
+							}
+						}
+					});
+				}
+
+				// 血壓 / 胎心音（雙 y 軸）
+				var bctx = document.getElementById('mhbBpFhsChart');
+				if (bctx) {
+					new Chart(bctx, {
+						type : 'line',
+						data : {
+							labels : labels,
+							datasets : [ {
+								label : '收縮壓(SP)',
+								data : sps,
+								yAxisID : 'yBP',
+								spanGaps : false,
+								tension : 0.3
+							}, {
+								label : '舒張壓(DP)',
+								data : dps,
+								yAxisID : 'yBP',
+								spanGaps : false,
+								tension : 0.3
+							}, {
+								label : '胎心音(FHS)',
+								data : fhs,
+								yAxisID : 'yFHS',
+								spanGaps : false,
+								tension : 0.3
+							} ]
+						},
+						options : {
+							responsive : true,
+							maintainAspectRatio : false,
+							stacked : false,
+							interaction : {
+								mode : 'index',
+								intersect : false
+							},
+							scales : {
+								yBP : {
+									type : 'linear',
+									position : 'left',
+									title : {
+										display : true,
+										text : '血壓 (mmHg)'
+									},
+									suggestedMin : 50,
+									suggestedMax : 180
+								},
+								yFHS : {
+									type : 'linear',
+									position : 'right',
+									title : {
+										display : true,
+										text : '胎心音 (bpm)'
+									},
+									grid : {
+										drawOnChartArea : false
+									},
+									suggestedMin : 100,
+									suggestedMax : 180
+								},
+								x : {
+									ticks : {
+										autoSkip : true
+									}
+								}
+							},
+							plugins : {
+								tooltip : {
+									mode : 'index',
+									intersect : false
+								},
+								legend : {
+									position : 'top'
+								}
+							}
+						}
+					});
+				}
+			}
+		})();
+	</script>
+
+
+	<!-- <script th:inline="javascript">
     (function () {
       if (!window.Chart) return;
 
@@ -122,5 +275,5 @@
         });
       }
     })();
-  </script>
+  </script> -->
 </div>

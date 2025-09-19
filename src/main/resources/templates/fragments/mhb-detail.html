@@ -1,62 +1,80 @@
 <div th:fragment="mhbDetail(mhb, pregnancyWeek)">
-  <div class="card shadow-sm border-0">
-    <div class="card-body">
-      <div class="d-flex align-items-center gap-3">
-        <img th:if="${mhb != null && mhb.upFiles != null}"
-             th:src="@{/mhb/photo/{id}(id=${mhb.motherHandbookId})}"
-             class="rounded" style="width:120px;height:120px;object-fit:cover" alt=""/>
-        <div>
-          <h3 class="mb-1" th:text="${mhb != null ? mhb.motherName : '尚未建立媽媽手冊'}">媽媽姓名</h3>
-          <div class="text-muted small">
-            手冊編號 #<span th:text="${mhb != null ? mhb.motherHandbookId : '-'}">-</span>
-          </div>
-        </div>
-      </div>
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<div class="d-flex align-items-center gap-3">
+				<img th:if="${mhb != null && mhb.upFiles != null}"
+					th:src="@{/mhb/photo/{id}(id=${mhb.motherHandbookId})}"
+					class="rounded"
+					style="width: 120px; height: 120px; object-fit: cover" alt="" />
+				<div>
+					<h3 class="mb-1"
+						th:text="${mhb != null ? mhb.motherName : '尚未建立媽媽手冊'}">媽媽姓名</h3>
+					<div class="text-muted small">
+						手冊編號 #<span th:text="${mhb != null ? mhb.motherHandbookId : '-'}">-</span>
+					</div>
+				</div>
+			</div>
 
-      <hr/>
+			<hr />
+			<!-- 預產期倒數（有 EDD 才顯示） -->
+			<div class="countdown-timer-area mt-4"
+				th:if="${mhb != null && mhb.expectedBirthDate != null}">
+				<div class="countdown-background p-3 border rounded">
+					<div class="countdown-wrapper text-center">
+						<h5 class="mb-2">寶寶即將到來</h5>
+						<br>
+						<!-- data-countdown 放 EDD；時間用 00:00 你也可改成 12:00 -->
+						<div class="deal-countdown fw-semibold fs-5"
+							th:attr="data-countdown=${#temporals.format(mhb.expectedBirthDate, 'yyyy/MM/dd')} + ' 00:00:00'">
+							<!-- 這裡會被 JS 填入 -->
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
 
-      <div class="row g-3">
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">孕週</div>
-          <div th:text="${pregnancyWeek != null ? pregnancyWeek + ' 週' : '-'}">-</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">預產期 (EDD)</div>
-          <div th:text="${mhb != null && mhb.expectedBirthDate != null ? #temporals.format(mhb.expectedBirthDate,'yyyy/MM/dd') : '-'}">-</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">末次月經 (LMP)</div>
-          <div th:text="${mhb != null && mhb.lastMcDate != null ? #temporals.format(mhb.lastMcDate,'yyyy/MM/dd') : '-'}">-</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">媽媽生日</div>
-          <div th:text="${mhb != null && mhb.motherBirthday != null ? #temporals.format(mhb.motherBirthday,'yyyy/MM/dd') : '-'}">-</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">體重</div>
-          <div th:text="${mhb != null && mhb.weight != null ? mhb.weight + ' kg' : '-'}">-</div>
-        </div>
-        <div class="col-6 col-md-3">
-          <div class="fw-bold">更新時間</div>
-          <div th:text="${mhb != null && mhb.updateTime != null ? #dates.format(mhb.updateTime,'yyyy/MM/dd HH:mm') : '-'}">-</div>
-        </div>
-      </div>
+			<div class="row g-3">
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">孕週</div>
+					<div
+						th:text="${pregnancyWeek != null ? pregnancyWeek + ' 週' : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">預產期 (EDD)</div>
+					<div
+						th:text="${mhb != null && mhb.expectedBirthDate != null ? #temporals.format(mhb.expectedBirthDate,'yyyy/MM/dd') : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">末次月經 (LMP)</div>
+					<div
+						th:text="${mhb != null && mhb.lastMcDate != null ? #temporals.format(mhb.lastMcDate,'yyyy/MM/dd') : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">媽媽生日</div>
+					<div
+						th:text="${mhb != null && mhb.motherBirthday != null ? #temporals.format(mhb.motherBirthday,'yyyy/MM/dd') : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">體重</div>
+					<div
+						th:text="${mhb != null && mhb.weight != null ? mhb.weight + ' kg' : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">更新時間</div>
+					<div
+						th:text="${mhb != null && mhb.updateTime != null ? #dates.format(mhb.updateTime,'yyyy/MM/dd HH:mm') : '-'}">-</div>
+				</div>
+			</div>
 
-      <div class="mt-4 d-flex flex-wrap gap-2">
-        <a class="btn btn-primary btn-sm"
-           th:if="${mhb != null}"
-           th:href="@{/records/list(mhbId=${mhb.motherHandbookId})}">
-          檢視懷孕紀錄
-        </a>
-        <a class="btn btn-outline-secondary btn-sm"
-           th:if="${mhb != null}"
-           th:href="@{/mhb/edit(mhbId=${mhb.motherHandbookId})}">
-          編輯手冊
-        </a>
-        <a class="btn btn-success btn-sm" th:if="${mhb == null}" th:href="@{/u/mhb/new}">
-          新增媽媽手冊
-        </a>
-      </div>
-    </div>
-  </div>
+			<div class="mt-4 d-flex flex-wrap gap-2">
+				<a class="btn btn-primary btn-sm" th:if="${mhb != null}"
+					th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb.motherHandbookId})}">
+					檢視懷孕紀錄 </a> <a class="btn btn-outline-secondary btn-sm"
+					th:if="${mhb != null}"
+					th:href="@{'/u/mhb/' + ${mhb.motherHandbookId} + '/edit'}">
+					編輯手冊 </a> <a class="btn btn-success btn-sm" th:if="${mhb == null}"
+					th:href="@{/u/mhb/new}"> 新增媽媽手冊 </a>
+			</div>
+		</div>
+	</div>
 </div>
