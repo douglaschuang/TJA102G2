@@ -18,9 +18,9 @@ public class MvcViewConfig implements WebMvcConfigurer {
         registry.addViewController("/my-orders").setViewName("frontend/my-orders");
         registry.addViewController("/element/google-maps").setViewName("frontend/element-google-maps");
 
-        // Blog
-        registry.addViewController("/blog/full-grid-left")
-                .setViewName("frontend/blog-full-then-grid-left-sidebar");
+        // Forum
+        registry.addViewController("/forum")
+                .setViewName("frontend/forum");
         registry.addViewController("/blog/standard-left")
                 .setViewName("frontend/blog-standard-left-sidebar");
 
