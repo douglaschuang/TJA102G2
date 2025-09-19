@@ -1,129 +1,120 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>修改文章</title>
-  <!-- CKEditor5 官方 CDN -->
-  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}">
+    <th:block th:fragment="extraHead">
+        <!-- CKEditor5 官方 CDN -->
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+        <style>
+            /* 表單卡片風格 */
+            .form-card {
+                border: 1px solid #ccc;
+                padding: 20px;
+                border-radius: 6px;
+                background-color: #fff;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+                margin-top: 20px;
+            }
 
-    form {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+            label {
+                font-weight: bold;
+                margin-top: 10px;
+            }
 
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-    }
+            input[type="text"], select, textarea {
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+                box-sizing: border-box;
+            }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      box-sizing: border-box;
-    }
+            #editor {
+                flex: 1;
+                margin-top: 10px;
+            }
 
-    #editor {
-      flex: 1;
-      margin-top: 10px;
-    }
+            .ck-editor__editable[role="textbox"] {
+                min-height: 200px;
+                height: calc(100vh - 180px);
+                box-sizing: border-box;
+            }
 
-    .ck-editor__editable[role="textbox"] {
-      min-height: 200px;
-      height: calc(100vh - 180px); /* 減去上方欄位 + 按鈕 */
-      box-sizing: border-box;
-    }
+            .submit-btn {
+                margin-top: 20px;
+                display: block;
+                width: 120px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 8px 15px;
+                background: #2a72d4;
+                color: white;
+                border: none;
+                cursor: pointer;
+                text-align: center;
+            }
 
-    .ck.ck-editor {
-      width: 100%;
-    }
-
-    .submit-btn {
-      margin-top: 20px;
-      display: block;
-      width: 120px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 8px 15px;
-      background: #2a72d4;
-      color: white;
-      border: none;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .submit-btn:hover {
-      background: #1d52a3;
-    }
-  </style>
+            .submit-btn:hover {
+                background: #1d52a3;
+            }
+        </style>
+    </th:block>
 </head>
-<body>
 
-  <h2>修改文章</h2>
+<body th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+    <th:block th:fragment="content">
+        <h2>修改文章</h2>
 
-  <form th:action="@{/admin/forum/updatePost}" method="post" th:object="${postVO}">
-    <input type="hidden" th:field="*{postId}" />
+        <div class="form-card">
+            <form th:action="@{/admin/forum/updatePost}" method="post" th:object="${postVO}">
+                <input type="hidden" th:field="*{postId}" />
 
-    <label for="postTitle">標題：</label>
-    <input type="text" id="postTitle" th:field="*{postTitle}" required />
-        <label for="board">選擇板塊：</label>
-<select id="board" name="boardId">
-    <option th:each="b : ${boards}"
-            th:value="${b.boardId}"
-            th:text="${b.boardName}"
-            th:selected="${postVO.boardVO != null} ? ${b.boardId == postVO.boardVO.boardId} : false">
-    </option>
-</select>
+                <label for="postTitle">標題：</label>
+                <input type="text" id="postTitle" th:field="*{postTitle}" required />
 
-    <label for="editor">內容：</label>
-    <textarea id="editor" th:field="*{postLine}"></textarea>
+                <label for="board">選擇板塊：</label>
+                <select id="board" name="boardId">
+                    <option th:each="b : ${boards}"
+                            th:value="${b.boardId}"
+                            th:text="${b.boardName}"
+                            th:selected="${postVO.boardVO != null} ? ${b.boardId == postVO.boardVO.boardId} : false">
+                    </option>
+                </select>
 
-    <button type="submit" class="submit-btn">送出修改</button>
-  </form>
+                <label for="editor">內容：</label>
+                <textarea id="editor" th:field="*{postLine}"></textarea>
 
-<script>
-ClassicEditor
-    .create(document.querySelector('#editor'), {
-        ckfinder: {
-            // 不需要實際 URL，使用 Base64
-            uploadUrl: ''
-        }
-    })
-    .then(editor => {
-        window.editor = editor;
+                <button type="submit" class="submit-btn">送出修改</button>
+            </form>
+        </div>
+    </th:block>
 
-        // 安裝 Base64 上傳插件
-        editor.plugins.get('FileRepository').createUploadAdapter = loader => {
-            return {
-                upload: () => loader.file
-                    .then(file => new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = () => resolve({ default: reader.result });
-                        reader.onerror = error => reject(error);
-                        reader.readAsDataURL(file);
-                    })),
-                abort: () => {}
-            };
-        };
-
-        // 高度自動調整
-        const resizeHandler = () => {
-            editor.ui.view.editable.element.style.height = (window.innerHeight - 180) + 'px';
-        };
-        resizeHandler();
-        window.addEventListener('resize', resizeHandler);
-    })
-    .catch(error => console.error(error));
-</script>
+    <th:block th:fragment="extraJs">
+        <script>
+            ClassicEditor
+                .create(document.querySelector('#editor'), {
+                    ckfinder: { uploadUrl: '' }
+                })
+                .then(editor => {
+                    window.editor = editor;
+                    editor.plugins.get('FileRepository').createUploadAdapter = loader => {
+                        return {
+                            upload: () => loader.file
+                                .then(file => new Promise((resolve, reject) => {
+                                    const reader = new FileReader();
+                                    reader.onload = () => resolve({ default: reader.result });
+                                    reader.onerror = error => reject(error);
+                                    reader.readAsDataURL(file);
+                                })),
+                            abort: () => {}
+                        };
+                    };
+                    const resizeHandler = () => {
+                        editor.ui.view.editable.element.style.height = (window.innerHeight - 180) + 'px';
+                    };
+                    resizeHandler();
+                    window.addEventListener('resize', resizeHandler);
+                })
+                .catch(error => console.error(error));
+        </script>
+    </th:block>
 </body>
 </html>
