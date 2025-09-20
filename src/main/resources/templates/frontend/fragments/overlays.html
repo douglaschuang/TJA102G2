@@ -2,50 +2,76 @@
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head>	<script src="/js/jquery-3.7.1.min.js"></script> </head>
 <body>
-<div th:fragment="commonOverlays()">
-  <!-- about overlay -->
-  <div class="header-offcanvas about-overlay" id="about-overlay">
-    <div class="overlay-close inactive"></div>
-    <div class="overlay-content">
-      <span class="close-icon" id="about-close-icon"><a href="javascript:void(0)"><i class="ti-close"></i></a></span>
-      <div class="overlay-content-container d-flex flex-column justify-content-between h-100">
-        <div class="widget-wrapper">
-          <div class="single-widget">
-            <h2 class="widget-title">About Us</h2>
-            <p>At Lezada, we put a strong emphasis on simplicity, quality and usefulness...</p>
-          </div>
-        </div>
-        <div class="contact-widget">
-          <p class="email"><a href="mailto:contact@lezada.com">contact@lezada.com</a></p>
-          <p class="phone">(+00) 123 567990</p>
-          <div class="social-icons">
-            <ul>
-              <li><a th:href="@{//www.facebook.com}" target="_blank" rel="noopener">Facebook</a></li>
-              <li><a th:href="@{//www.instagram.com}" target="_blank" rel="noopener">Instagram</a></li>
-              <li><a th:href="@{//www.youtube.com}" target="_blank" rel="noopener">YouTube</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div th:fragment="commonOverlays()">
+		<!-- about overlay -->
+		<div class="header-offcanvas about-overlay" id="about-overlay">
+			<div class="overlay-close inactive"></div>
+			<div class="overlay-content">
+				<span class="close-icon" id="about-close-icon"><a
+					href="javascript:void(0)"><i class="ti-close"></i></a></span>
+				<div
+					class="overlay-content-container d-flex flex-column justify-content-between h-100">
+					<div class="widget-wrapper">
+						<div class="single-widget">
+							<h2 class="widget-title">關於 BabyMate</h2>
+							<p>BabyMate 想陪每一位新手爸媽，從孕期到育兒的每一步都更安心。
+								我們整理專業資訊、挑選實用好物，並以友善的工具與社群陪你一起成長。</p>
+							<p class="mb-0">
+								在這裡，你可以找到 <strong>可靠的內容</strong>、<strong>好用的紀錄工具</strong>，以及 <strong>真心推薦的媽媽寶寶用品</strong>。需要什麼，跟我們說一聲就好。
+							</p>
+						</div>
+					</div>
+					<div class="contact-widget">
+						<p class="email">
+							<a href="mailto:contact@lezada.com">hello@babymate.tw</a>
+						</p>
+						<p class="phone">(+886) 945-643-683</p>
+						<div class="social-icons">
+							<ul>
+								<li><a href="//www.twitter.com" target="_blank"
+									rel="noopener"> <i class="fa-brands fa-x-twitter"
+										aria-hidden="true"></i>
+								</a></li>
+								<li><a href="//www.facebook.com" target="_blank"
+									rel="noopener"> <i class="fa-brands fa-facebook-f"
+										aria-hidden="true"></i>
+								</a></li>
+								<li><a href="//www.instagram.com" target="_blank"
+									rel="noopener"> <i class="fa-brands fa-instagram"
+										aria-hidden="true"></i>
+								</a></li>
+								<li><a href="//www.youtube.com" target="_blank"
+									rel="noopener"> <i class="fa-brands fa-youtube"
+										aria-hidden="true"></i>
+								</a></li>
+							</ul>
+						</div>
+						<p class="mt-2 text-muted" style="font-size: .9rem">
+							服務時間：週一至週五 10:00–18:00（國定假日休息）</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- wishlist overlay（保留你原本的結構與 id） -->
-  <div class="wishlist-overlay" id="wishlist-overlay">
-    <div class="wishlist-overlay-close inactive"></div>
-    <div class="wishlist-overlay-content">
-      <span class="close-icon" id="wishlist-close-icon"><a href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
-      <div class="offcanvas-cart-content-container">
-        <h3 class="cart-title">Wishlist</h3>
-        <div class="cart-product-wrapper">
-          <div class="cart-product-container ps-scroll">
-            <!-- 此處放你原本的單品項目（略） -->
-          </div>
-          <div class="cart-buttons"><a th:href="@{/shop/wishlist}">view wishlist</a></div>
-        </div>
-      </div>
-    </div>
-  </div>
+		<!-- wishlist overlay（保留你原本的結構與 id） -->
+		<div class="wishlist-overlay" id="wishlist-overlay">
+			<div class="wishlist-overlay-close inactive"></div>
+			<div class="wishlist-overlay-content">
+				<span class="close-icon" id="wishlist-close-icon"><a
+					href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
+				<div class="offcanvas-cart-content-container">
+					<h3 class="cart-title">我的收藏</h3>
+					<div class="cart-product-wrapper">
+						<div class="cart-product-container ps-scroll">
+							<!-- 此處放你原本的單品項目（略） -->
+						</div>
+						<div class="cart-buttons">
+							<a th:href="@{/shop/wishlist}">查看收藏</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
   <!-- cart overlay -->
   <div class="cart-overlay" id="cart-overlay">
@@ -86,14 +112,22 @@
     </div>
   </div>
 
-  <!-- search overlay -->
-  <div class="search-overlay" id="search-overlay">
-    <span class="close-icon search-close-icon"><a href="javascript:void(0)" id="search-close-icon"><i class="ti-close"></i></a></span>
-    <div class="search-overlay-content">
-      <div class="input-box"><form th:action="@{/}"><input type="search" placeholder="Search Products..."></form></div>
-      <div class="search-hint"><span># Hit enter to search or ESC to close</span></div>
-    </div>
-  </div>
+		<!-- search overlay -->
+		<div class="search-overlay" id="search-overlay">
+			<span class="close-icon search-close-icon"><a
+				href="javascript:void(0)" id="search-close-icon"><i
+					class="ti-close"></i></a></span>
+			<div class="search-overlay-content">
+				<div class="input-box">
+					<form th:action="@{/}">
+						<input type="search" placeholder="搜尋商品、文章或品牌…">
+					</form>
+				</div>
+				<div class="search-hint">
+					<span># 按 Enter 開始搜尋，或按 ESC 關閉</span>
+				</div>
+			</div>
+		</div>
 
   <!-- scroll to top -->
   <a href="#" class="scroll-top"></a>

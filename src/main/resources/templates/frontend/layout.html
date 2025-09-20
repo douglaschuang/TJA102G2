@@ -1,11 +1,14 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head(title, extraHead)">
+
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <title th:text="${title} ?: 'BabyMate'">BabyMate</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
+<!-- Favicon -->
+	<link rel="icon" href="assets/images/favicon.ico">
 <!-- 共用 CSS -->
 <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
 <link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
@@ -22,6 +25,9 @@
 
 
 <script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+<!-- 放在 <head> 裡，或本頁最底也行 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <!-- 頁面可額外塞 CSS 或 <style> -->
 <!-- 購物車側邊欄使用 -->
