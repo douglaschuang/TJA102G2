@@ -1,68 +1,129 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="siteFooter(footerClass)"
-     class="footer-container pt-100 pb-50"
-     th:classappend="${footerClass} != null ? ' ' + ${footerClass} : ' footer-one'">
-  <div class="container wide">
-    <div class="row">
-      <div class="col footer-single-widget">
-        <div class="logo"><img class="img-fluid" th:src="@{/assets/images/babymate_logo.png}" alt=""></div>
-        <div class="copyright-text">
-          <p>&copy; <script>document.write(new Date().getFullYear()+' ');</script> BABYMATE. <span>All Rights Reserved</span></p>
-        </div>
-      </div>
-
-      <div class="col footer-single-widget">
-        <h5 class="widget-title">ABOUT</h5>
-        <div class="footer-nav-container"><nav><ul>
-          <li><a href="#">About us</a></li>
-          <li><a href="#">Store location</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Orders tracking</a></li>
-        </ul></nav></div>
-      </div>
-
-      <div class="col footer-single-widget">
-        <h5 class="widget-title">USEFUL LINKS</h5>
-        <div class="footer-nav-container"><nav><ul>
-          <li><a href="#">Returns</a></li>
-          <li><a href="#">Support Policy</a></li>
-          <li><a href="#">Size guide</a></li>
-          <li><a href="#">FAQs</a></li>
-        </ul></nav></div>
-      </div>
-
-      <div class="col footer-single-widget">
-        <h5 class="widget-title">FOLLOW US ON</h5>
-        <div class="footer-nav-container footer-social-links"><nav><ul>
-          <li><a href="//twitter.com"><i class="fa fa-twitter"></i> Twitter</a></li>
-          <li><a href="//facebook.com"><i class="fa fa-facebook"></i> Facebook</a></li>
-          <li><a href="//instagram.com"><i class="fa fa-instagram"></i> Instagram</a></li>
-          <li><a href="//youtube.com"><i class="fa fa-youtube"></i> Youtube</a></li>
-        </ul></nav></div>
-      </div>
-
-      <div class="col footer-single-widget">
-        <div class="footer-subscription-widget">
-          <h2 class="footer-subscription-title">Subscribe.</h2>
-          <p class="subscription-subtitle">Subscribe to our newsletter to receive news on update.</p>
-          <div class="subscription-form">
-            <form id="mc-form" class="mc-form">
-              <input type="email" placeholder="Your email address" required>
-              <button type="submit"><i class="ion-ios-arrow-thin-right"></i></button>
-            </form>
+  <div th:fragment="siteFooter(footerClass)"
+       class="footer-container pt-100 pb-50"
+       th:classappend="${footerClass} != null ? ' ' + ${footerClass} : ' footer-one'">
+    <div class="container wide">
+      <div class="row">
+        <!-- 品牌 / 版權 -->
+        <div class="col footer-single-widget">
+          <div class="logo">
+            <img class="img-fluid" th:src="@{/assets/images/babymate_logo.png}" alt="BabyMate">
           </div>
-          <div class="mailchimp-alerts">
-            <div class="mailchimp-submitting"></div>
-            <div class="mailchimp-success"></div>
-            <div class="mailchimp-error"></div>
+          <div class="copyright-text">
+            <p class="mb-2">
+              陪你從孕期到育兒，每一步都更安心。
+            </p>
+            <p class="mb-0">
+              &copy; <script>document.write(new Date().getFullYear() + ' ');</script> BABYMATE
+              <span>版權所有</span>
+            </p>
           </div>
         </div>
-      </div>
 
+        <!-- 關於 -->
+        <div class="col footer-single-widget">
+          <h5 class="widget-title">關於我們</h5>
+          <div class="footer-nav-container">
+            <nav aria-label="關於我們">
+              <ul>
+                <li><a th:href="@{/about}">品牌故事</a></li>
+                <li><a th:href="@{/stores}">門市據點</a></li>
+                <li><a th:href="@{/contact}">聯絡客服</a></li>
+                <li><a th:href="@{/orders/track}">訂單查詢 / 追蹤</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <!-- 實用連結 -->
+        <div class="col footer-single-widget">
+          <h5 class="widget-title">購物與支援</h5>
+          <div class="footer-nav-container">
+            <nav aria-label="購物與支援">
+              <ul>
+                <li><a th:href="@{/returns}">退換貨與退款政策</a></li>
+                <li><a th:href="@{/support}">購物說明（付款 / 配送）</a></li>
+                <li><a th:href="@{/size-guide}">尺寸對照 / 選購指南</a></li>
+                <li><a th:href="@{/faqs}">常見問題</a></li>
+                <li><a th:href="@{/privacy}">隱私權政策</a></li>
+                <li><a th:href="@{/terms}">服務條款</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <!-- 社群 -->
+        <div class="col footer-single-widget">
+          <h5 class="widget-title">追蹤我們</h5>
+          <div class="footer-nav-container footer-social-links">
+            <nav aria-label="社群連結">
+              <ul>
+                <li>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+                    <span class="visually-hidden">Twitter</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                    <span class="visually-hidden">Facebook</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                    <span class="visually-hidden">Instagram</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+                    <span class="visually-hidden">YouTube</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <br>
+            <p class="mt-2 text-muted" style="font-size:.9rem">
+              服務時間：週一–週五 10:00–18:00（國定假日休息）
+            </p>
+          </div>
+        </div>
+
+        <!-- 訂閱 -->
+        <div class="col footer-single-widget">
+          <div class="footer-subscription-widget">
+            <h2 class="footer-subscription-title">訂閱電子報</h2>
+            <p class="subscription-subtitle">
+              第一時間收到新品上架、限時優惠與實用育兒文章。
+            </p>
+            <div class="subscription-form">
+              <form id="mc-form" class="mc-form" method="post" th:action="@{/subscribe}">
+                <label for="sub-email" class="visually-hidden">Email</label>
+                <input id="sub-email" type="email" name="email" placeholder="輸入你的 Email" required>
+                <button type="submit" aria-label="訂閱">
+                  <i class="ion-ios-arrow-thin-right" aria-hidden="true"></i>
+                </button>
+              </form>
+            </div>
+            <p class="mt-2 text-muted" style="font-size:.85rem">
+              訂閱即表示同意本網站之
+              <a th:href="@{/privacy}">隱私權政策</a> 與
+              <a th:href="@{/terms}">服務條款</a>。
+            </p>
+            <div class="mailchimp-alerts">
+              <div class="mailchimp-submitting"></div>
+              <div class="mailchimp-success"></div>
+              <div class="mailchimp-error"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
-</div>
 </body>
 </html>
