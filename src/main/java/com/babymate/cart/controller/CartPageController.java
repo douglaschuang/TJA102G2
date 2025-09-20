@@ -41,6 +41,7 @@ public class CartPageController {
     @GetMapping("/viewCart")
     public String viewCart(HttpSession session, Model model) {
         String cartKey = getCartKey(session);
+        int totalQty = 0;
         System.out.println(session.getId());
         System.out.println(cartKey);
         // 取得 Redis 購物車
@@ -63,10 +64,11 @@ public class CartPageController {
             displayVO.setTotalPrice(itemTotalPrice);
             displayVO.setImageUrl(product.getProductIcon());
             displayItems.add(displayVO);
+            totalQty += item.getQuantity();
         }
 
         model.addAttribute("cartItems", displayItems);
-        model.addAttribute("subtotal", subtotal);
+        model.addAttribute("totalQty", totalQty);
         model.addAttribute("total", subtotal); // 可加運費或其他費用再計算
 
         return "frontend/shop-cart"; // 對應 cart.html

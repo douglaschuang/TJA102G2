@@ -47,15 +47,15 @@
          th:text="${item.productName}">Product Name</a>
     </td>
     <td class="product-price">
-      <span class="price" th:text="${item.price}">0.00</span>
+      <span class="price" th:text="${item.price}" th:attr="data-price=${item.price}">0.00</span>
     </td>
     <td class="product-quantity">
       <div class="pro-qty d-inline-block mx-0">
-        <input type="text" th:value="${item.quantity}">
+        <input type="text" th:attr="data-product-id=${item.productId}" class="qty-input item-total" th:value="${item.quantity}">
       </div>
     </td>
     <td class="total-price">
-      <span class="price" th:text="${item.totalPrice}">0.00</span>
+      <span class="price item-total-price" th:text="${item.totalPrice}">0.00</span>
     </td>
     <td class="product-remove">
       <a href="#" th:attr="data-product-id=${item.productId}" class="remove-item-btn">
@@ -78,17 +78,17 @@
 								<!--=======  coupon form  =======-->
 
 								<div class="lezada-form coupon-form">
-									<form action="#">
-										<div class="row">
-											<div class="col-md-7 mb-sm-10">
-												<input type="text" placeholder="Enter your coupon code">
-											</div>
-											<div class="col-md-5">
-												<button class="lezada-button lezada-button--medium">apply
-													coupon</button>
-											</div>
-										</div>
-									</form>
+<!-- 									<form action="#"> -->
+<!-- 										<div class="row"> -->
+<!-- 											<div class="col-md-7 mb-sm-10"> -->
+<!-- 												<input type="text" placeholder="Enter your coupon code"> -->
+<!-- 											</div> -->
+<!-- 											<div class="col-md-5"> -->
+<!-- 												<button class="lezada-button lezada-button--medium">apply -->
+<!-- 													coupon</button> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</form> -->
 								</div>
 
 								<!--=======  End of coupon form  =======-->
@@ -97,8 +97,7 @@
 							<div class="col-lg-6 text-start text-lg-end">
 								<!--=======  update cart button  =======-->
 
-								<button class="lezada-button lezada-button--medium">update
-									cart</button>
+								<button class="lezada-button lezada-button--medium">更新購物車</button>
 
 								<!--=======  End of update cart button  =======-->
 							</div>
@@ -110,16 +109,16 @@
 
 				<div class="col-xl-4 offset-xl-8 col-lg-5 offset-lg-7">
 					<div class="cart-calculation-area">
-						<h2 class="mb-40">Cart totals</h2>
+						<h2 class="mb-40">購物車</h2>
 
 						<table class="cart-calculation-table mb-30">
 							<tr>
-								<th>SUBTOTAL</th>
-								<td class="subtotal">$100.00</td>
+								<th>數量小計</th>
+								<td class="subtotal" th:text="${totalQty}">$100.00</td>
 							</tr>
 							<tr>
-								<th>TOTAL</th>
-								<td class="total">$100.00</td>
+								<th>金額總計</th>
+								<td class="total" th:text="${total}">$100.00</td>
 							</tr>
 						</table>
 
@@ -148,17 +147,110 @@
     
   <script>
   document.addEventListener("DOMContentLoaded", function () {
-	  const alertBoxes = document.querySelectorAll('.alert');
-	  alertBoxes.forEach((alertBox) => {
-	    setTimeout(() => {
-	      alertBox.style.transition = 'opacity 0.5s ease';
-	      alertBox.style.opacity = '0';
-	      setTimeout(() => alertBox.remove(), 500);
-	    }, 3000); // 3 秒後消失
-	  });
+	// 更新單品及購物車統計
+	    function updateCart(productId, newQty, input) {
+	        if (isNaN(newQty) || newQty < 0) return;
+
+	        fetch(`/api/cart/update?productId=${productId}&quantity=${newQty}`, {
+	            method: "PUT"
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            const row = input.closest("tr");
+
+	            // 更新單品小計
+	            const priceEl = row.querySelector(".product-price .price");
+				const price = parseFloat(priceEl.getAttribute("data-price"));
+				row.querySelector(".item-total-price").innerText = (price * newQty).toFixed(2);
+
+	            // 更新購物車統計
+	            document.querySelector(".subtotal").innerText = data.totalQty;
+	            document.querySelector(".total").innerText = parseFloat(data.total).toFixed(2);
+
+	            // 數量為 0 → 移除該列
+	            if (newQty === 0) row.remove();
+	        })
+	        .catch(err => console.error("更新數量失敗:", err));
+	    }
+
+	    // 監聽輸入框變化
+	    document.querySelectorAll(".qty-input").forEach(input => {
+	        input.addEventListener("change", function (e) {
+	            const productId = input.dataset.productId;
+	            const newQty = parseInt(input.value);
+	            updateCart(productId, newQty, input);
+	        });
+	    });
+
+	 // 事件委派監聽 + / - 按鈕
+	    document.addEventListener("click", function(e) {
+	        if (!e.target.closest(".pro-qty")) return;
+	        const wrapper = e.target.closest(".pro-qty");
+	        const input = wrapper.querySelector(".qty-input");
+	        if (!input) return;
+
+	        const productId = input.dataset.productId;
+	        const newQty = parseInt(input.value);
+	        updateCart(productId, newQty, input);
+	    });
 	});
 </script>
-        
+
+<script>
+document.addEventListener("click", function (e) {
+    if (e.target.closest(".remove-item-btn")) {
+        e.preventDefault();
+        const btn = e.target.closest(".remove-item-btn");
+        const productId = btn.getAttribute("data-product-id");
+
+        fetch(`/api/cart/del/${productId}`, {
+            method: "DELETE"
+        })
+        .then(res => res.json())
+        .then(data => {
+            // 移除該列
+            btn.closest("tr").remove();
+
+            // 更新右側統計數字
+            document.querySelector(".subtotal").innerText = data.totalQty;
+            document.querySelector(".total").innerText = data.total;
+        })
+        .catch(err => console.error("刪除失敗:", err));
+    }
+});
+</script>
+
+<script>
+document.addEventListener("change", function (e) {
+    if (e.target.classList.contains("qty-input")) {
+        const input = e.target;
+        const productId = input.getAttribute("data-product-id");
+        const newQty = input.value;
+
+        fetch(`/api/cart/update?productId=${productId}&quantity=${newQty}`, {
+            method: "PUT"
+        })
+        .then(res => res.json())
+        .then(data => {
+            const row = input.closest("tr");
+
+            if (newQty <= 0) {
+                // 數量歸零 → 直接刪掉該行
+                row.remove();
+            } else {
+                // 更新單筆小計
+                row.querySelector(".item-total").innerText = data.itemTotal;
+            }
+
+            // 更新右側統計數字
+            document.querySelector(".subtotal").innerText = data.totalQty;
+            document.querySelector(".total").innerText = data.total;
+        })
+        .catch(err => console.error("更新數量失敗:", err));
+    }
+});
+</script>
+
   </th:block>
 </body>
 </html>
