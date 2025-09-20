@@ -481,53 +481,56 @@
 											</div>
 										</div>
 									</div>
-
-
-									<!-- 點選商品搜尋icon 快速查看商品 -->
-									<div th:id="'qv-' + ${p.productId}" class="cd-quick-view">
-										<div class="cd-slider-wrapper">
-											<ul class="cd-slider">
-												<li class="selected"><img
-													th:src="@{/product/DBGifReader(productId=${p.productId})}"
-													alt="Product 2"></li>
-												<li><img
-													th:src="@{/product/DBGifReader(productId=${p.productId})}"
-													alt="Product 1"></li>
-											</ul>
-											<!-- cd-slider -->
-
-											<ul class="cd-slider-pagination">
-												<li class="active"><a href="#0">1</a></li>
-												<li><a href="#1">2</a></li>
-											</ul>
-											<!-- cd-slider-pagination -->
-
-											<ul class="cd-slider-navigation">
-												<li><a class="cd-prev" href="#0">Prev</a></li>
-												<li><a class="cd-next" href="#0">Next</a></li>
-											</ul>
-											<!-- cd-slider-navigation -->
-										</div>
-										<!-- cd-slider-wrapper -->
-
-										<div class="lezada-item-info cd-item-info ps-scroll">
-
-											<h2 class="item-title" th:text="${p.productName}"></h2>
-											<p class="price">
-												<span class="discounted-price" th:text="'NT$' + ${p.price}"></span>
-											</p>
-
-											<p class="description" th:text="${p.featureDesc}"></p>
-
-											<span class="quickview-title">數量：</span>
-											<div class="pro-qty d-inline-block mb-40">
-												<input type="text" value="1">
-											</div>
-
-											<div class="add-to-cart-btn mb-25">
-
-												<button class="lezada-button lezada-button--medium">加入購物車</button>
-											</div>
+								</div>
+								
+								
+								<!-- 點選商品搜尋icon 快速查看商品 -->
+								<div th:id="'qv-' + ${p.productId}" class="cd-quick-view">
+									<div class="cd-slider-wrapper">
+										<ul class="cd-slider">
+											<li class="selected"><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 2"></li>
+											<li><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 1"></li>
+										</ul> <!-- cd-slider -->
+							
+										<ul class="cd-slider-pagination">
+											<li class="active"><a href="#0">1</a></li>
+											<li><a href="#1">2</a></li>
+										</ul> <!-- cd-slider-pagination -->
+							
+										<ul class="cd-slider-navigation">
+											<li><a class="cd-prev" href="#0">Prev</a></li>
+											<li><a class="cd-next" href="#0">Next</a></li>
+										</ul> <!-- cd-slider-navigation -->
+									</div> <!-- cd-slider-wrapper -->
+							
+									<div class="lezada-item-info cd-item-info ps-scroll">
+							
+										<h2 class="item-title" th:text="${p.productName}"></h2>
+										<p class="price">
+											<span class="discounted-price" th:text="'NT$' + ${p.price}"></span>
+										</p>
+							
+										<p class="description" th:text="${p.featureDesc}"></p>
+							
+										<span class="quickview-title">數量：</span>
+<!-- 										<div class="pro-qty d-inline-block mb-40"> -->
+<!-- 											<input type="text" value="1"> -->
+<!-- 										</div> -->
+										
+										<div class="pro-qty d-inline-block mx-0 pt-0">
+													<!-- 這裡加上 id 或 data-product-id，方便 JS 讀取 -->
+													<input type="number" class="cart-qty" value="1" min="1" 
+													th:data-product-id="${p.productId}">
+<!--       												<input type="number" class="cart-qty" value="1" min="1"  -->
+<!--       												th:attr="data-product-id=${p.productId}" > -->
+												</div>
+							
+										<div class="add-to-cart-btn mb-25">
+							
+<!-- 											<button class="lezada-button lezada-button--medium">加入購物車</button> -->
+<!-- 											<a class="lezada-button lezada-button--medium add-to-cart-btn" href="#" -->
+<!-- 											  th:attr="data-product-id=${p.productId}" >加入購物車</a> -->
+<a class="lezada-button lezada-button--medium add-to-cart-btn-s" href="#" th:data-product-id="${p.productId}">加入購物車</a>
 										</div>
 										<!-- cd-item-info -->
 										<a href="#0" class="cd-close">Close</a>
@@ -542,203 +545,57 @@
 			</div>
 			<!-- /content -->
 		</div>
-		<!-- /shop page wrapper -->
-		<!-- end page wrapper -->
-	</section>
-	<th:block th:fragment="extraJs">
-	<script th:inline="javascript">
-(function(){
-  document.addEventListener('click', async function(e){
-    const a = e.target.closest('a.btn-wishlist');
-    if (!a) return;
-    e.preventDefault();
+		<!-- /content -->
+	</div>
+	<!-- /shop page wrapper -->
+	<!-- end page wrapper -->
+</section>
+<th:block th:fragment="extraJs">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    
+    <script>
+$(document).ready(function() {
+  $(".add-to-cart-btn-s").click(function(e) {
+    e.preventDefault(); // 阻止 <a> 預設跳轉
 
-    const pid = a.getAttribute('data-product-id') || a.dataset.productId;
-    if (!pid) return;
+//    const productId = $(this).data("product-id");
+//     const qty = $("input.cart-qty[data-product-id='" + productId + "']").val();
+//const qty = parseInt($("input.cart-qty[data-product-id='" + productId + "']").val()) || 1;
+//console.log($("input.cart-qty[data-product-id='" + productId + "']").val());
+//    console.log("productid:"+productId);
+//    console.log("qty:"+qty);
+    
+    const productId = $(this).data("product-id");
+    if (!productId) return; // 避免空值觸發
+    
+    const qtyInput = $("input.cart-qty[data-product-id='" + productId + "']");
+    const qty = parseInt(qtyInput.val(), 10) || 1;
 
-    const toggleUrl = /*[[@{/api/wishlist/toggle}]]*/ '/api/wishlist/toggle';
-    const loginUrl  = /*[[@{/shop/login}]]*/ '/shop/login';
+    console.log("Selector:", qtyInput);
+    console.log("productId:", productId);
+    console.log("qty:", qty);
 
-    try {
-      const res = await fetch(toggleUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body: new URLSearchParams({ productId: pid })
-      });
-
-      if (res.status === 401) {
-        // 未登入：彈出提醒，按下「前往登入」再導頁
-        if (window.Swal) {
-          Swal.fire({
-            icon: 'warning',
-            title: '請先登入',
-            text: '登入後即可收藏商品',
-            showCancelButton: true,
-            confirmButtonText: '前往登入',
-            cancelButtonText: '取消'
-          }).then(r => { if (r.isConfirmed) location.href = loginUrl; });
-        } else {
-          location.href = loginUrl;
-        }
-        return;
+    $.ajax({
+      url: "/api/cart/addToCart",  // 後端 Controller 會自動判斷會員或訪客
+      type: "POST",
+//       contentType: "application/json",
+      data: {
+          productId: productId,
+          quantity: qty
+        },
+      success: function() {
+        alert("已加入購物車！");
+        // 可選：刷新購物車 icon 顯示數量
+      },
+      error: function(xhr) {
+        alert("加入購物車失敗：" + xhr.responseText);
       }
-
-      if (!res.ok) {
-        window.Swal ? Swal.fire({icon:'error', title:'操作失敗', text:'伺服器回應 ' + res.status})
-                    : alert('操作失敗 ('+res.status+')');
-        return;
-      }
-
-      const data = await res.json();
-      const icon = a.querySelector('i');
-
-      if (data.favorited) {
-        // 變成已收藏
-        a.classList.add('active');
-        icon?.classList.remove('ion-android-favorite-outline');
-        icon?.classList.add('ion-android-favorite');
-        a.setAttribute('aria-label','已加入收藏');
-        a.setAttribute('title','已加入收藏');
-
-        // 成功提示
-        window.Swal && Swal.fire({
-          icon: 'success',
-          title: '已成功收藏',
-          showConfirmButton: false,
-          timer: 1200
-        });
-      } else {
-        // 取消收藏
-        a.classList.remove('active');
-        icon?.classList.remove('ion-android-favorite');
-        icon?.classList.add('ion-android-favorite-outline');
-        a.setAttribute('aria-label','加入收藏');
-        a.setAttribute('title','加入收藏');
-
-        // ℹ️ 取消提示（可改成 success/neutral 都行）
-        window.Swal && Swal.fire({
-          icon: 'info',
-          title: '已取消收藏',
-          showConfirmButton: false,
-          timer: 1000
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      window.Swal ? Swal.fire({icon:'error', title:'網路或伺服器錯誤'})
-                  : alert('網路或伺服器錯誤');
-    }
+    });
   });
-})();
-</script>
-	
-<!-- <script th:inline="javascript">
-(function(){
-  document.addEventListener('click', async function(e){
-    const a = e.target.closest('a.btn-wishlist');
-    if (!a) return;
-    e.preventDefault();
-
-    const pid = a.getAttribute('data-product-id') || a.dataset.productId;
-    if (!pid) return;
-
-    const toggleUrl = /*[[@{/api/wishlist/toggle}]]*/ '/api/wishlist/toggle';
-    const loginUrl  = /*[[@{/shop/login}]]*/ '/shop/login';  // ← 這裡改成 /shop/login
-
-    try {
-      const res = await fetch(toggleUrl, {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body: new URLSearchParams({ productId: pid })
-      });
-
-      if (res.status === 401) {
-        // 不要再用 /*[[@{/login}]]*/ 了
-        const data = await res.json().catch(()=>({redirect: loginUrl}));
-        location.href = data.redirect || loginUrl;
-        return;
-      }
-
-      if (!res.ok) { alert('操作失敗 ('+res.status+')'); return; }
-
-      const data = await res.json();
-      const icon = a.querySelector('i');
-      if (data.favorited) {
-        a.classList.add('active');
-        icon?.classList.remove('ion-android-favorite-outline');
-        icon?.classList.add('ion-android-favorite');
-      } else {
-        a.classList.remove('active');
-        icon?.classList.remove('ion-android-favorite');
-        icon?.classList.add('ion-android-favorite-outline');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('網路或伺服器錯誤');
-    }
-  });
-})();
-</script> -->
-<script>
-(function(){
-  function openQuick(sel){
-    const panel = document.querySelector(sel);
-    if (!panel) return;
-    panel.style.display = 'block';
-    panel.setAttribute('aria-hidden','false');
-    panel.classList.add('is-visible');
-    document.body.classList.add('no-scroll');
-  }
-  function closeQuick(panel){
-    panel.classList.remove('is-visible');
-    panel.style.display = 'none';
-    panel.setAttribute('aria-hidden','true');
-    document.body.classList.remove('no-scroll');
-  }
-
-  // 打開
-  document.addEventListener('click', function(e){
-    const trigger = e.target.closest('a.cd-trigger');
-    if (!trigger) return;
-    e.preventDefault();
-    const sel = trigger.getAttribute('href'); // 例如 #qv-123
-    if (sel && sel.startsWith('#')) openQuick(sel);
-  });
-
-  // 關閉（按 x）
-  document.addEventListener('click', function(e){
-    const btn = e.target.closest('.cd-close');
-    if (!btn) return;
-    e.preventDefault();
-    const panel = btn.closest('.cd-quick-view');
-    if (panel) closeQuick(panel);
-  });
-
-  // 關閉（ESC）
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.cd-quick-view.is-visible').forEach(closeQuick);
-    }
-  });
-})();
+});
 </script>
 
-<style>
-/* 沒有主題腳本也能顯示/隱藏 */
-.cd-quick-view{ display:none; }
-.cd-quick-view.is-visible{ display:block; }
-body.no-scroll{ overflow:hidden; }
-</style>
-
-
-
-<style>
-.btn-wishlist.pulse { animation: pulse .35s ease; }
-@keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
-.btn-wishlist.active i { filter: drop-shadow(0 0 2px rgba(0,0,0,.2)); }
-</style>
-</th:block>
-
-
+  </th:block>
 </body>
 </html>
