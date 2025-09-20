@@ -73,4 +73,40 @@ public class CartPageController {
 
         return "frontend/shop-cart"; // 對應 cart.html
     }
+    
+//    @GetMapping("/viewCartSimple")
+//    public String viewCartSimple(HttpSession session, Model model) {
+//        String cartKey = getCartKey(session);
+//        int totalQty = 0;
+//        System.out.println(session.getId());
+//        System.out.println(cartKey);
+//        // 取得 Redis 購物車
+//        List<CartRedisVO> cartItems = cartService.getCart(cartKey);
+//
+//        // 取 ProductVO 資料
+//        List<CartItemDisplayVO> displayItems = new ArrayList<>();
+//        BigDecimal subtotal = BigDecimal.ZERO;
+//        for (CartRedisVO item : cartItems) {
+//            ProductVO product = productSvc.getOneProduct(item.getProductId());
+////            double totalPrice = product.getPrice() * item.getQuantity();
+//            BigDecimal itemTotalPrice = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+//            subtotal = subtotal.add(itemTotalPrice);
+//
+//            CartItemDisplayVO displayVO = new CartItemDisplayVO();
+//            displayVO.setProductId(product.getProductId());
+//            displayVO.setProductName(product.getProductName());
+//            displayVO.setPrice(product.getPrice());
+//            displayVO.setQuantity(item.getQuantity());
+//            displayVO.setTotalPrice(itemTotalPrice);
+//            displayVO.setImageUrl(product.getProductIcon());
+//            displayItems.add(displayVO);
+//            totalQty += item.getQuantity();
+//        }
+//
+//        model.addAttribute("cartItems", displayItems);
+//        model.addAttribute("totalQty", totalQty);
+//        model.addAttribute("total", subtotal); // 可加運費或其他費用再計算
+//
+//        return "redirect:/frontend/fragments/overlays"; // 對應 cart.html
+//    }
 }
