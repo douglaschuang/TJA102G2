@@ -2,7 +2,9 @@ package com.babymate.cart.controller;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.babymate.cart.model.CartItemDisplayVO;
@@ -83,21 +86,89 @@ public class CartController {
         return ResponseEntity.ok("加入購物車成功");
     }
 
+//    @PutMapping("/update")
+//    public CartRedisVO updateQuantity(@RequestParam Integer memberId,
+//                                      @RequestParam Integer productId,
+//                                      @RequestParam Integer quantity,
+//                                      HttpSession session) {
+//    	String cartkey = getCartKey(session);
+//        return cartService.updateQuantity(cartkey, productId, quantity);
+//    }
+    
     @PutMapping("/update")
-    public CartRedisVO updateQuantity(@RequestParam Integer memberId,
-                                      @RequestParam Integer productId,
-                                      @RequestParam Integer quantity,
-                                      HttpSession session) {
-    	String cartkey = getCartKey(session);
-        return cartService.updateQuantity(cartkey, productId, quantity);
-    }
+    @ResponseBody
+    public ResponseEntity<?> updateItem(@RequestParam Integer productId,
+    		@RequestParam Integer quantity,
+            HttpSession session) {
+		String cartKey = getCartKey(session);
+		
+		if (quantity <= 0) {
+		// 數量 <= 0 → 刪除該商品
+		cartService.removeItem(cartKey, productId);
+		} else {
+		// 更新數量
+		cartService.updateQuantity(cartKey, productId, quantity);
+		}
+		
+		// 重新計算購物車資訊
+		List<CartRedisVO> cartItems = cartService.getCart(cartKey);
+		
+		int totalQty = 0;
+		BigDecimal total = BigDecimal.ZERO;
+		BigDecimal itemTotal = BigDecimal.ZERO;
+		
+		for (CartRedisVO item : cartItems) {
+		ProductVO product = productSvc.getOneProduct(item.getProductId());
+		BigDecimal lineTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+		totalQty += item.getQuantity();
+		total = total.add(lineTotal);
+		
+		if (item.getProductId().equals(productId)) {
+		itemTotal = lineTotal;
+		}
+		}
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("totalQty", totalQty);
+		result.put("total", total);
+		result.put("itemTotal", itemTotal);
+		
+		return ResponseEntity.ok(result);
+	}
 
-    @DeleteMapping("/del/{memberId}/{productId}")
-    public void removeItem(@PathVariable Integer memberId,
-                           @PathVariable Integer productId,
-                           HttpSession session) {
-    	String cartkey = getCartKey(session);
+//    @DeleteMapping("/del/{productId}")
+//    public void removeItem(@PathVariable Integer productId,
+//                           HttpSession session) {
+//    	String cartkey = getCartKey(session);
+//        cartService.removeItem(cartkey, productId);
+//    }
+    
+    @DeleteMapping("/del/{productId}")
+    @ResponseBody
+    public ResponseEntity<?> removeItem(@PathVariable Integer productId,
+                                        HttpSession session) {
+        String cartkey = getCartKey(session);
+
+        // 刪除商品
         cartService.removeItem(cartkey, productId);
+
+        // 重新計算購物車資訊
+        List<CartRedisVO> cartItems = cartService.getCart(cartkey);
+
+        int totalQty = 0;
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (CartRedisVO item : cartItems) {
+            ProductVO product = productSvc.getOneProduct(item.getProductId());
+            totalQty += item.getQuantity();
+            total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalQty", totalQty);
+        result.put("total", total);
+
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/clear/{memberId}")
