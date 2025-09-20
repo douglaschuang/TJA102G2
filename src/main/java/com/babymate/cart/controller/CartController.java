@@ -64,7 +64,40 @@ public class CartController {
     	String cartkey = getCartKey(session);
     	return cartService.getCart(cartkey);
     }
+    
+    @GetMapping("/getCartDetail")
+    public ResponseEntity<?> getCartList(HttpSession session) {
+        String cartKey = getCartKey(session);
+        List<CartRedisVO> cartItems = cartService.getCart(cartKey);
 
+        int totalQty = 0;
+        BigDecimal total = BigDecimal.ZERO;
+
+        List<Map<String, Object>> items = new ArrayList<>();
+        
+        for (CartRedisVO item : cartItems) {
+            ProductVO product = productSvc.getOneProduct(item.getProductId());
+            BigDecimal lineTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            totalQty += item.getQuantity();
+            total = total.add(lineTotal);
+
+            Map<String, Object> row = new HashMap<>();
+            row.put("productId", product.getProductId());
+            row.put("name", product.getProductName());
+            row.put("imageUrl", "/product/DBGifReader?productId=" + product.getProductId()); 
+            row.put("price", product.getPrice());
+            row.put("quantity", item.getQuantity());
+            items.add(row);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalQty", totalQty);
+        result.put("total", total);
+        result.put("items", items);
+
+        return ResponseEntity.ok(result);
+    }
+    
     @PostMapping("/add")
     public CartRedisVO addItem(@RequestParam Integer memberId,
                                @RequestParam Integer productId,
@@ -79,6 +112,10 @@ public class CartController {
     		@RequestParam Integer productId,
             @RequestParam Integer quantity,
             HttpSession session) {
+    	
+        if (quantity == null || quantity <= 0) {
+            return ResponseEntity.badRequest().body("數量必須大於 0");
+        }
 
     	String cartkey = getCartKey(session);
         
@@ -118,14 +155,14 @@ public class CartController {
 		BigDecimal itemTotal = BigDecimal.ZERO;
 		
 		for (CartRedisVO item : cartItems) {
-		ProductVO product = productSvc.getOneProduct(item.getProductId());
-		BigDecimal lineTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-		totalQty += item.getQuantity();
-		total = total.add(lineTotal);
+			ProductVO product = productSvc.getOneProduct(item.getProductId());
+			BigDecimal lineTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+			totalQty += item.getQuantity();
+			total = total.add(lineTotal);
 		
-		if (item.getProductId().equals(productId)) {
-		itemTotal = lineTotal;
-		}
+			if (item.getProductId().equals(productId)) {
+				itemTotal = lineTotal;
+			}
 		}
 		
 		Map<String, Object> result = new HashMap<>();
