@@ -51,7 +51,9 @@
     </td>
     <td class="product-quantity">
       <div class="pro-qty d-inline-block mx-0">
-        <input type="text" th:attr="data-product-id=${item.productId}" class="qty-input item-total" th:value="${item.quantity}">
+        <input type="number" th:attr="data-product-id=${item.productId}" 
+          class="qty-input item-total" th:value="${item.quantity}"
+           min="0" max="10" step="1"> 
       </div>
     </td>
     <td class="total-price">
@@ -145,7 +147,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
     
-  <script>
+<script>
   document.addEventListener("DOMContentLoaded", function () {
 	// 更新單品及購物車統計
 	    function updateCart(productId, newQty, input) {
