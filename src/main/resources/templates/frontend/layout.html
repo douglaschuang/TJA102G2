@@ -35,6 +35,10 @@
 <script src="/js/cart.js"></script> 
 <!-- /購物車側邊欄使用 -->
 <th:block th:replace="${extraHead}"></th:block>
+
+
+<th:block th:replace="~{frontend/fragments/overlays :: wishlistMiniStyles()}"></th:block>
+
 </head>
 
 <body th:fragment="layout(headerType, content, extraJs, footerClass)">
@@ -63,6 +67,8 @@
 	<script th:src="@{/assets/js/main.js}"></script>
 
 	<!-- 頁面可額外塞 JS（例如 Leaflet、Chart.js、自訂腳本） -->
+	<script th:src="@{/assets/js/wishlist-mini.js}"></script>
+	
 	<th:block th:replace="${extraJs}"></th:block>
 </body>
 </html>
