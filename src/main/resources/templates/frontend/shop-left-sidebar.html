@@ -795,7 +795,7 @@ $(document).ready(function() {
         a.setAttribute('aria-label','加入收藏');
         a.setAttribute('title','加入收藏');
 
-        // ℹ️ 取消提示（可改成 success/neutral 都行）
+        // 取消提示（可改成 success/neutral 都行）
         window.Swal && Swal.fire({
           icon: 'info',
           title: '已取消收藏',
@@ -803,6 +803,9 @@ $(document).ready(function() {
           timer: 1000
         });
       }
+   // ★★★ 就放在這裡：通知 overlays.html 重新刷新 mini 收藏清單
+      document.dispatchEvent(new Event('wishlist:changed'));
+ 
     } catch (err) {
       console.error(err);
       window.Swal ? Swal.fire({icon:'error', title:'網路或伺服器錯誤'})
