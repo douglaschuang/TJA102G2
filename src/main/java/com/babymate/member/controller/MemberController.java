@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.babymate.cart.service.CartService;
 import com.babymate.member.model.MemberVO;
 import com.babymate.member.service.MemberService;
 import com.babymate.staff.model.StaffVO;
@@ -55,6 +56,9 @@ public class MemberController {
 	
 	@Autowired
 	MemberService memberSvc; 
+	
+	@Autowired
+    CartService cartService;
 
 	/*
 	 * This method will be called on select_page.html form submission, handling POST
@@ -437,6 +441,18 @@ public class MemberController {
 
 	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account, hashedPwd));
 	    if (member.isPresent()) {
+    	
+	    	MemberVO loginMember = member.get();
+	        
+	        // 設定 session
+	        session.setAttribute("member", loginMember);
+	        System.out.println("memberId: "+loginMember.getMemberId());
+
+	        // 合併購物車 (登入成功才做)
+	        cartService.loginMergeCart(session.getId(), loginMember.getMemberId());
+
+	        System.out.println("Login success, cart merged for memberId=" + loginMember.getMemberId());
+	    	
 	        session.setAttribute("member", member.get());
 	        System.out.println(member);
 	        return "redirect:/my-account";

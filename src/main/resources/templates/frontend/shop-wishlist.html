@@ -52,12 +52,14 @@
 											th:text="'NT$' + ${p.price}">NT$0</span></td>
 										<td class="product-quantity">
 											<div class="pro-qty d-inline-block mx-0">
-												<input type="text" value="1">
+												<input class="cart-qty" type="text" value="1"
+												th:attr="data-product-id=${p.productId}">
 											</div>
 										</td>
 										<td class="add-to-cart">
 											<button
-												class="lezada-button lezada-button--small lezada-button--icon--left">
+												class="lezada-button lezada-button--small lezada-button--icon--left 
+												add-to-cart-btn" th:attr="data-product-id=${p.productId}" >
 												<i class="ion-ios-cart-outline"></i> 加入購物車
 											</button>
 										</td>
@@ -181,6 +183,40 @@ document.addEventListener('click', async function(e){
   } finally {
     btn.dataset.busy = '0';
   }
+});
+</script>
+
+<script>
+$(document).ready(function() {
+	$(".add-to-cart-btn").click(function(e) {
+	    e.preventDefault();
+
+	    const $button = $(this);
+	    const productId = $button.data("product-id");
+
+	    // 從同一列抓取對應的 input 數量
+	    const qty = $button.closest("tr").find(".cart-qty").val();
+
+	    console.log("加入購物車 - 商品ID:", productId);
+	    console.log("數量:", qty);
+
+    $.ajax({
+      url: "/api/cart/addToCart",  // 後端 Controller 會自動判斷會員或訪客
+      type: "POST",
+//       contentType: "application/json",
+      data: {
+          productId: productId,
+          quantity: qty
+        },
+      success: function() {
+        alert("已加入購物車！");
+        // 可選：刷新購物車 icon 顯示數量
+      },
+      error: function(xhr) {
+        alert("加入購物車失敗：" + xhr.responseText);
+      }
+    });
+  });
 });
 </script>
 
