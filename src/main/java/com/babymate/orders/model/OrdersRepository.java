@@ -41,5 +41,10 @@ public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
     LIMIT 5
   """, nativeQuery = true)
   List<Object[]> topSellingProductsSince(@Param("since") LocalDateTime since);
+  
+  // 依各自會員訂單查詢(按訂單編號排序)
+  List<OrdersVO> findByMemberVO_MemberId(Integer memberId);
+  
+  
 
 }

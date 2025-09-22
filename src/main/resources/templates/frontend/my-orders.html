@@ -20,7 +20,7 @@
 						<div class="col-lg-12 col-md-12">
 							<div class="myaccount-tab-menu nav" role="tablist">
 								<!-- <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
-								<a href="#orders" data-bs-toggle="tab">訂單資料</a>
+								<a href="#orders" data-bs-toggle="tab">訂單查詢</a>
 								<a href="#download" data-bs-toggle="tab">下載</a>
 								<a href="#payment-method" data-bs-toggle="tab">付款方式</a>
 								<a href="#address-edit" data-bs-toggle="tab">地址</a>
@@ -56,15 +56,47 @@
 											<table class="table table-bordered">
 												<thead class="thead-light">
 													<tr>
-														<th>訂單編號</th>
 														<th>訂單日期</th>
+														<th>訂單編號</th>
 														<th>訂單狀態</th>
-														<th>訂購總額</th>
+														<th>訂單總額</th>
+														<th>收件人</th>
+														<th>地址</th>
+														<th>電話</th>
+														<th>E-Mail</th>
+														<th>備註</th>
 														<th>訂單明細</th>
 													</tr>
 												</thead>
 												<tbody>
-													<tr>
+													<tr th:each="order: ${orders}">
+														<td th:text="${#temporals.format(order.orderTime, 'yyyy-MM-dd HH:mm')}"></td>
+														<td th:text="${order.orderNo}"></td>
+														<td class="text-center" th:switch="${order.status}">
+															<span th:case="0" class="text-muted">已取消</span>
+															<span th:case="1" class="text-warning">未付款</span>
+															<span th:case="2" class="text-primary">已付款</span>
+															<span th:case="3" class="text-info">已出貨</span>
+															<span th:case="4" class="text-success">已收貨</span>
+															<span th:case="5" class="text-danger">退款中</span>
+															<span th:case="6" class="text-secondary">已退款</span>
+															<span th:case="*" class="text-dark">未知狀態</span>
+														</td>
+														<td th:text="'$' + ${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')}"></td>
+														<td th:text="${order.recipient}"></td>
+														<td th:text="${order.address}"></td>
+														<td th:text="${order.phone}"></td>
+														<td th:text="${order.email}"></td>
+														<td th:text="${order.remark}"></td>
+														<td class="text-nowrap">
+										                	<a class="btn btn-sm btn-outline-success"
+										                       th:href="@{'/shop/order-detail/' + ${order.orderId}}">
+										                    	<i class="bi bi-journal-medical"></i> 訂單明細
+										                  </a>
+										                </td>
+													</tr>
+												
+													<!-- <tr>
 														<td>1</td>
 														<td>Aug 22, 2022</td>
 														<td>Pending</td>
@@ -87,7 +119,7 @@
 														<td>$990</td>
 														<td><a th:href="@{/shop/cart}"
 															class="check-btn sqr-btn ">View</a></td>
-													</tr>
+													</tr> -->
 												</tbody>
 											</table>
 										</div>
@@ -96,7 +128,7 @@
 
 								<div class="tab-pane fade" id="download" role="tabpanel">
 									<div class="myaccount-content">
-										<h3>Downloads</h3>
+										<h3>下載</h3>
 										<div class="myaccount-table table-responsive text-center">
 											<table class="table table-bordered">
 												<thead class="thead-light">
