@@ -277,6 +277,64 @@ public class MemberController {
 //		return "redirect:/admin/member/listAllMember";
 	}
 	
+	@PostMapping("memberForgotPwd")
+	public String memberForgotPwd(@RequestParam("account") String account, ModelMap model) {
+	    MemberVO memberVO = memberSvc.getOneMember(account);
+	    System.out.println("account:"+ account);
+
+	    if (memberVO == null) {
+	        model.addAttribute("errorMessage", "帳號不存在，請重新輸入");
+	        model.addAttribute("errorSource", "resetpwd");
+	        return "frontend/shop-customer-login";
+	    }
+
+	    System.out.println("accountstatus"+memberVO.getAccountStatus());
+	    if (memberVO.getAccountStatus() == 2) {
+	        model.addAttribute("errorMessage", "帳號停用，請聯繫管理員。");
+	        model.addAttribute("errorSource", "resetpwd");
+	        return "frontend/shop-customer-login";
+	    }
+
+	    // 正常帳號 → 導向重設密碼流程
+	    String newPwd = SimpleCaptchaGenerator.generateCaptcha(6); // 產生新密碼
+		memberVO.setPassword(EncodingUtil.hashMD5(newPwd)); // 將密碼Hash編碼後寫入memberVO
+		memberVO.setPwdResetToken(newPwd);
+		memberVO.setUpdateDate(LocalDateTime.now());
+		
+		memberSvc.updateMember(memberVO);
+		
+		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+		MailService mailSvc = new MailService();
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+		
+		model.addAttribute("logoutMessage", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
+		model.addAttribute("logoutSource", "resetpwd");
+	    
+	    return "frontend/shop-customer-login";
+	}
+	
+	@PostMapping("memberResetPwd4Member")
+	public String memberResetPwd4Member(@RequestParam("memberId") String memberId, ModelMap model)
+	{
+		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
+		String newPwd = SimpleCaptchaGenerator.generateCaptcha(6); // 產生新密碼
+		memberVO.setPassword(EncodingUtil.hashMD5(newPwd)); // 將密碼Hash編碼後寫入memberVO
+		memberVO.setPwdResetToken(newPwd);
+		memberVO.setUpdateDate(LocalDateTime.now());
+		
+		memberSvc.updateMember(memberVO);
+		
+		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+		MailService mailSvc = new MailService();
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+		
+		model.addAttribute("logoutSource", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
+		model.addAttribute("logoutSource", "resetpwd");
+		model.addAttribute("memberVO", memberVO);
+		
+		return "frontend/shop-customer-login";
+	}
+	
 	@PostMapping("memberResetPwd")
 	public String memberResetPwd(@RequestParam("memberId") String memberId, ModelMap model)
 	{
@@ -310,67 +368,53 @@ public class MemberController {
 	                           @RequestParam String captcha,
 	                           HttpSession session,
 	                           RedirectAttributes redirectAttributes, ModelMap model) {
-		// 檢查account是否重複
-		MemberVO memberTemp = memberSvc.getOneMember(account);
-		if ((memberTemp != null) && (memberTemp.getAccountStatus() != 0)) {
-//			model.addAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
-			redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
-			redirectAttributes.addFlashAttribute("errorSource", "register");
-			redirectAttributes.addFlashAttribute("account", account);
-		    redirectAttributes.addFlashAttribute("captcha", captcha);
-			return "redirect:/shop/login";
-		};
-		
-		// 帳號不重複, 發出驗證信件, 並新增會員後 (儲存本次密碼, 驗證碼, 驗證碼有效期限), 轉回View輸入驗證碼
-		if (memberTemp == null) { // 新會員
-			String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
-			memberSvc.initMember(account, newCaptcha);
-			
-			String messageText = "Hello! " + " 請謹記此密碼: " + newCaptcha + "\n" + " 並返回BabyMate註冊頁面輸入";
-			MailService mailSvc = new MailService();
-			mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", messageText);
-//			model.addAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼點選驗證完成");
-			redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
-			redirectAttributes.addFlashAttribute("errorSource", "register");
-			redirectAttributes.addFlashAttribute("account", account);
-		    redirectAttributes.addFlashAttribute("captcha", captcha);
-			return "redirect:/shop/login";
-		} else { 
-			// 會員已存在
-			// 未輸入驗證碼
-			if (captcha.isEmpty()) {
-				redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
-				redirectAttributes.addFlashAttribute("errorSource", "register");
-				redirectAttributes.addFlashAttribute("account", account);
-				return "redirect:/shop/login";
-			} else {
-				// 有輸入captcha進行驗證
-				// 取得會員存於系統的驗證碼進行比對
-				if (!(memberTemp.getEmailAuthToken().equals(captcha))) {
-//					model.addAttribute("errorMessage", "驗證碼不相符, 請確認");
-					redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
-					redirectAttributes.addFlashAttribute("errorSource", "register");
-					redirectAttributes.addFlashAttribute("account", account);
-				    redirectAttributes.addFlashAttribute("captcha", captcha);
-					return "redirect:/shop/login";
-				}
-			}
-		}
-		 
-		// 驗證碼通過, 儲存本次輸入密碼
-	    String hashedPwd = EncodingUtil.hashMD5(password);
-	    memberTemp.setPassword(hashedPwd);
-	    // 驗證碼通過, 會員狀態更新為啟用(1)
-	    memberTemp.setAccountStatus((byte) 1); // 啟用 (通過驗證)
-	    memberSvc.updateMember(memberTemp);
-	    
-//	    model.addAttribute("success", "- (註冊成功)");
-//		model.addAttribute("memberVO", memberTemp);
-		
-		redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
-		redirectAttributes.addFlashAttribute("logoutSource", "register");
-    
-		// 回登入頁面, 引導用戶登入
+	    MemberVO member = memberSvc.getOneMember(account);
+
+	    if (member == null) {
+	        // 新會員註冊流程
+	        String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
+	        memberSvc.initMember(account, newCaptcha);
+
+	        String msg = "請謹記此驗證碼: " + newCaptcha;
+	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg);
+
+	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    // 會員已存在
+	    if ((member.getAccountStatus() == 1) || (member.getAccountStatus() == 2)) {
+	        // 帳號已啟用
+	        redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        return "redirect:/shop/login";
+	    }
+
+	    // 驗證碼驗證流程（帳號存在但尚未啟用）
+	    if (captcha.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    if (!captcha.equals(member.getEmailAuthToken())) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    // 驗證成功，啟用帳號 + 儲存密碼
+	    member.setPassword(EncodingUtil.hashMD5(password));
+	    member.setAccountStatus((byte) 1); // account status狀態變更為啟用
+	    member.setEmailVerified((byte) 1); // email驗證狀態變更為1
+	    memberSvc.updateMember(member);
+
+	    redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
+	    redirectAttributes.addFlashAttribute("logoutSource", "register");
 	    return "redirect:/shop/login";
 	}
 	
@@ -439,25 +483,44 @@ public class MemberController {
 	    String hashedPwd = EncodingUtil.hashMD5(password);
 	    System.out.println(account +"," + password+ "," + hashedPwd);
 
-	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account, hashedPwd));
+	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account));
+	    
 	    if (member.isPresent()) {
     	
 	    	MemberVO loginMember = member.get();
-	        
+	    	
+		    // 狀態為未通過驗證
+	    	if (loginMember.getAccountStatus() == 0) {
+	    		redirectAttributes.addFlashAttribute("errorMessage", "帳號未完成註冊, 請返回註冊輸入驗證碼完成確認.");
+		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	return "redirect:/shop/login";
+	    	}
+	    	
+	    	// 密碼檢核
+	    	if (!hashedPwd.equals(loginMember.getPassword())) {
+	    		// 密碼不相等
+		    	redirectAttributes.addFlashAttribute("errorMessage", "密碼錯誤, 請重新輸入.");
+		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	return "redirect:/shop/login";
+	    	}
+	    	
 	        // 設定 session
 	        session.setAttribute("member", loginMember);
 	        System.out.println("memberId: "+loginMember.getMemberId());
 
 	        // 合併購物車 (登入成功才做)
 	        cartService.loginMergeCart(session.getId(), loginMember.getMemberId());
-
+	        // 回寫登入時間
+	        loginMember.setLastLoginTime(LocalDateTime.now());
+	        memberSvc.updateMember(loginMember);
+	        
 	        System.out.println("Login success, cart merged for memberId=" + loginMember.getMemberId());
 	    	
 	        session.setAttribute("member", member.get());
-	        System.out.println(member);
+//	        System.out.println(member);
 	        return "redirect:/my-account";
 	    } else {
-	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
+	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號不存在, 請先註冊.");
 	    	redirectAttributes.addFlashAttribute("errorSource", "login");
 //	        model.addAttribute("error", "帳號或密碼錯誤");
 	        return "redirect:/shop/login";

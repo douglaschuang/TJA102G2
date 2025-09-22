@@ -30,6 +30,8 @@ function refreshCart() {
           totalQty += item.quantity;
           total += item.price * item.quantity;
 		  
+		  const formattedPrice = formatPrice(item.price);
+		  
           container.append(`
             <div class="single-cart-product">
               <span class="cart-close-icon">
@@ -45,14 +47,16 @@ function refreshCart() {
               <div class="content">
                 <h5><a href="/product/${item.productId}">${item.name}</a></h5>
                 <p><span class="cart-count">${item.quantity} x </span>
-                <span class="discounted-price">$${item.price}</span></p>
+                <span class="discounted-price">${formattedPrice}</span></p>
               </div>
             </div>
           `);
         });
 
+		
+		const formattedTotal = formatPrice(total);
         $(".cart .count").text(totalQty);
-        $(".cart-subtotal").text("$" + total);
+        $(".cart-subtotal").text(formattedTotal);
       } else {
         container.append(`<p class="empty-cart">購物車目前沒有商品</p>`);
         $(".cart .count").text(0);
@@ -82,3 +86,13 @@ $(document).on("click", ".remove-item", function(e) {
     }
   });
 });
+
+function formatPrice(price) {
+  const num = parseFloat(price);
+  if (isNaN(num)) return "$0";
+
+  return "$" + num.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
