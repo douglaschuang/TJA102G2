@@ -102,27 +102,50 @@
 									<div class="row">
 										<!-- Cart Total -->
 										<div class="col-12 mb-60">
-											<h4 class="checkout-title">Cart Total</h4>
-											<div class="checkout-cart-total">
+											<h4 class="checkout-title">訂單明細</h4>
+											
+											<!-- 若購物車為空 -->
+											<div class="cart-table" th:if="${#lists.isEmpty(cartItems)}">
+												<p>目前沒有商品</p>
+											</div>
+											
+											<!-- 購物車有商品 -->
+											<div class="cart-table" th:if="${!#lists.isEmpty(cartItems)}">
+												<table>
+													<thead>
+														<tr>
+															<th style="width:250px;">商品</th>
+															<th style="width:100px;">數量</th>
+															<th style="width:100px;">金額</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr th:each="item : ${cartItems}">
+															<td>
+																<a th:href="@{'/shop/product-basic?id=' + ${item.productId}}" th:text="${item.productName}">商品名稱</a>
+															</td>
+															<td th:text="${item.quantity}">1</td>
+															<td th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')}">0.00</td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- 商品總金額 -->
 												<h4>
-													商品 <span>金額</span>
+													<strong>商品總金額：</strong>
+													<span th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
 												</h4>
-												<ul>
-													<li>購物車內容1 X 02 <span>$180.00</span></li>
-													<li>購物車內容2 X 02 <span>$220.00</span></li>
-													<li>購物車內容3 X 02 <span>$80.00</span></li>
-													<li>購物車內容4 X 02 <span>$180.00</span></li>
-													<li>購物車內容5 X 02 <span>$180.00</span></li>
-												</ul>
-												<p>
-													商品總金額 <span>$840.00</span>
-												</p>
-												<p>
-													運費 <span>$00.00</span>
-												</p>
+												
+												<!-- 運費 -->
 												<h4>
-													總付款金額 <span>$840.00</span>
+													<strong>運費：</strong>
+													<span>$0</span>
 												</h4>
+
+												<!-- 總付款金額 -->
+											    <h4>
+											      <strong>總付款金額：</strong>
+											      <span th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
+											    </h4>
 											</div>
 										</div>
 
@@ -130,51 +153,14 @@
 										<div class="col-12">
 											<h4 class="checkout-title">付款方式</h4>
 											<div class="checkout-payment-method">
-												<!-- <div class="single-method">
-													<input type="radio" id="payment_check"
-														name="payment-method" value="check"> <label
-														for="payment_check">Check Payment</label>
-													<p data-method="check">Please send a Check to Store
-														name with Store Street, Store Town, Store State, Store
-														Postcode, Store Country.</p>
-												</div> -->
-												<!-- <div class="single-method">
-													<input type="radio" id="payment_bank" name="payment-method"
-														value="bank"> <label for="payment_bank">銀行轉帳</label>
-													<p data-method="bank">Please send a Check to Store name
-														with Store Street, Store Town, Store State, Store
-														Postcode, Store Country.</p>
-												</div> -->
-												<!-- <div class="single-method">
-													<input type="radio" id="payment_cash" name="payment-method"
-														value="cash"> <label for="payment_cash">貨到付款</label>
-													<p data-method="cash">Please send a Check to Store name
-														with Store Street, Store Town, Store State, Store
-														Postcode, Store Country.</p>
-												</div> -->
 												<div class="single-method">
 													<input type="radio" id="payment_paypal"
 														name="payment-method" value="paypal"> <label
 														for="payment_paypal">信用卡</label>
-													<p data-method="paypal">Please send a Check to Store
-														name with Store Street, Store Town, Store State, Store
-														Postcode, Store Country.</p>
+													<p data-method="paypal">即將前往綠界ECPay支付</p>
 												</div>
-												<!-- <div class="single-method">
-													<input type="radio" id="payment_payoneer"
-														name="payment-method" value="payoneer"> <label
-														for="payment_payoneer">Payoneer</label>
-													<p data-method="payoneer">Please send a Check to Store
-														name with Store Street, Store Town, Store State, Store
-														Postcode, Store Country.</p>
-												</div> -->
-												<!-- <div class="single-method">
-													<input type="checkbox" id="accept_terms"> <label
-														for="accept_terms">I’ve read and accept the terms
-														& conditions</label>
-												</div> -->
 											</div>
-											<button class="lezada-button lezada-button--medium mt-30">結帳</button>
+											<button class="lezada-button lezada-button--medium mt-30">確認結帳</button>
 										</div>
 									</div>
 								</div>

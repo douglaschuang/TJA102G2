@@ -37,6 +37,11 @@ public class OrdersService {
 		return null;
 	}
 	
+	//	抓取MamberId，要用在確認該會員才可檢視自己訂單資料 
+	public List<OrdersVO> getOrdersByMemberId(Integer memberId){
+		return repository.findByMemberVO_MemberId(memberId);
+	}
+	
 //	 public Map<Integer, Integer> getCountMap() {
 //	        List<Object[]> resultList = repository.countRecordsGroupByOrderId();
 //
