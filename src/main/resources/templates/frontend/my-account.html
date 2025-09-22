@@ -26,7 +26,7 @@
 <!--               <a href="#payment-method" data-bs-toggle="tab">Payment Method</a> -->
               <a href="#account-info" class="active" data-bs-toggle="tab">基本資料</a>
               <a href="#password-info" data-bs-toggle="tab">密碼變更</a>
-<!--               <a href="#address-edit" data-bs-toggle="tab">預設收件資訊</a> -->
+              <a href="#weather-info" data-bs-toggle="tab">即時天氣</a>
 <!--               <a th:href="@{/shop/customer-login}">Logout</a> -->
             </div>
           </div>
@@ -50,16 +50,16 @@
                           </div>                                     
                           <div class="single-input-item">
                             <label for="full-name" class="required">姓名</label>
-                            <input type="text" th:field="*{name}" id="full-name" class="form-control" />
-                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error" id="name.errors">></span>
+                            <input type="text" th:field="*{name}" id="full-name" class="form-control fs-6" />
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error" id="name.errors"></span>
                           </div>
                           <div class="single-input-item mt-3">
                             <label for="birthday" class="required">生日</label>
 <!--                             <input type="date" th:field="*{birthday}" id="birthday" class="form-control" /> -->
 							<!-- 前端date picker不支援thymeleaf th:field寫法, 故改用以下方式傳值 -->
 							<input type="date" th:value="${#temporals.format(MemberVO.birthday, 'yyyy-MM-dd')}"
-       							name="birthday" class="form-control" />
-                            <span th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}" class="error" id="birthday.errors">></span>
+       							name="birthday" class="form-control fs-6" />
+                            <span th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}" class="error" id="birthday.errors"></span>
                           </div>
                           <div class="single-input-item mt-3">
                             <label for="gender" class="required">性別</label>
@@ -73,20 +73,20 @@
                           <!-- Addressee -->
                           <div class="single-input-item">
                             <label for="recipient" >收件人</label>
-                            <input type="text" th:field="*{recipientName}" id="recipientName" class="form-control" />
-                            <span th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}" class="error" id="recipientName.errors">></span>
+                            <input type="text" th:field="*{recipientName}" id="recipientName" class="form-control fs-6" />
+                            <span th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}" class="error" id="recipientName.errors"></span>
                           </div>
                           
                           <div class="single-input-item">
                             <label for="address" >地址</label>
-                            <input type="text" th:field="*{address}" id="address" class="form-control" />
-                            <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error" id="address.errors">></span>
+                            <input type="text" th:field="*{address}" id="address" class="form-control fs-6" />
+                            <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error" id="address.errors"></span>
                           </div>
                           
                           <div class="single-input-item">
                             <label for="phone" >電話</label>
-                            <input type="tel" th:field="*{phone}" id="phone" class="form-control" />
-                            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error" id="phone.errors">></span>
+                            <input type="tel" th:field="*{phone}" id="phone" class="form-control fs-6" />
+                            <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error" id="phone.errors"></span>
                           </div>
                           
                           <!-- 儲存變更按鈕 -->
@@ -147,14 +147,16 @@
                         <div class="col-lg-12">  
                         
 						<div>
-                          	<input type="hidden" th:field="*{memberId}" />
+                          	<input type="hidden" id="memberId-pwd" th:field="*{memberId}" />
                         </div>
+                        
+                        <input type="text" name="username" autocomplete="username" value="[[${MemberVO.account}]]" hidden />
 
                         <div class="single-input-item  mt-3">
                           <label for="current-pwd" class="required">目前密碼</label>
                           <input type="password" id="current-pwd" th:field="*{password}"
                             placeholder="請輸入目前密碼" autocomplete="current-password"
-                            pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control" required />
+                            pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control fs-6" required />
                         </div>
                         <div class="row">
                           <div class="col-lg-6">
@@ -162,7 +164,7 @@
                               <label for="new-pwd" class="required">新密碼</label>
                               <input type="password" id="new-pwd" name="newPassword"
                                 placeholder="請輸入新密碼" autocomplete="new-password"
-                                pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control" required />
+                                pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control fs-6" required />
                             </div>
                           </div>
                           <div class="col-lg-6">
@@ -170,7 +172,7 @@
                               <label for="confirm-pwd" class="required">確認新密碼</label>
                               <input type="password" id="confirm-pwd" name="confirmPassword"
                                 placeholder="請再次輸入新密碼" autocomplete="new-password"
-                                pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control" required />
+                                pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" maxlength="20" class="form-control fs-6" required />
                             </div>
                           </div>
                         </div>
@@ -178,7 +180,10 @@
                           <div class="single-input-item mt-4">
                             <div class="row">
                               <div class="col-6">
-                                <button type="submit" class="check-btn sqr-btn w-100">密碼變更</button>
+<!--                                 <button type="submit" class="check-btn sqr-btn w-100">密碼變更</button> -->
+									 <button type="submit" class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2">
+  										<i class="bi bi-shield-lock-fill"></i> 密碼變更
+									 </button>
                               </div>
                             </div>
                           </div>
@@ -201,6 +206,19 @@
                 </div>
               </div>
 			  <!-- /Password Info -->
+			  
+			  <!-- Weather Info --> 			  
+			  <div class="tab-pane fade" id="weather-info" role="tabpanel">
+                <div class="myaccount-content">
+                    <h1>🌦 即時天氣</h1>
+                    <div id="result" class="weather-box p-4 border rounded text-left shadow-sm">
+  						正在載入天氣資訊...
+					</div>
+                    <!-- 錯誤表列 -->
+					<!-- /錯誤表列 -->
+                </div>
+              </div>
+			  <!-- /Weather Info -->
 
             </div>
           </div>
@@ -216,6 +234,18 @@
 <th:block th:fragment="extraJs">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    
+    <script>
+document.getElementById("editFormPwd").addEventListener("submit", function(event) {
+  const newPwd = document.getElementById("new-pwd").value;
+  const confirmPwd = document.getElementById("confirm-pwd").value;
+
+  if (newPwd !== confirmPwd) {
+    event.preventDefault(); // 阻止提交
+    alert("新密碼與確認密碼不一致！");
+  }
+});
+</script>
     
 	 <!-- 頭像預覽 -->
   <script>
@@ -266,6 +296,35 @@
 	  });
 	});
 </script>
+
+  <script>
+    window.onload = function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          fetch(`/member/weather?lat=${lat}&lon=${lon}`)
+            .then(res => res.json())
+            .then(data => {
+            	document.getElementById("result").innerHTML = `
+            		  <div class="fs-5 mb-2">地區: <strong>${data.city}</strong></div>
+            		  <div class="fs-5 mb-2">溫度: <span class="text-primary fw-bold">${data.temp}°C</span></div>
+            		  <div class="fs-5 mb-2">天氣: <span class="text-secondary">${data.description}</span></div>
+            		`;
+            })
+            .catch(err => {
+              document.getElementById("result").innerText = "無法取得天氣資訊";
+              console.error(err);
+            });
+        }, function(error) {
+          document.getElementById("result").innerText = "無法取得定位，請允許瀏覽器存取位置";
+        });
+      } else {
+        document.getElementById("result").innerText = "瀏覽器不支援定位功能";
+      }
+    }
+  </script>
         
   </th:block>
 </body>
