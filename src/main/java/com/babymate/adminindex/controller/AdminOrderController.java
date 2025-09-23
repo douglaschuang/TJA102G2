@@ -12,7 +12,6 @@ public class AdminOrderController {
   private final DashboardService dashboard;
   public AdminOrderController(DashboardService dashboard){ this.dashboard = dashboard; }
 
-  // /admin/order 或 /admin/order/list 都可以進
   @GetMapping({"", "/", "/list"})
   public String list(Model model){
     model.addAttribute("pageTitle", "訂單管理");

@@ -39,90 +39,93 @@ public class DashboardController {
 
 	@GetMapping("/full-grid-left")
 	public String dashboard(@RequestParam(value = "tab", required = false) String tab,
-			@RequestParam(value = "mhbId", required = false) Integer mhbId, HttpSession session, Model model) {
+	                        @RequestParam(value = "mhbId", required = false) Integer mhbId,
+	                        HttpSession session, Model model) {
 
-		model.addAttribute("tab", tab);
+	    model.addAttribute("tab", tab);
 
-		// 用 "member"（並保留舊 key 的容錯）
-		MemberVO login = (MemberVO) session.getAttribute("member");
-		if (login == null) {
-			login = (MemberVO) session.getAttribute("loginMember");
-		}
+	    MemberVO login = (MemberVO) session.getAttribute("member");
+	    if (login == null) login = (MemberVO) session.getAttribute("loginMember");
 
-		// 側欄最新日記
-		if (login != null) {
-			model.addAttribute("latestDiary", diaryEntryService.latest3(login.getMemberId()));
-		} else {
-			model.addAttribute("latestDiary", Collections.emptyList());
-		}
+	    if (login != null) {
+	        model.addAttribute("latestDiary", diaryEntryService.latest3(login.getMemberId()));
+	    } else {
+	        model.addAttribute("latestDiary", Collections.emptyList());
+	    }
 
-		boolean needMhb = "mhb".equals(tab) || "mhb-records".equals(tab) || "mhb-charts".equals(tab)
-				|| "todos".equals(tab);
+	    boolean needMhb = "mhb".equals(tab) || "mhb-records".equals(tab) || "mhb-charts".equals(tab) || "todos".equals(tab);
 
-		// 優先用 mhbId 直接載那一本；沒有才用會員找「最新一本」
-		MhbVO mhb = null;
-		if (needMhb) {
-			if (mhbId != null) {
-				// 如果你有 findActiveById(...) 就用它；沒有就 getOneMhb(mhbId)
-				mhb = mhbService.getOneMhb(mhbId);
-			}
-			if (mhb == null && login != null) {
-				mhb = mhbService.findActiveByMemberId(login.getMemberId());
-			}
-			model.addAttribute("mhb", mhb);
+	    MhbVO mhb = null;
 
-			if (mhb != null) {
-				model.addAttribute("pregnancyWeek", calcPregnancyWeek(mhb));
-			}
-		}
+	    if (needMhb && login != null) {
+	        // ★ 新增：查出此會員的所有手冊清單，丟給頁面使用
+	        // 建議用 updateTime DESC 或 id DESC 排序，最新在前
+	        List<MhbVO> mhbs = mhbService.findByMemberIdOrderByUpdateTimeDesc(login.getMemberId());
+	        model.addAttribute("mhbs", mhbs);
 
-		// 懷孕紀錄列表
-		if ("mhb-records".equals(tab) && mhb != null) {
-			List<PregnancyRecord> records = prService.findByMhbId(mhb.getMotherHandbookId());
-			model.addAttribute("records", records);
-		}
+	        // 既有選擇邏輯：先看有沒有指定 mhbId；沒有就取清單第 1 本
+	        if (mhbId != null) {
+	            mhb = mhbs.stream()
+	                      .filter(x -> Objects.equals(x.getMotherHandbookId(), mhbId))
+	                      .findFirst()
+	                      .orElse(null);
+	        }
+	        if (mhb == null && !mhbs.isEmpty()) {
+	            mhb = mhbs.get(0);
+	        }
+	    } else if (needMhb) {
+	        // 未登入的容錯：維持原本邏輯
+	        if (mhbId != null) mhb = mhbService.getOneMhb(mhbId);
+	    }
 
-		// 圖表資料
-		if ("mhb-charts".equals(tab) && mhb != null) {
-			List<PregnancyRecord> records = prService.findByMhbId(mhb.getMotherHandbookId());
-			records.sort(Comparator.comparing(PregnancyRecord::getVisitDate));
+	    model.addAttribute("mhb", mhb);
+	    if (mhb != null) {
+	        model.addAttribute("pregnancyWeek", calcPregnancyWeek(mhb));
+	    }
 
-			List<String> labels = new ArrayList<>();
-			List<Double> weights = new ArrayList<>();
-			List<Integer> sps = new ArrayList<>();
-			List<Integer> dps = new ArrayList<>();
-			List<Integer> fhs = new ArrayList<>();
+	    if ("mhb-records".equals(tab) && mhb != null) {
+	        List<PregnancyRecord> records = prService.findByMhbId(mhb.getMotherHandbookId());
+	        model.addAttribute("records", records);
+	    }
 
-			for (PregnancyRecord r : records) {
-				labels.add(r.getVisitDate().toString());
-				weights.add(r.getWeight() != null ? r.getWeight().doubleValue() : null);
-				sps.add(r.getSp());
-				dps.add(r.getDp());
-				fhs.add(parseFhsToInt(r.getFhs()));
-			}
+	    if ("mhb-charts".equals(tab) && mhb != null) {
+	        List<PregnancyRecord> records = prService.findByMhbId(mhb.getMotherHandbookId());
+	        records.sort(Comparator.comparing(PregnancyRecord::getVisitDate));
 
-			model.addAttribute("chartLabels", labels);
-			model.addAttribute("chartWeights", weights);
-			model.addAttribute("chartSp", sps);
-			model.addAttribute("chartDp", dps);
-			model.addAttribute("chartFhs", fhs);
-		}
+	        List<String> labels = new ArrayList<>();
+	        List<Double> weights = new ArrayList<>();
+	        List<Integer> sps = new ArrayList<>();
+	        List<Integer> dps = new ArrayList<>();
+	        List<Integer> fhs = new ArrayList<>();
 
-		// 代辦事項清單
-		if ("todos".equals(tab) && mhb != null) {
-			model.addAttribute("todos", mhbTodoService.listByMhb(mhb.getMotherHandbookId())); // 你的查詢方法名稱依實作調整
-		}
+	        for (PregnancyRecord r : records) {
+	            labels.add(r.getVisitDate().toString());
+	            weights.add(r.getWeight() != null ? r.getWeight().doubleValue() : null);
+	            sps.add(r.getSp());
+	            dps.add(r.getDp());
+	            fhs.add(parseFhsToInt(r.getFhs()));
+	        }
 
-		// 相簿 / 日記（需登入）
-		if ("album".equals(tab) && login != null) {
-			model.addAttribute("photos", albumPhotoService.findByMember(login.getMemberId()));
-		} else if ("diary".equals(tab) && login != null) {
-			model.addAttribute("entries", diaryEntryService.findByMember(login.getMemberId()));
-		}
+	        model.addAttribute("chartLabels", labels);
+	        model.addAttribute("chartWeights", weights);
+	        model.addAttribute("chartSp", sps);
+	        model.addAttribute("chartDp", dps);
+	        model.addAttribute("chartFhs", fhs);
+	    }
 
-		// 修正樣板路徑
-		return "frontend/blog-full-then-grid-left-sidebar";
+	    if ("todos".equals(tab) && mhb != null) {
+	        model.addAttribute("todos", mhbTodoService.listByMhb(mhb.getMotherHandbookId()));
+	    }
+
+	    if ("album".equals(tab) && login != null) {
+	        model.addAttribute("photos", albumPhotoService.findByMember(login.getMemberId()));
+	    } else if ("diary".equals(tab) && login != null) {
+	        model.addAttribute("entries", diaryEntryService.findByMember(login.getMemberId()));
+	    }
+
+	    return "frontend/blog-full-then-grid-left-sidebar";
 	}
+
 
 	private Integer calcPregnancyWeek(MhbVO mhb) {
 		if (mhb == null)

@@ -39,6 +39,7 @@ public class PregnancyRecordController {
 
         model.addAttribute("mhb", mhb);
         model.addAttribute("records", records);
+        model.addAttribute("pageTitle", "懷孕紀錄");
         return "admin/preg/records_list";
     }
 }

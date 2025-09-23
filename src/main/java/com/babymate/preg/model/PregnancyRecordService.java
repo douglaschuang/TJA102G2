@@ -25,19 +25,21 @@ public class PregnancyRecordService {
 	}
 
 	public List<PregnancyRecord> findByMhbId(Integer mhbId) {
-		return repo.findByMotherHandbookIdOrderByVisitDateDesc(mhbId);
+//		return repo.findByMotherHandbookIdOrderByVisitDateDesc(mhbId);
+		// 改成使用 fetch join 版本，避免 N+1
+	    return repo.findAllByMhbIdFetchClinic(mhbId);
 	}
 
 	public PregnancyRecord save(PregnancyRecord r) {
 		return repo.saveAndFlush(r);
 	}
 	
-	// 🔹 新增
+	// 新增
     public PregnancyRecord getOne(Integer id) {
         return repo.findById(id).orElse(null);
     }
 
-    // 🔹 新增
+    // 新增
     public void delete(Integer id) {
         repo.deleteById(id);
     }

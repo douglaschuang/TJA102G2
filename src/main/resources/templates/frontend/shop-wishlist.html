@@ -83,39 +83,6 @@
 
 	</section>
 	<th:block th:fragment="extraJs">
-<!-- <script th:inline="javascript">
-document.addEventListener('click', async function(e){
-  const btn = e.target.closest('.btn-remove-fav');
-  if(!btn) return;
-
-  const pid = btn.getAttribute('data-product-id') || btn.dataset.productId;
-  if (!pid) return;
-
-  const row = btn.closest('tr');
-
-  const toggleUrl = /*[[@{/api/wishlist/toggle}]]*/ '/api/wishlist/toggle';
-  const loginUrl  = /*[[@{/shop/login}]]*/ '/shop/login';  // ← 用 Thymeleaf 展開
-
-  try {
-    const res = await fetch(toggleUrl, {
-      method:'POST',
-      headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body: new URLSearchParams({ productId: pid })
-    });
-
-    if (res.status === 401) { location.href = loginUrl; return; }
-    if (!res.ok) { alert('操作失敗 ('+res.status+')'); return; }
-
-    row.remove();
-    const tbody = document.querySelector('.cart-table tbody');
-    if (tbody && tbody.querySelectorAll('tr .btn-remove-fav').length === 0) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = '<td colspan="6" class="text-center py-4">目前沒有收藏的商品</td>';
-      tbody.appendChild(tr);
-    }
-  } catch (err) { console.error(err); }
-});
-</script> -->
 <script th:inline="javascript">
 document.addEventListener('click', async function(e){
   const btn = e.target.closest('.btn-remove-fav');
@@ -161,7 +128,7 @@ document.addEventListener('click', async function(e){
     // 通知 overlays mini 也刷新
     document.dispatchEvent(new Event('wishlist:changed'));
 
-    // ✅ SweetAlert：已取消收藏
+    // SweetAlert：已取消收藏
     if (window.Swal) {
       Swal.fire({
         icon: 'info',

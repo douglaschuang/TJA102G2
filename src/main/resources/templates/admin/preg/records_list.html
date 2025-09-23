@@ -40,6 +40,7 @@
 								<th>週數</th>
 								<th>就診日</th>
 								<th>院所</th>
+								<th>診所</th>
 								<th>備註</th>
 								<th>下次產檢</th>
 								<th>體重(kg)</th>
@@ -56,6 +57,7 @@
 								<td th:text="${r.visitDate}">2025-01-01</td>
 								<!-- 目前僅顯示 clinicId；若日後要顯示院所名稱，可改成 Service 組裝或 JOIN -->
 								<td th:text="${r.clinicId}">—</td>
+								<td th:text="${r.clinic != null ? r.clinic.clinicName : '—'}">—</td>
 								<td th:text="${r.bodyCondition}">—</td>
 								<td><span th:text="${r.nextCheckDate}">—</span> <small
 									class="ms-1 text-danger"
