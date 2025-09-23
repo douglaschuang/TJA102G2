@@ -473,8 +473,17 @@
           <div class="price">
             <span class="main-price" th:text="'NT$' + ${p.price}">NT$0</span>
           </div>
-          <p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
-          <a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
+          
+          <span class="quickview-title">數量：</span>
+          <div class="pro-qty d-inline-block mx-0 pt-0">
+            <input type="number" class="cart-qty" value="1" min="1" th:data-product-id="${p.productId}">
+          </div>
+
+          <div class="add-to-cart-btn mb-25">
+       	    <p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
+            <a class="lezada-button lezada-button--medium add-to-cart-btn-s" href="#"
+               th:data-product-id="${p.productId}">加入購物車</a>
+          </div>
         </div>
       </div>
 
