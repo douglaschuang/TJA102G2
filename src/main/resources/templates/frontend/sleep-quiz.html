@@ -7,25 +7,29 @@
 <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet">
 <style th:inline="css">
 .q-card {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
+	border: 1px solid #eee;
+	border-radius: 12px;
+	padding: 16px;
+	margin-bottom: 16px;
 }
-.score-badge { font-size: 1.1rem }
+
+.score-badge {
+	font-size: 1.1rem
+}
 
 /* 背景圖（全站） */
-body{
-  background: url([[@{/assets/images/sleep5.jpg}]]) center/cover fixed no-repeat;
+body {
+	background: url([[@{/assets/images/sleep5.jpg}]]) center/cover fixed
+		no-repeat;
 }
 
 /* 毛玻璃容器 */
 .glass {
-  background: rgba(255,255,255,.75);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+	background: rgba(255, 255, 255, .75);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
 }
 </style>
 
@@ -34,6 +38,11 @@ body{
 	<div class="container py-4 glass">
 		<div class="d-flex align-items-center justify-content-between mb-3">
 			<h3 class="mb-0">睡眠健康小測驗</h3>
+
+			<div class="text-muted small">
+				已完成 <span id="quizCount">0</span> 人（今日 <span id="quizCountToday">0</span>）
+			</div>
+
 			<a class="btn btn-outline-secondary btn-sm"
 				th:href="@{/blog/full-grid-left}">回儀表板</a>
 		</div>
@@ -227,12 +236,24 @@ body{
 		<hr>
 		<ul class="mb-0 small" id="adviceList"></ul>
 		<p class="text-muted mt-4 small">*
-		本工具不提供醫療建議；如有嚴重睡眠困擾、打鼾或呼吸中止風險，請諮詢耳鼻喉/睡眠醫學專科。</p>
+			本工具不提供醫療建議；如有嚴重睡眠困擾、打鼾或呼吸中止風險，請諮詢耳鼻喉/睡眠醫學專科。</p>
 	</div>
 
-	
+
 
 	<script>
+	
+	// 頁面載入：抓目前完成數
+	fetch('/api/sleep-quiz/count', { credentials: 'same-origin' })
+	  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+	  .then(data => {
+	    document.getElementById('quizCount').textContent = data.total ?? 0;
+	    document.getElementById('quizCountToday').textContent = data.today ?? 0;
+	  })
+	  .catch(()=>{ /* 靜默失敗即可 */ });
+	
+	
+	
 (function(){
   const form = document.getElementById('quizForm');
   const result = document.getElementById('resultCard');
@@ -273,6 +294,35 @@ body{
     levelText.textContent = `整體評估：${level}`;
     adviceList.innerHTML = tips.map(t=>`<li>${t}</li>`).join('');
     result.classList.remove('d-none');
+    
+ // === 統計上報（+1） ===
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+    const headers = { 'Content-Type': 'application/json' };
+    if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+    fetch('/api/sleep-quiz/submit', {
+      method: 'POST',
+      headers,
+      credentials: 'same-origin'
+    })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        if (data?.ok) {
+          document.getElementById('quizCount').textContent = data.total ?? 0;
+          document.getElementById('quizCountToday').textContent = data.today ?? 0;
+        }
+      })
+      .catch(()=>{ /* 不影響使用者體驗，失敗就略過 */ });
+
+    
+    
+    
+    
+    
+    
+    
     window.scrollTo({top: result.offsetTop - 20, behavior: 'smooth'});
   });
 

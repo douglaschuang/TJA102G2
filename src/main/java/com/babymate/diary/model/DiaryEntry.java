@@ -37,6 +37,25 @@ public class DiaryEntry {
         if (writtenAt == null) writtenAt = createdAt;
         if (title == null || title.isBlank()) title = "（無標題）";
     }
+    
+    // 圖片
+    @Lob
+    @Column(name = "image_data")
+    private byte[] imageData;
+
+    @Column(name = "image_content_type", length = 100)
+    private String imageContentType;
+
+    // 便於模板判斷是否有圖
+    @Transient
+    public boolean hasImage() { return imageData != null && imageData.length > 0; }
+
+    // getter / setter
+    public byte[] getImageData() { return imageData; }
+    public void setImageData(byte[] imageData) { this.imageData = imageData; }
+    public String getImageContentType() { return imageContentType; }
+    public void setImageContentType(String imageContentType) { this.imageContentType = imageContentType; }
+
 
     // Getter / Setter
     public Integer getId() { return id; }

@@ -42,6 +42,10 @@ public class MhbController {
 		MhbVO mhbVO = new MhbVO();
 		mhbVO.setMemberId(1); // 之後要用登入者 id
 		model.addAttribute("mhbVO", mhbVO);
+		
+		// 提供給 layout 用的頁名
+	    model.addAttribute("pageTitle", "媽媽手冊｜新增");
+	    
 		return "admin/mhb/addMhb";
 	}
 
@@ -79,6 +83,7 @@ public class MhbController {
 	@PostMapping("getOne_For_Update")
 	public String getOne_For_Update(@RequestParam("mother_handbook_id") Integer id, ModelMap model) {
 		model.addAttribute("mhbVO", mhbSvc.getOneMhb(id));
+		model.addAttribute("pageTitle", "媽媽手冊｜修改");
 		return "admin/mhb/update_mhb_input";
 	}
 
@@ -120,13 +125,6 @@ public class MhbController {
 
 	/* ====== 提供圖片 ====== */
 
-//    @GetMapping("/photo/{id}")
-//    public void photo(@PathVariable Integer id, jakarta.servlet.http.HttpServletResponse resp) throws IOException {
-//        MhbVO vo = mhbSvc.getOneMhb(id); // @Where 只撈未刪
-//        if (vo == null || vo.getUpFiles() == null) { resp.setStatus(404); return; }
-//        resp.setContentType(detectImageMimeType(vo.getUpFiles()));
-//        resp.getOutputStream().write(vo.getUpFiles());
-//    }
 	@GetMapping("/photo/{id}")
 	public ResponseEntity<byte[]> photo(@PathVariable Integer id) throws IOException {
 		MhbVO vo = mhbSvc.getOneMhb(id); // 受 @Where 過濾（未刪）
@@ -182,6 +180,9 @@ public class MhbController {
 		ra.addFlashAttribute("success", n > 0 ? "- (已復原 #" + id + ")" : "- (未找到或已復原)");
 		return "redirect:/admin/mhb/deleted"; // 復原後回垃圾桶
 	}
+	
+	
+
 
 	/* ====== 小工具 ====== */
 

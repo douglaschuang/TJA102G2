@@ -19,6 +19,8 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -254,22 +256,22 @@
 			<artifactId>jakarta.el</artifactId>
 			<version>4.0.2</version>
 		</dependency>
-		
+
 		<!--
 		========================================================================================== -->
- 		<!-- ●以下為 語法 預備使用● -->  
-  		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<!-- ●以下為 語法 預備使用● -->
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
-    		<groupId>org.jsoup</groupId>
-    		<artifactId>jsoup</artifactId>
-    		<version>1.20.1</version>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.20.1</version>
 		</dependency>
 
 		<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-data-redis</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		
+
 		<!-- Jackson JSR310 模組 -->
     	<dependency>
         	<groupId>com.fasterxml.jackson.datatype</groupId>
