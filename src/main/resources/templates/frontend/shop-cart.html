@@ -184,6 +184,8 @@ function formatPrice(price) {
 	            document.querySelector(".subtotal").innerText = data.totalQty;
 // 	            document.querySelector(".total").innerText = parseFloat(data.total).toFixed(2);
 	            document.querySelector(".total").innerText = formattedTotal;
+	            
+	            setCartWishlistCount(data.totalQty);
 
 	            // 數量為 0 → 移除該列
 	            if (newQty === 0) row.remove();
@@ -235,6 +237,8 @@ document.addEventListener("click", function (e) {
             document.querySelector(".subtotal").innerText = data.totalQty;
 //             document.querySelector(".total").innerText = data.total;
             document.querySelector(".total").innerText = formattedTotal;
+            
+            setCartWishlistCount(data.totalQty);
         })
         .catch(err => console.error("刪除失敗:", err));
     }
@@ -269,10 +273,21 @@ document.addEventListener("change", function (e) {
             document.querySelector(".subtotal").innerText = data.totalQty;
 //             document.querySelector(".total").innerText = data.total;
             document.querySelector(".total").innerText = formattedTotal;
+            
+            setCartWishlistCount(data.totalQty);
         })
         .catch(err => console.error("更新數量失敗:", err));
     }
 });
+</script>
+
+<script>
+function setCartWishlistCount(n) {
+  // header/行動版 可能有多個 count，一起更新
+  document.querySelectorAll('.js-cart-count').forEach(el => {
+    el.textContent = String(n);
+  });
+}
 </script>
 
   </th:block>
