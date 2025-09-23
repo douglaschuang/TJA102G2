@@ -8,10 +8,11 @@
 <body class="container py-4">
 	<h4 class="mb-3">編輯日記</h4>
 	<form th:action="@{'/u/diary/' + ${entry.id} + '/edit'}" method="post"
-		class="row g-3">
+		class="row g-3" enctype="multipart/form-data">
 		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
 		<input type="hidden" th:if="${_csrf != null}"
 			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+
 
 
 		<div class="col-md-8">
@@ -34,6 +35,58 @@
 			<label class="form-label">標籤</label> <input class="form-control"
 				type="text" name="tags" th:value="${entry.tags}">
 		</div>
+		<!-- 圖片 -->
+		<!-- <div class="col-12">
+			<label class="form-label">封面圖片（可選）</label> <input
+				class="form-control" type="file" name="image" accept="image/*">
+			<small class="text-muted d-block mb-2">最多上傳一張，建議小於 3MB。</small>
+
+			若已有圖片，顯示預覽與刪除選項
+			<div th:if="${entry.hasImage()}"
+				class="d-flex align-items-start gap-3 mt-2">
+				<img th:src="@{'/u/diary/' + ${entry.id} + '/image'}"
+					alt="current cover"
+					style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
+				<div class="form-check mt-2">
+					<input class="form-check-input" type="checkbox" id="removeImage"
+						name="removeImage" value="1"> <label
+						class="form-check-label" for="removeImage">移除目前圖片</label>
+					<div class="text-muted small">如果同時勾選「移除」又上傳新圖，會以「新圖」為準。</div>
+				</div>
+			</div>
+		</div> -->
+		<!-- 圖片 -->
+		<div class="col-12">
+			<label class="form-label">封面圖片（可選）</label> <input
+				class="form-control" type="file" name="image" id="imageInput"
+				accept="image/*"> <small class="text-muted d-block mb-2">最多上傳一張，建議小於
+				3MB。</small>
+
+			<!-- 預覽區 -->
+			<div id="previewBox" class="d-flex align-items-start gap-3 mt-2"
+				th:classappend="${entry.hasImage()} ? '' : ' d-none'">
+				<img id="imagePreview" th:if="${entry.hasImage()}"
+					th:src="@{'/u/diary/' + ${entry.id} + '/image'}"
+					alt="cover preview"
+					style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">
+				<img id="imagePreview" th:if="${!entry.hasImage()}" src=""
+					alt="cover preview"
+					style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px; display: none;">
+				<div class="d-flex flex-column gap-2">
+					<div class="form-check" th:if="${entry.hasImage()}">
+						<input class="form-check-input" type="checkbox" id="removeImage"
+							name="removeImage" value="1"> <label
+							class="form-check-label" for="removeImage">移除目前圖片</label>
+					</div>
+					<button class="btn btn-sm btn-outline-secondary" type="button"
+						id="clearImageBtn">清除選擇</button>
+					<div class="text-muted small" id="imageHint">
+						若選擇新圖片，將覆蓋原有圖片。勾選「移除」可不帶圖片儲存。</div>
+				</div>
+			</div>
+		</div>
+
+
 
 		<div class="col-12">
 			<button class="btn btn-primary" type="submit">儲存</button>
@@ -41,5 +94,110 @@
 				th:href="@{/blog/full-grid-left(tab='diary')}">取消</a>
 		</div>
 	</form>
+
+	<script>
+(function () {
+  const input      = document.getElementById('imageInput');
+  const previewBox = document.getElementById('previewBox');
+  const previewImg = document.getElementById('imagePreview');
+  const clearBtn   = document.getElementById('clearImageBtn');
+  const removeCk   = document.getElementById('removeImage');
+
+  // 記住「舊圖的 URL」（如果有）
+  const originalSrc = previewImg && previewImg.hasAttribute('th:if') ? null : (previewImg ? previewImg.getAttribute('src') : null);
+  // 上面這行在 Thymeleaf 渲染後，若本來有圖，就會有真實 src；沒有圖時 src 可能是空字串
+
+  let objectUrl = null; // 暫存 createObjectURL 產生的 URL，方便釋放
+
+  function showPreview(file) {
+    if (!file) return;
+    // 基本型別 / 大小檢查（可依需求調整）
+    if (!file.type || !file.type.startsWith('image/')) {
+      alert('請選擇圖片檔案');
+      input.value = '';
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) { // 3MB
+      alert('圖片太大，請選擇 3MB 以下的圖片');
+      input.value = '';
+      return;
+    }
+    // 釋放舊的 object URL
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(file);
+
+    // 顯示預覽
+    previewImg.src = objectUrl;
+    previewImg.style.display = 'block';
+    previewBox.classList.remove('d-none');
+
+    // 選了新圖就取消「移除」勾選（若存在）
+    if (removeCk) removeCk.checked = false;
+  }
+
+  input?.addEventListener('change', function () {
+    const file = this.files && this.files[0];
+    if (file) {
+      showPreview(file);
+    } else {
+      // 清空選擇：還原到原狀（有舊圖就顯示舊圖，沒有就隱藏）
+      if (originalSrc) {
+        previewImg.src = originalSrc;
+        previewImg.style.display = 'block';
+        previewBox.classList.remove('d-none');
+      } else {
+        previewImg.src = '';
+        previewImg.style.display = 'none';
+        previewBox.classList.add('d-none');
+      }
+    }
+  });
+
+  // 勾選「移除目前圖片」→ 隱藏預覽
+  removeCk?.addEventListener('change', function () {
+    if (this.checked) {
+      // 不論是否剛選新圖，只要勾選移除，就把預覽藏起來，送出後會清掉圖
+      previewImg.style.display = 'none';
+    } else {
+      // 取消移除：若有新選圖（objectUrl），顯示新圖；否則還原舊圖（若有）
+      if (objectUrl) {
+        previewImg.src = objectUrl;
+        previewImg.style.display = 'block';
+      } else if (originalSrc) {
+        previewImg.src = originalSrc;
+        previewImg.style.display = 'block';
+      } else {
+        previewImg.src = '';
+        previewImg.style.display = 'none';
+      }
+    }
+  });
+
+  // 「清除選擇」按鈕：清空檔案 input，還原到原狀
+  clearBtn?.addEventListener('click', function () {
+    input.value = '';
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      objectUrl = null;
+    }
+    if (removeCk) removeCk.checked = false; // 不自動移除舊圖
+    if (originalSrc) {
+      previewImg.src = originalSrc;
+      previewImg.style.display = 'block';
+      previewBox.classList.remove('d-none');
+    } else {
+      previewImg.src = '';
+      previewImg.style.display = 'none';
+      previewBox.classList.add('d-none');
+    }
+  });
+
+  // 預防記憶體洩漏
+  window.addEventListener('beforeunload', function () {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+  });
+})();
+</script>
+
 </body>
 </html>

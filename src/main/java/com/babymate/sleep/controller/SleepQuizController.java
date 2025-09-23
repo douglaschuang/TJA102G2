@@ -1,4 +1,3 @@
-// SleepQuizController.java
 package com.babymate.sleep.controller;
 
 import org.springframework.stereotype.Controller;
@@ -10,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SleepQuizController {
     @GetMapping("/quiz")
     public String quiz() {
-        return "frontend/sleep-quiz"; // 對應 templates/frontend/sleep-quiz.html
+        return "frontend/sleep-quiz";
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import com.babymate.clinic.model.Clinic;
 
 @Entity
 @Table(name = "pregnancy_record")
@@ -92,4 +93,12 @@ public class PregnancyRecord {
 
     public LocalDateTime getUpdateTime() { return updateTime; }
     public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clinic_id", referencedColumnName = "clinic_id",
+                insertable = false, updatable = false)
+    private Clinic clinic;
+
+    public Clinic getClinic() { return clinic; }
+    public void setClinic(Clinic clinic) { this.clinic = clinic; }
 }

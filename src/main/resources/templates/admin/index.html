@@ -21,14 +21,32 @@
 			<!-- KPI 四格（用 fragment 重複利用） -->
 			<div class="row g-3">
 				<div
-					th:replace="~{fragments/admin :: smallBox('primary', ${stats.newOrdersToday}, '新訂單(今日)', @{/admin/order})}"></div>
-				<div
-					th:replace="~{fragments/admin :: smallBox('success',|${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,'跳出率 (今日)', @{/admin/analytics})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.newOrdersToday == 0 ? 'danger' : (stats.newOrdersToday < 6 ? 'warning' : 'success')},
+  ${stats.newOrdersToday},
+  '新訂單(今日)', @{/admin/orders/list}
+)}"></div>
 
 				<div
-					th:replace="~{fragments/admin :: smallBox('warning', ${stats.newUsersToday}, '新會員(今日)', @{/admin/member/listAllMember})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.bounceRate &lt; 35 ? 'success' : (stats.bounceRate &lt;= 55 ? 'warning' : 'danger')},
+  |${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,
+  '跳出率 (今日)', @{/admin/analytics}
+)}"></div>
+
 				<div
-					th:replace="~{fragments/admin :: smallBox('danger', ${stats.uniqueVisitors7d}, '近7天訪客', @{/admin/analytics})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.newUsersToday == 0 ? 'warning' : (stats.newUsersToday &lt;= 2 ? 'primary' : 'success')},
+  ${stats.newUsersToday},
+  '新會員(今日)', @{/admin/member/listAllMember}
+)}"></div>
+
+				<div
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.uniqueVisitors7d &lt; 20 ? 'warning' : (stats.uniqueVisitors7d &lt; 50 ? 'primary' : 'success')},
+  ${stats.uniqueVisitors7d},
+  '近7天訪客', @{/admin/analytics}
+)}"></div>
 			</div>
 
 			<div class="row mt-3">
@@ -53,7 +71,7 @@
 						<div
 							class="card-header d-flex justify-content-between align-items-center">
 							<h3 class="card-title mb-0">最新訂單</h3>
-							<a th:href="@{/admin/order}"
+							<a th:href="@{/admin/orders/list}"
 								class="btn btn-sm btn-outline-secondary">全部</a>
 						</div>
 						<div class="card-body p-0">

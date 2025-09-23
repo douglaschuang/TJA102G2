@@ -28,10 +28,8 @@
           <div class="footer-nav-container">
             <nav aria-label="關於我們">
               <ul>
-                <li><a th:href="@{/about}">品牌故事</a></li>
-                <li><a th:href="@{/stores}">門市據點</a></li>
-                <li><a th:href="@{/contact}">聯絡客服</a></li>
-                <li><a th:href="@{/orders/track}">訂單查詢 / 追蹤</a></li>
+                <li><a th:href="@{/faq}">聯絡客服</a></li>
+                <li><a th:href="@{/my-orders}">訂單查詢 / 追蹤</a></li>
               </ul>
             </nav>
           </div>
@@ -43,12 +41,8 @@
           <div class="footer-nav-container">
             <nav aria-label="購物與支援">
               <ul>
-                <li><a th:href="@{/returns}">退換貨與退款政策</a></li>
-                <li><a th:href="@{/support}">購物說明（付款 / 配送）</a></li>
-                <li><a th:href="@{/size-guide}">尺寸對照 / 選購指南</a></li>
-                <li><a th:href="@{/faqs}">常見問題</a></li>
-                <li><a th:href="@{/privacy}">隱私權政策</a></li>
-                <li><a th:href="@{/terms}">服務條款</a></li>
+                <li><a th:href="@{/my-orders}">購物說明（付款 / 配送）</a></li>
+                <li><a th:href="@{/faq}">常見問題</a></li>
               </ul>
             </nav>
           </div>
@@ -90,35 +84,6 @@
             <p class="mt-2 text-muted" style="font-size:.9rem">
               服務時間：週一–週五 10:00–18:00（國定假日休息）
             </p>
-          </div>
-        </div>
-
-        <!-- 訂閱 -->
-        <div class="col footer-single-widget">
-          <div class="footer-subscription-widget">
-            <h2 class="footer-subscription-title">訂閱電子報</h2>
-            <p class="subscription-subtitle">
-              第一時間收到新品上架、限時優惠與實用育兒文章。
-            </p>
-            <div class="subscription-form">
-              <form id="mc-form" class="mc-form" method="post" th:action="@{/subscribe}">
-                <label for="sub-email" class="visually-hidden">Email</label>
-                <input id="sub-email" type="email" name="email" placeholder="輸入你的 Email" required>
-                <button type="submit" aria-label="訂閱">
-                  <i class="ion-ios-arrow-thin-right" aria-hidden="true"></i>
-                </button>
-              </form>
-            </div>
-            <p class="mt-2 text-muted" style="font-size:.85rem">
-              訂閱即表示同意本網站之
-              <a th:href="@{/privacy}">隱私權政策</a> 與
-              <a th:href="@{/terms}">服務條款</a>。
-            </p>
-            <div class="mailchimp-alerts">
-              <div class="mailchimp-submitting"></div>
-              <div class="mailchimp-success"></div>
-              <div class="mailchimp-error"></div>
-            </div>
           </div>
         </div>
 

@@ -56,6 +56,71 @@ body {
 .app-main {
 	flex: 1
 }
+
+/* === BabyMate 粉彩主題（SmallBox / Badge / Tag）=== */
+:root{
+  /* 粉彩色票 */
+  --bm-primary-bg: #FDE6EF;  /* 粉 pink */
+  --bm-primary-text: #6B3A55;
+
+  --bm-success-bg: #E9F9F1;  /* 薄荷 mint */
+  --bm-success-text: #245C47;
+
+  --bm-warning-bg: #FFF4E1;  /* 杏桃 peach */
+  --bm-warning-text: #7A4E1D;
+
+  --bm-danger-bg:  #FFE8EA;  /* 櫻紅淡紅 */
+  --bm-danger-text:#7A2E2E;
+
+  --bm-info-bg:    #E8F1FF;  /* 淡藍 lightblue */
+  --bm-info-text:  #2B4C7E;
+
+  --bm-card-shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10);
+}
+
+/* 覆蓋小盒子色系（smallBox 會用到 .bg-* 或 .text-bg-*） */
+.bg-primary, .text-bg-primary{
+  background-color: var(--bm-primary-bg) !important;
+  color: var(--bm-primary-text) !important;
+  border-color: color-mix(in srgb, var(--bm-primary-text) 25%, transparent) !important;
+}
+.bg-success, .text-bg-success{
+  background-color: var(--bm-success-bg) !important;
+  color: var(--bm-success-text) !important;
+  border-color: color-mix(in srgb, var(--bm-success-text) 25%, transparent) !important;
+}
+.bg-warning, .text-bg-warning{
+  background-color: var(--bm-warning-bg) !important;
+  color: var(--bm-warning-text) !important;
+  border-color: color-mix(in srgb, var(--bm-warning-text) 25%, transparent) !important;
+}
+.bg-danger, .text-bg-danger{
+  background-color: var(--bm-danger-bg) !important;
+  color: var(--bm-danger-text) !important;
+  border-color: color-mix(in srgb, var(--bm-danger-text) 25%, transparent) !important;
+}
+.bg-info, .text-bg-info{
+  background-color: var(--bm-info-bg) !important;
+  color: var(--bm-info-text) !important;
+  border-color: color-mix(in srgb, var(--bm-info-text) 25%, transparent) !important;
+}
+
+/* 讓小盒子更柔和一點 */
+.small-box{
+  box-shadow: var(--bm-card-shadow);
+  border: 1px solid rgba(16,24,40,.06);
+  border-radius: .8rem;
+}
+.small-box .icon{ opacity:.35 } /* 圖示淡一點 */
+
+/* 列表中的數字徽章也一起柔化（你有用 .badge.text-bg-primary）*/
+.badge.text-bg-primary{
+  background-color: var(--bm-info-bg) !important;
+  color: var(--bm-info-text) !important;
+  border: 1px solid color-mix(in srgb, var(--bm-info-text) 20%, transparent) !important;
+  font-weight: 600;
+}
+
 </style>
 </head>
 <body class="sidebar-expand-lg sidebar-open bg-body-tertiary">

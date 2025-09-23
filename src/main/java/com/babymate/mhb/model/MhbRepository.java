@@ -8,8 +8,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-
-public interface MhbRepository extends JpaRepository<MhbVO, Integer> {
+//讓 Repository 也能跑 Specification
+public interface MhbRepository extends JpaRepository<MhbVO, Integer>,
+                                   org.springframework.data.jpa.repository.JpaSpecificationExecutor<MhbVO> {
 
 	/* ====== 條件查詢（用 Entity 欄位名） ====== */
 	@Query("""
@@ -58,9 +59,16 @@ public interface MhbRepository extends JpaRepository<MhbVO, Integer> {
 	
 	long countByMemberIdAndDeletedFalse(Integer memberId);
 	
-	// MhbRepository.java
+	
 	boolean existsByMotherHandbookIdAndDeletedFalse(Integer motherHandbookId);
 	MhbVO findByMotherHandbookIdAndDeletedFalse(Integer motherHandbookId);
+	
+	
+	@Query(value = "SELECT COUNT(*) FROM mother_handbook WHERE deleted = 1", nativeQuery = true)
+	long countDeletedNative();
+	
+	List<MhbVO> findByMemberIdOrderByUpdateTimeDesc(Integer memberId);
+
 
 	/*=== native SQL ===*/
 	// ★ 取某會員「最新」的一本（當作 Active）

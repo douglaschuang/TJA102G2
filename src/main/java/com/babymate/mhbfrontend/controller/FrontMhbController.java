@@ -28,41 +28,7 @@ public class FrontMhbController {
 	public FrontMhbController(MhbService mhbService) {
 		this.mhbService = mhbService;
 	}
-
-//    第一版 顯示新增表單
-//    @GetMapping("/new")
-//    public String newForm(HttpSession session, Model model) {
-//        MemberVO login = (MemberVO) session.getAttribute("member");
-//        if (login == null) return "redirect:/shop/login"; // 依你站內登入頁
-//
-//        // 若已經有一本，也可以選擇導去儀表板，或放提示
-//        MhbVO existed = mhbService.findActiveByMemberId(login.getMemberId());
-//        model.addAttribute("alreadyHasOne", existed != null);
-//
-//        MhbVO vo = new MhbVO();
-//        vo.setMemberId(login.getMemberId());
-//        model.addAttribute("mhbVO", vo);
-//        return "frontend/u/mhb/new_mhb";
-//    }
-//  第二版
-//	@GetMapping("/new")
-//	public String newForm(HttpSession session, Model model) {
-//		System.out.println("[MHB/NEW] SID=" + session.getId());
-//		MemberVO login = (MemberVO) session.getAttribute("member");
-//		System.out.println("[MHB/NEW] login=" + (login == null ? "null" : login.getMemberId()));
-//		if (login == null)
-//			return "redirect:/shop/login";
-//
-//		boolean alreadyHasOne = mhbService.hasAnyForMember(login.getMemberId());
-//		System.out.println("[MHB/NEW] alreadyHasOne=" + alreadyHasOne);
-//		model.addAttribute("alreadyHasOne", alreadyHasOne);
-//
-//		MhbVO vo = new MhbVO();
-//		vo.setMemberId(login.getMemberId());
-//		model.addAttribute("mhbVO", vo);
-//		return "frontend/u/mhb/new_mhb";
-//	}
-
+	
 	// 顯示新增表單：只有在 URL 帶了 mhbId 且該 ID 存在時，才顯示「你已經有一本」
 	@GetMapping("/new")
 	public String newForm(@RequestParam(value = "mhbId", required = false) Integer mhbId,
@@ -80,34 +46,7 @@ public class FrontMhbController {
 	    return "frontend/u/mhb/new_mhb";
 	}
 
-
-	// 第一版 接收建立
-//	@PostMapping
-//	public String create(@ModelAttribute("mhbVO") MhbVO mhbVO,
-//			@RequestParam(value = "up", required = false) MultipartFile up, HttpSession session, Model model)
-//			throws IOException {
-//
-//		MemberVO login = (MemberVO) session.getAttribute("member");
-//		if (login == null)
-//			return "redirect:/shop/login";
-//
-//		// 強制綁定會員
-//		mhbVO.setMemberId(login.getMemberId());
-//
-//		// 圖片（可選）
-//		if (up != null && !up.isEmpty()) {
-//			mhbVO.setUpFiles(up.getBytes());
-//		}
-//
-//		MhbVO saved = mhbService.addMhb(mhbVO);
-//		Integer mhbId = saved.getMotherHandbookId();
-//
-//		// 成功後導回儀表板「媽媽手冊」頁籤
-//		return "redirect:/blog/full-grid-left?tab=mhb&mhbId=" + mhbId;
-//	}
-	
-	// 第二版FrontMhbController.java
-
+	//接收建立
 	@PostMapping
 	public String create(@ModelAttribute("mhbVO") MhbVO mhbVO,
 	                     @RequestParam(value = "up", required = false) MultipartFile up,
