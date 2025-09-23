@@ -28,8 +28,16 @@
 									<div
 										class="section-title section-title--login text-center mb-50">
 										<h2 class="mb-20">會員登入</h2>
+										
+										<!-- 檢查是否已登入提示訊息 -->
+										<div class="alert alert-danger d-flex align-items-center mt-4 justify-content-center" role="alert" th:if="${session.member}">
+  											<i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem;"></i>
+  											<span th:text="'提示: '+ ${session.member.account} + ' 您已登入.'"></span>
+										</div>
+										
 										<p>歡迎回來! Great to have you back!</p>
 									</div>
+
 								<!-- 錯誤表列 (登入驗證) -->
 								<div class="alert alert-danger d-flex align-items-center mt-4" role="alert" th:if="${errorMessage} and ${errorSource} == 'login'">
   									<i class="bi bi-exclamation-triangle-fill me-2" style="font-size: 1.5rem;"></i>
@@ -213,7 +221,7 @@
   </script>
   
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", function () { 
     const alertBox = document.querySelector('.alert');
     if (alertBox) {
       setTimeout(() => {
@@ -223,6 +231,16 @@
       }, 3000); // 5 秒後消失
     }
   });
+  
+  window.onload = function() {
+	    console.log("window onload.")
+	    var memberId = sessionStorage.getItem("memberId");
+	    console.log("my-account page, memberId from sessionStorage:", memberId);
+
+	    if (memberId) {
+	      sessionStorage.setItem("memberId", memberId);
+	    }	  
+  }
 </script>
 
 <script>
