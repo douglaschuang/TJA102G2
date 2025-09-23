@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
+import com.babymate.role.model.RoleVO;
 import com.babymate.valid.CreateGroup;
 
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ public class StaffVO implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "StaffVO [staffId=" + staffId + ", account=" + account + ", "
-				+ "nickname=" + nickname + ", role=" + role + ", "
+				+ "nickname=" + nickname + ", role=" + roleVO.getName() + ", "
 				+ "status=" + status + ", password=" + password + ", "
 				+ "updateDate=" + updateDate + "]";
 	}
@@ -37,9 +38,13 @@ public class StaffVO implements java.io.Serializable {
 	@NotEmpty(message="員工暱稱: 請勿空白")
 	private String nickname; // 暱稱
 	
-	@Column(name = "role")
-	@NotEmpty(message="員工角色: 請勿空白")
-	private String role; // 角色
+//	@Column(name = "role")
+//	@NotEmpty(message="員工角色: 請勿空白")
+//	private String role; // 角色
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "role_id", nullable = false)
+	private RoleVO roleVO;
 	
 	@Column(name = "status")
 	private Integer status; // 狀態 0: 停用, 1: 啟用',
@@ -76,12 +81,19 @@ public class StaffVO implements java.io.Serializable {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	public String getRole() {
-		return role;
+//	public String getRole() {
+//		return role;
+//	}
+	public RoleVO getRoleVO() {
+		return this.roleVO;
 	}
-	public void setRole(String role) {
-		this.role = role;
+//	public void setRole(String role) {
+//		this.role = role;
+//	}
+	public void setRoleVO(RoleVO roleVO) {
+		this.roleVO = roleVO;
 	}
+	
 	public Integer getStatus() {
 		return status;
 	}

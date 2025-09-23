@@ -43,13 +43,13 @@
 								<th>員工ID</th>
 								<th>帳號</th>
 								<th>暱稱</th>
-								<th>角色</th>
-								<th>狀態</th>
-								<th>更新時間</th>
-								<th>頭像</th>
-								<th>修改</th>
-								<th>刪除</th>
-								<th>密碼變更</th>
+								<th class="text-center">角色</th>
+								<th class="text-center">狀態</th>
+								<th class="text-center">更新時間</th>
+								<th class="text-center">頭像</th>
+								<th class="text-center">修改</th>
+								<th class="text-center">刪除</th>
+								<th class="text-center">密碼變更</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -59,36 +59,45 @@
 									<td th:text="${staffVO.account}"></td>
 									<td th:text="${staffVO.nickname}"></td>
 									<!-- 				<td th:text="${staffVO.password}"></td> -->
-									<td th:text="${staffVO.role}"></td>
+<!-- 									<td th:text="${staffVO.roleVO?.name}"></td> -->
+<td  class="text-center" th:text="${staffVO.roleVO != null ? staffVO.roleVO.name : 'No Role'}"></td>
 									<!-- 				<td th:text="${staffVO.status}"></td> -->
-									<td th:text="${staffVO.status == 1 ? '啟用' : '停用'}"></td>
-									<td th:text="${staffVO.getFormattedUpdateDate()}"></td>
+									
+<!-- 									<td th:text="${staffVO.status == 1 ? '啟用' : '停用'}"></td> -->
+									<td class="text-center" th:switch="${staffVO.status ?: -1}">
+  										<span th:case="0" class="badge bg-secondary">已停用</span>
+  										<span th:case="1" class="badge bg-success">已啟用</span>
+  										<span th:case="*" class="badge bg-dark">未知狀態</span>
+									</td>
+									
+									<td class="text-center" th:text="${staffVO.getFormattedUpdateDate()}"></td>
 									<!-- 				<td th:text="${staffVO.updateDate}"></td> -->
-									<td><img
-										th:src="@{/util/DBPicReader} + '?staffId=' + ${staffVO.staffId}"
-										width="100px"></td>
-									<td>
+									<td class="text-center">
+									  <img th:src="@{/util/DBPicReader} + '?staffId=' + ${staffVO.staffId}"	width="100px"></td>
+									<td class="text-center">
 										<form method="post" th:action="@{/staff/staffedit}"
 											style="margin-bottom: 0px;">
-											<input type="submit" value="修改"> <input type="hidden"
-												name="staffId" th:value="${staffVO.staffId}">
+<!-- 											<input type="submit" value="修改"> -->
+											<input type="submit" class="btn btn btn-outline-dark btn-sm" value="修改">
+											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
 
-									<td>
+									<td class="text-center">
 										<form method="post" th:action="@{/staff/delete}"
 											style="margin-bottom: 0px;"
 											onsubmit="return confirm('確定要刪除嗎?')">
-											<input type="submit" value="刪除"> <input type="hidden"
-												name="staffId" th:value="${staffVO.staffId}">
+<!-- 											<input type="submit" value="刪除"> -->
+											<input type="submit" class="btn btn-danger btn-sm" value="刪除">
+											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
 
-									<td>
+									<td class="text-center">
 										<form method="post" th:action="@{/staff/staffchangepwd}"
 											style="margin-bottom: 0px;">
-											<input type="submit" value="密碼變更"> <input
-												type="hidden" name="staffId" th:value="${staffVO.staffId}">
+											<input type="submit" class="btn btn-warning btn-sm" value="密碼變更">
+											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
 
@@ -112,13 +121,13 @@
 								<th>員工ID</th>
 								<th>帳號</th>
 								<th>暱稱</th>
-								<th>角色</th>
-								<th>狀態</th>
-								<th>更新時間</th>
-								<th>頭像</th>
-								<th>修改</th>
-								<th>刪除</th>
-								<th>密碼變更</th>
+								<th class="text-center">角色</th>
+								<th class="text-center">狀態</th>
+								<th class="text-center">更新時間</th>
+								<th class="text-center">頭像</th>
+								<th class="text-center">修改</th>
+								<th class="text-center">刪除</th>
+								<th class="text-center">密碼變更</th>
 							</tr>
 						</tfoot>
 					</table>
