@@ -37,6 +37,7 @@ import com.babymate.util.EncodingUtil;
 import com.babymate.valid.UpdateGroup;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -181,8 +182,11 @@ public class StaffController {
 			model.addAttribute("StaffVO", staffVO);
 			return "admin/staff/staffedit";
 		}
+		
+	    // 資料更新時間
+	    staffVO.setUpdateDate(LocalDateTime.now());
+	    
 		/*************************** 2.開始修改資料 *****************************************/
-		// EmpService empSvc = new EmpService();
 		staffSvc.updateStaff(staffVO);
 
 		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
