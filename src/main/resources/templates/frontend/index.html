@@ -4,15 +4,6 @@
   <head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
     <!-- 首頁若有自己的 <style> 或額外 CSS，在這裡放 -->
     <th:block th:fragment="extraHead">
-      <!-- 範例：如果要覆寫 lookbook 背景圖，可以這裡寫 -->
-      <!--
-      <style>
-        .lookbook-bg-6{ background-image:url('/assets/images/hero/hero-1.jpg'); }
-        .lookbook-bg-7{ background-image:url('/assets/images/hero/hero-2.jpg'); }
-        .lookbook-bg-8{ background-image:url('/assets/images/hero/hero-3.jpg'); }
-        .lookbook-bg-9{ background-image:url('/assets/images/hero/hero-4.jpg'); }
-      </style>
-      -->
     </th:block>
   </head>
 
@@ -65,7 +56,7 @@
                   <div class="lookbook-content text-center">
                     <p class="tag">#會員中心 #個人化服務 #提醒與追蹤更貼心</p>
                     <h2 class="lookbook-title">我的寶寶帳本</h2>
-                    <a th:href="@{/my-account}" class="lezada-button lezada-button--medium lookbook-btn">前往會員中心</a>
+                    <a th:href="@{/blog/full-grid-left}" class="lezada-button lezada-button--medium lookbook-btn">前往會員中心</a>
                   </div>
                 </div>
               </div>
@@ -92,20 +83,11 @@
       </div>
       <!-- end lookbook home page content -->
 
-      <!-- 首頁不需要 breadcrumb；若之後要用可這樣插：
-      <div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('頁面標題')}"></div>
-      -->
 
     </th:block>
 
     <!-- 如果首頁需要額外 JS（只給這一頁用），放這個插槽 -->
     <th:block th:fragment="extraJs">
-      <!-- 例：首頁小互動 -->
-      <!--
-      <script th:inline="javascript">
-        // 這裡寫首頁專屬的 JS
-      </script>
-      -->
     </th:block>
   </body>
 </html>

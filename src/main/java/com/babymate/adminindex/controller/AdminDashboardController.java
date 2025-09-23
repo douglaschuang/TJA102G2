@@ -20,7 +20,7 @@ public class AdminDashboardController {
 
   @GetMapping
   public String index(Model model){
-    model.addAttribute("pageTitle", "Dashboard");
+    model.addAttribute("pageTitle", "後台管理系統");
     model.addAttribute("stats",         dashboardService.fetchStats());
     model.addAttribute("latestOrders",  dashboardService.latestOrders());
     model.addAttribute("latestMembers", dashboardService.latestMembers());

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.babymate.member.model.MemberRepository;
 import com.babymate.orders.model.OrdersRepository;
 
+import com.babymate.analytics.TrackingService;
+
 @Service
 public class DashboardService {
 
@@ -28,10 +30,12 @@ public class DashboardService {
 
 	private final OrdersRepository orderRepo;
 	private final MemberRepository memberRepo;
+	private final TrackingService trackingService; // ★ 新增
 
-	public DashboardService(OrdersRepository orderRepo, MemberRepository memberRepo) {
+	public DashboardService(OrdersRepository orderRepo, MemberRepository memberRepo, TrackingService trackingService) {
 		this.orderRepo = orderRepo;
 		this.memberRepo = memberRepo;
+		this.trackingService = trackingService;
 	}
 
 	public DashboardStats fetchStats() {
@@ -43,9 +47,10 @@ public class DashboardService {
 		long ordersToday = orderRepo.countByOrderTimeBetween(start, end);
 		long newUsersToday = memberRepo.countByRegisterDateBetween(start, end);
 
-		// 你目前沒有分析資料，先暫填
-		double bounce = 53.0;
-		long uv7d = 65;
+		// 真資料
+	    double bounce = trackingService.bounceRateToday(tz);
+	    long uv7d     = trackingService.uniqueVisitors7d(tz);
+	    
 		return new DashboardStats(ordersToday, bounce, newUsersToday, uv7d);
 	}
 

@@ -16,16 +16,112 @@
 
 		<div class="col-12">
 			<label class="form-label">選擇圖片（可多選）</label> <input
-				class="form-control" type="file" name="files" accept="image/*"
-				multiple required>
+				class="form-control" id="photo-files" type="file" name="files"
+				accept="image/*" multiple required>
 			<div class="form-text">按住 Ctrl/⌘ 或 Shift 可多選。</div>
 		</div>
 
+		<div class="col-12">
+			<div class="d-flex justify-content-between align-items-center mb-2">
+				<strong>預覽</strong> <small class="text-muted" id="preview-meta"></small>
+			</div>
+			<div id="preview" class="row g-3"></div>
+		</div>
 		<div class="col-12">
 			<button class="btn btn-primary" type="submit">上傳</button>
 			<a class="btn btn-outline-secondary"
 				th:href="@{/blog/full-grid-left(tab='album')}">返回相簿</a>
 		</div>
 	</form>
+
+	<script>
+(function () {
+  const input = document.getElementById('photo-files');
+  const preview = document.getElementById('preview');
+  const meta = document.getElementById('preview-meta');
+
+  // 依需求調整：檔案上限大小（單檔）與張數
+  const MAX_PER_FILE_MB = 10;
+  const MAX_FILES = 100;
+
+  function humanSize(bytes) {
+    const units = ['B', 'KB', 'MB', 'GB'];
+    let i = 0, n = bytes;
+    while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+    return n.toFixed(n < 10 && i > 0 ? 1 : 0) + ' ' + units[i];
+  }
+
+  input.addEventListener('change', () => {
+    // 先清空舊的預覽與舊的 objectURL
+    for (const img of preview.querySelectorAll('img[data-url]')) {
+      URL.revokeObjectURL(img.getAttribute('data-url'));
+    }
+    preview.innerHTML = '';
+
+    const files = Array.from(input.files || []);
+    if (!files.length) { meta.textContent = ''; return; }
+
+    // 驗證
+    const valid = [];
+    const errors = [];
+    for (const f of files.slice(0, MAX_FILES)) {
+      if (!f.type.startsWith('image/')) {
+        errors.push(`「${f.name}」不是圖片類型`);
+        continue;
+      }
+      if (f.size > MAX_PER_FILE_MB * 1024 * 1024) {
+        errors.push(`「${f.name}」超過 ${MAX_PER_FILE_MB}MB`);
+        continue;
+      }
+      valid.push(f);
+    }
+    if (files.length > MAX_FILES) {
+      errors.push(`最多僅預覽前 ${MAX_FILES} 張`);
+    }
+
+    // 建立預覽卡片
+    let totalBytes = 0;
+    valid.forEach((file, idx) => {
+      totalBytes += file.size;
+      const url = URL.createObjectURL(file);
+
+      const col = document.createElement('div');
+      col.className = 'col-6 col-md-3 col-lg-2';
+
+      col.innerHTML = `
+        <div class="card h-100 shadow-sm">
+          <img class="card-img-top img-fluid" data-url="${url}" src="${url}" alt="${file.name}">
+          <div class="card-body p-2">
+            <div class="small text-truncate" title="${file.name}">${file.name}</div>
+            <div class="text-muted small">${humanSize(file.size)}</div>
+          </div>
+        </div>
+      `;
+      preview.appendChild(col);
+    });
+
+    // 顯示統計與錯誤
+    meta.textContent = `${valid.length} 檔案，總計 ${humanSize(totalBytes)}`;
+    if (errors.length) {
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-warning mt-2';
+      alert.innerHTML = errors.map(e => `<div>${e}</div>`).join('');
+      preview.parentElement.appendChild(alert);
+      setTimeout(() => alert.remove(), 6000);
+    }
+  });
+
+  // 送出表單前清理 objectURL
+  const form = input.closest('form');
+  if (form) {
+    form.addEventListener('submit', () => {
+      for (const img of preview.querySelectorAll('img[data-url]')) {
+        URL.revokeObjectURL(img.getAttribute('data-url'));
+      }
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
