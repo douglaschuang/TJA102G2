@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
@@ -112,5 +116,25 @@ public class PostService {
         }
         return allPosts;
     }
+    
+    
+
+    public Page<PostVO> getAllWithPage(int page) {
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
+        return postRepository.findAllActiveWithBoardAndMember(pageable);
+    }
+    
+    
+    public List<PostVO> searchPosts(String keyword) {
+        return postRepository.searchPosts(keyword);
+    }
+    
+
+
+        public List<PostVO> getPostsByBoard(Integer boardId) {
+            return postRepository.findActiveByBoardId(boardId);
+        }
+    
 
 }
