@@ -46,21 +46,12 @@
 				th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"
 				class="error" id="nickname.errors"></span>
 		</div>
-<!-- 		<div class="col-md-6"> -->
-<!-- 			帳號密碼: <input type="password" th:field="*{password}" -->
-<!-- 				placeholder="如不修改則不需輸入" minlength=6 maxlength=20 class="form-control" /><span -->
-<!-- 				th:if="${#fields.hasErrors('password')}" th:errors="password" -->
-<!-- 				class="error" id="password.errors"></span> -->
-<!-- 		</div> -->
+		<!-- Password改用密碼變更功能, 不在基本資料變更頁面修改 -->
 		<div class="col-md-6">
-		    角色: <select th:field="*{role}" name="role" class="form-control" required>
-				<option value="管理員">管理員</option>
-				<option value="客服">客服</option>
+		    角色: <select th:field="*{roleVO.roleId}" name="roleId" class="form-control" required>
+				<option value="1">管理員</option>
+				<option value="2">客服</option>
 			</select>
-<!-- 			角色: <input type="text" th:field="*{role}" name="role" -->
-<!-- 				placeholder="請輸入角色類型" minlength=3 maxlength=20 required class="form-control" /><span -->
-<!-- 				th:if="${#fields.hasErrors('role')}" th:errors="role" class="error" -->
-<!-- 				id="role.errors"></span> -->
 		</div>
 		<div class="col-md-6">
 			帳號狀態: <select th:field="*{status}" name="status" class="form-control" required>
