@@ -42,6 +42,7 @@ import com.babymate.util.EncodingUtil;
 import com.babymate.util.MailService;
 import com.babymate.util.SimpleCaptchaGenerator;
 import com.babymate.valid.UpdateGroup;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -66,13 +67,13 @@ public class MemberController {
 	 */
 	@PostMapping("getOne_For_Display")
 	public String getOne_For_Display(
-		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/
 		@NotEmpty(message="會員ID: 請勿空白")
 		@RequestParam("memberId") String memberId,
 		ModelMap model) {
+
+		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/
 		
 		/***************************2.開始查詢資料*********************************************/
-//		EmpService empSvc = new EmpService();
 		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
 		
 		List<MemberVO> list = memberSvc.getAll();
@@ -479,7 +480,7 @@ public class MemberController {
 	public String loginCheck(@RequestParam String account,
 	                           @RequestParam String password,
 	                           HttpSession session,
-	                           RedirectAttributes redirectAttributes) {
+	                           RedirectAttributes redirectAttributes, ModelMap model) {
 	    String hashedPwd = EncodingUtil.hashMD5(password);
 	    System.out.println(account +"," + password+ "," + hashedPwd);
 

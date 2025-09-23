@@ -13,6 +13,7 @@ $(document).ready(function () {
 });
 
 function refreshCart() {
+	console.log("Enter refresh Cart.");
   $.ajax({
     url: "/api/cart/getCartDetail",
     type: "GET",
@@ -22,9 +23,9 @@ function refreshCart() {
 
 	  // 支援兩種格式：data.items 或直接 data
       const items = data.items || data;
+	  let totalQty = 0, total = 0;
 
       if (items && items.length > 0) {
-        let totalQty = 0, total = 0;
 
         items.forEach(item => {
           totalQty += item.quantity;
@@ -53,7 +54,6 @@ function refreshCart() {
           `);
         });
 
-		
 		const formattedTotal = formatPrice(total);
         $(".cart .count").text(totalQty);
         $(".cart-subtotal").text(formattedTotal);
@@ -96,3 +96,6 @@ function formatPrice(price) {
     maximumFractionDigits: 0
   });
 }
+
+// 頁面載入時先同步一次購物車
+document.addEventListener('DOMContentLoaded', refreshCart);

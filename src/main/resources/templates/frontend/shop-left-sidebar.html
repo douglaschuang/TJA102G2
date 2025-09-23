@@ -727,6 +727,7 @@ $(document).ready(function() {
       success: function() {
         alert("已加入購物車！");
         // 可選：刷新購物車 icon 顯示數量
+        refreshCart();
       },
       error: function(xhr) {
         alert("加入購物車失敗：" + xhr.responseText);
