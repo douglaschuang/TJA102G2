@@ -43,7 +43,7 @@
 												th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}">媽媽懷孕紀錄</a></li>
 											<li><a
 												th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb?.motherHandbookId})}">身體指數紀錄圖表</a></li>
-											<li><a th:href="@{/blog/full-grid-left(tab='todos')}">代辦事項</a></li>
+											<li><a th:href="@{/blog/full-grid-left(tab='todos')}">待辦事項</a></li>
 										</ul></li>
 
 									<li class="has-children"><a href="/shop/left"
@@ -51,7 +51,7 @@
 										<ul>
 											<li><a href="/shop/left" th:href="@{/shop/left}">寶寶成長紀錄</a></li>
 											<li><a href="/shop/left" th:href="@{/shop/left}">寶寶生長圖表</a></li>
-											<li><a href="/shop/left" th:href="@{/shop/left}">代辦事項</a></li>
+											<li><a href="/shop/left" th:href="@{/shop/left}">待辦事項</a></li>
 										</ul></li>
 									<li><a href="/shop/left" th:href="@{/shop/left}">我的日曆</a></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
@@ -74,27 +74,6 @@
 									</span>
 								</div>
 
-								<!-- 最新三篇 -->
-								<!-- <div class="widget-post-wrapper"
-									th:if="${!#lists.isEmpty(latestDiary)}">
-									<div class="single-widget-post" th:each="d : ${latestDiary}">
-										<div class="content">
-											<h3 class="widget-post-title">
-												<a th:href="@{'/u/diary/' + ${d.id}}"
-													th:text="${d.title != null ? d.title : '（無標題）'}">日記標題</a>
-											</h3>
-											<p class="widget-post-date"
-												th:text="${#temporals.format(d.writtenAt != null ? d.writtenAt : d.createdAt, 'yyyy-MM-dd')}">
-												2025-01-01</p>
-											<p class="small text-muted"
-												th:text="${#strings.abbreviate(d.content, 60)}">內容摘要</p>
-										</div>
-									</div>
-									<div class="mt-2">
-										<a class="btn btn-xs btn-outline-secondary"
-											th:href="@{/blog/full-grid-left(tab='diary')}">更多日記</a>
-									</div>
-								</div> -->
 								<div class="widget-post-wrapper"
 									th:if="${!#lists.isEmpty(latestDiary)}">
 									<div class="single-widget-post d-flex gap-2 align-items-start"
@@ -146,15 +125,6 @@
 							<div th:if="${mhb != null}">
 								<div
 									th:replace="~{fragments/mhb-detail :: mhbDetail(${mhb}, ${pregnancyWeek})}"></div>
-
-								<!-- 新增 CTA 區塊 -->
-								<!-- <div class="mt-3 d-flex gap-2">
-									<a class="btn btn-outline-primary btn-sm"
-										th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb.motherHandbookId})}">
-										檢視懷孕紀錄 </a> <a class="btn btn-outline-secondary btn-sm"
-										th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb.motherHandbookId})}">
-										查看圖表 </a>
-								</div> -->
 							</div>
 						</div>
 
@@ -174,7 +144,7 @@
 								th:replace="~{fragments/mhb-charts :: mhbCharts(${mhb}, ${chartLabels}, ${chartWeights}, ${chartSp}, ${chartDp}, ${chartFhs})}"></div>
 						</div>
 
-						<!-- 代辦事項 -->
+						<!-- 待辦事項 -->
 						<div th:case="'todos'">
 							<div
 								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
@@ -369,9 +339,9 @@
 															<div
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
-																	<p>代辦事項</p>
+																	<p>待辦事項</p>
 																	<a th:href="@{/blog/full-grid-left(tab='todos')}">+
-																		查看代辦事項</a>
+																		查看待辦事項</a>
 																</div>
 																<p class="product-count">媽媽的行程秘書</p>
 															</div>
@@ -475,9 +445,9 @@
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
-																		<p>代辦事項</p>
+																		<p>待辦事項</p>
 																		<a href="/shop/left" th:href="@{/shop/left}">+
-																			查看代辦事項</a>
+																			查看待辦事項</a>
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
