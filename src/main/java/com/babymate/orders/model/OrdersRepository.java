@@ -16,11 +16,8 @@ public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
 
   // 最新訂單 TOP5
   List<OrdersVO> findTop5ByOrderByOrderTimeDesc();
-
   /**
    * 月營收（只算已付款 status=1）
-   * 注意：你的 OrdersVO @Table(name="orders")（小寫），欄位是大寫（如 ORDER_TIME/AMOUNT/STATUS）
-   * MySQL 在 Linux 上表名可能區分大小寫，因此表名沿用小寫 orders，欄位用大寫。
    */
   @Query(value = """
     SELECT DATE_FORMAT(ORDER_TIME, '%Y-%m-01') AS month_key,
