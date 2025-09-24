@@ -92,6 +92,22 @@ public class ProductController {
 		model.addAttribute("pageTitle", "商品管理｜修改商品資料");
 		return "admin/product/update_product_input"; // 查詢完成後轉交update_product_input.html
 	}
+	
+	@PostMapping("getOne_For_Detail")
+	public String getOne_For_Detail(
+		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		@RequestParam("product_id") String productId,
+		ModelMap model) {
+		/*************************** 2.開始查詢資料 *****************************************/
+		// EmpService empSvc = new EmpService();
+		ProductVO productVO = productSvc.getOneProduct(Integer.valueOf(productId));
+
+		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
+		model.addAttribute("productVO", productVO);
+		// 商品管理標題＿修改商品資料
+		model.addAttribute("pageTitle", "商品管理｜檢視商品資料");
+		return "admin/product/productview"; // 查詢完成後轉交update_product_input.html
+	}
 
 	@GetMapping("listAllProduct")
 	public String listAllProduct(ModelMap model) {
