@@ -1,15 +1,11 @@
 package com.babymate.orderDetail.model;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
-
-import com.babymate.orders.model.OrdersVO;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service("OrderDetailService")
 public class OrderDetailService {
