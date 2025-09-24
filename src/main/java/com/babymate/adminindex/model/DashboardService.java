@@ -87,12 +87,13 @@ public class DashboardService {
 				.toList();
 	}
 
-	/** 以「熱銷 TOP5（近 30 天）」*/
-	public List<HotRow> hotProducts30d() {
-		ZoneId tz = ZoneId.of("Asia/Taipei");
-		LocalDateTime since = LocalDate.now(tz).minusDays(30).atStartOfDay();
+	/** 以「熱銷 TOP5（近 30 天）」*/ 
+	public List<HotRow> hotProducts30d() { 
+		ZoneId tz = ZoneId.of("Asia/Taipei"); 
+		LocalDateTime since = LocalDate.now(tz).minusDays(30).atStartOfDay(); 
 		return orderRepo.topSellingProductsSince(since).stream()
-				.map(r -> new HotRow((Integer) r[0], (String) r[1], ((Number) r[2]).longValue())).toList();
-	}
-}
+				.map(r -> new HotRow((Integer) r[0], (String) r[1], ((Number) r[2]).longValue()))
+				.toList(); 
+		} 
 
+}
