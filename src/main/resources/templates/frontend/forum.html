@@ -1,163 +1,117 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('討論區 - BabyMate', ~{::extraHead})}">
-    <th:block th:fragment="extraHead">
-        <!-- Favicon -->
-        <link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
-
-        <!-- CSS ============================================ -->
-        <link th:href="@{/assets/css/bootstrap.min.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/font-awesome.min.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/ionicons.min.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/themify-icons.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/plugins.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/helper.css}" rel="stylesheet">
-        <link th:href="@{/assets/css/main.css}" rel="stylesheet">
-
-        <!-- Modernizer JS -->
-        <script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
-
-        <style>
-            .forum-post .post-title {
-                font-size: 1.2rem;
-                font-weight: bold;
-                margin: 0 0 10px;
-            }
-            .forum-post .post-excerpt {
-                color: #444;
-                font-size: 0.95rem;
-            }
-            .pagination ul {
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                list-style: none;
-                padding: 0;
-            }
-            .pagination li a {
-                display: block;
-                padding: 6px 12px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                color: #333;
-                text-decoration: none;
-            }
-            .pagination li.active a {
-                background-color: #ff7f7f;
-                color: white;
-                border-color: #ff7f7f;
-            }
-        </style>
-    </th:block>
+<!-- head -->
+<head
+	th:replace="~{frontend/layout :: head('討論區 - BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead">
+	<!-- forum 頁面專屬的 CSS 或 JS -->
+	<link rel="stylesheet" href="assets/css/main.css" />
+</th:block>
 </head>
 
-<body th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{::extraJs}, 'footer-one')}">
+<!-- body with layout -->
+<body
+	th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{::extraJs}, 'footer-one')}">
 
-<section th:fragment="content">
-    <div class="blog-page-wrapper mb-100">
-        <div class="container">
-            <div class="row">
-                <!-- 側邊欄 -->
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="page-sidebar">
-                        <!-- 搜尋框 -->
-                        <div class="single-sidebar-widget mb-40">
-                            <div class="search-widget">
-                                <form th:action="@{/forum/search}" method="get">
-                                    <input type="search" name="keyword" placeholder="尋找文章 ...">
-                                    <button type="submit"><i class="ion-android-search"></i></button>
-                                </form>
-                            </div>
-                        </div>
+	<!-- 主內容區 -->
+	<section th:fragment="content">
+		<div class="blog-page-wrapper mb-100">
+			<div class="container">
+				<div class="row">
 
-                        <!-- 看板清單 (之後可改成動態) -->
-                        <div class="single-sidebar-widget mb-40">
-                            <h2 class="single-sidebar-widget--title">看板</h2>
-                            <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
-                                <li><a th:href="@{/forum}">熱門看板 </a></li>
-                                <li><a href="#">孕期交流 </a></li>
-                                <li><a href="#">產檢與醫療 </a></li>
-                                <li><a href="#">待產準備 </a></li>
-                                <li><a href="#">哺乳與母乳 </a></li>
-                            </ul>
-                        </div>
+					<!-- 側邊欄 -->
+					<div class="col-lg-3 order-2 order-lg-1">
+						<div class="page-sidebar">
 
-                        <!-- 廣告 Banner -->
-                        <div class="single-sidebar-widget mb-40">
-                            <div class="blog-sidebar-banner">
-                                <img th:src="@{/assets/images/banners/ADS-blog.png}" class="img-fluid" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+							<!-- 搜尋框 -->
+							<div class="single-sidebar-widget mb-40">
+								<div class="search-widget">
+									<form th:action="@{/forum/search}" method="get">
+										<input type="search" name="keyword" placeholder="尋找文章 ..." />
+										<button type="submit">
+											<i class="ion-android-search"></i>
+										</button>
+									</form>
+								</div>
+							</div>
 
-                <!-- 主內容 -->
-                <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
-                    <div class="row">
+							<!-- 看板清單 (動態) -->
+							<div class="single-sidebar-widget mb-40">
+								<h2 class="single-sidebar-widget--title">看板</h2>
+								<ul
+									class="single-sidebar-widget--list single-sidebar-widget--list--category">
+									<li th:each="board : ${boards}"><a
+										th:href="@{/forum/board/{id}(id=${board.boardId})}"
+										th:text="${board.boardName}">看板名稱</a></li>
+								</ul>
+							</div>
 
-                        <!-- 文章列表 -->
-                        <div class="col-lg-12 mt-3" th:if="${postListData.isEmpty()}">
-                            <p>目前還沒有文章。</p>
-                        </div>
+							<!-- 廣告 Banner -->
+							<div class="single-sidebar-widget mb-40">
+								<div class="blog-sidebar-banner">
+									<img src="assets/images/banners/ADS-blog.png" class="img-fluid"
+										alt="">
+								</div>
+							</div>
 
-                        <div class="col-lg-12 mt-3" th:each="post : ${postListData}">
-                            <div class="forum-post card p-3 mb-4 shadow-sm">
-                                <div class="post-meta text-muted mb-2">
-                                    <span th:text="${post.boardVO.boardName}">看板名稱</span> ・
-                                    <span th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}">時間</span>
-                                </div>
-                                <h5 class="post-title" th:text="${post.postTitle}">文章標題</h5>
-                                <p class="post-excerpt" th:text="${post.summary}">文章摘要</p>
-                                <div class="post-stats mt-2">
-                                    <span>❤️ 0</span>
-                                    <a th:href="@{/forum/post/{id}(id=${post.postId})}">
-                                        <span style="cursor:pointer;">💬 0</span>
-                                    </a>
-                                    <span>⭐ 0</span>
-                                    <span>↗ 0</span>
-                                </div>
-                            </div>
-                        </div>
+						</div>
+					</div>
 
-                        <!-- 分頁 -->
-                        <div class="col-lg-12" th:if="${totalPages > 1}">
-                            <div class="pagination text-center">
-                                <ul>
-                                    <!-- 上一頁 -->
-                                    <li th:if="${currentPage > 1}">
-                                        <a th:href="@{/forum(page=${currentPage - 1})}">PREV</a>
-                                    </li>
+					<!-- 文章區塊 -->
+					<div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
+						<div class="row">
 
-                                    <!-- 中間頁碼 -->
-                                    <li th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                        th:classappend="${i == currentPage} ? 'active'">
-                                        <a th:href="@{/forum(page=${i})}" th:text="${i}"></a>
-                                    </li>
+							<!-- 若沒有文章 -->
+							<div class="col-lg-12" th:if="${postListData.isEmpty()}">
+								<p>目前還沒有文章。</p>
+							</div>
 
-                                    <!-- 下一頁 -->
-                                    <li th:if="${currentPage < totalPages}">
-                                        <a th:href="@{/forum(page=${currentPage + 1})}">NEXT</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+							<!-- 文章列表 -->
+							<div class="col-lg-12" th:each="post : ${postListData}">
+								<div class="forum-post card p-3 mb-4 shadow-sm">
+									<div class="post-meta text-muted mb-2">
+										<span th:text="${post.boardVO.boardName}">看板</span>・ <span
+											th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}">時間</span>
+									</div>
+									<h5 class="post-title" th:utext="${post.postTitle}">文章標題</h5>
+									<p class="post-excerpt" th:utext="${post.summary}">文章摘要</p>
+									<div class="post-stats mt-2">
+										<span>❤️ 0</span> <a
+											th:href="@{/forum/board/{boardId}/post/{postId}(boardId=${post.boardVO.boardId}, postId=${post.postId})}">
+											<span style="cursor: pointer;">💬 查看</span>
+										</a> <span>⭐ 0</span> <span>↗ 分享</span>
+									</div>
+								</div>
+							</div>
 
-                    </div>
-                </div>
+							<!-- 分頁 -->
+							<div class="col-lg-12" th:if="${totalPages > 1}">
+								<div class="pagination text-center">
+									<ul>
+										<li th:each="i : ${#numbers.sequence(1, totalPages)}"
+											th:classappend="${i == currentPage} ? 'active'"><a
+											th:href="@{'/forum'(page=${i})}" th:text="${i}">1</a></li>
+									</ul>
+								</div>
+							</div>
 
-            </div>
-        </div>
-    </div>
-</section>
+						</div>
+					</div>
 
-<th:block th:fragment="extraJs">
-    <script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
-    <script th:src="@{/assets/js/popper.min.js}"></script>
-    <script th:src="@{/assets/js/bootstrap.min.js}"></script>
-    <script th:src="@{/assets/js/plugins.js}"></script>
-    <script th:src="@{/assets/js/main.js}"></script>
-</th:block>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- JS -->
+	<th:block th:fragment="extraJs">
+		<script src="assets/js/vendor/jquery.min.js"></script>
+		<script src="assets/js/popper.min.js"></script>
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/plugins.js"></script>
+		<script src="assets/js/main.js"></script>
+	</th:block>
 
 </body>
 </html>

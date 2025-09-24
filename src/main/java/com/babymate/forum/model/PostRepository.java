@@ -45,7 +45,36 @@ import org.springframework.transaction.annotation.Transactional;
 	            countQuery = "SELECT COUNT(p) FROM PostVO p WHERE p.postStatus = 1"
 	        )
 	        Page<PostVO> findAllActiveWithBoardAndMember(Pageable pageable);
+	    
+	    
+	    
+	    
+	    	
+	    
+	    
+	    @Query(
+	    	    value = "SELECT p FROM PostVO p " +
+	    	            "JOIN FETCH p.boardVO b " +
+	    	            "JOIN FETCH p.memberVO m " +
+	    	            "WHERE p.postStatus = 1 AND b.boardId = :boardId",
+	    	    countQuery = "SELECT COUNT(p) FROM PostVO p WHERE p.postStatus = 1 AND p.boardVO.boardId = :boardId"
+	    	)
+	    	Page<PostVO> findAllActiveByBoardId(@Param("boardId") Integer boardId, Pageable pageable);
+
+	    
+	    
+	    
+	    
 	    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	    
 	    
 	
