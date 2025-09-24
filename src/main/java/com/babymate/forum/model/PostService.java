@@ -2,6 +2,7 @@ package com.babymate.forum.model;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,17 @@ public class PostService {
 
 
 	@Autowired
-	PostRepository postRepository;
+	private PostRepository postRepository;
 	
 	@Autowired
     private SessionFactory sessionFactory;
 	
     @PersistenceContext
     private EntityManager entityManager;
+    
+    @Autowired
+    private BoardRepository boardRepository;
+
 
     public List<PostVO> getAllWithMemberAndBoard() {
         String jpql = "SELECT p FROM PostVO p " +
@@ -86,6 +91,9 @@ public class PostService {
     public PostVO getOnePost(Integer postId) {
         return postRepository.findById(postId).orElse(null);
     }
+    public Optional<PostVO> findOneOptional(Integer postId) {
+        return postRepository.findById(postId);
+    }
     
     
  // 新增方法：抓一篇文章並立即初始化 boardVO
@@ -132,9 +140,8 @@ public class PostService {
     
 
 
-        public List<PostVO> getPostsByBoard(Integer boardId) {
-            return postRepository.findActiveByBoardId(boardId);
-        }
-    
-
+    public Page<PostVO> getPostsByBoard(Integer boardId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // page 從 0 開始
+        return postRepository.findAllActiveByBoardId(boardId, pageable);
+    }
 }
