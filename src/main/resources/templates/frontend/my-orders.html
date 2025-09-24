@@ -20,7 +20,7 @@
 						<div class="col-lg-12 col-md-12">
 							<div class="myaccount-tab-menu nav" role="tablist">
 								<!-- <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
-								<a href="#orders" data-bs-toggle="tab">訂單查詢</a>
+								<a href="#orders" class="active" data-bs-toggle="tab">訂單查詢</a>
 								<a href="#download" data-bs-toggle="tab">下載</a>
 								<a href="#payment-method" data-bs-toggle="tab">付款方式</a>
 								<a href="#address-edit" data-bs-toggle="tab">地址</a>
@@ -49,7 +49,7 @@
 									</div>
 								</div> -->
 
-								<div class="tab-pane fade" id="orders" role="tabpanel">
+								<div class="tab-pane fade show active" id="orders" role="tabpanel">
 									<div class="myaccount-content">
 										<h3>我的訂單</h3>
 										<div class="myaccount-table table-responsive text-center">
@@ -90,7 +90,7 @@
 														<td th:text="${order.remark}"></td>
 														<td class="text-nowrap">
 										                	<a class="btn btn-sm btn-outline-success"
-										                       th:href="@{'/shop/order-detail/' + ${order.orderId}}">
+										                       th:href="@{/my-order-detail/{id}(id=${order.orderId})}">
 										                    	<i class="bi bi-journal-medical"></i> 訂單明細
 										                  </a>
 										                </td>
