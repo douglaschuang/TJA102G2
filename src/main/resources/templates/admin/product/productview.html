@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
+
+<body class="sidebar-expand-lg bg-body-tertiary">
+  <!-- 本頁額外 CSS -->
+  <th:block th:fragment="extraHead">
+    <style>
+      .preview-img{max-width:160px; max-height:120px; object-fit:cover; border-radius:.25rem;}
+    </style>
+  </th:block>
+
+  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+
+    <section th:fragment="content">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">商品管理｜資料檢視</h3>
+            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/product/listAllProduct}">
+              <i class="bi bi-arrow-left"></i> 回列表
+            </a>
+          </div>
+					<div class="card-body">
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">ID</div>
+							<div class="col-md-9" th:text="${productVO.productId}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">商品編號</div>
+							<div class="col-md-9" th:text="${productVO.productNo}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">商品類別</div>
+							<div class="col-md-9" th:text="${productVO.categoryVO.categoryId} + '-[' + ${productVO.categoryVO.categoryName} + ']'"></div>
+						</div>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">狀態</div>
+							<div class="col-md-9" th:text="${productVO.statusStr}"></div>
+						</div>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">狀態異動時間</div>
+							<div class="col-md-9" th:text="${productVO.statusUpdateTimeStr}"></div>
+						</div>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">更新時間</div>
+							<div class="col-md-9" th:text="${productVO.updateTimeStr}"></div>
+						</div>
+
+						<hr>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">商品名稱</div>
+							<div class="col-md-9" th:text="${productVO.productName}"></div>
+						</div>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">價格</div>
+							<div class="col-md-9" th:text="${productVO.price}"></div>
+						</div>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">照片</div>
+							<div class="col-md-9">
+								<img
+									th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}"
+									class="preview-img">
+							</div>
+						</div>
+
+						<hr>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">特色說明</div>
+							<div class="col-md-9" th:text="${productVO.featureDesc}"></div>
+						</div>
+						
+						<br>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">規格說明</div>
+							<div class="col-md-9" th:text="${productVO.specDesc}"></div>
+						</div>
+						
+						<br>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">注意事項</div>
+							<div class="col-md-9" th:text="${productVO.note}"></div>
+						</div>
+						
+						<br>
+						
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">備註</div>
+							<div class="col-md-9" th:text="${productVO.remark}"></div>
+						</div>
+
+						<!-- <div class="row mb-2">
+							<div class="col-md-3 fw-bold">狀態</div>
+							<div class="col-md-9" th:switch="${memberVO.accountStatus}">
+  								<span th:case="0" class="badge bg-secondary">未啟用</span>
+  								<span th:case="1" class="badge bg-success">已啟用</span>
+  								<span th:case="2" class="badge bg-danger">已停用</span>
+  								<span th:case="*" class="badge bg-dark">未知狀態</span>
+							</div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">註冊日期</div>
+							<div class="col-md-9" th:text="${memberVO.getFormattedDateTime(memberVO.registerDate)}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">最後登入時間</div>
+							<div class="col-md-9" th:text="${memberVO.getFormattedDateTime(memberVO.lastLoginTime)}"></div>
+						</div>
+
+						<hr>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">收件人</div>
+							<div class="col-md-9" th:text="${memberVO.recipientName}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">電話</div>
+							<div class="col-md-9" th:text="${memberVO.phone}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">地址</div>
+							<div class="col-md-9" th:text="${memberVO.address}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">性別</div>
+							<div class="col-md-9" th:text="${memberVO.gender}"></div>
+						</div>
+
+						<div class="row mb-2">
+							<div class="col-md-3 fw-bold">照片</div>
+							<div class="col-md-9">
+								<img
+									th:src="@{/util/DBPicReader1} + '?memberId=' + ${memberVO.memberId}"
+									class="preview-img">
+							</div>
+						</div> -->
+
+					</div>
+				</div>
+      </div>
+    </section>
+
+    <!-- 本頁不需額外 JS -->
+    <th:block th:fragment="extraJs"></th:block>
+  </div>
+</body>
+</html>
