@@ -35,7 +35,7 @@ public class OrdersFrontEndController {
 			return "redirect:/shop/login";
 		}
 		
-		List<OrdersVO> myOrders = ordersSvc.getOrdersByMemberId(member.getMemberId());
+		List<OrdersVO> myOrders = ordersSvc.getOrdersByMemberIdDesc(member.getMemberId());
 		model.addAttribute("orders", myOrders);
 		return "frontend/my-orders";
 	}
