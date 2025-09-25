@@ -1,7 +1,10 @@
 package com.babymate.mhb.model;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -149,4 +152,13 @@ public class MhbService {
 
         return repository.findAll(spec);
     }
-}
+    
+ // MhbService.java
+    @Transactional
+    public boolean softDeleteByIdAndMember(Integer mhbId, Integer memberId) {
+        if (mhbId == null || memberId == null) return false;
+        int n = repository.softDeleteByIdAndMember(mhbId, memberId);
+        return n > 0;
+    }
+
+    }
