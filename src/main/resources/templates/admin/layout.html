@@ -131,7 +131,7 @@ body {
 			<aside class="app-sidebar bg-body-secondary shadow"
 				data-bs-theme="dark">
 				<div class="sidebar-brand">
-					<a th:href="@{/admin}" class="brand-link"> <img
+					<a th:href="@{/admin/dashboard}" class="brand-link"> <img
 						th:src="@{/adminlte/assets/img/toy-blocks.png}"
 						class="brand-image opacity-75 shadow" alt="Logo" /> <span
 						class="brand-text fw-light">Babymate Admin</span>
@@ -142,61 +142,93 @@ body {
 						<ul class="nav sidebar-menu flex-column"
 							data-lte-toggle="treeview" role="navigation"
 							aria-label="Main navigation" data-accordion="false">
-							<li class="nav-item menu-open"><a class="nav-link active">
-									<i class="nav-icon bi bi-clipboard-fill"></i>
-									<p>
-										內部管理<i class="nav-arrow bi bi-chevron-right"></i>
-									</p>
-							</a>
-								<ul class="nav nav-treeview">
-									<li class="nav-item"><a
-										th:href="@{/admin/staff/listAllStaff}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>員工管理</p></a></li>
-								</ul></li>
-							<li class="nav-item menu-open"><a class="nav-link active">
-									<i class="nav-icon bi bi-speedometer"></i>
-									<p>
-										頁面管理<i class="nav-arrow bi bi-chevron-right"></i>
-									</p>
-							</a>
-								<ul class="nav nav-treeview">
-									<li class="nav-item"><a
-										th:href="@{/admin/member/listAllMember}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>會員管理</p></a></li>
-									<li class="nav-item"><a th:href="@{/admin/orders/list}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>訂單管理</p></a></li>
-									<li class="nav-item"><a
-										th:href="@{/admin/product/listAllProduct}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>商品管理</p></a></li>
-									<li class="nav-item"><a th:href="@{/admin/forum/index}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>討論區管理</p></a></li>
-								</ul></li>
-							<li class="nav-item menu-open"><a class="nav-link active">
-									<i class="nav-icon bi bi-book"></i>
-									<p>
-										手冊管理<i class="nav-arrow bi bi-chevron-right"></i>
-									</p>
-							</a>
-								<ul class="nav nav-treeview">
-									<li class="nav-item"><a th:href="@{/admin/mhb/list}"
-										class="nav-link"><i class="nav-icon bi bi-circle"></i>
-										<p>媽媽手冊管理</p></a></li>
-									<li class="nav-item"><a th:href="@{/admin/babyhandbook/list}" class="nav-link"><i
-											class="nav-icon bi bi-circle"></i>
-											<p>寶寶手冊管理</p></a></li>
-								</ul></li>
-							<li class="nav-item"><a href="#" class="nav-link"><i
-									class="nav-icon bi bi-question-circle-fill"></i>
-									<p>客服管理</p></a></li>
-							<li class="nav-item"><a th:href="@{/staff/logout}"
-								class="nav-link"><i
-									class="nav-icon bi bi-box-arrow-in-right"></i>
-									<p>登出</p></a></li>
+<!-- 							<li class="nav-item menu-open"><a class="nav-link active"> -->
+<!-- 									<i class="nav-icon bi bi-clipboard-fill"></i> -->
+<!-- 									<p> -->
+<!-- 										內部管理<i class="nav-arrow bi bi-chevron-right"></i> -->
+<!-- 									</p> -->
+<!-- 							</a> -->
+<!-- 								<ul class="nav nav-treeview"> -->
+<!-- 									<li class="nav-item"><a -->
+<!-- 										th:href="@{/admin/staff/listAllStaff}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>員工管理</p></a></li> -->
+<!-- 								</ul></li> -->
+<!-- 							<li class="nav-item menu-open"><a class="nav-link active"> -->
+<!-- 									<i class="nav-icon bi bi-speedometer"></i> -->
+<!-- 									<p> -->
+<!-- 										頁面管理<i class="nav-arrow bi bi-chevron-right"></i> -->
+<!-- 									</p> -->
+<!-- 							</a> -->
+<!-- 								<ul class="nav nav-treeview"> -->
+<!-- 									<li class="nav-item"><a -->
+<!-- 										th:href="@{/admin/member/listAllMember}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>會員管理</p></a></li> -->
+<!-- 									<li class="nav-item"><a th:href="@{/admin/orders/list}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>訂單管理</p></a></li> -->
+<!-- 									<li class="nav-item"><a -->
+<!-- 										th:href="@{/admin/product/listAllProduct}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>商品管理</p></a></li> -->
+<!-- 									<li class="nav-item"><a th:href="@{/admin/forum/index}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>討論區管理</p></a></li> -->
+<!-- 								</ul></li> -->
+<!-- 							<li class="nav-item menu-open"><a class="nav-link active"> -->
+<!-- 									<i class="nav-icon bi bi-book"></i> -->
+<!-- 									<p> -->
+<!-- 										手冊管理<i class="nav-arrow bi bi-chevron-right"></i> -->
+<!-- 									</p> -->
+<!-- 							</a> -->
+<!-- 								<ul class="nav nav-treeview"> -->
+<!-- 									<li class="nav-item"><a th:href="@{/admin/mhb/list}" -->
+<!-- 										class="nav-link"><i class="nav-icon bi bi-circle"></i> -->
+<!-- 										<p>媽媽手冊管理</p></a></li> -->
+<!-- 									<li class="nav-item"><a th:href="@{/admin/babyhandbook/list}" class="nav-link"><i -->
+<!-- 											class="nav-icon bi bi-circle"></i> -->
+<!-- 											<p>寶寶手冊管理</p></a></li> -->
+<!-- 								</ul></li> -->
+<!-- 							<li class="nav-item"><a href="#" class="nav-link"><i -->
+<!-- 									class="nav-icon bi bi-question-circle-fill"></i> -->
+<!-- 									<p>客服管理</p></a></li> -->
+<!-- 							<li class="nav-item"><a th:href="@{/staff/logout}" -->
+<!-- 								class="nav-link"><i -->
+<!-- 									class="nav-icon bi bi-box-arrow-in-right"></i> -->
+<!-- 									<p>登出</p></a></li> -->
+									
+<!-- 							<li th:each="p : ${permissions}" class="nav-item"> -->
+<!--         						<a th:href="@{${p.url}}" class="nav-link"> -->
+<!--             					<i class="nav-icon bi bi-circle"></i> -->
+<!--             					<p th:text="${p.name}"></p> -->
+<!--         						</a> -->
+<!--     						</li> -->
+
+								<li th:each="groupVO : ${session.menus}" class="nav-item menu-open">
+								   <a class="nav-link active">
+								   <i th:class="${groupVO.icon} + ' nav-icon'"></i>
+								   <p>
+								   		<span th:text="${groupVO.groupName}"></span>
+								   		<i class="nav-arrow bi bi-chevron-right"></i>
+								   </p>
+								   </a>
+								   <ul class="nav nav-treeview">
+								     <li th:each="p : ${groupVO.permissions}" class="nav-item">
+								       <a th:href="@{${p.url + p.service}}" class="nav-link">
+								         <i th:class="${p.icon} + ' nav-icon'"></i>
+								         <p th:text="${p.name}"></p>
+								       </a>
+								     </li>
+								   </ul>
+								 </li>
+								 <!-- 登出固定有 -->
+								<li class="nav-item">
+								  <a th:href="@{/admin/checkin/logout}"	class="nav-link">
+								    <i class="nav-icon bi bi-box-arrow-in-right"></i>
+									   <p>登出</p>
+								  </a>
+								</li>
 						</ul>
 					</nav>
 				</div>
@@ -242,7 +274,7 @@ body {
 										class="rounded-circle shadow" alt="User" />
 										<p th:unless="${session.staff != null}">Guest</p>
 									</li>
-									<li class="user-footer"><a th:href="@{/staff/logout}"
+									<li class="user-footer"><a th:href="@{/admin/checkin/logout}"
 										class="btn btn-default btn-flat float-end">登出</a></li>
 								</ul></li>
 						</ul>

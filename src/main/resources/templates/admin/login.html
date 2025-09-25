@@ -44,7 +44,7 @@
 							</div>
 						</div>
 						<div class="bottom-content">
-							<form th:action="@{/staff/loginCheck}" method="post">
+							<form th:action="@{/admin/checkin/loginCheck}" method="post">
 								<input type="text" name="account" class="input-form" placeholder="請輸入帳號" maxlength="20" autocomplete="username"
 									pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" required="required" />
 								<input type="password" name="password" class="input-form" placeholder="請輸入密碼" autocomplete="current-password"
@@ -52,7 +52,6 @@
 								<button type="submit" class="loginhny-btn btn">Login</button>
 							</form>
 							<!-- 錯誤表列 -->
-<!-- 								<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br> -->
 									<div class="errorblock" th:if="${errorMessage}" th:text="${errorMessage}"></div><br>
 									<div class="successblock" th:if="${logoutMessage}" th:text="${logoutMessage}"></div>
 							<!--<p>還不是會員嗎? <a href="#">加入我們!</a></p>-->
