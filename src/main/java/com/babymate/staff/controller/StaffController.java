@@ -225,41 +225,40 @@ public class StaffController {
 //		return "back-end/staff/listAllStaff"; // 刪除完成後轉交listAllEmp.html
 		return "redirect:/admin/staff/listAllStaff";
 	}
-	
-	@GetMapping("login")
-	public String loginPage() {
-	    return "admin/login"; // 要有 login.html 
-	}
-	
-	@PostMapping("loginCheck")
-	public String loginCheck(@RequestParam String account,
-	                           @RequestParam String password,
-	                           HttpSession session,
-	                           RedirectAttributes redirectAttributes) {
-	    String hashedPwd = EncodingUtil.hashMD5(password);
-
-	    Optional<StaffVO> staff = Optional.ofNullable(staffSvc.login(account, hashedPwd));
-	    if (staff.isPresent()) {
-	        session.setAttribute("staff", staff.get());
-	        return "redirect:/admin";
-	    } else {
-	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
-//	        model.addAttribute("error", "帳號或密碼錯誤");
-	        return "redirect:/admin/login";
-	    }
-	}
-	
-	@GetMapping("/logout")
-	public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-		
-	    if (session != null) {
-		session.removeAttribute("staff");
-	    session.invalidate(); // 讓 session 失效（登出）
-	    }
-	 
-	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
-	    return "redirect:/admin/login"; // 返回登入頁
-	}
+// 移往StaffLoginController	
+//	@GetMapping("login")
+//	public String loginPage() {
+//	    return "admin/login"; // 要有 login.html 
+//	}
+// 移往StaffLoginController
+//	@PostMapping("loginCheck")
+//	public String loginCheck(@RequestParam String account,
+//	                           @RequestParam String password,
+//	                           HttpSession session,
+//	                           RedirectAttributes redirectAttributes) {
+//	    String hashedPwd = EncodingUtil.hashMD5(password);
+//
+//	    Optional<StaffVO> staff = Optional.ofNullable(staffSvc.login(account, hashedPwd));
+//	    if (staff.isPresent()) {
+//	        session.setAttribute("staff", staff.get());
+//	        return "redirect:/staff/permission";
+//	    } else {
+//	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
+//	        return "redirect:/admin/login";
+//	    }
+//	}
+// 移往StaffLoginController
+//	@GetMapping("/logout")
+//	public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+//		
+//	    if (session != null) {
+//		session.removeAttribute("staff");
+//	    session.invalidate(); // 讓 session 失效（登出）
+//	    }
+//	 
+//	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
+//	    return "redirect:/admin/login"; // 返回登入頁
+//	}
 	
 	// 去除BindingResult中某個欄位的FieldError紀錄
 	public BindingResult removeFieldError(StaffVO staffVO, BindingResult result, String removedFieldname) {

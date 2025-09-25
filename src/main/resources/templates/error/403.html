@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>403 - 權限不足</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container text-center mt-5">
+    <h1 class="text-danger">403 - 權限不足</h1>
+    <p th:text="${errorMessage}">您沒有權限訪問此功能</p>
+    <a th:href="@{/admin/dashboard}" class="btn btn-primary mt-3">回到首頁</a>
+    <a th:href="@{/admin/logout}" class="btn btn-secondary mt-3">登出重新登入</a>
+</body>
+</html>
