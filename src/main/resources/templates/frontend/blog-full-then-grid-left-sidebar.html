@@ -619,6 +619,49 @@
 	<th:block th:fragment="extraJs">
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(() => {
+  const form = document.getElementById('mhb-delete-form');
+  if (!form) return;
+
+  // 取 CSRF（若 layout 已放）
+  const csrfToken  = document.querySelector('meta[name="_csrf"]')?.content;
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // 關鍵：不導頁
+    if (!confirm('確定要刪除這本手冊嗎？刪除後仍可跟管理員要求復原。')) return;
+
+    try {
+      const body = new URLSearchParams(new FormData(form));
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+      };
+      if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+      const res = await fetch(form.action, { method: 'POST', headers, body });
+      if (!res.ok) {
+        const msg = '刪除失敗（' + res.status + '）';
+        alert(msg);
+        return;
+      }
+
+      // 成功：留在本頁，更新 UI
+      alert('已刪除');
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.classList.add('disabled'); }
+      // 需要的話，也可以把「編輯/檢視紀錄」按鈕停用或隱藏：
+      // document.querySelectorAll('.btn-primary.btn-sm, .btn-outline-secondary.btn-sm')
+      //   .forEach(el => el.classList.add('disabled'));
+    } catch (err) {
+      console.error(err);
+      alert('刪除失敗，請稍後再試');
+    }
+  });
+})();
+</script>
 	</th:block>
 </body>
 </html>
