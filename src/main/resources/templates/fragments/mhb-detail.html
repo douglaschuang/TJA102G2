@@ -76,42 +76,77 @@
 					th:href="@{'/u/mhb/' + ${mhb.motherHandbookId} + '/edit'}">
 					編輯手冊 </a> <a class="btn btn-success btn-sm" th:if="${mhb == null}"
 					th:href="@{/u/mhb/new}"> 新增媽媽手冊 </a>
+
+				<!-- 刪除（軟刪除） -->
+				<form th:if="${mhb != null}" th:action="@{/u/mhb/delete}"
+					method="post" class="d-inline" id="mhb-delete-form">
+					<input type="hidden" name="mother_handbook_id"
+						th:value="${mhb.motherHandbookId}">
+					<button type="submit" class="btn btn-outline-danger btn-sm">
+						<i class="bi bi-trash"></i> 刪除
+					</button>
+				</form>
+				<!-- <button type="button" class="btn btn-outline-danger btn-sm"
+					th:if="${mhb != null}" id="btn-delete-mhb"
+					th:data-id="${mhb.motherHandbookId}">
+					<i class="bi bi-trash"></i> 刪除
+				</button> -->
+				<!-- <form th:if="${mhb != null}" th:action="@{/mhb/delete}"
+					method="post" class="d-inline"
+					onsubmit="return confirm('確定要刪除這本手冊嗎？刪除後可到後台垃圾桶復原。');">
+					<input type="hidden" name="mother_handbook_id"
+						th:value="${mhb.motherHandbookId}">
+					<button type="submit" class="btn btn-outline-danger btn-sm">
+						<i class="bi bi-trash"></i> 刪除
+					</button>
+				</form> -->
+				<!-- 刪除（軟刪除） -->
+				<!-- <form th:if="${mhb != null}" th:action="@{/mhb/delete}"
+					method="post" class="d-inline" id="mhb-delete-form">
+					<input type="hidden" name="mother_handbook_id"
+						th:value="${mhb.motherHandbookId}">
+					<button type="submit" class="btn btn-outline-danger btn-sm">
+						<i class="bi bi-trash"></i> 刪除
+					</button>
+				</form> -->
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 其他手冊（排除目前這本） -->
-<div class="mt-4" th:if="${mhbs != null and #lists.size(mhbs) > 1}">
-  <h5 class="mb-2">我的其他手冊</h5>
-  <div class="row g-3">
-    <div class="col-md-6 col-lg-4"
-         th:each="m : ${mhbs}"
-         th:if="${mhb == null or m.motherHandbookId != mhb.motherHandbookId}">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body d-flex gap-3">
-          <img th:if="${m.upFiles != null}"
-               th:src="@{/mhb/photo/{id}(id=${m.motherHandbookId})}"
-               class="rounded" style="width:72px;height:72px;object-fit:cover" alt="">
-          <div class="flex-grow-1">
-            <div class="d-flex justify-content-between align-items-start">
-              <h6 class="mb-1" th:text="${m.motherName}">媽媽姓名</h6>
-              <span class="badge text-bg-light">#<span th:text="${m.motherHandbookId}">-</span></span>
-            </div>
-            <div class="text-muted small">
-              EDD：<span th:text="${m.expectedBirthDate != null ? #temporals.format(m.expectedBirthDate,'yyyy/MM/dd') : '-'}">-</span>
-            </div>
-            <div class="mt-2 d-flex flex-wrap gap-2">
-              <!-- 切換到這一本 -->
-              <a class="btn btn-sm btn-primary"
-                 th:href="@{/blog/full-grid-left(tab='mhb', mhbId=${m.motherHandbookId})}">查看</a>
-              <a class="btn btn-sm btn-outline-secondary"
-                 th:href="@{'/u/mhb/' + ${m.motherHandbookId} + '/edit'}">編輯</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-	
+	<div class="mt-4" th:if="${mhbs != null and #lists.size(mhbs) > 1}">
+		<h5 class="mb-2">我的其他手冊</h5>
+		<div class="row g-3">
+			<div class="col-md-6 col-lg-4" th:each="m : ${mhbs}"
+				th:if="${mhb == null or m.motherHandbookId != mhb.motherHandbookId}">
+				<div class="card border-0 shadow-sm h-100">
+					<div class="card-body d-flex gap-3">
+						<img th:if="${m.upFiles != null}"
+							th:src="@{/mhb/photo/{id}(id=${m.motherHandbookId})}"
+							class="rounded"
+							style="width: 72px; height: 72px; object-fit: cover" alt="">
+						<div class="flex-grow-1">
+							<div class="d-flex justify-content-between align-items-start">
+								<h6 class="mb-1" th:text="${m.motherName}">媽媽姓名</h6>
+								<span class="badge text-bg-light">#<span
+									th:text="${m.motherHandbookId}">-</span></span>
+							</div>
+							<div class="text-muted small">
+								EDD：<span
+									th:text="${m.expectedBirthDate != null ? #temporals.format(m.expectedBirthDate,'yyyy/MM/dd') : '-'}">-</span>
+							</div>
+							<div class="mt-2 d-flex flex-wrap gap-2">
+								<!-- 切換到這一本 -->
+								<a class="btn btn-sm btn-primary"
+									th:href="@{/blog/full-grid-left(tab='mhb', mhbId=${m.motherHandbookId})}">查看</a>
+								<a class="btn btn-sm btn-outline-secondary"
+									th:href="@{'/u/mhb/' + ${m.motherHandbookId} + '/edit'}">編輯</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
