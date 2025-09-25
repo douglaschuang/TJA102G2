@@ -68,6 +68,19 @@ public interface MhbRepository extends JpaRepository<MhbVO, Integer>,
 	long countDeletedNative();
 	
 	List<MhbVO> findByMemberIdOrderByUpdateTimeDesc(Integer memberId);
+	
+	
+	@Modifying
+    @Transactional
+    @Query(value = """
+        UPDATE mother_handbook
+           SET deleted = 1,
+               deleted_at = CURRENT_TIMESTAMP
+         WHERE mother_handbook_id = :id
+           AND member_id = :memberId
+           AND deleted = 0
+        """, nativeQuery = true)
+    int softDeleteByIdAndMember(@Param("id") Integer id, @Param("memberId") Integer memberId);
 
 
 	/*=== native SQL ===*/
