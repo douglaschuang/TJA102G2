@@ -9,7 +9,7 @@ import com.babymate.adminindex.model.DashboardService;
 import com.babymate.adminindex.model.SalesService;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/dashboard")
 public class AdminDashboardController {
   private final DashboardService dashboardService;
   private final SalesService salesService;
