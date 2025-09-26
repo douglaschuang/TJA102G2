@@ -304,9 +304,10 @@ public class MemberController {
 		
 		memberSvc.updateMember(memberVO);
 		
-		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
 		model.addAttribute("logoutMessage", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
 		model.addAttribute("logoutSource", "resetpwd");
@@ -325,9 +326,10 @@ public class MemberController {
 		
 		memberSvc.updateMember(memberVO);
 		
-		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
 		model.addAttribute("logoutSource", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
 		model.addAttribute("logoutSource", "resetpwd");
@@ -347,9 +349,10 @@ public class MemberController {
 		
 		memberSvc.updateMember(memberVO);
 		
-		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
 		model.addAttribute("successMessage", "ID: "+memberId+" 密碼重設成功");
 		model.addAttribute("memberVO", memberVO);
@@ -377,7 +380,7 @@ public class MemberController {
 	        memberSvc.initMember(account, newCaptcha);
 
 	        String msg = "請謹記此驗證碼: " + newCaptcha;
-	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg);
+	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
 
 	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
@@ -459,10 +462,11 @@ public class MemberController {
 			memberVO = memberSvc.initMember(account, authCode);
 		}
 		
-		String messageText = "Hello! " + " 請謹記此密碼: " + authCode + "\n" + " 並返回BabyMate註冊頁面輸入";
+//		String messageText = "Hello! " + " 請謹記此密碼: " + authCode + "\n" + " 並返回BabyMate註冊頁面輸入";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText);
-//		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", authCode), true);
+//		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", getHtmlMailContent(authCode), true);
 		
 		response.put("success", true);
         response.put("message", "驗證碼已寄出，請檢查您的信箱.");
@@ -539,6 +543,64 @@ public class MemberController {
 	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
 	    redirectAttributes.addFlashAttribute("logoutMessage", "login");
 	    return "redirect:/shop/login"; // 返回登入頁
+	}
+	
+	private String getHtmlMailContent(String mainSubject, String secondSubject, String authcode) {
+		
+		StringBuilder str = new StringBuilder();
+		
+		str.append("<!DOCTYPE html> " +
+				   "<html lang=\"zh-TW\"> " +
+				   "<head> " +
+				     "<meta charset=\"UTF-8\"> " +
+				     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> " +
+				     "<title>驗證您的身份</title> " +
+				   "</head> " +
+				   "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\"> " +
+				     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #f4f4f4;\">" +
+				        "<tr> " +
+				          "<td align=\"center\" style=\"padding: 20px 0;\"> " +
+				            "<table width=\"600\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\">" +
+				              "<tr> " +
+				                "<td align=\"center\" style=\"padding: 20px 0;\"> " +
+				                  "<div style=\"font-size: 36px; font-weight: bold; color: brown; padding: 10px 0; letter-spacing: 2px; font-family: 'Arial Rounded MT Bold', Arial, sans-serif;\"> " + 
+				                     "BABYMATE" +
+				                  "</div> " +
+				                "</td> " +
+				              "</tr> " +
+				            "<tr> " +
+				              "<td style=\"padding: 40px; text-align: center;\"> " +
+//				                 "<h1 style=\"color: #333333; font-size: 24px; font-weight: bold; margin: 0 0 10px 0;\">驗證您的身份</h1> " +
+				                 "<h1 style=\"color: #333333; font-size: 24px; font-weight: bold; margin: 0 0 10px 0;\">" + mainSubject + "</h1> " +
+//				                 "<p style=\"color: #666666; font-size: 16px; margin: 0 0 30px 0;\">請輸入此驗證碼以完成您的登入或操作。</p> " +
+				                 "<p style=\"color: #666666; font-size: 16px; margin: 0 0 30px 0;\">" + secondSubject  + "</p> " +
+				                 "<div style=\"background-color: #f0f0f0; border: 1px solid #dddddd; padding: 20px; border-radius: 6px; display: inline-block;\"> " +
+				                  "<h2 style=\"color: #333333; font-size: 36px; font-weight: bold; margin: 0; letter-spacing: 5px;\">");
+		
+		str.append(authcode);
+		
+		str.append(               "</h2> " +
+                                "</div> " +
+                              "</td> " +
+                            "</tr> " +
+                            "<tr> " +
+                              "<td style=\"padding: 40px; background-color: #f8f8f8; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;\"> " +
+                                "<p style=\"color: #333333; font-size: 14px; line-height: 1.5; margin: 0 0 10px 0;\"> " +
+                                "如果您需要額外協助，請至BabyMate官網聯絡客服。 " +
+                                "</p> " +
+                                "<p style=\"color: #666666; font-size: 14px; line-height: 1.5; margin: 0;\"> " +
+                                "請注意，我們絕不會透過電子郵件向您索取密碼、信用卡或銀行帳號等個人資訊。如果您收到可疑信件，請不要點擊任何連結，並立即回報。" +
+                                "</p> " +
+                              "</td> " +
+                            "</tr> " +
+                          "</table> " +
+                        "</td> " +
+                      "</tr> " +
+                    "</table> " +
+                  "</body> " +
+               "</html>");
+		
+		return str.toString();
 	}
 	
 	// 去除BindingResult中某個欄位的FieldError紀錄
