@@ -3,6 +3,13 @@
 
 <head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
   <th:block th:fragment="extraHead"></th:block>
+  <style>
+  button:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+  border-color: #ccc !important;
+}
+  </style>
 </head>
 
 <body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
@@ -79,7 +86,7 @@
                                 <form id="forgotPwdForm" th:action="@{/member/memberForgotPwd}" method="post">
 								<div class="col-lg-12">
                                     <input type="hidden" name="account" id="hiddenAccount">
-  									<button type="submit" class="btn btn-sm btn-outline-secondary">忘記密碼</button>
+  									<button type="submit" id="forgotPwdBtn" class="btn btn-sm btn-outline-secondary">忘記密碼</button>
 								</div>
 								</form>
 								
@@ -159,17 +166,22 @@
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
     
     <script>
+      let timer = null;  // 提升到全域
+    
 	  function startCountdown() {
 		    let timeLeft = 60;
 		    sendBtn.disabled = true;
 		    sendBtn.textContent = `重新發送 (${timeLeft})`;
 
-		    const timer = setInterval(() => {
+		    if (timer) clearInterval(timer); // 避免重複計時
+		    
+		    timer = setInterval(() => {
 		      timeLeft--;
 		      sendBtn.textContent = `重新發送 (${timeLeft})`;
 
 		      if (timeLeft <= 0) {
 		        clearInterval(timer);
+		        timer = null;
 		        sendBtn.disabled = false;
 		        sendBtn.textContent = '發送驗證碼';
 		      }
@@ -179,13 +191,16 @@
 	  const sendBtn = document.getElementById('sendCodeBtn');
 	  let countdown = null;
 
-	  sendBtn.addEventListener('click', function () {
+	  sendBtn.addEventListener('click', function () {  
 	    const account = document.getElementById('regEmail').value; // 從輸入框取 Email
 
 	    if (!account) {
 	      alert("請輸入 Email 帳號！");
 	      return;
 	    }
+	    
+	    sendBtn.disabled = true;
+		sendBtn.textContent = "發送中...";
 
 	    // 呼叫後端 API 發送驗證碼
 	    fetch('/member/resendAuthCode', {
@@ -195,6 +210,8 @@
 	    })
 	    .then(response => {
 	      if (!response.ok) {
+	        sendBtn.disabled = false;
+	    	sendBtn.textContent = "發送驗證碼";
 	        throw new Error("發送失敗");
 	      }
 	      return response.json();
@@ -203,6 +220,8 @@
 	      console.log("後端回應:", data);
 	      
 	      if (!data.success) {
+	    	    sendBtn.disabled = false;
+	    	    sendBtn.textContent = "發送驗證碼";
 	    	    alert(data.message || "發送失敗");
 	    	    return;
 	    	  }
@@ -214,6 +233,8 @@
 	    })
 	    .catch(error => {
 	      console.error(error);
+	      sendBtn.disabled = false;
+	      sendBtn.textContent = "發送驗證碼";
 	      alert("寄送驗證碼失敗，請稍後再試");
 	    });
 	  });
@@ -251,7 +272,19 @@
     if (!accountValue) {
       alert("請先輸入帳號再使用忘記密碼！");
       e.preventDefault(); // 阻止送出
+      return;
     }
+    
+    // 送出時禁用按鈕，避免重複點擊
+    const forgotBtn = document.getElementById("forgotPwdBtn");
+    forgotBtn.disabled = true;
+    forgotBtn.textContent = "處理中...";
+
+    // 幾秒後自動恢復（避免卡死）
+    setTimeout(() => {
+      forgotBtn.disabled = false;
+      forgotBtn.textContent = "忘記密碼";
+    }, 10000); // 10 秒後解鎖
   });
 </script>
     
