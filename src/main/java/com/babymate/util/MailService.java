@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 public class MailService {
 
 	// 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
-	public void sendMail(String to, String subject, String messageText) {
+	public void sendMail(String to, String subject, String messageContent, boolean isHtml) {
 
 		try {
 			// 設定使用SSL連線至 Gmail smtp Server
@@ -51,7 +51,14 @@ public class MailService {
 			// 設定信中的主旨
 			message.setSubject(subject);
 			// 設定信中的內容
-			message.setText(messageText);
+//			message.setText(messageText);
+			if (isHtml) {
+	            // 使用 setContent 方法來傳送 HTML 內容
+	            message.setContent(messageContent, "text/html; charset=UTF-8");
+	        } else {
+	            // 使用 setText 方法來傳送純文字內容
+	            message.setText(messageContent);
+	        }
 
 			Transport.send(message);
 			System.out.println("傳送成功!");
@@ -72,7 +79,52 @@ public class MailService {
 		String messageText = "Hello! " + ch_name + " 請謹記此密碼: " + passRandom + "\n" + " (已經啟用)";
 
 		MailService mailService = new MailService();
-		mailService.sendMail(to, subject, messageText);
+//		mailService.sendMail(to, subject, messageText, false);
+		
+		String messageHtml = "<!DOCTYPE html> " +
+		"<html lang=\"zh-TW\"> " +
+		"<head> " +
+		    "<meta charset=\"UTF-8\"> " +
+		    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> " +
+		    "<title>驗證您的身份</title> " +
+		"</head> " +
+		"<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\"> " +
+		"<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #f4f4f4;\"> " +
+		    "<tr> " +
+		        "<td align=\"center\" style=\"padding: 20px 0;\"> " +
+		            "<table width=\"600\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\"> " +
+		                "<tr> " +
+		                    "<div style=\"font-size: 36px; font-weight: bold; padding: 10px 0; letter-spacing: 2px; font-family: 'Arial Rounded MT Bold', Arial, sans-serif;\"> " + 
+		                    "BABYMATE" +
+		                    "</div> " +
+		                "</tr> " +
+		                "<tr> " +
+		                    "<td style=\"padding: 40px; text-align: center;\"> " +
+		                        "<h1 style=\"color: #333333; font-size: 24px; font-weight: bold; margin: 0 0 10px 0;\">驗證您的身份</h1> " +
+		                        "<p style=\"color: #666666; font-size: 16px; margin: 0 0 30px 0;\">請輸入此驗證碼以完成您的登入或操作。</p> " +
+		                        "<div style=\"background-color: #f0f0f0; border: 1px solid #dddddd; padding: 20px; border-radius: 6px; display: inline-block;\"> " +
+		                            "<h2 style=\"color: #333333; font-size: 36px; font-weight: bold; margin: 0; letter-spacing: 5px;\">123456</h2> " +
+		                        "</div> " +
+		                    "</td> " +
+		                "</tr> " +
+		                "<tr> " +
+		                    "<td style=\"padding: 40px; background-color: #f8f8f8; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;\"> " +
+		                        "<p style=\"color: #333333; font-size: 14px; line-height: 1.5; margin: 0 0 10px 0;\"> " +
+		                            "如果您需要額外協助，請至BabyMate官網聯絡客服。 " +
+		                        "</p> " +
+		                        "<p style=\"color: #666666; font-size: 14px; line-height: 1.5; margin: 0;\"> " +
+		                            "請注意，我們絕不會透過電子郵件向您索取密碼、信用卡或銀行帳號等個人資訊。如果您收到可疑信件，請不要點擊任何連結，並立即回報。" +
+		                        "</p> " +
+		                    "</td> " +
+		                "</tr> " +
+		            "</table> " +
+		        "</td> " +
+		    "</tr> " +
+		"</table> " +
+		"</body> " +
+		"</html>";
+		
+		mailService.sendMail(to, subject, messageHtml, true);
 	}
 
 }
