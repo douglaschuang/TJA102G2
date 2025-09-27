@@ -1,16 +1,14 @@
-package com.babymate.forum.model;
+package com.babymate.forum.service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import com.babymate.forum.model.PostRepository;
+import com.babymate.forum.model.PostVO;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,17 +22,13 @@ public class PostService {
 
 
 	@Autowired
-	private PostRepository postRepository;
+	PostRepository postRepository;
 	
 	@Autowired
     private SessionFactory sessionFactory;
 	
     @PersistenceContext
     private EntityManager entityManager;
-    
-    @Autowired
-    private BoardRepository boardRepository;
-
 
     public List<PostVO> getAllWithMemberAndBoard() {
         String jpql = "SELECT p FROM PostVO p " +
@@ -91,9 +85,6 @@ public class PostService {
     public PostVO getOnePost(Integer postId) {
         return postRepository.findById(postId).orElse(null);
     }
-    public Optional<PostVO> findOneOptional(Integer postId) {
-        return postRepository.findById(postId);
-    }
     
     
  // 新增方法：抓一篇文章並立即初始化 boardVO
@@ -124,24 +115,5 @@ public class PostService {
         }
         return allPosts;
     }
-    
-    
 
-    public Page<PostVO> getAllWithPage(int page) {
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("postId").descending());
-        return postRepository.findAllActiveWithBoardAndMember(pageable);
-    }
-    
-    
-    public List<PostVO> searchPosts(String keyword) {
-        return postRepository.searchPosts(keyword);
-    }
-    
-
-
-    public Page<PostVO> getPostsByBoard(Integer boardId, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size); // page 從 0 開始
-        return postRepository.findAllActiveByBoardId(boardId, pageable);
-    }
 }
