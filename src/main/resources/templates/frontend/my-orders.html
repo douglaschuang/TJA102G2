@@ -22,9 +22,9 @@
 								<!-- <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
 								<a href="#orders" class="active" data-bs-toggle="tab">訂單查詢</a>
 								<a href="#download" data-bs-toggle="tab">下載</a>
-								<a href="#payment-method" data-bs-toggle="tab">付款方式</a>
-								<a href="#address-edit" data-bs-toggle="tab">地址</a>
-								<a href="#account-info" data-bs-toggle="tab">帳戶詳情</a>
+<!-- 								<a href="#payment-method" data-bs-toggle="tab">付款方式</a> -->
+<!-- 								<a href="#address-edit" data-bs-toggle="tab">地址</a> -->
+<!-- 								<a href="#account-info" data-bs-toggle="tab">帳戶詳情</a> -->
 								<!-- <a th:href="@{/shop/customer-login}">Logout</a> -->
 							</div>
 						</div>
@@ -60,10 +60,10 @@
 														<th>訂單編號</th>
 														<th>訂單狀態</th>
 														<th>訂單總額</th>
-														<th>收件人</th>
+														<!-- <th>收件人</th>
 														<th>地址</th>
 														<th>電話</th>
-														<th>E-Mail</th>
+														<th>E-Mail</th> -->
 														<th>備註</th>
 														<th>訂單明細</th>
 													</tr>
@@ -83,10 +83,10 @@
 															<span th:case="*" class="text-dark">未知狀態</span>
 														</td>
 														<td th:text="'$' + ${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')}"></td>
-														<td th:text="${order.recipient}"></td>
+														<!-- <td th:text="${order.recipient}"></td>
 														<td th:text="${order.address}"></td>
 														<td th:text="${order.phone}"></td>
-														<td th:text="${order.email}"></td>
+														<td th:text="${order.email}"></td> -->
 														<td th:text="${order.remark}"></td>
 														<td class="text-nowrap">
 										                	<a class="btn btn-sm btn-outline-success"
@@ -160,7 +160,7 @@
 									</div>
 								</div>
 
-								<div class="tab-pane fade" id="payment-method" role="tabpanel">
+								<!-- <div class="tab-pane fade" id="payment-method" role="tabpanel">
 									<div class="myaccount-content">
 										<h3>Payment Method</h3>
 										<p class="saved-message">You Can't Saved Your Payment
@@ -239,7 +239,7 @@
 											</form>
 										</div>
 									</div>
-								</div>
+								</div> -->
 
 							</div>
 						</div>
