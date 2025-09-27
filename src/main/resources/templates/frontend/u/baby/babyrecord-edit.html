@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>編輯寶寶成長紀錄</title>
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+</head>
+
+<body class="container py-4">
+	<h4 class="mb-3">編輯寶寶成長紀錄</h4>
+
+	<form
+		th:action="@{/u/baby/babyrecord/{id}/edit(id=${babyrecordVO.babyrecordid})}"
+		th:object="${babyrecordVO}" method="post"
+		enctype="multipart/form-data" class="row g-3">
+
+ 	   <input type="hidden" th:field="*{babyrecordid}"/>
+ 	   
+ 	   <input type="hidden" th:field="*{babyhandbook.babyhandbookid}" />
+ 	   
+		<input type="hidden" th:if="${_csrf != null}"
+			th:name="${_csrf?.parameterName}" th:field="${_csrf?.token}">
+
+
+		<div class="col-md-6">
+			<label class="form-label">小孩週數</label> 
+			<input
+				class="form-control"
+				th:field="*{babyweek}" 
+				type="number" 
+				min="0" max="50" step="1" required>
+		</div>
+
+		<div class="col-md-4">
+			<label class="form-label">檢查日</label> 
+			<input class="form-control"
+				type="date" th:field="*{visitdate}">
+			<div class="text-danger" th:if="${#fields.hasErrors('visitdate')}" th:errors="*{visitdate}"></div>
+		</div>
+
+		<div class="col-md-6">
+			<label class="form-label">診所</label> 
+			<input
+				class="form-control"
+				th:field="*{clinicid}">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">身高</label> 
+			<input
+				class="form-control"
+				step="0.01" min="0"
+				th:field="*{height}">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">體重</label> 
+			<input
+				class="form-control"
+				step="0.01" min="0"
+				th:field="*{weight}">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">頭圍</label> 
+			<input
+				class="form-control"
+				step="0.01" min="0"
+				th:field="*{hc}">
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">檢查紀錄</label> 
+			<input
+				class="form-control"
+				maxlength="200"
+				th:field="*{bodycondition}">
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">下次檢查日</label> 
+			<input class="form-control"
+				type="date" th:field="*{nextcheckdate}">
+			<div class="text-danger" th:if="${#fields.hasErrors('nextcheckdate')}" th:errors="*{nextcheckdate}"></div>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label">下次提醒</label> 
+			<input
+				class="form-control"
+				maxlength="100"
+				th:field="*{nextreminder}">
+		</div>
+		
+		<div class="col-md-8">
+			<label class="form-label">照片</label> 
+			<input class="form-control"
+				type="file" name="up" accept="image/*">
+		</div>
+		
+		
+
+		<div class="col-12">
+			<button class="btn btn-primary" type="submit">儲存</button>
+			<a class="btn btn-outline-secondary"
+				th:if="${babyhandbookVO != null}"
+				th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbookVO.babyhandbookid})}">
+				返回 </a>
+		</div>
+	</form>
+
+</body>
+</html>
