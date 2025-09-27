@@ -33,8 +33,8 @@ public class StaffLoginFilter implements Filter {
         System.out.println("Filter triggered, URI = " + request.getRequestURI());
         
         // 放行不需要登入的頁面
-        if (uri.endsWith("/admin/login") || uri.endsWith("/logout") || uri.endsWith("/loginCheck") || uri.endsWith("/permission") ||
-        		uri.contains("/css") || uri.contains("/js")) {
+        if (uri.endsWith("/admin/login") || uri.endsWith("/logout") || uri.endsWith("/loginCheck") || uri.endsWith("/permission") 
+        		|| uri.contains("/mhb/photo") || uri.contains("/css") || uri.contains("/js")) {
 //        	System.out.println("放行不需要登入的頁面");
             chain.doFilter(req, res);
             return;
