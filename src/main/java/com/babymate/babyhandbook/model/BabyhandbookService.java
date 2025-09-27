@@ -61,4 +61,21 @@ public class BabyhandbookService {
 	    public byte[] getPhotoBytesRaw(Integer id) {
 	        return repository.findPhotoBytesById(id);
 	    }
+	   
+	  //前台會用到
+//	    public BabyhandbookVO findLatestByMemberId(Integer memberId) {
+//	    	List<BabyhandbookVO> list = repository.findAllByMemberId(memberId);
+//	        return list.isEmpty() ? null : list.get(0);
+//	    }
+
+	    public BabyhandbookVO findByIdAndMemberId(Integer babyhandbookId, Integer memberId) {
+	        return repository.findByIdAndMemberId(babyhandbookId, memberId).orElse(null);
+	    }
+
+		public List<BabyhandbookVO> findAllByMemberId(Integer memberId) {
+			return repository.findAllByMemberId(memberId);
+		}
+	    
 }
+
+
