@@ -33,7 +33,7 @@ public class StaffPermissionFilter implements Filter {
 
         // login 頁面、靜態資源直接放行
         if (uri.endsWith("/admin/login") || uri.endsWith("/loginCheck") || uri.endsWith("/permission")|| uri.endsWith("/logout")
-        		|| uri.contains("/css") || uri.contains("/js")) {
+        		|| uri.contains("/mhb/photo") || uri.contains("/css") || uri.contains("/js")) {
             chain.doFilter(req, res);
             return;
         }
