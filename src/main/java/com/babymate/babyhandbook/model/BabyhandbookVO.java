@@ -3,9 +3,7 @@ package com.babymate.babyhandbook.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.babymate.member.model.MemberVO;

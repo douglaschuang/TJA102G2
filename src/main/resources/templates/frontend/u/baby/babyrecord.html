@@ -1,0 +1,88 @@
+<div th:fragment="babyrecord(babyhandbook, babyrecord, babyWeek)">
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h4 class="mb-0">寶寶成長紀錄</h4>
+				
+				<div class="d-flex justify-content-end mt-4 gap-2">
+				<a class="btn btn-outline-primary btn-sm" 
+					th:if="${babyhandbook != null}"
+					th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
+					回上一頁 </a>
+				
+				<a class="btn btn-success btn-sm" 
+		            th:if="${babyhandbook != null}"
+		            th:href="@{/u/baby/babyrecord-add(babyhandbookid=${babyhandbook.babyhandbookid})}">
+		            ➕ 新增寶寶紀錄
+		        </a>
+		        </div>
+			</div>
+
+			<div th:if="${babyrecord == null or #lists.isEmpty(babyrecord)}"
+				class="text-muted">尚無紀錄。</div>
+
+			<div th:if="${babyrecord != null and !#lists.isEmpty(babyrecord)}"
+				class="table-responsive">
+				<table class="table table-sm align-middle">
+					<thead class="table-light">
+						<tr>
+							<th>小孩週數</th>
+							<th style="width:60px">檢查日</th>
+							<th>診所</th>
+							<th>身高</th>
+							<th>體重</th>
+							<th>頭圍</th>
+							<th>檢查記錄</th>
+							<th>下次檢查日</th>
+							<th>下次提醒</th>
+							<th>照片</th>
+							<th style="width:80px;"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="babyrecordVO  : ${babyrecord}">
+							<td th:text="${babyrecordVO.babyweek}"></td>
+							<td th:text="${#dates.format(babyrecordVO.visitdate, 'yyyy/MM/dd')}">2024-02-01</td>
+							<td th:text="${babyrecordVO.clinicid}"></td>
+							<td th:text="${#numbers.formatDecimal(babyrecordVO.height, 1, 2)}"></td> 
+							<td th:text="${#numbers.formatDecimal(babyrecordVO.weight, 1, 2)}"></td>
+							<td th:text="${#numbers.formatDecimal(babyrecordVO.hc, 1, 2)}"></td>
+							<td th:text="${babyrecordVO.bodycondition}"></td>
+							<td th:text="${babyrecordVO.nextcheckdate != null ? #dates.format(babyrecordVO.nextcheckdate, 'yyyy/MM/dd') : '—'}">2024-02-01</td>         
+             			    <td th:text="${babyrecordVO.nextreminder}"></td>    
+             			    <td><img th:src="@{/u/baby/babyrecord/photo/{id}(id=${babyrecordVO.babyrecordid})}" width="100px" alt="photo"/></td>              
+							
+							<td>
+								<div class="d-flex gap-2">
+									<!-- 編輯 -->
+									<a class="btn btn-sm btn-outline-primary"
+										th:href="@{/u/baby/babyrecord/{id}/edit(id=${babyrecordVO.babyrecordid})}">
+										<i class="fa-regular fa-pen-to-square"></i>
+									</a>
+									<!-- 刪除 -->
+									<form
+										th:action="@{/u/baby/babyrecord/{id}/delete(id=${babyrecordVO.babyrecordid})}"
+										method="post" onsubmit="return confirm('確定刪除這筆紀錄？');">
+      
+										<input type="hidden" name="babyhandbookid"
+											th:value="${babyhandbook?.babyhandbookid}"> 
+											<input
+											type="hidden" th:if="${_csrf != null}"
+											th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
+										<button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-regular fa-trash"></i></button>
+									</form>
+
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<!-- 這裡原本可放「新增紀錄」按鈕，等你有新增頁面後再掛上去 -->
+			<a class="btn btn-primary btn-sm" th:if="${mhb != null}"
+				th:href="@{/u/baby/babyhandbook-add(babyhandbookid=${babyhandbook.babyhandbookid})}"> 新增紀錄 </a>
+
+		</div>
+	</div>
+</div>

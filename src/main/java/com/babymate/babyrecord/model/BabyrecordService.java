@@ -36,8 +36,8 @@ public class BabyrecordService {
 				throw new IllegalArgumentException("babyrecordid 不能為 null");
 			}
 			return repository.findById(babyrecordid)
-					.orElseThrow(() -> new EntityNotFoundException("找不到 babyrecord，id: " + babyrecordid));
-		}
+					.orElseThrow(() -> new EntityNotFoundException("找不到 babyrecord，id: " + babyrecordid));	 
+	 }
 	 
 	 public List<BabyrecordVO> getAll(){
 		return repository.findAll();
