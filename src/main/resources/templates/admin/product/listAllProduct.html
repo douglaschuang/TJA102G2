@@ -12,10 +12,6 @@
   <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
     <!-- 內容區（fragment） -->
     <section th:fragment="content">
-			<div class="app-content-header">
-				<div class="container-fluid">
-				</div>
-			</div>
 			<div class="app-content">
 				<div class="container-fluid">
 					<div class="card mb-4">
@@ -23,29 +19,26 @@
 							<h3 class="mb-0">商品清單</h3>
 						</div>
 						<div class="ms-auto">
-							<a class="btn btn-sm btn-primary" th:href="@{/admin/category/listAllCategory}"><i></i> 商品類別</a>
-				            <a class="btn btn-sm btn-primary" th:href="@{addProduct}"><i></i> 新增商品</a>
-				           	<a class="btn btn-sm btn-primary" th:href="@{productRemoveArea}"><i></i> 下架區</a>
+							<a class="btn btn-success btn-sm" th:href="@{/admin/category/listAllCategory}"><i></i> 商品類別</a>
+				            <a class="btn btn-success btn-sm" th:href="@{addProduct}"><i></i> 新增商品</a>
+				           	<a class="btn btn-success btn-sm" th:href="@{productRemoveArea}"><i></i> 下架區</a>
 				        </div>
 						<div class="card-body table-responsive p-0">
 							<table id="productTable"
 								class="table table-striped table-bordered align-middle w-100">
 								<thead>
 									<tr>
-										<th style="width:40px">商品ID</th>
-										<th style="width:40px">商品編號</th>
-										<th style="width:100px">商品<br>名稱</th>
-										<th style="width:70px">商品<br>類別ID</th>
-										<th style="width:40px">價格</th>
-										<th style="width:40px">狀態</th>
-										<th style="width:70px">狀態異<br>動時間</th>
-										<th style="width:70px">圖示</th>
-										<th style="width:70px">特色<br>說明</th>
-										<th style="width:40px">規格<br>說明</th>
-										<th style="width:40px">注意<br>事項</th>
-										<th style="width:40px">備註</th>
-										<th style="width:70px">更新<br>時間</th>
-										<th style="width:80px"></th>
+										<th>商品ID</th>
+										<th>商品編號</th>
+										<th>商品<br>名稱</th>
+										<th>商品<br>類別ID</th>
+										<th>價格</th>
+										<th>狀態</th>
+										<th>狀態異<br>動時間</th>
+										<th>圖示</th>
+										<th>更新<br>時間</th>
+										<th>檢視</th>
+										<th>修改</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -59,25 +52,18 @@
 											<td th:text="${productVO.statusStr}"></td>
 											<td th:text="${productVO.statusUpdateTimeStr}"></td>
 											<td><img th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}" width="100px"></td>
-											<td th:text="${productVO.featureDesc}"></td>
-											<td th:text="${productVO.specDesc}"></td>
-											<td th:text="${productVO.note}"></td>
-											<td th:text="${productVO.remark}"></td>
 											<td th:text="${productVO.updateTimeStr}"></td>
 											<td>
+												<form method="post" th:action="@{getOne_For_Detail}" style="margin-bottom: 0px;">
+												     <input type="submit" class="btn btn btn-outline-dark btn-sm" value="檢視">
+												     <input type="hidden" name="product_id" th:value="${productVO.productId}">
+												</form>
+											</td>
+											<td>
 												<form method="post" th:action="@{getOne_For_Update}" style="margin-bottom: 0px;">
-													<button type="submit" class="btn btn-primary btn-sm">
-           												<i class="bi bi-pencil-square"></i> 修改
-       												</button>
+													<input type="submit" class="btn btn-danger btn-sm" value="修改">
 													<input type="hidden" name="product_id" th:value="${productVO.productId}">
 												</form>
-
-												<!-- <form method="post" th:action="@{getOne_For_Update}" class="d-inline">
-											        <button type="submit" class="btn btn-danger btn-sm">
-											            <i class="bi bi-trash"></i> 刪除
-											        </button>
-											        <input type="hidden" name="product_id" th:value="${productVO.productId}">
-											    </form> -->
 											</td>
 										</tr>
 									</th:block>

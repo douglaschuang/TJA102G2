@@ -15,12 +15,6 @@
 							<a href="javascript:void(0)" id="offcanvas-about-icon"><i
 								class="ion-navicon"></i></a>
 						</div>
-						<!-- <div class="logo">
-							<a th:href="@{/}"> <img
-								th:src="@{/assets/images/babymate.png}" class="img-fluid"
-								alt="BabyMate">
-							</a>
-						</div> -->
 						<div class="logo">
 							<a th:href="@{/}"> <!-- 透明背景時用（通常是白色或淺色） --> <img
 								class="img-fluid logo-img logo-light"
@@ -75,6 +69,45 @@
 								<a href="javascript:void(0)" id="search-icon"><i
 									class="ion-ios-search-strong"></i></a>
 							</div>
+
+							<div class="single-icon user-login">
+								<a th:href="@{/shop/login}"><i class="ion-android-person"></i></a>
+							</div>
+
+							<!-- ★ 收藏：對齊 overlays 的監聽條件 -->
+							<div class="single-icon wishlist">
+								<a href="#wishlist-overlay" id="offcanvas-wishlist-icon"
+									aria-controls="wishlist-overlay"> <i
+									class="ion-android-favorite-outline"></i> <span
+									class="count js-wishlist-count">0</span>
+								</a>
+							</div>
+
+							<!-- ★ 購物車：也改成指向對應 overlay -->
+							<div class="single-icon cart">
+								<a href="#cart-overlay" id="offcanvas-cart-icon"
+									aria-controls="cart-overlay"> <i class="ion-ios-cart"></i>
+									<span class="count js-cart-count">0</span>
+								</a>
+							</div>
+
+							<!-- Member Logout / 會員登出 -->
+							<div class="single-icon user-logout">
+								<a href="/member/logout" th:href="@{/member/logout}" title="登出"><i
+									class="ion-log-out"></i></a>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- right icons -->
+					<!-- <div class="header-right-container">
+						<div
+							class="header-right-icons d-flex justify-content-end align-items-center h-100">
+							<div class="single-icon search">
+								<a href="javascript:void(0)" id="search-icon"><i
+									class="ion-ios-search-strong"></i></a>
+							</div>
 							<div class="single-icon user-login">
 								<a th:href="@{/shop/login}"><i class="ion-android-person"></i></a>
 							</div>
@@ -86,13 +119,13 @@
 								<a href="javascript:void(0)" id="offcanvas-cart-icon"><i
 									class="ion-ios-cart"></i><span class="count">3</span></a>
 							</div>
-							<!-- Member Logout / 會員登出 -->
+							Member Logout / 會員登出
 							<div class="single-icon user-logout">
 								<a href="/member/logout" th:href="@{/member/logout}" title="登出"><i
 									class="ion-log-out"></i></a> 
 							</div>
 						</div>
-					</div>
+					</div> -->
 
 				</div>
 

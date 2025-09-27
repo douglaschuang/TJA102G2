@@ -25,21 +25,21 @@
 							
 							<div>
 								<label class="col-sm-2 col-form-label">商品編號：</label> 
-								<input type="text" th:field="*{productNo}" onclick="hideContent('product_no.errors');" /> 
+								<input type="text" style="width: 600px" th:field="*{productNo}" onclick="hideContent('product_no.errors');" /> 
 								<span th:if="${#fields.hasErrors('productNo')}" th:errors="*{productNo}"
 									class="error" id="productNo.errors"></span>
 							</div>
 
 							<div>
 								<label class="col-sm-2 col-form-label">商品名稱：</label> 
-								<input type="text" th:field="*{productName}" onclick="hideContent('product_name.errors');" /> 
+								<input type="text" style="width: 600px" th:field="*{productName}" onclick="hideContent('product_name.errors');" /> 
 								<span th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"
-									class="error" id="productName.errors"></span>
+									class="error" id="productName.errors" ></span>
 							</div>
 
 							<div>
 								<label class="col-sm-2 col-form-label">商品類別：</label> 
-								<select th:field="*{categoryVO.categoryId}">
+								<select th:field="*{categoryVO.categoryId}" style="width: 600px; height:30px;">
 									<option th:each="categoryVO : ${categoryListData}"
 										th:value="${categoryVO.categoryId}" th:text="${categoryVO.categoryId} + '-[' + ${categoryVO.categoryName} + ']'" >
 									</option>
@@ -49,15 +49,15 @@
 					
 							<div>
 								<label class="col-sm-2 col-form-label">價格：</label> 
-								<input type="text" th:field="*{price}" onclick="hideContent('price.errors');" /> 
+								<input type="text" th:field="*{price}" onclick="hideContent('price.errors');" style="width: 600px" /> 
 								<span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
 									  class="error" id="price.errors"></span>
 							</div>
 							
 							<div class="mb-3 row">
-							    <label for="status" class="col-sm-2 col-form-label">狀態</label>
-							    <div class="col-sm-10" style="width:183px">
-							        <select th:field="*{status}" class="form-select form-select-sm select-compact">
+							    <label for="status" class="col-sm-2 col-form-label">狀態：</label>
+							    <div class="col-sm-10">
+							        <select th:field="*{status}" style="width: 600px; height:30px;">
 							            <option value="1">1-[上架]</option>
 							            <option value="0">0-[下架]</option>
 							        </select>
@@ -112,9 +112,9 @@
 							</div>
 							
 
-							<div>
-								<button class="btn btn-primary" type="submit" id="submit" style="height: 40px; width:100px">送出修改</button>
-								<a class="btn btn-sm btn-primary" th:href="@{listAllProduct}" style="height: 40px; line-height:30px; width:100px"><i></i>返回</a>
+							<div class="col-12 d-flex gap-2">
+								<button class="btn btn-primary" type="submit">送出修改</button>
+								<a class="btn btn-secondary" th:href="@{listAllProduct}">返回</a>
 							</div>
 						</form>
 					</div>

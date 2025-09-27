@@ -60,7 +60,7 @@ public class MemberService {
 		MemberVO initMemVO = new MemberVO();
 		
 		initMemVO.setAccount(account);
-		initMemVO.setPassword(EncodingUtil.hashMD5(account)); // default password
+		initMemVO.setPassword(EncodingUtil.hashMD5(authcode)); // default password (same as authcode)
 		initMemVO.setEmailVerified((byte) 0); // 未通過
 		initMemVO.setRegisterDate(LocalDateTime.now()); // 註冊時間
 		initMemVO.setAccountStatus((byte) 0); // 未啟用
@@ -75,6 +75,10 @@ public class MemberService {
 	
 	public MemberVO login(String account, String hashedPassword) {
         return repository.findByAccountAndPassword(account, hashedPassword);
+	}
+	
+	public MemberVO login(String account) {
+        return repository.findByAccount(account);
 	}
 	
 //	public List<Staff> getAll(Map<String, String[]> map) {

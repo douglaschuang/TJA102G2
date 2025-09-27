@@ -47,15 +47,17 @@
          th:text="${item.productName}">Product Name</a>
     </td>
     <td class="product-price">
-      <span class="price" th:text="${item.price}" th:attr="data-price=${item.price}">0.00</span>
+      <span class="price" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 'COMMA', 0, 'POINT')}" th:attr="data-price=${item.price}">$1,000</span>
     </td>
     <td class="product-quantity">
       <div class="pro-qty d-inline-block mx-0">
-        <input type="text" th:attr="data-product-id=${item.productId}" class="qty-input item-total" th:value="${item.quantity}">
+        <input type="number" th:attr="data-product-id=${item.productId}" 
+          class="qty-input item-total" th:value="${item.quantity}"
+           min="0" max="10" step="1"> 
       </div>
     </td>
     <td class="total-price">
-      <span class="price item-total-price" th:text="${item.totalPrice}">0.00</span>
+      <span class="price item-total-price" th:text="'$' + ${#numbers.formatDecimal(item.totalPrice, 1, 'COMMA', 0, 'POINT')}">$1,000</span>
     </td>
     <td class="product-remove">
       <a href="#" th:attr="data-product-id=${item.productId}" class="remove-item-btn">
@@ -94,13 +96,13 @@
 								<!--=======  End of coupon form  =======-->
 							</div>
 
-							<div class="col-lg-6 text-start text-lg-end">
-								<!--=======  update cart button  =======-->
+<!-- 							<div class="col-lg-6 text-start text-lg-end"> -->
+<!-- 								=======  update cart button  ======= -->
 
-								<button class="lezada-button lezada-button--medium">更新購物車</button>
+<!-- 								<button class="lezada-button lezada-button--medium">更新購物車</button> -->
 
-								<!--=======  End of update cart button  =======-->
-							</div>
+<!-- 								=======  End of update cart button  ======= -->
+<!-- 							</div> -->
 						</div>
 					</div>
 
@@ -114,17 +116,17 @@
 						<table class="cart-calculation-table mb-30">
 							<tr>
 								<th>數量小計</th>
-								<td class="subtotal" th:text="${totalQty}">$100.00</td>
+								<td class="subtotal" th:text="${#numbers.formatDecimal(totalQty, 1, 'COMMA', 0, 'POINT')}">2</td>
 							</tr>
 							<tr>
 								<th>金額總計</th>
-								<td class="total" th:text="${total}">$100.00</td>
+								<td class="total" th:text="'$' + ${#numbers.formatDecimal(total, 1, 'COMMA', 0, 'POINT')}">$1,000</td>
 							</tr>
 						</table>
 
-						<div class="cart-calculation-button text-center">
-							<button class="lezada-button lezada-button--medium">proceed
-								to checkout</button>
+						<div>
+							<a class="lezada-button lezada-button--medium" th:href="@{/shop/checkout}">結帳</a>
+							<!-- <button class="lezada-button lezada-button--medium">結帳</button> -->
 						</div>
 					</div>
 				</div>
@@ -144,8 +146,21 @@
 <th:block th:fragment="extraJs">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
-    
-  <script>
+
+<script>
+<!-- 格式化金額為整數+comma $nnn,nnn-->
+function formatPrice(price) {
+  const num = parseFloat(price);
+  if (isNaN(num)) return "$0";
+
+  return "$" + num.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
+</script>
+
+<script>
   document.addEventListener("DOMContentLoaded", function () {
 	// 更新單品及購物車統計
 	    function updateCart(productId, newQty, input) {
@@ -164,8 +179,13 @@
 				row.querySelector(".item-total-price").innerText = (price * newQty).toFixed(2);
 
 	            // 更新購物車統計
+	            const formattedTotal = formatPrice(parseFloat(data.total).toFixed(2));
+	            
 	            document.querySelector(".subtotal").innerText = data.totalQty;
-	            document.querySelector(".total").innerText = parseFloat(data.total).toFixed(2);
+// 	            document.querySelector(".total").innerText = parseFloat(data.total).toFixed(2);
+	            document.querySelector(".total").innerText = formattedTotal;
+	            
+	            setCartWishlistCount(data.totalQty);
 
 	            // 數量為 0 → 移除該列
 	            if (newQty === 0) row.remove();
@@ -212,8 +232,13 @@ document.addEventListener("click", function (e) {
             btn.closest("tr").remove();
 
             // 更新右側統計數字
+            const formattedTotal = formatPrice(data.total);
+            
             document.querySelector(".subtotal").innerText = data.totalQty;
-            document.querySelector(".total").innerText = data.total;
+//             document.querySelector(".total").innerText = data.total;
+            document.querySelector(".total").innerText = formattedTotal;
+            
+            setCartWishlistCount(data.totalQty);
         })
         .catch(err => console.error("刪除失敗:", err));
     }
@@ -243,12 +268,26 @@ document.addEventListener("change", function (e) {
             }
 
             // 更新右側統計數字
+            const formattedTotal = formatPrice(data.total);
+            
             document.querySelector(".subtotal").innerText = data.totalQty;
-            document.querySelector(".total").innerText = data.total;
+//             document.querySelector(".total").innerText = data.total;
+            document.querySelector(".total").innerText = formattedTotal;
+            
+            setCartWishlistCount(data.totalQty);
         })
         .catch(err => console.error("更新數量失敗:", err));
     }
 });
+</script>
+
+<script>
+function setCartWishlistCount(n) {
+  // header/行動版 可能有多個 count，一起更新
+  document.querySelectorAll('.js-cart-count').forEach(el => {
+    el.textContent = String(n);
+  });
+}
 </script>
 
   </th:block>

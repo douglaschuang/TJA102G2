@@ -1,10 +1,10 @@
 <div th:fragment="mhbTodos(mhb, todos)">
   <div class="card shadow-sm border-0">
     <div class="card-body">
-      <h4 class="mb-3">代辦事項</h4>
+      <h4 class="mb-3">待辦事項</h4>
 
       <div th:if="${todos == null or #lists.isEmpty(todos)}" class="text-muted">
-        目前沒有代辦。
+        目前沒有待辦。
       </div>
 
       <div th:if="${todos != null and !#lists.isEmpty(todos)}" class="table-responsive">
@@ -62,7 +62,7 @@
 
                 <!-- 刪除（POST） -->
                 <form th:action="@{'/u/todos/' + ${t.todoId} + '/delete'}" method="post" class="d-inline"
-                      onsubmit="return confirm('確定刪除這筆代辦？');">
+                      onsubmit="return confirm('確定刪除這筆待辦？');">
                   <input type="hidden" name="mhbId" th:value="${mhb.motherHandbookId}">
                   <input type="hidden" th:if="${_csrf != null}"
                          th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -80,7 +80,7 @@
       <!-- 新增 -->
       <a class="btn btn-primary btn-sm" th:if="${mhb != null}"
          th:href="@{/u/todos/new(mhbId=${mhb.motherHandbookId})}">
-        新增代辦
+        新增待辦
       </a>
     </div>
   </div>

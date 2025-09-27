@@ -3,113 +3,220 @@
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
 <body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
-  <!-- 子頁額外樣式：只放 DataTables 的 Bootstrap5 佈景（放在 body 裡，讓 head 的片段替換更穩定） -->
-  <th:block th:fragment="extraHead">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
-  </th:block>
+	<!-- 子頁額外樣式：只放 DataTables 的 Bootstrap5 佈景（放在 body 裡，讓 head 的片段替換更穩定） -->
+	<th:block th:fragment="extraHead">
+		<link rel="stylesheet"
+			href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+	</th:block>
 
-  <!-- 用版型把下面兩個片段插入（容器會被整個替換，不會重複渲染） -->
-  <div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
-    <!-- 內容區（fragment） -->
-    <section th:fragment="content">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-          <h3 class="card-title mb-0">媽媽手冊管理</h3>
-          <div class="ms-auto">
-            <a class="btn btn-sm btn-primary" th:href="@{/mhb/addMhb}">
-              <i class="bi bi-plus-circle"></i> 新增
-            </a>
-            <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/mhb/deleted}">
-              <i class="bi bi-trash3"></i> 垃圾桶
-            </a>
-          </div>
-        </div>
+	<!-- 用版型把下面兩個片段插入（容器會被整個替換，不會重複渲染） -->
+	<div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
+		<!-- 內容區（fragment） -->
+		<section th:fragment="content">
+			<div class="card">
+				<div
+					class="card-header d-flex justify-content-between align-items-center">
+					<h3 class="card-title mb-0">媽媽手冊管理</h3>
+					<div class="ms-auto">
+						<a class="btn btn-sm btn-primary" th:href="@{/mhb/addMhb}"> <i
+							class="bi bi-plus-circle"></i> 新增
+						</a>
+						<a class="btn btn-sm btn-outline-secondary"
+							th:href="@{/admin/mhb/deleted}"> <i class="bi bi-trash3"></i>
+							垃圾桶(<span th:text="${deletedCount}">0</span>)
+						</a>
 
-        <div class="card-body">
-          <table id="mhbTable" class="table table-striped table-bordered align-middle w-100">
-            <thead>
-              <tr>
-                <th># 手冊編號</th>
-                <th>會員ID</th>
-                <th>媽媽姓名</th>
-                <th>媽媽生日</th>
-                <th>最後一次月經</th>
-                <th>預計生產日</th>
-                <th>體重</th>
-                <th>照片</th>
-                <th>懷孕紀錄</th>
-                <th>動作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="vo : ${mhbListData}">
-                <td th:text="${vo.motherHandbookId}">1</td>
-                <td th:text="${vo.memberId}">1</td>
-                <td th:text="${vo.motherName}">王小美</td>
-                <td th:text="${vo.motherBirthday}">2025-01-01</td>
-                <td th:text="${vo.lastMcDate}">2025-02-01</td>
-                <td th:text="${vo.expectedBirthDate}">2025-10-01</td>
-                <td th:text="${vo.weight}">53.2</td>
-                <td>
-                  <img th:if="${vo.upFiles != null}"
-                       th:src="@{|/mhb/photo/${vo.motherHandbookId}|}"
-                       alt="photo" style="height:48px"/>
-                </td>
-                <td class="text-nowrap">
-                  <a class="btn btn-sm btn-outline-success"
-                     th:href="@{|/pregnancy/records?mhbId=${vo.motherHandbookId}|}">
-                    <i class="bi bi-journal-medical"></i> 懷孕紀錄
-                    <span class="badge text-bg-info ms-1"
-                          th:text="${recordCountMap[vo.motherHandbookId]} ?: 0">0</span>
-                  </a>
-                </td>
-                <td class="text-nowrap">
-                  <form th:action="@{/mhb/getOne_For_Update}" method="post" class="d-inline">
-                    <input type="hidden" name="mother_handbook_id" th:value="${vo.motherHandbookId}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                      <i class="bi bi-pencil-square"></i> 修改
-                    </button>
-                  </form>
-                  <form th:action="@{/mhb/delete}" method="post" class="d-inline"
-                        onsubmit="return confirm('確定刪除？')">
-                    <input type="hidden" name="mother_handbook_id" th:value="${vo.motherHandbookId}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                      <i class="bi bi-trash"></i> 刪除
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
 
-    <!-- 本頁 JS（fragment） -->
-    <th:block th:fragment="extraJs">
-      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
-      <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const sel = '#mhbTable';
-          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
-          $(sel).DataTable({
-            retrieve: true,
-            lengthMenu: [3, 5, 10, 20, 50, 100],
-            language: {
-              processing:"處理中...", loadingRecords:"載入中...",
-              lengthMenu:"顯示 _MENU_ 筆結果", zeroRecords:"沒有符合的結果",
-              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
-              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
-              infoFiltered:"(從 _MAX_ 筆結果中過濾)", search:"搜尋：",
-              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
-              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
-            }
-          });
-        });
-      </script>
-    </th:block>
-  </div>
+					</div>
+				</div>
+
+				<div class="card-body">
+
+					<form class="row g-2 mb-3" th:action="@{/admin/mhb/list}"
+						method="get" th:object="${filter}">
+						<div class="col-auto">
+							<input class="form-control form-control-sm" th:field="*{id}"
+								type="number" placeholder="#手冊編號">
+						</div>
+						<div class="col-auto">
+							<input class="form-control form-control-sm"
+								th:field="*{memberId}" type="number" placeholder="會員ID">
+						</div>
+						<div class="col-auto">
+							<input class="form-control form-control-sm" th:field="*{name}"
+								placeholder="媽媽姓名 關鍵字">
+						</div>
+
+						<div class="w-100"></div>
+
+						<div class="col-auto">
+							<label class="form-label mb-0 small">生日</label>
+							<div class="d-flex gap-1">
+								<input class="form-control form-control-sm"
+									th:field="*{birthdayFrom}" type="date"> <span
+									class="align-self-center">~</span> <input
+									class="form-control form-control-sm" th:field="*{birthdayTo}"
+									type="date">
+							</div>
+						</div>
+
+						<div class="col-auto">
+							<label class="form-label mb-0 small">LMP</label>
+							<div class="d-flex gap-1">
+								<input class="form-control form-control-sm"
+									th:field="*{lmpFrom}" type="date"> <span
+									class="align-self-center">~</span> <input
+									class="form-control form-control-sm" th:field="*{lmpTo}"
+									type="date">
+							</div>
+						</div>
+
+						<div class="col-auto">
+							<label class="form-label mb-0 small">EDD</label>
+							<div class="d-flex gap-1">
+								<input class="form-control form-control-sm"
+									th:field="*{eddFrom}" type="date"> <span
+									class="align-self-center">~</span> <input
+									class="form-control form-control-sm" th:field="*{eddTo}"
+									type="date">
+							</div>
+						</div>
+
+						<div class="col-auto">
+							<label class="form-label mb-0 small">體重</label>
+							<div class="d-flex gap-1">
+								<input class="form-control form-control-sm" th:field="*{wMin}"
+									type="number" step="0.01" placeholder="最小"> <span
+									class="align-self-center">~</span> <input
+									class="form-control form-control-sm" th:field="*{wMax}"
+									type="number" step="0.01" placeholder="最大">
+							</div>
+						</div>
+
+						<div class="col-auto">
+							<label class="form-label mb-0 small">照片</label> <select
+								class="form-select form-select-sm" th:field="*{hasPhoto}">
+								<option th:value="${null}">不限</option>
+								<option th:value="true">有</option>
+								<option th:value="false">無</option>
+							</select>
+						</div>
+
+						<div class="col-auto align-self-end">
+							<button class="btn btn-sm btn-primary">
+								<i class="bi bi-search"></i> 查詢
+							</button>
+							<a class="btn btn-sm btn-outline-secondary"
+								th:href="@{/admin/mhb/list}"> 清除 </a>
+						</div>
+					</form>
+
+
+
+					<table id="mhbTable"
+						class="table table-striped table-bordered align-middle w-100">
+						<thead>
+							<tr>
+								<th># 手冊編號</th>
+								<th>會員ID</th>
+								<th>媽媽姓名</th>
+								<th>媽媽生日</th>
+								<th>最後一次月經</th>
+								<th>預計生產日</th>
+								<th>體重</th>
+								<th>照片</th>
+								<th>懷孕紀錄</th>
+								<th>動作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="vo : ${mhbListData}">
+								<td th:text="${vo.motherHandbookId}">1</td>
+								<td th:text="${vo.memberId}">1</td>
+								<td th:text="${vo.motherName}">王小美</td>
+								<td th:text="${vo.motherBirthday}">2025-01-01</td>
+								<td th:text="${vo.lastMcDate}">2025-02-01</td>
+								<td th:text="${vo.expectedBirthDate}">2025-10-01</td>
+								<td th:text="${vo.weight}">53.2</td>
+								<td><img th:if="${vo.upFiles != null}"
+									th:src="@{|/mhb/photo/${vo.motherHandbookId}|}" alt="photo"
+									style="height: 48px" /></td>
+								<td class="text-nowrap"><a
+									class="btn btn-sm btn-outline-success"
+									th:href="@{|/pregnancy/records?mhbId=${vo.motherHandbookId}|}">
+										<i class="bi bi-journal-medical"></i> 懷孕紀錄 <span
+										class="badge text-bg-info ms-1"
+										th:text="${recordCountMap[vo.motherHandbookId]} ?: 0">0</span>
+								</a></td>
+								<td class="text-nowrap">
+									<form th:action="@{/mhb/getOne_For_Update}" method="post"
+										class="d-inline">
+										<input type="hidden" name="mother_handbook_id"
+											th:value="${vo.motherHandbookId}" />
+										<button type="submit" class="btn btn-sm btn-outline-primary">
+											<i class="bi bi-pencil-square"></i> 修改
+										</button>
+									</form>
+									<form th:action="@{/mhb/delete}" method="post" class="d-inline"
+										onsubmit="return confirm('確定刪除？')">
+										<input type="hidden" name="mother_handbook_id"
+											th:value="${vo.motherHandbookId}" />
+										<button type="submit" class="btn btn-sm btn-outline-danger">
+											<i class="bi bi-trash"></i> 刪除
+										</button>
+									</form>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+
+		<!-- 本頁 JS（fragment） -->
+		<th:block th:fragment="extraJs">
+			<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+			<script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+			<script
+				src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+			<script>
+				document
+						.addEventListener(
+								'DOMContentLoaded',
+								function() {
+									const sel = '#mhbTable';
+									if ($.fn.DataTable.isDataTable(sel))
+										return; // 防止重複初始化
+									$(sel)
+											.DataTable(
+													{
+														retrieve : true,
+														lengthMenu : [ 3, 5,
+																10, 20, 50, 100 ],
+														language : {
+															processing : "處理中...",
+															loadingRecords : "載入中...",
+															lengthMenu : "顯示 _MENU_ 筆結果",
+															zeroRecords : "沒有符合的結果",
+															info : "顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+															infoEmpty : "顯示第 0 至 0 筆結果，共 0 筆",
+															infoFiltered : "(從 _MAX_ 筆結果中過濾)",
+															search : "搜尋：",
+															paginate : {
+																first : "第一頁",
+																previous : "上一頁",
+																next : "下一頁",
+																last : "最後一頁"
+															},
+															aria : {
+																sortAscending : ": 升冪排列",
+																sortDescending : ": 降冪排列"
+															}
+														}
+													});
+								});
+			</script>
+		</th:block>
+	</div>
 </body>
 </html>

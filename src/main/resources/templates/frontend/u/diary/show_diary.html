@@ -4,10 +4,26 @@
   <meta charset="UTF-8">
   <title th:text="${entry.title}">日記</title>
   <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+  <style>
+    .diary-contain {
+      width: 100%;
+      max-height: 520px;   /* 依版面調整 */
+      object-fit: contain; /* 整張圖顯示，會留白 */
+      border-radius: 12px;
+      display: block;
+      background: #f8f9fa; /* 有留白時比較好看，可移除 */
+    }
+  </style>
 </head>
 <body class="container py-4">
   <a class="btn btn-sm btn-outline-secondary mb-3" th:href="@{/blog/full-grid-left(tab='diary')}">← 返回日記</a>
   <h3 class="mb-1" th:text="${entry.title}">日記標題</h3>
+  <!-- <div th:if="${entry.hasImage()}" class="mb-3">
+  <img th:src="@{'/u/diary/' + ${entry.id} + '/image'}" alt="cover" class="img-fluid rounded">
+</div> -->
+<div th:if="${entry.hasImage()}" class="mb-3">
+    <img th:src="@{'/u/diary/' + ${entry.id} + '/image'}" alt="cover" class="diary-contain">
+  </div>
   <div class="text-muted mb-3"
        th:text="${#temporals.format(entry.writtenAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</div>
   <div class="mb-2"><span class="badge text-bg-light" th:if="${entry.tags}" th:text="${entry.tags}">#tags</span></div>

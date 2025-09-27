@@ -1,744 +1,195 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zh-Hant-TW"
-	xmlns:th="http://www.thymeleaf.org">
+<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>BabyMate</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Favicon -->
-<link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
-
-<!-- CSS ========================================== -->
-<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/ionicons.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/themify-icons.css}">
-<link rel="stylesheet" th:href="@{/assets/css/plugins.css}">
-<link rel="stylesheet" th:href="@{/assets/css/helper.css}">
-<link rel="stylesheet" th:href="@{/assets/css/main.css}">
-
-<!-- Modernizer JS -->
-<script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead"></th:block>
 </head>
 
-<body>
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div
+			th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('我的收藏')}"></div>
 
-	<!--=============================================
-  =            Header offcanvas about             =
-  =============================================-->
-	<header class="header header-offcanvas-about header-sticky">
-		<div class="header-bottom pt-md-40 pb-md-40 pt-sm-40 pb-sm-40">
-			<div class="container wide">
-				<div class="header-bottom-container">
-
-					<!-- logo + offcanvas -->
-					<div class="logo-with-offcanvas d-flex">
-						<div class="offcanvas-about-icon mr-20 d-none d-lg-block">
-							<a href="javascript:void(0)" id="offcanvas-about-icon"><i
-								class="ion-navicon"></i></a>
-						</div>
-						<div class="logo">
-							<a th:href="@{/}"> <img
-								th:src="@{/assets/images/babymate.png}" class="img-fluid"
-								alt="BabyMate 首頁">
-							</a>
-						</div>
-					</div>
-
-					<!-- nav -->
-					<div class="header-bottom-navigation">
-						<div class="site-main-nav d-none d-lg-block">
-							<nav class="site-nav center-menu">
-								<ul>
-									<li class="menu-item-has-children"><a href="/shop/left"
-										th:href="@{/shop/left}">商城</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">尋找診所</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/element/google-maps"
-												th:href="@{/element/google-maps}">診所地圖</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">會員中心</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/full-grid-left"
-												th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-											<li><a href="/my-account" th:href="@{/my-account}">我的訂單</a></li>
-											<li><a href="/faq" th:href="@{/faq}">F.A.Q</a></li>
-										</ul></li>
-									<li class="menu-item-has-children "><a
-										href="javascript:void(0)">討論區</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/standard-left"
-												th:href="@{/blog/standard-left}">看板貼文</a></li>
-										</ul></li>
-								</ul>
-							</nav>
-						</div>
-					</div>
-
-					<!-- right icons -->
-					<div class="header-right-container">
-						<div
-							class="header-right-icons d-flex justify-content-end align-items-center h-100">
-							<div class="single-icon search">
-								<a href="javascript:void(0)" id="search-icon"><i
-									class="ion-ios-search-strong"></i></a>
-							</div>
-							<div class="single-icon user-login">
-								<a href="/shop/login" th:href="@{/shop/login}"><i
-									class="ion-android-person"></i></a>
-							</div>
-							<div class="single-icon wishlist">
-								<a href="javascript:void(0)" id="offcanvas-wishlist-icon"> <i
-									class="ion-android-favorite-outline"></i><span class="count">2</span>
-								</a>
-							</div>
-							<div class="single-icon cart">
-								<a href="javascript:void(0)" id="offcanvas-cart-icon"> <i
-									class="ion-ios-cart"></i><span class="count">3</span>
-								</a>
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<!-- Mobile Navigation -->
-				<div class="site-mobile-navigation d-block d-lg-none">
-					<div id="dl-menu" class="dl-menuwrapper site-mobile-nav">
-						<!--Site Mobile Menu Toggle Start-->
-						<button class="dl-trigger hamburger hamburger--spin">
-							<span class="hamburger-box"> <span class="hamburger-inner"></span>
-							</span>
-						</button>
-						<!--Site Mobile Menu Toggle End-->
-						<ul class="dl-menu dl-menu-toggle">
-							<li><a href="#">商城</a>
-								<ul class="dl-submenu">
-									<li class=""><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-								</ul></li>
-							<li><a href="#">尋找診所</a>
-								<ul class="dl-submenu">
-									<li><a href="/element/google-maps"
-										th:href="@{/element/google-maps}">診所地圖</a></li>
-								</ul></li>
-							<li><a href="#">會員中心</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/full-grid-left"
-										th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-									<li><a href="my-account.html" th:href="@{/my-account}">我的訂單</a></li>
-									<li><a href="faq.html" th:href="@{/faq}">F.A.Q</a></li>
-								</ul></li>
-							<li><a href="#">討論區</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/standard-left"
-										th:href="@{/blog/standard-left}">看板貼文</a></li>
-								</ul></li>
-						</ul>
-					</div>
-				</div>
-				<!-- /Mobile Navigation -->
-
-			</div>
-		</div>
-	</header>
-	<!--===== End of Header offcanvas about ======-->
-
-	<!--=======  breadcrumb area =======-->
-	<div class="breadcrumb-area breadcrumb-bg-1 pt-50 pb-70 mb-130">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<h1 class="breadcrumb-title">Wishlist</h1>
-					<ul class="breadcrumb-list">
-						<li class="breadcrumb-list__item"><a th:href="@{/index}">HOME</a></li>
-						<li class="breadcrumb-list__item breadcrumb-list__item--active">wishlist</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--=======  End of breadcrumb area =======-->
-
-	<!--=============================================
+		<!--=============================================
   =            wishlist page content              =
   =============================================-->
-	<div class="shopping-cart-area mb-130">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
+		<div class="shopping-cart-area mb-130">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
 
-					<!-- cart table -->
-					<div class="cart-table-container">
-						<table class="cart-table">
-							<thead>
-								<tr>
-									<th class="product-name" colspan="2">Product</th>
-									<th class="product-price">Price</th>
-									<th class="product-quantity">Quantity</th>
-									<th class="product-subtotal">&nbsp;</th>
-									<th class="product-remove">&nbsp;</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="product-thumbnail"><a
-										th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/bag-1-1-600x800.jpg}"
-											class="img-fluid" alt="Black Fabric Watch 圖片">
-									</a></td>
-									<td class="product-name"><a
-										th:href="@{/shop/product-basic}">Black Fabric Watch</a> <span
-										class="product-variation">Color: Black</span></td>
-									<td class="product-price"><span class="price">NT$100.00</span></td>
-									<td class="product-quantity">
-										<div class="pro-qty d-inline-block mx-0">
-											<input type="text" value="1">
-										</div>
-									</td>
-									<td class="add-to-cart">
-										<button
-											class="lezada-button lezada-button--small lezada-button--icon--left">
-											<i class="ion-ios-cart-outline"></i> add to cart
-										</button>
-									</td>
-									<td class="product-remove"><a href="#"><i
-											class="ion-android-close"></i></a></td>
-								</tr>
+						<!-- cart table -->
+						<div class="cart-table-container">
+							<table class="cart-table">
+								<thead>
+									<tr>
+										<th class="product-name" colspan="2">Product</th>
+										<th class="product-price">Price</th>
+										<th class="product-quantity">Quantity</th>
+										<th class="product-subtotal">&nbsp;</th>
+										<th class="product-remove">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:if="${#lists.isEmpty(wishlistProducts)}">
+										<td colspan="6" class="text-center py-4">目前沒有收藏的商品</td>
+									</tr>
 
-								<tr>
-									<td class="product-thumbnail"><a
-										th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/watch-1-1-600x800.jpg}"
-											class="img-fluid" alt="Brown watch 圖片">
-									</a></td>
-									<td class="product-name"><a
-										th:href="@{/shop/product-basic}">Brown watch</a> <span
-										class="product-variation">Color: Brown</span></td>
-									<td class="product-price"><span class="price">NT$150.00</span></td>
-									<td class="product-quantity">
-										<div class="pro-qty d-inline-block mx-0">
-											<input type="text" value="1">
-										</div>
-									</td>
-									<td class="add-to-cart">
-										<button
-											class="lezada-button lezada-button--small lezada-button--icon--left">
-											<i class="ion-ios-cart-outline"></i> add to cart
-										</button>
-									</td>
-									<td class="product-remove"><a href="#"><i
-											class="ion-android-close"></i></a></td>
-								</tr>
+									<tr th:each="p : ${wishlistProducts}">
+										<td class="product-thumbnail"><a
+											th:href="@{/shop/product-basic(id=${p.productId})}"> <img
+												th:src="@{/product/DBGifReader(productId=${p.productId})}"
+												class="img-fluid" th:alt="${p.productName}">
+										</a></td>
+										<td class="product-name"><a
+											th:href="@{/shop/product-basic(id=${p.productId})}"
+											th:text="${p.productName}">Product</a> <span
+											class="product-variation" th:text="${p.featureDesc}">特色</span>
+										</td>
+										<td class="product-price"><span class="price"
+											th:text="'NT$' + ${p.price}">NT$0</span></td>
+										<td class="product-quantity">
+											<div class="pro-qty d-inline-block mx-0">
+												<input class="cart-qty" type="text" value="1"
+												th:attr="data-product-id=${p.productId}">
+											</div>
+										</td>
+										<td class="add-to-cart">
+											<button
+												class="lezada-button lezada-button--small lezada-button--icon--left 
+												add-to-cart-btn" th:attr="data-product-id=${p.productId}" >
+												<i class="ion-ios-cart-outline"></i> 加入購物車
+											</button>
+										</td>
+										<td class="product-remove"><a href="javascript:void(0)"
+											class="btn-remove-fav"
+											th:attr="data-product-id=${p.productId}"> <i
+												class="ion-android-close"></i>
+										</a></td>
+									</tr>
+								</tbody>
 
-								<tr>
-									<td class="product-thumbnail"><a
-										th:href="@{/shop/product-basic}"> <img
-											th:src="@{/assets/images/products/cloth-1-1-600x800.jpg}"
-											class="img-fluid" alt="High weist pant 圖片">
-									</a></td>
-									<td class="product-name"><a
-										th:href="@{/shop/product-basic}">High weist pant</a> <span
-										class="product-variation">Color: Blue</span></td>
-									<td class="product-price"><span class="price">NT$10.00</span></td>
-									<td class="product-quantity">
-										<div class="pro-qty d-inline-block mx-0">
-											<input type="text" value="1">
-										</div>
-									</td>
-									<td class="add-to-cart">
-										<button
-											class="lezada-button lezada-button--small lezada-button--icon--left">
-											<i class="ion-ios-cart-outline"></i> add to cart
-										</button>
-									</td>
-									<td class="product-remove"><a href="#"><i
-											class="ion-android-close"></i></a></td>
-								</tr>
-							</tbody>
-						</table>
+							</table>
+						</div>
+						<!-- End of cart table -->
+
 					</div>
-					<!-- End of cart table -->
-
 				</div>
 			</div>
 		</div>
-	</div>
-	<!--=====  End of wishlist page content  ======-->
+		<!--=====  End of wishlist page content  ======-->
 
-	<!--=============================================
-  =                  footer area                  =
-  =============================================-->
-	<div class="footer-container footer-one pt-100 pb-50">
-		<div class="container wide">
-			<div class="row">
-				<div class="col footer-single-widget">
-					<div class="logo">
-						<img th:src="@{/assets/images/babymate_logo.png}"
-							class="img-fluid" alt="BabyMate">
-					</div>
-					<div class="copyright-text">
-						<p>
-							&copy; <span
-								th:text="${#calendars.format(#dates.createNow(),'yyyy')}">2025</span>
-							BABYMATE. <span>All Rights Reserved</span>
-						</p>
-					</div>
-				</div>
+	</section>
+	<th:block th:fragment="extraJs">
+<script th:inline="javascript">
+document.addEventListener('click', async function(e){
+  const btn = e.target.closest('.btn-remove-fav');
+  if (!btn) return;
+  e.preventDefault();
 
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">ABOUT</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">About us</a></li>
-								<li><a href="#">Store location</a></li>
-								<li><a href="#">Contact</a></li>
-								<li><a href="#">Orders tracking</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
+  // 避免連點重複送出
+  if (btn.dataset.busy === '1') return;
+  btn.dataset.busy = '1';
 
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">USEFUL LINKS</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Support Policy</a></li>
-								<li><a href="#">Size guide</a></li>
-								<li><a href="#">FAQs</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
+  const pid = btn.getAttribute('data-product-id') || btn.dataset.productId;
+  if (!pid) { btn.dataset.busy = '0'; return; }
 
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">FOLLOW US ON</h5>
-					<div class="footer-nav-container footer-social-links">
-						<nav>
-							<ul>
-								<li><a href="https://twitter.com" target="_blank"
-									rel="noopener noreferrer"><i class="fa fa-twitter"></i>
-										Twitter</a></li>
-								<li><a href="https://facebook.com" target="_blank"
-									rel="noopener noreferrer"><i class="fa fa-facebook"></i>
-										Facebook</a></li>
-								<li><a href="https://instagram.com" target="_blank"
-									rel="noopener noreferrer"><i class="fa fa-instagram"></i>
-										Instagram</a></li>
-								<li><a href="https://youtube.com" target="_blank"
-									rel="noopener noreferrer"><i class="fa fa-youtube"></i>
-										Youtube</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
+  const row = btn.closest('tr');
+  const toggleUrl = /*[[@{/api/wishlist/toggle}]]*/ '/api/wishlist/toggle';
+  const loginUrl  = /*[[@{/shop/login}]]*/ '/shop/login';
 
-				<div class="col footer-single-widget">
-					<div class="footer-subscription-widget">
-						<h2 class="footer-subscription-title">Subscribe.</h2>
-						<p class="subscription-subtitle">Subscribe to our newsletter
-							to receive news on update.</p>
-						<div class="subscription-form">
-							<form id="mc-form" class="mc-form">
-								<input type="email" placeholder="Your email address" required>
-								<button type="submit">
-									<i class="ion-ios-arrow-thin-right"></i>
-								</button>
-							</form>
-						</div>
-						<div class="mailchimp-alerts">
-							<div class="mailchimp-submitting"></div>
-							<div class="mailchimp-success"></div>
-							<div class="mailchimp-error"></div>
-						</div>
-					</div>
-				</div>
+  try {
+    const res = await fetch(toggleUrl, {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({ productId: pid })
+    });
 
-			</div>
-		</div>
-	</div>
-	<!--=====  End of footer area  ======-->
+    if (res.status === 401) { location.href = loginUrl; return; }
+    if (!res.ok) { 
+      window.Swal ? Swal.fire({icon:'error', title:'操作失敗', text:'伺服器回應 ' + res.status}) 
+                  : alert('操作失敗 (' + res.status + ')');
+      return;
+    }
 
-	<!--=============================================
-  =                 overlay items                 =
-  =============================================-->
+    // 移除該列
+    row.remove();
 
-	<!-- about overlay -->
-	<div class="header-offcanvas about-overlay" id="about-overlay">
-		<div class="overlay-close inactive"></div>
-		<div class="overlay-content">
-			<span class="close-icon" id="about-close-icon"> <a
-				href="javascript:void(0)"><i class="ti-close"></i></a>
-			</span>
-			<div
-				class="overlay-content-container d-flex flex-column justify-content-between h-100">
-				<div class="widget-wrapper">
-					<div class="single-widget">
-						<h2 class="widget-title">關於我們</h2>
-						<p>我們致力於打造一個貼近媽媽與家庭需求的數位平台，讓使用者可以方便地找到附近診所，獲取安心的醫療資訊…</p>
-					</div>
-				</div>
+    // 如果清單已空，補一列空狀態
+    const tbody = document.querySelector('.cart-table tbody');
+    if (tbody && !tbody.querySelector('.btn-remove-fav')) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="6" class="text-center py-4">目前沒有收藏的商品</td>';
+      tbody.appendChild(tr);
+    }
 
-				<div class="contact-widget">
-					<p class="email">
-						<a href="mailto:babymate@babymate.com">babymate@babymate.com</a>
-					</p>
-					<p class="phone">0800 580 520</p>
-					<div class="social-icons">
-						<ul>
-							<li><a href="https://www.twitter.com" target="_blank"
-								rel="noopener noreferrer"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="https://www.facebook.com" target="_blank"
-								rel="noopener noreferrer"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="https://www.instagram.com" target="_blank"
-								rel="noopener noreferrer"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="https://www.youtube.com" target="_blank"
-								rel="noopener noreferrer"><i class="fa fa-youtube-play"></i></a></li>
-						</ul>
-					</div>
-				</div>
+    // 通知 overlays mini 也刷新
+    document.dispatchEvent(new Event('wishlist:changed'));
 
-			</div>
-		</div>
-	</div>
-	<!-- /about overlay -->
+    // SweetAlert：已取消收藏
+    if (window.Swal) {
+      Swal.fire({
+        icon: 'info',
+        title: '已取消收藏',
+        showConfirmButton: false,
+        timer: 1200,
+     // toast效果
+        //position: 'top-end',        
+        //toast:true,
+        //timerProgressBar:true
+      });
+    } else {
+      alert('已取消收藏');
+    }
+  } catch (err) {
+    console.error(err);
+    window.Swal ? Swal.fire({icon:'error', title:'網路或伺服器錯誤'}) 
+                : alert('網路或伺服器錯誤');
+  } finally {
+    btn.dataset.busy = '0';
+  }
+});
+</script>
 
-	<!--=======  wishlist overlay  =======-->
+<script>
+$(document).ready(function() {
+	$(".add-to-cart-btn").click(function(e) {
+	    e.preventDefault();
 
-	<div class="wishlist-overlay" id="wishlist-overlay">
-		<div class="wishlist-overlay-close inactive"></div>
-		<div class="wishlist-overlay-content">
-			<!--=======  close icon  =======-->
+	    const $button = $(this);
+	    const productId = $button.data("product-id");
 
-			<span class="close-icon" id="wishlist-close-icon"> <a
-				href="javascript:void(0)"> <i class="ion-android-close"></i>
-			</a>
-			</span>
+	    // 從同一列抓取對應的 input 數量
+	    const qty = $button.closest("tr").find(".cart-qty").val();
 
-			<!--=======  End of close icon  =======-->
+	    console.log("加入購物車 - 商品ID:", productId);
+	    console.log("數量:", qty);
 
-			<!--=======  offcanvas wishlist content container  =======-->
+    $.ajax({
+      url: "/api/cart/addToCart",  // 後端 Controller 會自動判斷會員或訪客
+      type: "POST",
+//       contentType: "application/json",
+      data: {
+          productId: productId,
+          quantity: qty
+        },
+      success: function() {
+        alert("已加入購物車！");
+        // 可選：刷新購物車 icon 顯示數量
+      },
+      error: function(xhr) {
+        alert("加入購物車失敗：" + xhr.responseText);
+      }
+    });
+  });
+});
+</script>
 
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Wishlist</h3>
+</th:block>
 
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$300.00</span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/03.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/03.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$100.00</span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-					</div>
-
-					<!--=======  cart buttons  =======-->
-
-					<div class="cart-buttons">
-						<a href="shop-wishlist.html" th:href="@{/shop/wishlist}">view
-							wishlist</a>
-					</div>
-
-					<!--=======  End of cart buttons  =======-->
-				</div>
-			</div>
-
-			<!--=======  End of offcanvas wishlist content container   =======-->
-		</div>
-	</div>
-
-	<!--=======  End of wishlist overlay  =======-->
-
-	<div class="cart-overlay" id="cart-overlay">
-		<div class="cart-overlay-close inactive"></div>
-		<div class="cart-overlay-content">
-			<span class="close-icon" id="cart-close-icon"><a
-				href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Cart</h3>
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/03.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-					</div>
-
-					<p class="cart-subtotal">
-						<span class="subtotal-title">Subtotal:</span> <span
-							class="subtotal-amount">$200.00</span>
-					</p>
-
-					<div class="cart-buttons">
-						<a th:href="@{/shop/cart}">view cart</a> <a
-							th:href="@{/shop/checkout}">checkout</a>
-					</div>
-
-					<p class="free-shipping-text">Free Shipping on All Orders Over
-						$100!</p>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Search overlay -->
-	<div class="search-overlay" id="search-overlay">
-		<span class="close-icon search-close-icon"><a
-			href="javascript:void(0)" id="search-close-icon"><i
-				class="ti-close"></i></a></span>
-		<div class="search-overlay-content">
-			<div class="input-box">
-				<form th:action="@{/}">
-					<input type="search" placeholder="Search Products...">
-				</form>
-			</div>
-			<div class="search-hint">
-				<span># Hit enter to search or ESC to close</span>
-			</div>
-		</div>
-	</div>
-
-	<!-- scroll to top -->
-	<a href="#" class="scroll-top"></a>
-
-	<!-- JS ============================================ -->
-	<script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
-	<script th:src="@{/assets/js/popper.min.js}"></script>
-	<script th:src="@{/assets/js/bootstrap.min.js}"></script>
-	<script th:src="@{/assets/js/plugins.js}"></script>
-	<script th:src="@{/assets/js/main.js}"></script>
 
 </body>
 </html>
+

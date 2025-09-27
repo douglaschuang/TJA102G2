@@ -19,6 +19,7 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
@@ -128,13 +129,15 @@
 		<!-- websocket -->                           <!--
 		spring-boot 已內建依賴，但預設未下載 -->
 		<dependency>
-			<groupId>jakarta.websocket</groupId>
-			<artifactId>jakarta.websocket-api</artifactId>
-			<!-- <version>2.1.1</version> -->
-			<scope>provided</scope>                  <!-- ※provided只提供編譯，jar檔不匯出 -->
+		<groupId>jakarta.websocket</groupId>
+		<artifactId>jakarta.websocket-api</artifactId>
+		<!-- <version>2.1.1</version> -->
+		<scope>provided</scope>             
+		<!--※provided只提供編譯，jar檔不匯出 -->
 		</dependency>
 
-		<!-- javax.json -->                          <!-- spring-boot 未內建依賴 -->
+		<!-- javax.json -->                          <!--
+		spring-boot 未內建依賴 -->
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.json</artifactId>
@@ -254,27 +257,34 @@
 			<artifactId>jakarta.el</artifactId>
 			<version>4.0.2</version>
 		</dependency>
-		
+
 		<!--
 		========================================================================================== -->
- 		<!-- ●以下為 語法 預備使用● -->  
-  		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+		<!-- ●以下為 語法 預備使用● -->
+		<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
 		<dependency>
-    		<groupId>org.jsoup</groupId>
-    		<artifactId>jsoup</artifactId>
-    		<version>1.20.1</version>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.20.1</version>
 		</dependency>
 
 		<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-data-redis</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		
+
 		<!-- Jackson JSR310 模組 -->
-    	<dependency>
-        	<groupId>com.fasterxml.jackson.datatype</groupId>
-        	<artifactId>jackson-datatype-jsr310</artifactId>
-    	</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		<!-- Excel Apache POI 模組 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version>
+		</dependency>
 
 	</dependencies>
 
