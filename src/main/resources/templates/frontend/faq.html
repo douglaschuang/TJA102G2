@@ -1,829 +1,581 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zxx" xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>BabyMate</title>
-<meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" th:href="@{/assets/images/mother_baby_icon.ico}">
+<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/font-awesome.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/ionicons.min.css}">
-<link rel="stylesheet" th:href="@{/assets/css/themify-icons.css}">
-<link rel="stylesheet" th:href="@{/assets/css/plugins.css}">
-<link rel="stylesheet" th:href="@{/assets/css/helper.css}">
-<link rel="stylesheet" th:href="@{/assets/css/main.css}">
-
-<script th:src="@{/assets/js/vendor/modernizr-2.8.3.min.js}"></script>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead"></th:block>
 </head>
-<body>
-	<header class="header header-offcanvas-about header-sticky">
-		<div class="header-bottom pt-md-40 pb-md-40 pt-sm-40 pb-sm-40">
-			<div class="container wide">
-				<div class="header-bottom-container">
-					<div class="logo-with-offcanvas d-flex">
-						<div class="offcanvas-about-icon mr-20 d-none d-lg-block">
-							<a href="javascript:void(0)" id="offcanvas-about-icon"><i
-								class="ion-navicon"></i></a>
-						</div>
-						<div class="logo">
-							<a th:href="@{/}"> <img
-								th:src="@{/assets/images/babymate.png}" class="img-fluid" alt="">
-							</a>
-						</div>
-					</div>
 
-					<div class="header-bottom-navigation">
-						<div class="site-main-nav d-none d-lg-block">
-							<nav class="site-nav center-menu">
-								<ul>
-									<li class="menu-item-has-children"><a href="/shop/left"
-										th:href="@{/shop/left}">商城</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">尋找診所</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/element/google-maps"
-												th:href="@{/element/google-maps}">診所地圖</a></li>
-										</ul></li>
-									<li class="menu-item-has-children"><a
-										href="javascript:void(0)">會員中心</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/full-grid-left"
-												th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-											<li><a href="/my-account" th:href="@{/my-account}">我的訂單</a></li>
-											<li><a href="/faq" th:href="@{/faq}">F.A.Q</a></li>
-										</ul></li>
-									<li class="menu-item-has-children "><a
-										href="javascript:void(0)">討論區</a>
-										<ul class="sub-menu single-column-menu">
-											<li><a href="/blog/standard-left"
-												th:href="@{/blog/standard-left}">看板貼文</a></li>
-										</ul></li>
-								</ul>
-							</nav>
-						</div>
-					</div>
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('F.A.Q')}"></div>
 
-					<div class="header-right-container">
-						<div
-							class="header-right-icons d-flex justify-content-end align-items-center h-100">
-							<div class="single-icon search">
-								<a href="javascript:void(0)" id="search-icon"><i
-									class="ion-ios-search-strong"></i></a>
+
+
+		<!-- page wrapper -->
+		<div class="my-account-area mb-130 mb-md-70 mb-sm-70 mb-xs-70 mb-xxs-70">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="row">
+						
+							<!-- Tabs(上方選單) -->
+							<div class="col-lg-12 col-md-12">
+								<div class="myaccount-tab-menu nav mb-4" role="tablist">
+									<a href="#shopping-and-orders" class="active" data-bs-toggle="tab">購物與訂單</a>
+									<a href="#shipping-and-returns" data-bs-toggle="tab">配送與退貨</a>
+									<a href="#product-and-safety" data-bs-toggle="tab">產品與安全</a>
+									<a href="#parenting-knowledge" data-bs-toggle="tab">育兒知識</a>
+								</div>
 							</div>
-							<div class="single-icon user-login">
-								<a href="/shop/login" th:href="@{/shop/login}"><i
-									class="ion-android-person"></i></a>
-							</div>
-							<div class="single-icon wishlist">
-								<a href="javascript:void(0)" id="offcanvas-wishlist-icon"> <i
-									class="ion-android-favorite-outline"></i><span class="count">2</span>
-								</a>
-							</div>
-							<div class="single-icon cart">
-								<a href="javascript:void(0)" id="offcanvas-cart-icon"> <i
-									class="ion-ios-cart"></i><span class="count">3</span>
-								</a>
-							</div>
-						</div>
-					</div>
-
-				</div>
-
-				<!-- Mobile -->
-				<div class="site-mobile-navigation d-block d-lg-none">
-					<div id="dl-menu" class="dl-menuwrapper site-mobile-nav">
-						<!--Site Mobile Menu Toggle Start-->
-						<button class="dl-trigger hamburger hamburger--spin">
-							<span class="hamburger-box"> <span class="hamburger-inner"></span>
-							</span>
-						</button>
-						<!--Site Mobile Menu Toggle End-->
-						<ul class="dl-menu dl-menu-toggle">
-							<li><a href="#">商城</a>
-								<ul class="dl-submenu">
-									<li class=""><a href="/shop/left" th:href="@{/shop/left}">查看所有商品</a></li>
-								</ul></li>
-							<li><a href="#">尋找診所</a>
-								<ul class="dl-submenu">
-									<li><a href="/element/google-maps"
-										th:href="@{/element/google-maps}">診所地圖</a></li>
-								</ul></li>
-							<li><a href="#">會員中心</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/full-grid-left"
-										th:href="@{/blog/full-grid-left}">會員儀表板</a></li>
-									<li><a href="my-account.html" th:href="@{/my-account}">我的訂單</a></li>
-									<li><a href="faq.html" th:href="@{/faq}">F.A.Q</a></li>
-								</ul></li>
-							<li><a href="#">討論區</a>
-								<ul class="dl-submenu">
-									<li><a href="/blog/standard-left"
-										th:href="@{/blog/standard-left}">看板貼文</a></li>
-								</ul></li>
-						</ul>
-					</div>
-				</div>
-				<!-- End Mobile -->
-
-			</div>
-		</div>
-	</header>
-
-	<!-- Breadcrumb -->
-	<div class="breadcrumb-area breadcrumb-bg-1 pt-50 pb-70 mb-100">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<h1 class="breadcrumb-title">F.A.Q</h1>
-					<ul class="breadcrumb-list">
-						<li class="breadcrumb-list__item"><a th:href="@{/}">HOME</a></li>
-						<li class="breadcrumb-list__item breadcrumb-list__item--active">F.A.Q</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- FAQ content -->
-	<div class="faq-area">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="faq-wrapper">
-
-						<div class="single-faq mb-80">
-							<h2 class="faq-title mb-20">Shipping information</h2>
-							<div class="accordion" id="shippingInfo">
-								<div class="card">
-									<div class="card-header" id="headingOne">
-										<h5 class="mb-0">
-											<button class="btn btn-link" data-bs-toggle="collapse"
-												data-bs-target="#collapseOne" aria-expanded="true"
-												aria-controls="collapseOne">What Shipping Methods
-												are Available?</button>
-										</h5>
-									</div>
-									<div id="collapseOne" class="collapse show"
-										aria-labelledby="headingOne" data-bs-parent="#shippingInfo">
-										<div class="card-body">
-											<p>Depending on the item(s) you purchase on
-												garageclothing.com and the location to which the item(s)
-												will be delivered...</p>
+							
+							<!-- FAQ content -->
+							<div class="faq-area">
+								<div class="tab-content" id="faqTabsContent">
+									<div class="row">
+										<div class="col-lg-12">
+											<div class="faq-wrapper">
+						
+												<!-- 購物與訂單(預設開啟) -->
+												<div class="tab-pane fade show active" id="shopping-and-orders" role="tabpanel">
+													<div class="single-faq mb-80">
+														<h2 class="faq-title mb-20">購物與訂單</h2>
+														
+														<div class="accordion" id="accordion-shopping-orders">
+															<!-- Q1 -->
+															<div class="card">
+																<div class="card-header" id="shopping-q1-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link" data-bs-toggle="collapse"
+																			data-bs-target="#shopping-q1" aria-expanded="true"
+																			aria-controls="shopping-q1">
+																			下單後可以修改或合併訂單嗎？
+																		</button>
+																	</h5>
+																</div>
+																<div id="shopping-q1" class="collapse"
+																	aria-labelledby="shopping-q1-h" data-bs-parent="#accordion-shopping-orders">
+																	<div class="card-body">
+																		<p>為確保出貨時效，訂單成立後無法修改或合併；若需變更可申請取消後重新下單（尚未出貨者）。</p>
+																	</div>
+																</div>
+															</div>
+							
+															<!-- Q2 -->
+															<div class="card">
+																<div class="card-header" id="shopping-q2-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#shopping-q2"
+																			aria-expanded="false" aria-controls="shopping-q2">
+																			有哪些付款方式？
+																		</button>
+																	</h5>
+																</div>
+																<div id="shopping-q2" class="collapse"
+																	aria-labelledby="shopping-q2-h" data-bs-parent="#accordion-shopping-orders">
+																	<div class="card-body">
+																		<p>信用卡（VISA/Master/JCB）、ATM 虛擬帳號、超商代碼、行動支付（Apple Pay/Google Pay）。依結帳頁顯示為準。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q3 -->
+															<div class="card">
+																<div class="card-header" id="shopping-q3-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#shopping-q3"
+																			aria-expanded="false" aria-controls="shopping-q3">
+																			我要如何查詢目前訂單處理狀況？
+																		</button>
+																	</h5>
+																</div>
+																<div id="shopping-q3" class="collapse"
+																	aria-labelledby="shopping-q3-h" data-bs-parent="#accordion-shopping-orders">
+																	<div class="card-body">
+																		<p>您可以在我的會員 -> 我的訂單查詢目前訂單狀況。</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												
+												<!-- 配送與退貨 -->
+												<div class="tab-pane fade" id="shipping-and-returns" role="tabpanel">
+													<div class="single-faq mb-80">
+														<h2 class="faq-title mb-20">配送與退貨</h2>
+														
+														<div class="accordion" id="accordion-shipping-returns">
+															<!-- Q1 -->
+															<div class="card">
+																<div class="card-header" id="ship-q1-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#ship-q1"
+																			aria-expanded="false" aria-controls="ship-q1">
+																			我可以指定送貨地點嗎？
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q1" class="collapse"
+																	aria-labelledby="ship-q1-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>您可以再填寫訂單資料時的收件欄位，輸入您指定的送貨地址。</p>
+																	</div>
+																</div>
+															</div>
+							
+															<!-- Q2 -->
+															<div class="card">
+																<div class="card-header" id="ship-q2-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#ship-q2"
+																			aria-expanded="false" aria-controls="ship-q2">
+																			請問可以離島配送嗎？
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q2" class="collapse"
+																	aria-labelledby="ship-q2-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>目前為小本經營，尚未開發到配送至離島，請見諒！</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q3 -->
+															<div class="card">
+																<div class="card-header" id="ship-q3-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed" 
+																			data-bs-toggle="collapse" data-bs-target="#ship-q3" 
+																			aria-expanded="false" aria-controls="ship-q3">
+																			配送方式與時間?
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q3" class="collapse"
+																	aria-labelledby="ship-q3-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>目前本公司僅提供宅配，現貨約1-3個工作天出貨，偏遠地區與旺季可能會再延長。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q4 -->
+															<div class="card">
+																<div class="card-header" id="ship-q4-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#ship-q4"
+																			aria-expanded="false" aria-controls="ship-q4">
+																			運費如何計算?
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q4" class="collapse"
+																	aria-labelledby="ship-q4-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>目前商品皆包含運費在內，直接下單即可。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q5 -->
+															<div class="card">
+																<div class="card-header" id="ship-q5-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#ship-q5"
+																			aria-expanded="false" aria-controls="ship-q5">
+																			可以指定到貨時間嗎？
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q5" class="collapse"
+																	aria-labelledby="ship-q5-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>宅配僅能依物流時間為準；如無法收貨物時，待物流廠商電話詢問時，可再與物流廠商協調取貨時段。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q6 -->
+															<div class="card">
+																<div class="card-header" id="ship-q6-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#ship-q6"
+																			aria-expanded="false" aria-controls="ship-q6">
+																			哪些商品不適用7日鑑賞期？
+																		</button>
+																	</h5>
+																</div>
+																<div id="ship-q6" class="collapse"
+																	aria-labelledby="ship-q6-h" data-bs-parent="#accordion-shipping-returns">
+																	<div class="card-body">
+																		<p>個人衛生用品(如奶嘴、吸乳器耗材、內著)、食品與拆封即消耗品，一經拆封恕不退換，除非商品瑕疵。</p>
+																	</div>
+																</div>
+															</div>
+							
+														</div>
+													</div>
+												</div>
+												
+												<!-- 產品與安全 -->
+												<div class="tab-pane fade" id="product-and-safety" role="tabpanel">
+													<div class="single-faq mb-80">
+														<h2 class="faq-title mb-20">產品與安全</h2>
+														
+														<div class="accordion" id="accordion-product-safety">
+														
+															<div class="card">
+																<div class="card-header" id="prod-q1-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link" data-bs-toggle="collapse"
+																			data-bs-target="#prod-q1" aria-expanded="true"
+																			aria-controls="prod-q1">
+																			嬰兒奶粉如何保存?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q1" class="collapse"
+																	aria-labelledby="prod-q1-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>未開封放陰涼乾燥處；開封後緊蓋罐蓋並於4週內用畢。避免高溫與潮濕環境。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q2 -->
+															<div class="card">
+																<div class="card-header" id="prod-q2-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q2"
+																			aria-expanded="false" aria-controls="prod-q2">
+																			奶瓶消毒建議?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q2" class="collapse"
+																	aria-labelledby="prod-q2-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>首次使用請完整清洗消毒；建議使用消毒鍋，可確保嬰幼兒食品安全及健康。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q3 -->
+															<div class="card">
+																<div class="card-header" id="prod-q3-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q3"
+																			aria-expanded="false" aria-controls="prod-q3">
+																			奶嘴該多久更換一次?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q3" class="collapse"
+																	aria-labelledby="prod-q3-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>建議3個月或出現咬痕、變形等立即更換；尺寸可依各廠牌說明使用</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q4 -->
+															<div class="card">
+																<div class="card-header" id="prod-q4-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q4"
+																			aria-expanded="false" aria-controls="prod-q4">
+																			尿布尺寸該如何選?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q4" class="collapse"
+																	aria-labelledby="prod-q4-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>以體重為主、腰圍腿圍合且不留紅痕為佳，如要挑選尿布時，可依各大廠牌建議使用體重來挑選尺寸。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q5 -->
+															<div class="card">
+																<div class="card-header" id="prod-q5-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q5"
+																			aria-expanded="false" aria-controls="prod-q5">
+																			小孩多久可以穿褲型尿布?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q5" class="collapse"
+																	aria-labelledby="prod-q5-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>嬰幼兒6個月就可以更換褲型尿布，小孩約1歲後，活動力漸漸變好，褲型尿布會比較好更換。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q6 -->
+															<div class="card">
+																<div class="card-header" id="prod-q6-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q6"
+																			aria-expanded="false" aria-controls="prod-q6">
+																			嬰幼兒洗髮沐浴乳如何選?
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q6" class="collapse"
+																	aria-labelledby="prod-q6-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>各大品牌內容均有說明適用年齡，新生兒洗髮沐浴露可參考各大品牌建議使用。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<div class="card">
+																<div class="card-header" id="prod-q7-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q7"
+																			aria-expanded="false" aria-controls="prod-q7-h">
+																			嬰幼兒保養品會不會刺激？
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q7" class="collapse"
+																	aria-labelledby="prod-q7-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>選擇無香或低敏配方、通過基礎敏感測試之品牌；首次使用先在小範圍試用24小時觀察。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q8 -->
+															<div class="card">
+																<div class="card-header" id="prod-q8-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#prod-q8"
+																			aria-expanded="false" aria-controls="prod-q8">
+																			推車/汽座需要注意什麼？
+																		</button>
+																	</h5>
+																</div>
+																<div id="prod-q8" class="collapse"
+																	aria-labelledby="prod-q8-h" data-bs-parent="#accordion-product-safety">
+																	<div class="card-body">
+																		<p>依年齡體重選型號，安裝遵循說明書；汽座須正確固定，寶寶肩帶貼合、夾扣在腋下水平。</p>
+																	</div>
+																</div>
+															</div>
+															
+														</div>
+													</div>
+												</div>
+												
+												<!-- 育兒知識 -->
+												<div class="tab-pane fade" id="parenting-knowledge" role="tabpanel">
+													<div class="single-faq mb-80">
+														<h2 class="faq-title mb-20">育兒知識</h2>
+														
+														<div class="accordion" id="accordion-parenting">
+															
+															<!-- Q1 -->
+															<div class="card">
+																<div class="card-header" id="parent-q1-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q1" 
+																			aria-expanded="false" aria-controls="parent-q1">
+																			新生兒要喝多少奶、多久餵一次?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q1" class="collapse"
+																	aria-labelledby="parent-q1-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>多數新生兒出生時，2-3小時喝30ml；實際一體重與飢餓訊號做調整，按需餵最重要。</p>
+																	</div>
+																</div>
+															</div>
+							
+															<!-- Q2 -->
+															<div class="card">
+																<div class="card-header" id="parent-q2-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q2"
+																			aria-expanded="false" aria-controls="parent-q2-h">
+																			副食品何時開始食用?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q2" class="collapse"
+																	aria-labelledby="parent-q2-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>約6個月、具抬頭坐穩、對食物有興趣、能將食物由舌前推至後舌時可嘗試；初期建議以一種食物、量由少到多餵食，讓嬰幼兒可先行適應一種食材，再增加其他食材。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q3 -->
+															<div class="card">
+																<div class="card-header" id="parent-q3-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q3"
+																			aria-expanded="false" aria-controls="parent-q3">
+																			寶寶睡眠環境要如何佈置?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q3" class="collapse"
+																	aria-labelledby="parent-q3-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>平坦硬床、仰睡、無枕頭與鬆散被褥、避免二手菸環境；讓寶寶與照顧者同室不同床更安全。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q4 -->
+															<div class="card">
+																<div class="card-header" id="parent-q4-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q4"
+																			aria-expanded="false" aria-controls="parent-q4">
+																			發燒怎麼處理?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q4" class="collapse"
+																	aria-labelledby="parent-q4-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>滿 3 個月以上以耳溫/額溫 38°C 以上視為發燒；觀察活動力與進食；若不滿 3 個月、精神差、抽搐或脫水徵象請立即就醫。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q5 -->
+															<div class="card">
+																<div class="card-header" id="parent-q5-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q5"
+																			aria-expanded="false" aria-controls="parent-q5">
+																			母乳與配方奶如何選擇?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q5" class="collapse"
+																	aria-labelledby="parent-q5-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>母乳包含多種營養成分，故母乳是首選；每位媽媽可能因環境及情緒變化，產出母乳量不固定，如寶寶餓的話，可再搭配配方奶。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q6 -->
+															<div class="card">
+																<div class="card-header" id="parent-q6-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q6"
+																			aria-expanded="false" aria-controls="parent-q6">
+																			寶寶便便顏色正常嗎?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q6" class="collapse"
+																	aria-labelledby="parent-q6-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>黃糊狀最常見；若白灰色、柏油黑（非初生胎便）、鮮紅血絲持續，請盡快就醫。</p>
+																	</div>
+																</div>
+															</div>
+															
+															<!-- Q7 -->
+															<div class="card">
+																<div class="card-header" id="parent-q7-h">
+																	<h5 class="mb-0">
+																		<button class="btn btn-link collapsed"
+																			data-bs-toggle="collapse" data-bs-target="#parent-q7"
+																			aria-expanded="false" aria-controls="parent-q7">
+																			居家常備哪些育兒用品?
+																		</button>
+																	</h5>
+																</div>
+																<div id="parent-q7" class="collapse"
+																	aria-labelledby="parent-q7-h" data-bs-parent="#accordion-parenting">
+																	<div class="card-body">
+																		<p>電子體溫計、退熱貼或溫水擦拭用物、嬰兒指甲剪、生理食鹽水與吸鼻器、尿布疹膏、基礎保濕乳。</p>
+																	</div>
+																</div>
+															</div>
+							
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- faq-wrapper -->
 										</div>
 									</div>
 								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingTwo">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-												aria-expanded="false" aria-controls="collapseTwo">
-												Do You Ship Internationally?</button>
-										</h5>
-									</div>
-									<div id="collapseTwo" class="collapse"
-										aria-labelledby="headingTwo" data-bs-parent="#shippingInfo">
-										<div class="card-body">
-											<p>At the moment, we only ship to Canada and the United
-												States...</p>
+							</div>
+						</div>
+	
+						<!-- CTA -->
+						<div class="cta-area pt-50 pb-50">
+							<div class="container">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="cta-content">
+											<div class="cta-title">
+												<h2>還沒解決您的問題?</h2>
+											</div>
+											<div class="cta-button">
+												<button
+													class="lezada-button lezada-button--medium lezada-cta-button">聯絡我們</button>
+											</div>
 										</div>
 									</div>
 								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingThree">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseThree"
-												aria-expanded="false" aria-controls="collapseThree">
-												How to Track My Order?</button>
-										</h5>
-									</div>
-									<div id="collapseThree" class="collapse"
-										aria-labelledby="headingThree" data-bs-parent="#shippingInfo">
-										<div class="card-body">
-											<p>Once your order has been shipped, you will receive an
-												email with your tracking and shipping information...</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingFour">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseFour"
-												aria-expanded="false" aria-controls="collapseFour">
-												How Long Will It Take To Get My Package?</button>
-										</h5>
-									</div>
-									<div id="collapseFour" class="collapse"
-										aria-labelledby="headingFour" data-bs-parent="#shippingInfo">
-										<div class="card-body">
-											<p>We ship only on business days. Business days are from
-												Monday to Friday, excluding holidays...</p>
-										</div>
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-						<div class="single-faq mb-80">
-							<h2 class="faq-title mb-20">Payment information</h2>
-							<div class="accordion" id="paymentInfo">
-								<div class="card">
-									<div class="card-header" id="headingFive">
-										<h5 class="mb-0">
-											<button class="btn btn-link" data-bs-toggle="collapse"
-												data-bs-target="#collapseFive" aria-expanded="true"
-												aria-controls="collapseFive">What Payment Methods
-												Are Accepted?</button>
-										</h5>
-									</div>
-									<div id="collapseFive" class="collapse show"
-										aria-labelledby="headingFive" data-bs-parent="#paymentInfo">
-										<div class="card-body">
-											<p>We gladly accept Visa, MasterCard and American
-												Express...</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingSix">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseSix"
-												aria-expanded="false" aria-controls="collapseSix">
-												What Happens If There Is A Pricing Error?</button>
-										</h5>
-									</div>
-									<div id="collapseSix" class="collapse"
-										aria-labelledby="headingSix" data-bs-parent="#paymentInfo">
-										<div class="card-body">
-											<p>We do our best to provide accuracy in the pricing and
-												other product information...</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingSeven">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseSeven"
-												aria-expanded="false" aria-controls="collapseSeven">
-												What Do You Do With My Information?</button>
-										</h5>
-									</div>
-									<div id="collapseSeven" class="collapse"
-										aria-labelledby="headingSeven" data-bs-parent="#paymentInfo">
-										<div class="card-body">
-											<p>We use your info to fulfil your order accurately and
-												quickly...</p>
-										</div>
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-						<div class="single-faq mb-80">
-							<h2 class="faq-title mb-20">Orders and returns</h2>
-							<div class="accordion" id="orderInfo">
-								<div class="card">
-									<div class="card-header" id="headingNine">
-										<h5 class="mb-0">
-											<button class="btn btn-link" data-bs-toggle="collapse"
-												data-bs-target="#collapseNine" aria-expanded="true"
-												aria-controls="collapseNine">How do I place an
-												Order?</button>
-										</h5>
-									</div>
-									<div id="collapseNine" class="collapse show"
-										aria-labelledby="headingNine" data-bs-parent="#orderInfo">
-										<div class="card-body">
-											<p>Click on a Product Photo or Product Name to see more
-												detailed information...</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingTen">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseTen"
-												aria-expanded="false" aria-controls="collapseTen">
-												How Can I Cancel Or Change My Order?</button>
-										</h5>
-									</div>
-									<div id="collapseTen" class="collapse"
-										aria-labelledby="headingTen" data-bs-parent="#orderInfo">
-										<div class="card-body">
-											<p>Go to Your Orders. Click Cancel Items...</p>
-										</div>
-									</div>
-								</div>
-
-								<div class="card">
-									<div class="card-header" id="headingEleven">
-										<h5 class="mb-0">
-											<button class="btn btn-link collapsed"
-												data-bs-toggle="collapse" data-bs-target="#collapseEleven"
-												aria-expanded="false" aria-controls="collapseEleven">
-												Who Should I Contact If I Have Any Queries?</button>
-										</h5>
-									</div>
-									<div id="collapseEleven" class="collapse"
-										aria-labelledby="headingEleven" data-bs-parent="#orderInfo">
-										<div class="card-body">
-											<p>You can contact our customer support team by provided
-												email or mobile phone...</p>
-										</div>
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-					</div>
-					<!-- faq-wrapper -->
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- CTA -->
-	<div class="cta-area pt-50 pb-50">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="cta-content">
-						<div class="cta-title">
-							<h2>Any unanswered questions?</h2>
-						</div>
-						<div class="cta-button">
-							<button
-								class="lezada-button lezada-button--medium lezada-cta-button">contact
-								us</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Footer -->
-	<div class="footer-container footer-one pt-100 pb-50">
-		<div class="container wide">
-			<div class="row">
-				<div class="col footer-single-widget">
-					<div class="logo">
-						<img th:src="@{/assets/images/babymate_logo.png}"
-							class="img-fluid" alt="">
-					</div>
-					<div class="copyright-text" th:inline="text">
-						<p>
-							&copy; [[${#dates.format(#dates.createNow(),'yyyy')}]] BABYMATE.
-							<span>All Rights Reserved</span>
-						</p>
-					</div>
-				</div>
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">ABOUT</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">About us</a></li>
-								<li><a href="#">Store location</a></li>
-								<li><a href="#">Contact</a></li>
-								<li><a href="#">Orders tracking</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">USEFUL LINKS</h5>
-					<div class="footer-nav-container">
-						<nav>
-							<ul>
-								<li><a href="#">Returns</a></li>
-								<li><a href="#">Support Policy</a></li>
-								<li><a href="#">Size guide</a></li>
-								<li><a href="#">FAQs</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-				<div class="col footer-single-widget">
-					<h5 class="widget-title">FOLLOW US ON</h5>
-					<div class="footer-nav-container footer-social-links">
-						<nav>
-							<ul>
-								<li><a href="//twitter.com"><i class="fa fa-twitter"></i>
-										Twitter</a></li>
-								<li><a href="//facebook.com"><i class="fa fa-facebook"></i>
-										Facebook</a></li>
-								<li><a href="//instagram.com"><i
-										class="fa fa-instagram"></i> Instagram</a></li>
-								<li><a href="//youtube.com"><i class="fa fa-youtube"></i>
-										Youtube</a></li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-				<div class="col footer-single-widget">
-					<div class="footer-subscription-widget">
-						<h2 class="footer-subscription-title">Subscribe.</h2>
-						<p class="subscription-subtitle">Subscribe to our newsletter
-							to receive news on update.</p>
-						<div class="subscription-form">
-							<form id="mc-form" class="mc-form">
-								<input type="email" placeholder="Your email address" required>
-								<button type="submit">
-									<i class="ion-ios-arrow-thin-right"></i>
-								</button>
-							</form>
-						</div>
-						<div class="mailchimp-alerts">
-							<div class="mailchimp-submitting"></div>
-							<div class="mailchimp-success"></div>
-							<div class="mailchimp-error"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Overlays -->
-	<div class="header-offcanvas about-overlay" id="about-overlay">
-		<div class="overlay-close inactive"></div>
-		<div class="overlay-content">
-			<span class="close-icon" id="about-close-icon"><a
-				href="javascript:void(0)"><i class="ti-close"></i></a></span>
-			<div
-				class="overlay-content-container d-flex flex-column justify-content-between h-100">
-				<div class="widget-wrapper">
-					<div class="single-widget">
-						<h2 class="widget-title">About Us</h2>
-						<p>At Lezada, we put a strong emphasis on simplicity, quality
-							and usefulness of fashion products...</p>
-					</div>
-				</div>
-				<div class="contact-widget">
-					<p class="email">
-						<a href="mailto:contact@lezada.com">contact@lezada.com</a>
-					</p>
-					<p class="phone">(+00) 123 567990</p>
-					<div class="social-icons">
-						<ul>
-							<li><a href="//www.twitter.com" data-tippy="Twitter"
-								target="_blank"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="//www.facebook.com" data-tippy="Facebook"
-								target="_blank"><i class="fa fa-facebook"></i></a></li>
-							<li><a href="//www.instagram.com" data-tippy="Instagram"
-								target="_blank"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="//www.youtube.com" data-tippy="Youtube"
-								target="_blank"><i class="fa fa-youtube-play"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!--=======  wishlist overlay  =======-->
-
-	<div class="wishlist-overlay" id="wishlist-overlay">
-		<div class="wishlist-overlay-close inactive"></div>
-		<div class="wishlist-overlay-content">
-			<!--=======  close icon  =======-->
-
-			<span class="close-icon" id="wishlist-close-icon"> <a
-				href="javascript:void(0)"> <i class="ion-android-close"></i>
-			</a>
-			</span>
-
-			<!--=======  End of close icon  =======-->
-
-			<!--=======  offcanvas wishlist content container  =======-->
-
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Wishlist</h3>
-
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$300.00</span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/03.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/03.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$100.00</span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/01.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/01.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Dark Brown Leather Watch</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-						<!--=======  single cart product  =======-->
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"> <a href="#"><i
-									class="ti-close"></i></a>
-							</span>
-							<div class="image">
-								<a href="shop-product-basic.html"
-									th:href="@{/shop/product-basic}"> <img
-									src="assets/images/cart-product-image/02.jpg" class="img-fluid"
-									alt="" th:src="@{/assets/images/cart-product-image/02.jpg}">
-								</a>
-							</div>
-							<div class="content">
-								<h5>
-									<a href="shop-product-basic.html"
-										th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="main-price discounted">$200.00</span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-
-							</div>
-						</div>
-
-						<!--=======  End of single cart product  =======-->
-					</div>
-
-					<!--=======  cart buttons  =======-->
-
-					<div class="cart-buttons">
-						<a href="shop-wishlist.html" th:href="@{/shop/wishlist}">view
-							wishlist</a>
-					</div>
-
-					<!--=======  End of cart buttons  =======-->
-				</div>
-			</div>
-
-			<!--=======  End of offcanvas wishlist content container   =======-->
-		</div>
-	</div>
-
-	<!--=======  End of wishlist overlay  =======-->
-
-	<div class="cart-overlay" id="cart-overlay">
-		<div class="cart-overlay-close inactive"></div>
-		<div class="cart-overlay-content">
-			<span class="close-icon" id="cart-close-icon"><a
-				href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
-			<div class="offcanvas-cart-content-container">
-				<h3 class="cart-title">Cart</h3>
-				<div class="cart-product-wrapper">
-					<div class="cart-product-container  ps-scroll">
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dining Chair</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$220.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/03.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$80.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/01.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Dark Brown Leather
-										Watch</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
-							</div>
-						</div>
-
-						<div class="single-cart-product">
-							<span class="cart-close-icon"><a href="#"><i
-									class="ti-close"></i></a></span>
-							<div class="image">
-								<a th:href="@{/shop/product-basic}"><img
-									th:src="@{/assets/images/cart-product-image/02.jpg}"
-									class="img-fluid" alt=""></a>
-							</div>
-							<div class="content">
-								<h5>
-									<a th:href="@{/shop/product-basic}">Creative Wooden Stand</a>
-								</h5>
-								<p>
-									<span class="cart-count">2 x </span> <span
-										class="discounted-price">$180.00</span>
-								</p>
 							</div>
 						</div>
 					</div>
-
-					<p class="cart-subtotal">
-						<span class="subtotal-title">Subtotal:</span> <span
-							class="subtotal-amount">$200.00</span>
-					</p>
-
-					<div class="cart-buttons">
-						<a th:href="@{/shop/cart}">view cart</a> <a
-							th:href="@{/shop/checkout}">checkout</a>
-					</div>
-
-					<p class="free-shipping-text">Free Shipping on All Orders Over
-						$100!</p>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<!-- Search overlay -->
-	<div class="search-overlay" id="search-overlay">
-		<span class="close-icon search-close-icon"><a
-			href="javascript:void(0)" id="search-close-icon"><i
-				class="ti-close"></i></a></span>
-		<div class="search-overlay-content">
-			<div class="input-box">
-				<form th:action="@{/}">
-					<input type="search" placeholder="Search Products...">
-				</form>
-			</div>
-			<div class="search-hint">
-				<span># Hit enter to search or ESC to close</span>
-			</div>
-		</div>
-	</div>
-
-	<a href="#" class="scroll-top"></a>
-
-	<script th:src="@{/assets/js/vendor/jquery.min.js}"></script>
-	<script th:src="@{/assets/js/popper.min.js}"></script>
-	<script th:src="@{/assets/js/bootstrap.min.js}"></script>
-	<script th:src="@{/assets/js/plugins.js}"></script>
-	<script th:src="@{/assets/js/main.js}"></script>
+		<!-- end page wrapper -->
+</section>
+<th:block th:fragment="extraJs">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    <script>
+	    // 可選：網址帶 #hash 時，直接開對應分頁
+	    document.addEventListener('DOMContentLoaded', function () {
+	      const hash = window.location.hash;
+	      if (hash) {
+	        const trigger = document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
+	        if (trigger) new bootstrap.Tab(trigger).show();
+	      }
+	    });
+  </script>
+</th:block>
 </body>
 </html>

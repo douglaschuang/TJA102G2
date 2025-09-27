@@ -21,14 +21,41 @@
 			<!-- KPI 四格（用 fragment 重複利用） -->
 			<div class="row g-3">
 				<div
-					th:replace="~{fragments/admin :: smallBox('primary', ${stats.newOrdersToday}, '新訂單(今日)', @{/admin/order})}"></div>
-				<div
-					th:replace="~{fragments/admin :: smallBox('success',|${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,'跳出率 (今日)', @{/admin/analytics})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.newOrdersToday == 0 ? 'danger' : (stats.newOrdersToday < 6 ? 'warning' : 'success')},
+  ${stats.newOrdersToday},
+  '新訂單(今日)', @{/admin/orders/list}
+)}"></div>
 
 				<div
-					th:replace="~{fragments/admin :: smallBox('warning', ${stats.newUsersToday}, '新會員(今日)', @{/admin/member/listAllMember})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.bounceRate &lt; 35 ? 'success' : (stats.bounceRate &lt;= 55 ? 'warning' : 'danger')},
+  |${#numbers.formatDecimal(stats.bounceRate, 1, 1)}%|,
+  '跳出率 (今日)', @{/admin/analytics}
+)}"></div>
+
 				<div
-					th:replace="~{fragments/admin :: smallBox('danger', ${stats.uniqueVisitors7d}, '近7天訪客', @{/admin/analytics})}"></div>
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.newUsersToday == 0 ? 'warning' : (stats.newUsersToday &lt;= 2 ? 'primary' : 'success')},
+  ${stats.newUsersToday},
+  '新會員(今日)', @{/admin/member/listAllMember}
+)}"></div>
+
+				<div
+					th:replace="~{fragments/admin :: smallBox(
+  ${stats.uniqueVisitors7d &lt; 20 ? 'warning' : (stats.uniqueVisitors7d &lt; 50 ? 'primary' : 'success')},
+  ${stats.uniqueVisitors7d},
+  '近7天訪客', @{/admin/analytics}
+)}"></div>
+				<!-- <div class="col-lg-3 col-6">
+					<div class="small-box text-bg-primary">
+						<div class="inner">
+							<h3 id="onlineCount">0</h3>
+							<p>目前在線</p>
+						</div>
+					</div>
+				</div> -->
+
 			</div>
 
 			<div class="row mt-3">
@@ -53,7 +80,7 @@
 						<div
 							class="card-header d-flex justify-content-between align-items-center">
 							<h3 class="card-title mb-0">最新訂單</h3>
-							<a th:href="@{/admin/order}"
+							<a th:href="@{/admin/orders/list}"
 								class="btn btn-sm btn-outline-secondary">全部</a>
 						</div>
 						<div class="card-body p-0">
@@ -166,6 +193,44 @@
 				});
 				chart.render();
 			</script>
+			<script
+				src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+			<script
+				src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+			<script>
+(function () {
+  const onlineEl = document.getElementById('onlineCount');
+  if (!onlineEl) return;
+
+  // 連線
+  const sock = new SockJS('/ws');
+  const stomp = Stomp.over(sock);
+  // 可關閉除錯訊息
+  stomp.debug = null;
+
+  stomp.connect({}, function onConnect() {
+    // 訂閱伺服器廣播
+    stomp.subscribe('/topic/online', function (msg) {
+      try {
+        const data = JSON.parse(msg.body);
+        onlineEl.textContent = data.count ?? 0;
+      } catch (e) {
+        // 若伺服器傳純數字
+        onlineEl.textContent = msg.body || '0';
+      }
+    });
+  }, function onError() {
+    // 連不上就顯示 0（或顯示 "-"）
+    onlineEl.textContent = '0';
+  });
+
+  // 可選：頁面卸載時關閉（多頁切換時比較乾淨）
+  window.addEventListener('beforeunload', () => {
+    try { stomp.disconnect(() => {}); } catch (e) {}
+  });
+})();
+</script>
+
 		</th:block>
 </body>
 </html>

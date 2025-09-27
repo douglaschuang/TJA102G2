@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
-  <th:block th:fragment="extraHead"></th:block>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead"></th:block>
 </head>
 
-<body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
-<section th:fragment="content">
-<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('商城')}"></div>
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('商城')}"></div>
 
 
 
-	<!-- page wrapper -->
-	<!-- shop page wrapper -->
-	<div class="shop-page-wrapper">
-		<!-- header -->
-		<div class="shop-page-header">
-			<div class="container">
-				<div class="row align-items-center">
-					<div class="col-12 col-lg-7 col-md-10 d-none d-md-block">
-						<div class="filter-title filter-title--type-two">
-							<ul class="product-filter-menu">
-								<!-- <li data-filter=".hot">熱銷商品</li> -->
-								<!-- <li data-filter=".new">新上架商品</li> -->
-								<!-- <li data-filter=".sale">限時特價</li> -->
-								<li>
-									<a th:href="@{/shop/left}">綜合排名</a>
-								</li>
-								<li th:classappend="${sort} == 'newProduct' ? '' ">
-									<a th:href="@{/shop/left(sort='newProduct')}">最新</a>
-								</li>
-								<li th:classappend="${sort} == 'priceAsc' ? '' ">
-									<a th:href="@{/shop/left(sort='priceAsc')}">價格: 由低到高</a>
-								</li>
-								<li th:classappend="${sort} == 'priceDesc' ? '' ">
-									<a th:href="@{/shop/left(sort='priceDesc')}">價格: 由高到低</a>
-								</li>
-							</ul>
+		<!-- page wrapper -->
+		<!-- shop page wrapper -->
+		<div class="shop-page-wrapper">
+			<!-- header -->
+			<div class="shop-page-header">
+				<div class="container">
+					<div class="row align-items-center">
+						<div class="col-12 col-lg-7 col-md-10 d-none d-md-block">
+							<div class="filter-title filter-title--type-two">
+								<ul class="product-filter-menu">
+									<!-- <li data-filter=".hot">熱銷商品</li> -->
+									<!-- <li data-filter=".new">新上架商品</li> -->
+									<!-- <li data-filter=".sale">限時特價</li> -->
+									<li><a th:href="@{/shop/left}">綜合排名</a></li>
+									<li th:classappend="${sort} == 'newProduct' ? '' "><a
+										th:href="@{/shop/left(sort='newProduct')}">最新</a></li>
+									<li th:classappend="${sort} == 'priceAsc' ? '' "><a
+										th:href="@{/shop/left(sort='priceAsc')}">價格: 由低到高</a></li>
+									<li th:classappend="${sort} == 'priceDesc' ? '' "><a
+										th:href="@{/shop/left(sort='priceDesc')}">價格: 由高到低</a></li>
+								</ul>
+							</div>
 						</div>
-					</div>
-					<div class="col-12 col-lg-5 col-md-2">
-						<div class="filter-icons">
-							<!-- <div class="single-icon filter-dropdown">
+						<div class="col-12 col-lg-5 col-md-2">
+							<div class="filter-icons">
+								<!-- <div class="single-icon filter-dropdown">
 								<select class="nice-select" aria-label="排序">
 									<option value="0">綜合排名</option>
 									<option value="1">最新</option>
@@ -50,29 +47,29 @@
 									<option value="4">價格: 由低到高</option>
 								</select>
 							</div> -->
-							<div class="single-icon grid-icons" aria-label="版型切換">
-								<a data-target="five-column" href="javascript:void(0)"><i
-									class="ti-layout-grid4-alt" aria-hidden="true"></i></a> <a
-									data-target="four-column" class="active"
-									href="javascript:void(0)"><i class="ti-layout-grid3-alt"
-									aria-hidden="true"></i></a> <a data-target="three-column"
-									href="javascript:void(0)"><i class="ti-layout-grid2-alt"
-									aria-hidden="true"></i></a> <a data-target="list"
-									href="javascript:void(0)"><i class="ti-view-list"
-									aria-hidden="true"></i></a>
-							</div>
-							<!-- <div class="single-icon advance-filter-icon">
+								<div class="single-icon grid-icons" aria-label="版型切換">
+									<a data-target="five-column" href="javascript:void(0)"><i
+										class="ti-layout-grid4-alt" aria-hidden="true"></i></a> <a
+										data-target="four-column" class="active"
+										href="javascript:void(0)"><i class="ti-layout-grid3-alt"
+										aria-hidden="true"></i></a> <a data-target="three-column"
+										href="javascript:void(0)"><i class="ti-layout-grid2-alt"
+										aria-hidden="true"></i></a> <a data-target="list"
+										href="javascript:void(0)"><i class="ti-view-list"
+										aria-hidden="true"></i></a>
+								</div>
+								<!-- <div class="single-icon advance-filter-icon">
 								<a href="javascript:void(0)" id="advance-filter-active-btn"><i
 									class="ion-android-funnel" aria-hidden="true"></i> 篩選</a>
 							</div> -->
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- advance filter -->
-		<!-- <div class="shop-advance-filter-area" id="shop-advance-filter-area">
+			<!-- advance filter -->
+			<!-- <div class="shop-advance-filter-area" id="shop-advance-filter-area">
 			<div class="shop-advance-filter-wrapper pt-50">
 				<div class="container">
 					<div class="row">
@@ -148,20 +145,20 @@
 						</div>
 
 					</div> -->
-					<!-- /row -->
-				<!-- </div>
+			<!-- /row -->
+			<!-- </div>
 			</div>
 		</div> -->
-		<!-- /advance filter -->
+			<!-- /advance filter -->
 
-		<!-- content -->
-		<div class="shop-page-content mt-100 mb-100">
-			<div class="container">
-				<div class="row">
-					<!-- sidebar -->
-					<div class="col-lg-3 order-2 order-lg-1">
-						<div class="page-sidebar">
-							<!-- <div class="single-sidebar-widget mb-40">
+			<!-- content -->
+			<div class="shop-page-content mt-100 mb-100">
+				<div class="container">
+					<div class="row">
+						<!-- sidebar -->
+						<div class="col-lg-3 order-2 order-lg-1">
+							<div class="page-sidebar">
+								<!-- <div class="single-sidebar-widget mb-40">
 								<div class="search-widget">
 									<form action="#" role="search" aria-label="站內商品搜尋">
 										<input type="search" placeholder="請輸入商品..." aria-label="搜尋關鍵字">
@@ -172,66 +169,69 @@
 								</div>
 							</div> -->
 
-							<div class="single-sidebar-widget mb-40">
-								<h2 class="single-sidebar-widget--title">全站商品分類</h2>
-								<ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
-									<!-- 全部 -->
-									<li>
-										<a th:href="@{/shop/left(minPrice=${minPrice}, max=${maxPrice})}" th:classappend="${selectedCategoryId} == null ? 'active' : ''">全部</a>
-										<span class="quantity" th:text="${allCount}"></span>
-									</li>
-									<!-- 其餘分類 -->
-									<li th:each="c : ${categories}">
-										<a th:href="@{/shop/left(
+								<div class="single-sidebar-widget mb-40">
+									<h2 class="single-sidebar-widget--title">全站商品分類</h2>
+									<ul
+										class="single-sidebar-widget--list single-sidebar-widget--list--category">
+										<!-- 全部 -->
+										<li><a
+											th:href="@{/shop/left(minPrice=${minPrice}, max=${maxPrice})}"
+											th:classappend="${selectedCategoryId} == null ? 'active' : ''">全部</a>
+											<span class="quantity" th:text="${allCount}"></span></li>
+										<!-- 其餘分類 -->
+										<li th:each="c : ${categories}"><a
+											th:href="@{/shop/left(
 												categoryId=${c.categoryId},
 												minPrice=${minPrice},
 												maxPrice=${maxPrice})}"
 											th:text="${c.categoryName}"
 											th:classappend="${selectedCategoryId} == ${c.categoryId} ? 'active' : ''">
-										</a>
-										<span class="quantity" th:text="${c.count}"></span>
-									</li>
-								</ul>
-							</div>
+										</a> <span class="quantity" th:text="${c.count}"></span></li>
+									</ul>
+								</div>
 
-							<div class="single-sidebar-widget mb-40">
-								<h2 class="single-sidebar-widget--title">價格範圍搜尋</h2>
-									<form th:action="@{/shop/left}" method="get" class="output-wrapper mt-20">
-									    <!-- 保留目前分類 -->
-									    <input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
-									    <!-- 最低 / 最高價 -->
-							            <div>
-							            	<input type="number" name="minPrice" placeholder="最低價格" th:value="${minPrice}" style="width: 100px;" />
-							            	<span>－</span>
-							  	        	<input type="number" name="maxPrice" placeholder="最高價格" th:value="${maxPrice}" style="width: 100px;"/>
-							  	        </div>
-									    <button type="submit" class="price-range-button">
-									    	<i class="ion-android-funnel" aria-hidden="true"></i> 篩選
-									    </button>
-								    </form>
-							</div>
-								
-								
+								<div class="single-sidebar-widget mb-40">
+									<h2 class="single-sidebar-widget--title">價格範圍搜尋</h2>
+									<form th:action="@{/shop/left}" method="get"
+										class="output-wrapper mt-20">
+										<!-- 保留目前分類 -->
+										<input type="hidden" name="categoryId"
+											th:value="${selectedCategoryId}">
+										<!-- 最低 / 最高價 -->
+										<div>
+											<input type="number" name="minPrice" placeholder="最低價格"
+												th:value="${minPrice}" style="width: 100px;" /> <span>－</span>
+											<input type="number" name="maxPrice" placeholder="最高價格"
+												th:value="${maxPrice}" style="width: 100px;" />
+										</div>
+										<br>
+										<button type="submit" class="btn btn-outline-primary btn-sm" aria-label="篩選">
+											<i class="bi bi-card-list" aria-hidden="true"></i> 篩選
+										</button>
+									</form>
+								</div>
+
+
 								<!-- <ul
 									class="single-sidebar-widget--list single-sidebar-widget--list--category">
 									<li><a
 										th:href="@{/shop/left-sidebar}">奶粉類</a> <span class="quantity">5</span> -->
-										<!-- <ul>
+								<!-- <ul>
 											<li><a th:href="@{/shop/left-sidebar}">For body</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Make up</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">New</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Perfumes</a></li>
 										</ul> </li>-->
-									<!-- <li><a
+								<!-- <li><a
 										th:href="@{/shop/left-sidebar}">母嬰日用品類</a> <span
 										class="quantity">23</span> -->
-										<!-- <ul>
+								<!-- <ul>
 											<li><a th:href="@{/shop/left-sidebar}">Sofas</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Armchairs</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Desk Chairs</a></li>
 											<li><a th:href="@{/shop/left-sidebar}">Dining Chairs</a></li>
 										</ul> </li>-->
-									<!-- <li><a th:href="@{/shop/left-sidebar}">桌椅類</a> <span
+								<!-- <li><a th:href="@{/shop/left-sidebar}">桌椅類</a> <span
 										class="quantity">12</span></li>
 								</ul>
 							</div>
@@ -248,13 +248,13 @@
 								</div>
 							</div> -->
 
-							<!-- 熱門商品 -->
-							<div class="single-sidebar-widget mb-40">
-								<!-- <h2 class="single-sidebar-widget--title">熱門商品</h2> -->
-								<div class="widget-product-wrapper">
+								<!-- 熱門商品 -->
+								<div class="single-sidebar-widget mb-40">
+									<!-- <h2 class="single-sidebar-widget--title">熱門商品</h2> -->
+									<div class="widget-product-wrapper">
 
-									<!-- 熱銷  -->
-									<!-- <div class="single-widget-product-wrapper">
+										<!-- 熱銷  -->
+										<!-- <div class="single-widget-product-wrapper">
 										<th:block th:each="p : ${hotProducts}">
 											<div class="single-widget-product">
 												<div class="single-widget-product__image">
@@ -285,8 +285,8 @@
 										</th:block>
 									</div> -->
 
-									<!-- 熱銷 1 -->
-									<!-- <div class="single-widget-product-wrapper">
+										<!-- 熱銷 1 -->
+										<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -316,8 +316,8 @@
 										</div>
 									</div> -->
 
-									<!-- 熱銷 2 -->
-									<!-- <div class="single-widget-product-wrapper">
+										<!-- 熱銷 2 -->
+										<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -346,8 +346,8 @@
 										</div>
 									</div> -->
 
-									<!-- 熱銷 3 -->
-									<!-- <div class="single-widget-product-wrapper">
+										<!-- 熱銷 3 -->
+										<!-- <div class="single-widget-product-wrapper">
 										<div class="single-widget-product">
 											<div class="single-widget-product__image">
 												<a th:href="@{/shop/product-basic}"> <img
@@ -376,117 +376,273 @@
 										</div>
 									</div> -->
 
+									</div>
+									<!-- /widget-product-wrapper -->
 								</div>
-								<!-- /widget-product-wrapper -->
 							</div>
 						</div>
-					</div>
 
-					<!-- products -->
-					<div class="col-lg-9 order-1 order-lg-2 mb-md-80 mb-sm-80">
+						<!-- products -->
+						<div class="col-lg-9 order-1 order-lg-2 mb-md-80 mb-sm-80">
 						<div class="row product-isotope shop-product-wrap four-column">
 
-							<!-- 商品區 -->
-							<th:block  th:each="p, stat : ${hotProducts}">
-								<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
-									<!-- Grid 版 -->
-									<div class="single-product">
-										<div class="single-product__image">
-											<a class="image-wrap" th:href="@{/shop/product-basic(id=${p.productId})}">
-												<img th:src="@{/product/DBGifReader(productId=${p.productId})}"
-													 class="img-fluid" th:alt="${p.productName}" loading="lazy"
-													 decoding="async">
-											</a>
-											<div class="single-product__floating-icons">
-												<span class="wishlist">
-													<a href="#" aria-label="加入收藏">
-														<i class="ion-android-favorite-outline" aria-hidden="true"></i>
+  <!-- 商品區 -->
+  <th:block th:each="p, stat : ${hotProducts}">
+    <!-- 這層保護：p 為 null 時整塊跳過 -->
+    <div th:if="${p != null}" class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
+      
+      <!-- Grid 版 -->
+      <div class="single-product">
+        <div class="single-product__image">
+          <a class="image-wrap"
+             th:href="@{/shop/product-basic(id=${p.productId})}">
+            <img th:src="@{/product/DBGifReader(productId=${p.productId})}"
+                 class="img-fluid" th:alt="${p.productName}" loading="lazy" decoding="async">
+          </a>
+          <div class="single-product__floating-icons">
+            <span class="wishlist">
+              <a href="javascript:void(0)"
+                 class="btn-wishlist"
+                 th:attr="data-product-id=${p.productId}"
+                 th:classappend="${favIds != null and favIds.contains(p.productId)} ? ' active' : ''"
+                 aria-label="加入收藏" title="加入收藏">
+                 <i th:class="${(favIds != null and favIds.contains(p.productId))} ? 'ion-android-favorite' : 'ion-android-favorite-outline'"></i>
+              </a>
+            </span>
+            <span class="compare">
+              <a href="#" aria-label="加入比較">
+                <i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+              </a>
+            </span>
+            <span class="quickview">
+              <a class="cd-trigger" th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
+                <i class="ion-ios-search-strong" aria-hidden="true"></i>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="single-product__content">
+          <div class="title">
+            <h3>
+              <a th:href="@{/shop/product-basic(id=${p.productId})}"
+                 th:text="${p.productName}">商品名稱</a>
+            </h3>
+          </div>
+          <div class="price">
+            <span class="main-price" th:text="'NT$' + ${p.price}">NT$0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- List 版 -->
+      <div class="single-product--list">
+        <div class="single-product__image">
+          <a class="image-wrap"
+             th:href="@{/shop/product-basic(id=${p.productId})}">
+            <img th:src="@{/product/DBGifReader(productId=${p.productId})}"
+                 class="img-fluid" th:alt="${p.productName}" loading="lazy" decoding="async">
+          </a>
+          <div class="single-product__floating-icons">
+            <span class="wishlist">
+              <a href="javascript:void(0)"
+                 class="btn-wishlist"
+                 th:attr="data-product-id=${p.productId}"
+                 th:classappend="${favIds != null and favIds.contains(p.productId)} ? ' active' : ''"
+                 aria-label="加入收藏" title="加入收藏">
+                 <i th:class="${(favIds != null and favIds.contains(p.productId))} ? 'ion-android-favorite' : 'ion-android-favorite-outline'"></i>
+              </a>
+            </span>
+            <span class="compare">
+              <a href="#" aria-label="加入比較">
+                <i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+              </a>
+            </span>
+            <span class="quickview">
+              <a class="cd-trigger" th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
+                <i class="ion-ios-search-strong" aria-hidden="true"></i>
+              </a>
+            </span>
+          </div>
+        </div>
+        <div class="single-product__content">
+          <div class="title">
+            <h3>
+              <a th:href="@{/shop/product-basic(id=${p.productId})}"
+                 th:text="${p.productName}">商品名稱</a>
+            </h3>
+          </div>
+          <div class="price">
+            <span class="main-price" th:text="'NT$' + ${p.price}">NT$0</span>
+          </div>
+          
+          <span class="quickview-title">數量：</span>
+          <div class="pro-qty d-inline-block mx-0 pt-0">
+            <input type="number" class="cart-qty" value="1" min="1" th:data-product-id="${p.productId}">
+          </div>
+
+          <div class="add-to-cart-btn mb-25">
+       	    <p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
+            <a class="lezada-button lezada-button--medium add-to-cart-btn-s" href="#"
+               th:data-product-id="${p.productId}">加入購物車</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick View 面板：放在同一筆商品內，且 p 不會為 null -->
+      <div th:id="'qv-' + ${p.productId}" class="cd-quick-view">
+        <div class="cd-slider-wrapper">
+          <ul class="cd-slider">
+            <li class="selected"><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 1"></li>
+            <li><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 2"></li>
+          </ul>
+          <ul class="cd-slider-pagination">
+            <li class="active"><a href="#0">1</a></li>
+            <li><a href="#1">2</a></li>
+          </ul>
+          <ul class="cd-slider-navigation">
+            <li><a class="cd-prev" href="#0">Prev</a></li>
+            <li><a class="cd-next" href="#0">Next</a></li>
+          </ul>
+        </div>
+
+        <div class="lezada-item-info cd-item-info ps-scroll">
+          <h2 class="item-title" th:text="${p.productName}"></h2>
+          <p class="price"><span class="discounted-price" th:text="'NT$' + ${p.price}"></span></p>
+          <p class="description" th:text="${p.featureDesc}"></p>
+
+          <span class="quickview-title">數量：</span>
+          <div class="pro-qty d-inline-block mx-0 pt-0">
+            <input type="number" class="cart-qty" value="1" min="1" th:data-product-id="${p.productId}">
+          </div>
+
+          <div class="add-to-cart-btn mb-25">
+            <a class="lezada-button lezada-button--medium add-to-cart-btn-s" href="#"
+               th:data-product-id="${p.productId}">加入購物車</a>
+          </div>
+
+          <a href="#0" class="cd-close">Close</a>
+        </div>
+      </div>
+      <!-- /Quick View -->
+    </div>
+  </th:block>
+</div>
+						
+							<!-- <div class="row product-isotope shop-product-wrap four-column">
+
+								商品區
+								<th:block th:each="p, stat : ${hotProducts}">
+									<div class="col-12 col-lg-3 col-md-6 col-sm-6 mb-45 hot sale">
+										Grid 版
+										<div class="single-product">
+											<div class="single-product__image">
+												<a class="image-wrap"
+													th:href="@{/shop/product-basic(id=${p.productId})}"> <img
+													th:src="@{/product/DBGifReader(productId=${p.productId})}"
+													class="img-fluid" th:alt="${p.productName}" loading="lazy"
+													decoding="async">
+												</a>
+												<div class="single-product__floating-icons">
+												
+													<span class="wishlist">
+                                                     <a href="javascript:void(0)"
+                                                        class="btn-wishlist"
+                                                        th:attr="data-product-id=${p.productId}"
+                                                        th:classappend="${favIds != null and favIds.contains(p.productId)} ? ' active' : ''"
+                                                        aria-label="加入收藏" title="加入收藏">
+                                                       <i th:class="${(favIds != null and favIds.contains(p.productId))} ? 'ion-android-favorite' : 'ion-android-favorite-outline'"></i>
+                                                     </a>
+                                                   </span>
+													
+													<span class="compare"> <a href="#"
+														aria-label="加入比較"> <i class="ion-ios-shuffle-strong"
+															aria-hidden="true"></i>
 													</a>
-												</span>
-												<span class="compare">
-													<a href="#" aria-label="加入比較">
-														<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+													</span> <span class="quickview"> <a class="cd-trigger"
+														th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽"> <i
+															class="ion-ios-search-strong" aria-hidden="true"></i>
 													</a>
-												</span>
-												<span class="quickview">
-													<a class="cd-trigger" th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
-														<i class="ion-ios-search-strong" aria-hidden="true"></i>
-													</a>
-												</span>
+													</span>
+												</div>
+											</div>
+											<div class="single-product__content">
+												<div class="title">
+													<h3>
+														<a th:href="@{/shop/product-basic(id=${p.productId})}"
+															th:text="${p.productName}">商品名稱</a>
+													</h3>
+												</div>
+												<div class="price">
+													<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
+												</div>
 											</div>
 										</div>
-										<div class="single-product__content">
-											<div class="title">
-												<h3>
-													<a th:href="@{/shop/product-basic(id=${p.productId})}" th:text="${p.productName}">商品名稱</a>
-												</h3>
-											</div>
-											<div class="price">
-												<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
-											</div>
-										</div>
-									</div>
-									
-									<!-- List 版 -->
-									<div class="single-product--list">
-										<div class="single-product__image">
-											<a class="image-wrap" th:href="@{/shop/product-basic(id=${p.productId})}">
-												<img th:src="@{/product/DBGifReader(productId=${p.productId})}"
-													 class="img-fluid" th:alt="${p.productName}" loading="lazy"
-													 decoding="async">
-											</a>
-											<div class="single-product__floating-icons">
-												<span class="wishlist">
-													<a href="#" aria-label="加入收藏">
-														<i class="ion-android-favorite-outline" aria-hidden="true"></i>
+
+										List 版
+										<div class="single-product--list">
+											<div class="single-product__image">
+												<a class="image-wrap"
+													th:href="@{/shop/product-basic(id=${p.productId})}"> <img
+													th:src="@{/product/DBGifReader(productId=${p.productId})}"
+													class="img-fluid" th:alt="${p.productName}" loading="lazy"
+													decoding="async">
+												</a>
+												<div class="single-product__floating-icons">
+													<span class="wishlist">
+                                                     <a href="javascript:void(0)"
+                                                        class="btn-wishlist"
+                                                        th:attr="data-product-id=${p.productId}"
+                                                        th:classappend="${favIds != null and favIds.contains(p.productId)} ? ' active' : ''"
+                                                        aria-label="加入收藏" title="加入收藏">
+                                                       <i th:class="${(favIds != null and favIds.contains(p.productId))} ? 'ion-android-favorite' : 'ion-android-favorite-outline'"></i>
+                                                     </a>
+                                                   </span><span class="compare"> <a href="#"
+														aria-label="加入比較"> <i class="ion-ios-shuffle-strong"
+															aria-hidden="true"></i>
 													</a>
-												</span>
-												<span class="compare">
-													<a href="#" aria-label="加入比較">
-														<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+													</span> <span class="quickview"> <a class="cd-trigger"
+														th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽"> <i
+															class="ion-ios-search-strong" aria-hidden="true"></i>
 													</a>
-												</span>
-												<span class="quickview">
-													<a class="cd-trigger" href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
-														<i class="ion-ios-search-strong" aria-hidden="true"></i>
-													</a>
-												</span>
+													</span>
+												</div>
 											</div>
-										</div>
-										<div class="single-product__content">
-											<div class="title">
-												<h3>
-													<a th:href="@{/shop/product-basic(id=${p.productId})}" th:text="${p.productName}">商品名稱</a>
-												</h3>
+											<div class="single-product__content">
+												<div class="title">
+													<h3>
+														<a th:href="@{/shop/product-basic(id=${p.productId})}"
+															th:text="${p.productName}">商品名稱</a>
+													</h3>
+												</div>
+												<div class="price">
+													<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
+												</div>
+												<p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
+												<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
 											</div>
-											<div class="price">
-												<span class="main-price" th:text="'NT$' + ${p.price}">NT$99,999,999</span>
-											</div>
-											<p class="short-desc" th:text="${p.featureDesc}">特色說明</p>
-											<a href="#" class="lezada-button lezada-button--medium">加入購物車</a>
 										</div>
 									</div>
 								</div>
 								
 								
-								<!-- 點選商品搜尋icon 快速查看商品 -->
+								點選商品搜尋icon 快速查看商品
 								<div th:id="'qv-' + ${p.productId}" class="cd-quick-view">
 									<div class="cd-slider-wrapper">
 										<ul class="cd-slider">
 											<li class="selected"><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 2"></li>
 											<li><img th:src="@{/product/DBGifReader(productId=${p.productId})}" alt="Product 1"></li>
-										</ul> <!-- cd-slider -->
+										</ul> cd-slider
 							
 										<ul class="cd-slider-pagination">
 											<li class="active"><a href="#0">1</a></li>
 											<li><a href="#1">2</a></li>
-										</ul> <!-- cd-slider-pagination -->
+										</ul> cd-slider-pagination
 							
 										<ul class="cd-slider-navigation">
 											<li><a class="cd-prev" href="#0">Prev</a></li>
 											<li><a class="cd-next" href="#0">Next</a></li>
-										</ul> <!-- cd-slider-navigation -->
-									</div> <!-- cd-slider-wrapper -->
+										</ul> cd-slider-navigation
+									</div> cd-slider-wrapper
 							
 									<div class="lezada-item-info cd-item-info ps-scroll">
 							
@@ -501,21 +657,34 @@
 										<div class="pro-qty d-inline-block mb-40">
 											<input type="text" value="1">
 										</div>
+										
+										<div class="pro-qty d-inline-block mx-0 pt-0">
+													這裡加上 id 或 data-product-id，方便 JS 讀取
+													<input type="number" class="cart-qty" value="1" min="1" 
+													th:data-product-id="${p.productId}">
+      												<input type="number" class="cart-qty" value="1" min="1" 
+      												th:attr="data-product-id=${p.productId}" >
+												</div>
 							
 										<div class="add-to-cart-btn mb-25">
 							
 											<button class="lezada-button lezada-button--medium">加入購物車</button>
+											<a class="lezada-button lezada-button--medium add-to-cart-btn" href="#"
+											  th:attr="data-product-id=${p.productId}" >加入購物車</a>
+<a class="lezada-button lezada-button--medium add-to-cart-btn-s" href="#" th:data-product-id="${p.productId}">加入購物車</a>
 										</div>
-									</div> <!-- cd-item-info -->
-									<a href="#0" class="cd-close">Close</a>
-								</div>
-								<!-- End 點選商品搜尋icon 快速查看商品 -->
-								
-							</th:block>
+										cd-item-info
+										<a href="#0" class="cd-close">Close</a>
+									</div> -->
+									<!-- End 點選商品搜尋icon 快速查看商品 -->
+
+								</th:block>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- /content -->
 		</div>
 		<!-- /content -->
 	</div>
@@ -525,6 +694,191 @@
 <th:block th:fragment="extraJs">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    
+    <script>
+$(document).ready(function() {
+  $(".add-to-cart-btn-s").click(function(e) {
+    e.preventDefault(); // 阻止 <a> 預設跳轉
+
+//    const productId = $(this).data("product-id");
+//     const qty = $("input.cart-qty[data-product-id='" + productId + "']").val();
+//const qty = parseInt($("input.cart-qty[data-product-id='" + productId + "']").val()) || 1;
+//console.log($("input.cart-qty[data-product-id='" + productId + "']").val());
+//    console.log("productid:"+productId);
+//    console.log("qty:"+qty);
+    
+    const productId = $(this).data("product-id");
+    if (!productId) return; // 避免空值觸發
+    
+    const qtyInput = $("input.cart-qty[data-product-id='" + productId + "']");
+    const qty = parseInt(qtyInput.val(), 10) || 1;
+
+    console.log("Selector:", qtyInput);
+    console.log("productId:", productId);
+    console.log("qty:", qty);
+
+    $.ajax({
+      url: "/api/cart/addToCart",  // 後端 Controller 會自動判斷會員或訪客
+      type: "POST",
+//       contentType: "application/json",
+      data: {
+          productId: productId,
+          quantity: qty
+        },
+      success: function() {
+        alert("已加入購物車！");
+        // 可選：刷新購物車 icon 顯示數量
+        refreshCart();
+      },
+      error: function(xhr) {
+        alert("加入購物車失敗：" + xhr.responseText);
+      }
+    });
+  });
+});
+</script>
+<script th:inline="javascript">
+(function(){
+  document.addEventListener('click', async function(e){
+    const a = e.target.closest('a.btn-wishlist');
+    if (!a) return;
+    e.preventDefault();
+
+    const pid = a.getAttribute('data-product-id') || a.dataset.productId;
+    if (!pid) return;
+
+    const toggleUrl = /*[[@{/api/wishlist/toggle}]]*/ '/api/wishlist/toggle';
+    const loginUrl  = /*[[@{/shop/login}]]*/ '/shop/login';
+
+    try {
+      const res = await fetch(toggleUrl, {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({ productId: pid })
+      });
+
+      if (res.status === 401) {
+        // 未登入：彈出提醒，按下「前往登入」再導頁
+        if (window.Swal) {
+          Swal.fire({
+            icon: 'warning',
+            title: '請先登入',
+            text: '登入後即可收藏商品',
+            showCancelButton: true,
+            confirmButtonText: '前往登入',
+            cancelButtonText: '取消'
+          }).then(r => { if (r.isConfirmed) location.href = loginUrl; });
+        } else {
+          location.href = loginUrl;
+        }
+        return;
+      }
+
+      if (!res.ok) {
+        window.Swal ? Swal.fire({icon:'error', title:'操作失敗', text:'伺服器回應 ' + res.status})
+                    : alert('操作失敗 ('+res.status+')');
+        return;
+      }
+
+      const data = await res.json();
+      const icon = a.querySelector('i');
+
+      if (data.favorited) {
+        // 變成已收藏
+        a.classList.add('active');
+        icon?.classList.remove('ion-android-favorite-outline');
+        icon?.classList.add('ion-android-favorite');
+        a.setAttribute('aria-label','已加入收藏');
+        a.setAttribute('title','已加入收藏');
+
+        // 成功提示
+        window.Swal && Swal.fire({
+          icon: 'success',
+          title: '已成功收藏',
+          showConfirmButton: false,
+          timer: 1200
+        });
+      } else {
+        // 取消收藏
+        a.classList.remove('active');
+        icon?.classList.remove('ion-android-favorite');
+        icon?.classList.add('ion-android-favorite-outline');
+        a.setAttribute('aria-label','加入收藏');
+        a.setAttribute('title','加入收藏');
+
+        // 取消提示（可改成 success/neutral 都行）
+        window.Swal && Swal.fire({
+          icon: 'info',
+          title: '已取消收藏',
+          showConfirmButton: false,
+          timer: 1000
+        });
+      }
+   // ★★★ 就放在這裡：通知 overlays.html 重新刷新 mini 收藏清單
+      document.dispatchEvent(new Event('wishlist:changed'));
+ 
+    } catch (err) {
+      console.error(err);
+      window.Swal ? Swal.fire({icon:'error', title:'網路或伺服器錯誤'})
+                  : alert('網路或伺服器錯誤');
+    }
+  });
+})();
+</script>
+<script>
+(function(){
+  function openQuick(sel){
+    const panel = document.querySelector(sel);
+    if (!panel) return;
+    panel.style.display = 'block';
+    panel.setAttribute('aria-hidden','false');
+    panel.classList.add('is-visible');
+    document.body.classList.add('no-scroll');
+  }
+  function closeQuick(panel){
+    panel.classList.remove('is-visible');
+    panel.style.display = 'none';
+    panel.setAttribute('aria-hidden','true');
+    document.body.classList.remove('no-scroll');
+  }
+
+  // 打開
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('a.cd-trigger');
+    if (!trigger) return;
+    e.preventDefault();
+    const sel = trigger.getAttribute('href'); // 例如 #qv-123
+    if (sel && sel.startsWith('#')) openQuick(sel);
+  });
+
+  // 關閉（按 x）
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.cd-close');
+    if (!btn) return;
+    e.preventDefault();
+    const panel = btn.closest('.cd-quick-view');
+    if (panel) closeQuick(panel);
+  });
+
+  // 關閉（ESC）
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.cd-quick-view.is-visible').forEach(closeQuick);
+    }
+  });
+})();
+</script>
+<style>
+/* 沒有主題腳本也能顯示/隱藏 */
+.cd-quick-view{ display:none; }
+.cd-quick-view.is-visible{ display:block; }
+body.no-scroll{ overflow:hidden; }
+
+.btn-wishlist.pulse { animation: pulse .35s ease; }
+@keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.18)} 100%{transform:scale(1)} }
+.btn-wishlist.active i { filter: drop-shadow(0 0 2px rgba(0,0,0,.2)); }
+</style>
+
   </th:block>
 </body>
 </html>

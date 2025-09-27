@@ -13,8 +13,13 @@
     <!-- 內容區（fragment） -->
     <section th:fragment="content">
       <div class="card">
-      <div class="card-header">
+      <div class="card-header d-flex justify-content-between align-items-center">
         <h3>會員列表</h3>
+        <div class="ms-auto">
+            <a class="btn btn-sm btn-seccondary" th:href="@{/export/memberExcel}">
+              <i class="bi bi-box-arrow-up"></i> 匯出Excel
+            </a>
+          </div>
         
         <!-- 錯誤表列 -->
 <!-- 		<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div><br> -->

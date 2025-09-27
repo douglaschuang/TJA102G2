@@ -43,17 +43,19 @@
 												th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}">媽媽懷孕紀錄</a></li>
 											<li><a
 												th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb?.motherHandbookId})}">身體指數紀錄圖表</a></li>
-											<li><a th:href="@{/blog/full-grid-left(tab='todos')}">代辦事項</a></li>
+											<li><a th:href="@{/blog/full-grid-left(tab='todos')}">待辦事項</a></li>
 										</ul></li>
 
 									<li class="has-children"><a
 										th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">寶寶手冊</a>
 										<ul>
+
 											<li><a
 												th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶成長紀錄</a></li>
 											<li><a
 												th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
 											<li><a th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='todo')}">待辦事項</a></li>
+
 										</ul></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='calender')}">我的日曆</a></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
@@ -76,18 +78,24 @@
 									</span>
 								</div>
 
-								<!-- 最新三篇 -->
 								<div class="widget-post-wrapper"
 									th:if="${!#lists.isEmpty(latestDiary)}">
-									<div class="single-widget-post" th:each="d : ${latestDiary}">
+									<div class="single-widget-post d-flex gap-2 align-items-start"
+										th:each="d : ${latestDiary}">
+										<!-- 縮圖 -->
+										<a th:if="${d.hasImage()}" th:href="@{'/u/diary/' + ${d.id}}">
+											<img th:src="@{'/u/diary/' + ${d.id} + '/image'}"
+											alt="diary cover"
+											style="width: 72px; height: 72px; object-fit: cover; border-radius: 6px;">
+										</a>
+
 										<div class="content">
 											<h3 class="widget-post-title">
 												<a th:href="@{'/u/diary/' + ${d.id}}"
 													th:text="${d.title != null ? d.title : '（無標題）'}">日記標題</a>
 											</h3>
 											<p class="widget-post-date"
-												th:text="${#temporals.format(d.writtenAt != null ? d.writtenAt : d.createdAt, 'yyyy-MM-dd')}">
-												2025-01-01</p>
+												th:text="${#temporals.format(d.writtenAt != null ? d.writtenAt : d.createdAt, 'yyyy-MM-dd')}">2025-01-01</p>
 											<p class="small text-muted"
 												th:text="${#strings.abbreviate(d.content, 60)}">內容摘要</p>
 										</div>
@@ -97,6 +105,7 @@
 											th:href="@{/blog/full-grid-left(tab='diary')}">更多日記</a>
 									</div>
 								</div>
+
 							</div>
 
 
@@ -120,15 +129,6 @@
 							<div th:if="${mhb != null}">
 								<div
 									th:replace="~{fragments/mhb-detail :: mhbDetail(${mhb}, ${pregnancyWeek})}"></div>
-
-								<!-- 新增 CTA 區塊 -->
-								<!-- <div class="mt-3 d-flex gap-2">
-									<a class="btn btn-outline-primary btn-sm"
-										th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb.motherHandbookId})}">
-										檢視懷孕紀錄 </a> <a class="btn btn-outline-secondary btn-sm"
-										th:href="@{/blog/full-grid-left(tab='mhb-charts', mhbId=${mhb.motherHandbookId})}">
-										查看圖表 </a>
-								</div> -->
 							</div>
 						</div>
 
@@ -148,7 +148,7 @@
 								th:replace="~{fragments/mhb-charts :: mhbCharts(${mhb}, ${chartLabels}, ${chartWeights}, ${chartSp}, ${chartDp}, ${chartFhs})}"></div>
 						</div>
 
-						<!-- 代辦事項 -->
+						<!-- 待辦事項 -->
 						<div th:case="'todos'">
 							<div
 								th:replace="~{fragments/mhb-tabs :: mhbTabs(${activeTab}, ${mhb})}"></div>
@@ -216,37 +216,46 @@
 									th:href="@{/u/diary/new}">寫第一篇</a>
 							</div>
 
-							<!-- 日記清單 -->
+							<!-- 日記清單（有資料時） -->
 							<div class="list-group"
 								th:if="${entries != null and !#lists.isEmpty(entries)}">
 								<div class="list-group-item py-3" th:each="e : ${entries}">
-									<div class="d-flex w-100 justify-content-between">
-										<h6 class="mb-1"
-											th:text="${e.title != null ? e.title : '（無標題）'}">日記標題</h6>
-										<small class="text-muted"
-											th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">
-											2025-01-01 12:00 </small>
-									</div>
-									<p class="mb-2 text-muted"
-										th:text="${#strings.abbreviate(e.content, 120)}">內容前幾行預覽…</p>
-									<small class="text-muted d-block mb-2"
-										th:if="${e.tags != null}" th:text="${e.tags}">#tag</small>
+									<div
+										class="d-flex w-100 justify-content-between align-items-start gap-3">
+										<a th:if="${e.hasImage()}" th:href="@{'/u/diary/' + ${e.id}}">
+											<img th:src="@{'/u/diary/' + ${e.id} + '/image'}" alt="cover"
+											style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+										</a>
+										<div class="flex-fill">
+											<div class="d-flex w-100 justify-content-between">
+												<h6 class="mb-1"
+													th:text="${e.title != null ? e.title : '（無標題）'}">日記標題</h6>
+												<small class="text-muted"
+													th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</small>
+											</div>
+											<p class="mb-2 text-muted"
+												th:text="${#strings.abbreviate(e.content, 120)}">內容前幾行預覽…</p>
+											<small class="text-muted d-block mb-2"
+												th:if="${e.tags != null}" th:text="${e.tags}">#tag</small>
 
-									<div class="d-flex gap-2">
-										<a class="btn btn-sm btn-outline-secondary"
-											th:href="@{'/u/diary/' + ${e.id}}">查看</a> <a
-											class="btn btn-sm btn-outline-primary"
-											th:href="@{'/u/diary/' + ${e.id} + '/edit'}">編輯</a>
-										<form th:action="@{'/u/diary/' + ${e.id} + '/delete'}"
-											method="post" onsubmit="return confirm('確定刪除這篇日記？')">
-											<input type="hidden" th:name="${_csrf?.parameterName}"
-												th:value="${_csrf?.token}">
-											<button class="btn btn-sm btn-outline-danger">刪除</button>
-										</form>
+											<div class="d-flex gap-2">
+												<a class="btn btn-sm btn-outline-secondary"
+													th:href="@{'/u/diary/' + ${e.id}}">查看</a> <a
+													class="btn btn-sm btn-outline-primary"
+													th:href="@{'/u/diary/' + ${e.id} + '/edit'}">編輯</a>
+												<form th:action="@{'/u/diary/' + ${e.id} + '/delete'}"
+													method="post" onsubmit="return confirm('確定刪除這篇日記？')">
+													<input type="hidden" th:name="${_csrf?.parameterName}"
+														th:value="${_csrf?.token}">
+													<button class="btn btn-sm btn-outline-danger">刪除</button>
+												</form>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+
 
 						<!-- 寶寶手冊 -->
 						<div th:case="'babyhandbook'">
@@ -306,13 +315,14 @@ s
 						</div>
 
 
+
+						<!-- 預設首頁（當 activeTab 為空或未知時顯示） -->
+
 						<div th:case="*">
 							<div class="row">
 								<div class="col-md-12 mb-60">
 									<div
 										class="single-slider-post single-slider-post--sticky text-center pb-60">
-
-
 										<!-- category block 1 -->
 										<div
 											class="product-category-container mb-100 mb-md-90 mb-sm-90">
@@ -331,14 +341,12 @@ s
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
 																	<p>媽媽手冊</p>
-																	<a href="/blog/full-grid-left?tab=mhb"
-																		th:href="@{/blog/full-grid-left(tab='mhb')}">+
+																	<a th:href="@{/blog/full-grid-left(tab='mhb')}">+
 																		查看媽媽手冊</a>
 																</div>
 																<p class="product-count">孕程路上貼心陪伴</p>
 															</div>
-															<a href="/blog/full-grid-left(tab='mhb')"
-																class="banner-link"
+															<a class="banner-link"
 																th:href="@{/blog/full-grid-left(tab='mhb')}"></a>
 														</div>
 													</div>
@@ -362,7 +370,6 @@ s
 																	class="img-fluid" alt=""
 																	th:src="@{/assets/images/category/category-summer.jpg}">
 															</div>
-															<!-- href="/blog/full-grid-left(tab='mhb-records')" -->
 															<a class="banner-link"
 																th:href="@{/blog/full-grid-left(tab='mhb-records', mhbId=${mhb?.motherHandbookId})}"></a>
 														</div>
@@ -386,8 +393,7 @@ s
 																</div>
 																<p class="product-count">視覺化追蹤才安心</p>
 															</div>
-															<a href="/blog/full-grid-left(tab='mhb-charts')"
-																class="banner-link"
+															<a class="banner-link"
 																th:href="@{/blog/full-grid-left(tab='mhb-charts')}"></a>
 														</div>
 													</div>
@@ -398,9 +404,9 @@ s
 															<div
 																class="single-category__content single-category__content--one mt-25 mb-25">
 																<div class="title">
-																	<p>代辦事項</p>
+																	<p>待辦事項</p>
 																	<a th:href="@{/blog/full-grid-left(tab='todos')}">+
-																		查看代辦事項</a>
+																		查看待辦事項</a>
 																</div>
 																<p class="product-count">媽媽的行程秘書</p>
 															</div>
@@ -410,15 +416,14 @@ s
 																	class="img-fluid" alt=""
 																	th:src="@{/assets/images/category/category-bags.jpg}">
 															</div>
-															<a href="/blog/full-grid-left(tab='todos')"
-																class="banner-link"
+															<a class="banner-link"
 																th:href="@{/blog/full-grid-left(tab='todos')}"></a>
 														</div>
 													</div>
-
 												</div>
 											</div>
 										</div>
+
 										<!-- end category block 1 -->
 
 										<!-- content block -->
@@ -509,9 +514,11 @@ s
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
+
 																		<p>代辦事項</p>
 																		<a th:href="@{/blog/full-grid-left-bb(tab='todo')}">+
 																			查看代辦事項</a>
+
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
@@ -684,6 +691,49 @@ s
 	<th:block th:fragment="extraJs">
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(() => {
+  const form = document.getElementById('mhb-delete-form');
+  if (!form) return;
+
+  // 取 CSRF（若 layout 已放）
+  const csrfToken  = document.querySelector('meta[name="_csrf"]')?.content;
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // 關鍵：不導頁
+    if (!confirm('確定要刪除這本手冊嗎？刪除後仍可跟管理員要求復原。')) return;
+
+    try {
+      const body = new URLSearchParams(new FormData(form));
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+      };
+      if (csrfToken && csrfHeader) headers[csrfHeader] = csrfToken;
+
+      const res = await fetch(form.action, { method: 'POST', headers, body });
+      if (!res.ok) {
+        const msg = '刪除失敗（' + res.status + '）';
+        alert(msg);
+        return;
+      }
+
+      // 成功：留在本頁，更新 UI
+      alert('已刪除');
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.disabled = true; btn.classList.add('disabled'); }
+      // 需要的話，也可以把「編輯/檢視紀錄」按鈕停用或隱藏：
+      // document.querySelectorAll('.btn-primary.btn-sm, .btn-outline-secondary.btn-sm')
+      //   .forEach(el => el.classList.add('disabled'));
+    } catch (err) {
+      console.error(err);
+      alert('刪除失敗，請稍後再試');
+    }
+  });
+})();
+</script>
 	</th:block>
 </body>
 </html>

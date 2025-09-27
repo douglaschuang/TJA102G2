@@ -1,14 +1,17 @@
 package com.babymate.mhbfrontend.controller;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,41 +31,7 @@ public class FrontMhbController {
 	public FrontMhbController(MhbService mhbService) {
 		this.mhbService = mhbService;
 	}
-
-//    第一版 顯示新增表單
-//    @GetMapping("/new")
-//    public String newForm(HttpSession session, Model model) {
-//        MemberVO login = (MemberVO) session.getAttribute("member");
-//        if (login == null) return "redirect:/shop/login"; // 依你站內登入頁
-//
-//        // 若已經有一本，也可以選擇導去儀表板，或放提示
-//        MhbVO existed = mhbService.findActiveByMemberId(login.getMemberId());
-//        model.addAttribute("alreadyHasOne", existed != null);
-//
-//        MhbVO vo = new MhbVO();
-//        vo.setMemberId(login.getMemberId());
-//        model.addAttribute("mhbVO", vo);
-//        return "frontend/u/mhb/new_mhb";
-//    }
-//  第二版
-//	@GetMapping("/new")
-//	public String newForm(HttpSession session, Model model) {
-//		System.out.println("[MHB/NEW] SID=" + session.getId());
-//		MemberVO login = (MemberVO) session.getAttribute("member");
-//		System.out.println("[MHB/NEW] login=" + (login == null ? "null" : login.getMemberId()));
-//		if (login == null)
-//			return "redirect:/shop/login";
-//
-//		boolean alreadyHasOne = mhbService.hasAnyForMember(login.getMemberId());
-//		System.out.println("[MHB/NEW] alreadyHasOne=" + alreadyHasOne);
-//		model.addAttribute("alreadyHasOne", alreadyHasOne);
-//
-//		MhbVO vo = new MhbVO();
-//		vo.setMemberId(login.getMemberId());
-//		model.addAttribute("mhbVO", vo);
-//		return "frontend/u/mhb/new_mhb";
-//	}
-
+	
 	// 顯示新增表單：只有在 URL 帶了 mhbId 且該 ID 存在時，才顯示「你已經有一本」
 	@GetMapping("/new")
 	public String newForm(@RequestParam(value = "mhbId", required = false) Integer mhbId,
@@ -80,34 +49,7 @@ public class FrontMhbController {
 	    return "frontend/u/mhb/new_mhb";
 	}
 
-
-	// 第一版 接收建立
-//	@PostMapping
-//	public String create(@ModelAttribute("mhbVO") MhbVO mhbVO,
-//			@RequestParam(value = "up", required = false) MultipartFile up, HttpSession session, Model model)
-//			throws IOException {
-//
-//		MemberVO login = (MemberVO) session.getAttribute("member");
-//		if (login == null)
-//			return "redirect:/shop/login";
-//
-//		// 強制綁定會員
-//		mhbVO.setMemberId(login.getMemberId());
-//
-//		// 圖片（可選）
-//		if (up != null && !up.isEmpty()) {
-//			mhbVO.setUpFiles(up.getBytes());
-//		}
-//
-//		MhbVO saved = mhbService.addMhb(mhbVO);
-//		Integer mhbId = saved.getMotherHandbookId();
-//
-//		// 成功後導回儀表板「媽媽手冊」頁籤
-//		return "redirect:/blog/full-grid-left?tab=mhb&mhbId=" + mhbId;
-//	}
-	
-	// 第二版FrontMhbController.java
-
+	//接收建立
 	@PostMapping
 	public String create(@ModelAttribute("mhbVO") MhbVO mhbVO,
 	                     @RequestParam(value = "up", required = false) MultipartFile up,
@@ -171,6 +113,25 @@ public class FrontMhbController {
 	    mhbService.updateMhb(mhb);
 	    return "redirect:/blog/full-grid-left?tab=mhb&mhbId=" + id;
 	}
+	
+	/** 前台：軟刪除（把 deletedAt 設為現在） */
+	// FrontMhbController.java（class 上已有 @RequestMapping("/u/mhb")）
+	@PostMapping("/delete")
+	public ResponseEntity<?> softDeleteAjax(@RequestParam("mother_handbook_id") Integer mhbId,
+	                                        HttpSession session) {
+	    MemberVO me = (MemberVO) session.getAttribute("member");
+	    if (me == null) {
+	        return ResponseEntity.status(401).body(Map.of("ok", false, "msg", "請先登入"));
+	    }
+	    boolean ok = mhbService.softDeleteByIdAndMember(mhbId, me.getMemberId());
+	    if (!ok) {
+	        return ResponseEntity.status(403).body(Map.of("ok", false, "msg", "無權限或資料不存在"));
+	    }
+	    return ResponseEntity.ok(Map.of("ok", true));
+	}
+
+
+
 
 
 }

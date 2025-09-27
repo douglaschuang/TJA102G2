@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.babymate.cart.service.CartService;
 import com.babymate.member.model.MemberVO;
 import com.babymate.member.service.MemberService;
 import com.babymate.staff.model.StaffVO;
@@ -41,6 +42,7 @@ import com.babymate.util.EncodingUtil;
 import com.babymate.util.MailService;
 import com.babymate.util.SimpleCaptchaGenerator;
 import com.babymate.valid.UpdateGroup;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -55,6 +57,9 @@ public class MemberController {
 	
 	@Autowired
 	MemberService memberSvc; 
+	
+	@Autowired
+    CartService cartService;
 
 	/*
 	 * This method will be called on select_page.html form submission, handling POST
@@ -62,13 +67,13 @@ public class MemberController {
 	 */
 	@PostMapping("getOne_For_Display")
 	public String getOne_For_Display(
-		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/
 		@NotEmpty(message="會員ID: 請勿空白")
 		@RequestParam("memberId") String memberId,
 		ModelMap model) {
+
+		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/
 		
 		/***************************2.開始查詢資料*********************************************/
-//		EmpService empSvc = new EmpService();
 		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
 		
 		List<MemberVO> list = memberSvc.getAll();
@@ -273,6 +278,66 @@ public class MemberController {
 //		return "redirect:/admin/member/listAllMember";
 	}
 	
+	@PostMapping("memberForgotPwd")
+	public String memberForgotPwd(@RequestParam("account") String account, ModelMap model) {
+	    MemberVO memberVO = memberSvc.getOneMember(account);
+	    System.out.println("account:"+ account);
+
+	    if (memberVO == null) {
+	        model.addAttribute("errorMessage", "帳號不存在，請重新輸入");
+	        model.addAttribute("errorSource", "resetpwd");
+	        return "frontend/shop-customer-login";
+	    }
+
+	    System.out.println("accountstatus"+memberVO.getAccountStatus());
+	    if (memberVO.getAccountStatus() == 2) {
+	        model.addAttribute("errorMessage", "帳號停用，請聯繫管理員。");
+	        model.addAttribute("errorSource", "resetpwd");
+	        return "frontend/shop-customer-login";
+	    }
+
+	    // 正常帳號 → 導向重設密碼流程
+	    String newPwd = SimpleCaptchaGenerator.generateCaptcha(6); // 產生新密碼
+		memberVO.setPassword(EncodingUtil.hashMD5(newPwd)); // 將密碼Hash編碼後寫入memberVO
+		memberVO.setPwdResetToken(newPwd);
+		memberVO.setUpdateDate(LocalDateTime.now());
+		
+		memberSvc.updateMember(memberVO);
+		
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+		MailService mailSvc = new MailService();
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
+		
+		model.addAttribute("logoutMessage", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
+		model.addAttribute("logoutSource", "resetpwd");
+	    
+	    return "frontend/shop-customer-login";
+	}
+	
+	@PostMapping("memberResetPwd4Member")
+	public String memberResetPwd4Member(@RequestParam("memberId") String memberId, ModelMap model)
+	{
+		MemberVO memberVO = memberSvc.getOneMember(Integer.valueOf(memberId));
+		String newPwd = SimpleCaptchaGenerator.generateCaptcha(6); // 產生新密碼
+		memberVO.setPassword(EncodingUtil.hashMD5(newPwd)); // 將密碼Hash編碼後寫入memberVO
+		memberVO.setPwdResetToken(newPwd);
+		memberVO.setUpdateDate(LocalDateTime.now());
+		
+		memberSvc.updateMember(memberVO);
+		
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+		MailService mailSvc = new MailService();
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
+		
+		model.addAttribute("logoutSource", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
+		model.addAttribute("logoutSource", "resetpwd");
+		model.addAttribute("memberVO", memberVO);
+		
+		return "frontend/shop-customer-login";
+	}
+	
 	@PostMapping("memberResetPwd")
 	public String memberResetPwd(@RequestParam("memberId") String memberId, ModelMap model)
 	{
@@ -284,9 +349,10 @@ public class MemberController {
 		
 		memberSvc.updateMember(memberVO);
 		
-		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
+//		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
 		model.addAttribute("successMessage", "ID: "+memberId+" 密碼重設成功");
 		model.addAttribute("memberVO", memberVO);
@@ -306,67 +372,53 @@ public class MemberController {
 	                           @RequestParam String captcha,
 	                           HttpSession session,
 	                           RedirectAttributes redirectAttributes, ModelMap model) {
-		// 檢查account是否重複
-		MemberVO memberTemp = memberSvc.getOneMember(account);
-		if ((memberTemp != null) && (memberTemp.getAccountStatus() != 0)) {
-//			model.addAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
-			redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
-			redirectAttributes.addFlashAttribute("errorSource", "register");
-			redirectAttributes.addFlashAttribute("account", account);
-		    redirectAttributes.addFlashAttribute("captcha", captcha);
-			return "redirect:/shop/login";
-		};
-		
-		// 帳號不重複, 發出驗證信件, 並新增會員後 (儲存本次密碼, 驗證碼, 驗證碼有效期限), 轉回View輸入驗證碼
-		if (memberTemp == null) { // 新會員
-			String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
-			memberSvc.initMember(account, newCaptcha);
-			
-			String messageText = "Hello! " + " 請謹記此密碼: " + newCaptcha + "\n" + " 並返回BabyMate註冊頁面輸入";
-			MailService mailSvc = new MailService();
-			mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", messageText);
-//			model.addAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼點選驗證完成");
-			redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
-			redirectAttributes.addFlashAttribute("errorSource", "register");
-			redirectAttributes.addFlashAttribute("account", account);
-		    redirectAttributes.addFlashAttribute("captcha", captcha);
-			return "redirect:/shop/login";
-		} else { 
-			// 會員已存在
-			// 未輸入驗證碼
-			if (captcha.isEmpty()) {
-				redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
-				redirectAttributes.addFlashAttribute("errorSource", "register");
-				redirectAttributes.addFlashAttribute("account", account);
-				return "redirect:/shop/login";
-			} else {
-				// 有輸入captcha進行驗證
-				// 取得會員存於系統的驗證碼進行比對
-				if (!(memberTemp.getEmailAuthToken().equals(captcha))) {
-//					model.addAttribute("errorMessage", "驗證碼不相符, 請確認");
-					redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
-					redirectAttributes.addFlashAttribute("errorSource", "register");
-					redirectAttributes.addFlashAttribute("account", account);
-				    redirectAttributes.addFlashAttribute("captcha", captcha);
-					return "redirect:/shop/login";
-				}
-			}
-		}
-		 
-		// 驗證碼通過, 儲存本次輸入密碼
-	    String hashedPwd = EncodingUtil.hashMD5(password);
-	    memberTemp.setPassword(hashedPwd);
-	    // 驗證碼通過, 會員狀態更新為啟用(1)
-	    memberTemp.setAccountStatus((byte) 1); // 啟用 (通過驗證)
-	    memberSvc.updateMember(memberTemp);
-	    
-//	    model.addAttribute("success", "- (註冊成功)");
-//		model.addAttribute("memberVO", memberTemp);
-		
-		redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
-		redirectAttributes.addFlashAttribute("logoutSource", "register");
-    
-		// 回登入頁面, 引導用戶登入
+	    MemberVO member = memberSvc.getOneMember(account);
+
+	    if (member == null) {
+	        // 新會員註冊流程
+	        String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
+	        memberSvc.initMember(account, newCaptcha);
+
+	        String msg = "請謹記此驗證碼: " + newCaptcha;
+	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
+
+	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    // 會員已存在
+	    if ((member.getAccountStatus() == 1) || (member.getAccountStatus() == 2)) {
+	        // 帳號已啟用
+	        redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        return "redirect:/shop/login";
+	    }
+
+	    // 驗證碼驗證流程（帳號存在但尚未啟用）
+	    if (captcha.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    if (!captcha.equals(member.getEmailAuthToken())) {
+	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
+	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account);
+	        return "redirect:/shop/login";
+	    }
+
+	    // 驗證成功，啟用帳號 + 儲存密碼
+	    member.setPassword(EncodingUtil.hashMD5(password));
+	    member.setAccountStatus((byte) 1); // account status狀態變更為啟用
+	    member.setEmailVerified((byte) 1); // email驗證狀態變更為1
+	    memberSvc.updateMember(member);
+
+	    redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
+	    redirectAttributes.addFlashAttribute("logoutSource", "register");
 	    return "redirect:/shop/login";
 	}
 	
@@ -410,10 +462,11 @@ public class MemberController {
 			memberVO = memberSvc.initMember(account, authCode);
 		}
 		
-		String messageText = "Hello! " + " 請謹記此密碼: " + authCode + "\n" + " 並返回BabyMate註冊頁面輸入";
+//		String messageText = "Hello! " + " 請謹記此密碼: " + authCode + "\n" + " 並返回BabyMate註冊頁面輸入";
 		MailService mailSvc = new MailService();
-		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText);
-//		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", messageText);
+//		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText, false);
+		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", authCode), true);
+//		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", getHtmlMailContent(authCode), true);
 		
 		response.put("success", true);
         response.put("message", "驗證碼已寄出，請檢查您的信箱.");
@@ -431,17 +484,48 @@ public class MemberController {
 	public String loginCheck(@RequestParam String account,
 	                           @RequestParam String password,
 	                           HttpSession session,
-	                           RedirectAttributes redirectAttributes) {
+	                           RedirectAttributes redirectAttributes, ModelMap model) {
 	    String hashedPwd = EncodingUtil.hashMD5(password);
 	    System.out.println(account +"," + password+ "," + hashedPwd);
 
-	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account, hashedPwd));
+	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account));
+	    
 	    if (member.isPresent()) {
+    	
+	    	MemberVO loginMember = member.get();
+	    	
+		    // 狀態為未通過驗證
+	    	if (loginMember.getAccountStatus() == 0) {
+	    		redirectAttributes.addFlashAttribute("errorMessage", "帳號未完成註冊, 請返回註冊輸入驗證碼完成確認.");
+		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	return "redirect:/shop/login";
+	    	}
+	    	
+	    	// 密碼檢核
+	    	if (!hashedPwd.equals(loginMember.getPassword())) {
+	    		// 密碼不相等
+		    	redirectAttributes.addFlashAttribute("errorMessage", "密碼錯誤, 請重新輸入.");
+		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	return "redirect:/shop/login";
+	    	}
+	    	
+	        // 設定 session
+	        session.setAttribute("member", loginMember);
+	        System.out.println("memberId: "+loginMember.getMemberId());
+
+	        // 合併購物車 (登入成功才做)
+	        cartService.loginMergeCart(session.getId(), loginMember.getMemberId());
+	        // 回寫登入時間
+	        loginMember.setLastLoginTime(LocalDateTime.now());
+	        memberSvc.updateMember(loginMember);
+	        
+	        System.out.println("Login success, cart merged for memberId=" + loginMember.getMemberId());
+	    	
 	        session.setAttribute("member", member.get());
-	        System.out.println(member);
+//	        System.out.println(member);
 	        return "redirect:/my-account";
 	    } else {
-	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
+	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號不存在, 請先註冊.");
 	    	redirectAttributes.addFlashAttribute("errorSource", "login");
 //	        model.addAttribute("error", "帳號或密碼錯誤");
 	        return "redirect:/shop/login";
@@ -459,6 +543,64 @@ public class MemberController {
 	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
 	    redirectAttributes.addFlashAttribute("logoutMessage", "login");
 	    return "redirect:/shop/login"; // 返回登入頁
+	}
+	
+	private String getHtmlMailContent(String mainSubject, String secondSubject, String authcode) {
+		
+		StringBuilder str = new StringBuilder();
+		
+		str.append("<!DOCTYPE html> " +
+				   "<html lang=\"zh-TW\"> " +
+				   "<head> " +
+				     "<meta charset=\"UTF-8\"> " +
+				     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"> " +
+				     "<title>驗證您的身份</title> " +
+				   "</head> " +
+				   "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0;\"> " +
+				     "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #f4f4f4;\">" +
+				        "<tr> " +
+				          "<td align=\"center\" style=\"padding: 20px 0;\"> " +
+				            "<table width=\"600\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\">" +
+				              "<tr> " +
+				                "<td align=\"center\" style=\"padding: 20px 0;\"> " +
+				                  "<div style=\"font-size: 36px; font-weight: bold; color: brown; padding: 10px 0; letter-spacing: 2px; font-family: 'Arial Rounded MT Bold', Arial, sans-serif;\"> " + 
+				                     "BABYMATE" +
+				                  "</div> " +
+				                "</td> " +
+				              "</tr> " +
+				            "<tr> " +
+				              "<td style=\"padding: 40px; text-align: center;\"> " +
+//				                 "<h1 style=\"color: #333333; font-size: 24px; font-weight: bold; margin: 0 0 10px 0;\">驗證您的身份</h1> " +
+				                 "<h1 style=\"color: #333333; font-size: 24px; font-weight: bold; margin: 0 0 10px 0;\">" + mainSubject + "</h1> " +
+//				                 "<p style=\"color: #666666; font-size: 16px; margin: 0 0 30px 0;\">請輸入此驗證碼以完成您的登入或操作。</p> " +
+				                 "<p style=\"color: #666666; font-size: 16px; margin: 0 0 30px 0;\">" + secondSubject  + "</p> " +
+				                 "<div style=\"background-color: #f0f0f0; border: 1px solid #dddddd; padding: 20px; border-radius: 6px; display: inline-block;\"> " +
+				                  "<h2 style=\"color: #333333; font-size: 36px; font-weight: bold; margin: 0; letter-spacing: 5px;\">");
+		
+		str.append(authcode);
+		
+		str.append(               "</h2> " +
+                                "</div> " +
+                              "</td> " +
+                            "</tr> " +
+                            "<tr> " +
+                              "<td style=\"padding: 40px; background-color: #f8f8f8; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;\"> " +
+                                "<p style=\"color: #333333; font-size: 14px; line-height: 1.5; margin: 0 0 10px 0;\"> " +
+                                "如果您需要額外協助，請至BabyMate官網聯絡客服。 " +
+                                "</p> " +
+                                "<p style=\"color: #666666; font-size: 14px; line-height: 1.5; margin: 0;\"> " +
+                                "請注意，我們絕不會透過電子郵件向您索取密碼、信用卡或銀行帳號等個人資訊。如果您收到可疑信件，請不要點擊任何連結，並立即回報。" +
+                                "</p> " +
+                              "</td> " +
+                            "</tr> " +
+                          "</table> " +
+                        "</td> " +
+                      "</tr> " +
+                    "</table> " +
+                  "</body> " +
+               "</html>");
+		
+		return str.toString();
 	}
 	
 	// 去除BindingResult中某個欄位的FieldError紀錄

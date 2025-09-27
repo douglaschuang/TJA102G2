@@ -49,14 +49,11 @@
 				class="error" id="password.errors"></span>
 		</div>
 		<div  class="col-md-6">
-		角色: <select th:field="*{role}" name="role" class="form-control" required>
-				<option value="管理員">管理員</option>
-				<option value="客服">客服</option>
+		角色: <select th:field="*{roleVO.roleId}" name="roleId" class="form-control" required>
+				<option value="1">系統管理員</option>
+				<option value="2">客服代表</option>
+				<option value="3">商城管理員</option>
 			</select>
-<!-- 			角色: <input type="text" th:field="*{role}" name="role" -->
-<!-- 				placeholder="請輸入角色類型" minlength=3 maxlength=20 required class="form-control" /><span -->
-<!-- 				th:if="${#fields.hasErrors('role')}" th:errors="role" class="error" -->
-<!-- 				id="role.errors"></span> -->
 		</div>
 		<div  class="col-md-6">
 			帳號狀態: <select th:field="*{status}" name="status" class="form-control" required>

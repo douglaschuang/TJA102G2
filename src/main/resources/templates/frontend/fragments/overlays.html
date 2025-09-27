@@ -1,65 +1,90 @@
 <!doctype html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+
 <body>
 <div th:fragment="commonOverlays()">
+
   <!-- about overlay -->
   <div class="header-offcanvas about-overlay" id="about-overlay">
     <div class="overlay-close inactive"></div>
     <div class="overlay-content">
-      <span class="close-icon" id="about-close-icon"><a href="javascript:void(0)"><i class="ti-close"></i></a></span>
+      <span class="close-icon" id="about-close-icon">
+        <a href="javascript:void(0)"><i class="ti-close"></i></a>
+      </span>
       <div class="overlay-content-container d-flex flex-column justify-content-between h-100">
         <div class="widget-wrapper">
           <div class="single-widget">
-            <h2 class="widget-title">About Us</h2>
-            <p>At Lezada, we put a strong emphasis on simplicity, quality and usefulness...</p>
+            <h2 class="widget-title">關於 BabyMate</h2>
+            <p>BabyMate 想陪每一位新手爸媽，從孕期到育兒的每一步都更安心。 我們整理專業資訊、挑選實用好物，並以友善的工具與社群陪你一起成長。</p>
+            <p class="mb-0">在這裡，你可以找到 <strong>可靠的內容</strong>、<strong>好用的紀錄工具</strong>，以及 <strong>真心推薦的媽媽寶寶用品</strong>。</p>
           </div>
         </div>
         <div class="contact-widget">
-          <p class="email"><a href="mailto:contact@lezada.com">contact@lezada.com</a></p>
-          <p class="phone">(+00) 123 567990</p>
+          <p class="email"><a href="mailto:hello@babymate.tw">hello@babymate.tw</a></p>
+          <p class="phone">(+886) 945-643-683</p>
           <div class="social-icons">
             <ul>
-              <li><a th:href="@{//www.facebook.com}" target="_blank" rel="noopener">Facebook</a></li>
-              <li><a th:href="@{//www.instagram.com}" target="_blank" rel="noopener">Instagram</a></li>
-              <li><a th:href="@{//www.youtube.com}" target="_blank" rel="noopener">YouTube</a></li>
+              <li><a href="//www.twitter.com" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a></li>
+              <li><a href="//www.facebook.com" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></li>
+              <li><a href="//www.instagram.com" target="_blank" rel="noopener"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a></li>
+              <li><a href="//www.youtube.com" target="_blank" rel="noopener"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a></li>
             </ul>
           </div>
+          <p class="mt-2 text-muted" style="font-size:.9rem">服務時間：週一至週五 10:00–18:00（國定假日休息）</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- wishlist overlay（保留你原本的結構與 id） -->
+  <!-- wishlist overlay -->
   <div class="wishlist-overlay" id="wishlist-overlay">
     <div class="wishlist-overlay-close inactive"></div>
     <div class="wishlist-overlay-content">
-      <span class="close-icon" id="wishlist-close-icon"><a href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
-      <div class="offcanvas-cart-content-container">
-        <h3 class="cart-title">Wishlist</h3>
-        <div class="cart-product-wrapper">
-          <div class="cart-product-container ps-scroll">
-            <!-- 此處放你原本的單品項目（略） -->
+      <span class="close-icon" id="wishlist-close-icon">
+        <a href="javascript:void(0)"><i class="ion-android-close"></i></a>
+      </span>
+      
+      <div class="offcanvas-wishlist-content-container">
+        <h3 class="wishlist-title">我的收藏</h3>
+        <div class="wishlist-product-wrapper">
+          <div class="wishlist-product-container ps-scroll" id="wishlist-mini-box">
+            <!-- JS 會把 /api/wishlist/mini 結果塞進來 -->
           </div>
-          <div class="cart-buttons"><a th:href="@{/shop/wishlist}">view wishlist</a></div>
+          <p class="wishlist-subtotal" id="wishlist-mini-count" style="display:none;">
+            <span class="subtotal-title">收藏數：</span>
+            <span class="subtotal-amount">0</span>
+          </p>
+          <div class="wishlist-buttons">
+            <a th:href="@{/shop/wishlist}">查看收藏</a>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- cart overlay -->
+  <!-- cart overlay（原樣保留） -->
   <div class="cart-overlay" id="cart-overlay">
     <div class="cart-overlay-close inactive"></div>
     <div class="cart-overlay-content">
       <span class="close-icon" id="cart-close-icon"><a href="javascript:void(0)"><i class="ion-android-close"></i></a></span>
       <div class="offcanvas-cart-content-container">
-        <h3 class="cart-title">Cart</h3>
+        <h3 class="cart-title">購物車</h3>
         <div class="cart-product-wrapper">
           <div class="cart-product-container ps-scroll">
-            <!-- 此處放你原本的單品項目（略） -->
+            <!-- 範例項目（可自行移除） -->
+<!--             <div class="single-cart-product"> -->
+<!--               <span class="cart-close-icon"><a href="#"><i class="ti-close"></i></a></span> -->
+<!--               <div class="image"><a href="shop-product-basic.html"><img src="/assets/images/cart-product-image/01.jpg" class="img-fluid" alt=""></a></div> -->
+<!--               <div class="content"> -->
+<!--                 <h5><a href="shop-product-basic.html">Dark Brown Leather Watch</a></h5> -->
+<!--                 <p><span class="cart-count">2 x </span> <span class="discounted-price">$180.00</span></p> -->
+<!--               </div> -->
+<!--             </div> -->
           </div>
-          <p class="cart-subtotal"><span class="subtotal-title">Subtotal:</span> <span class="subtotal-amount">$200.00</span></p>
-          <div class="cart-buttons"><a th:href="@{/cart/viewCart}">view cart</a> <a th:href="@{/shop/checkout}">checkout</a></div>
-          <p class="free-shipping-text">Free Shipping on All Orders Over $100!</p>
+          <p class="cart-subtotal"><span class="subtotal-title">金額合計:</span> <span class="subtotal-amount">$200.00</span></p>
+          <div class="cart-buttons"><a th:href="@{/cart/viewCart}">檢視購物車</a> <a th:href="@{/shop/checkout}">結帳</a></div>
         </div>
       </div>
     </div>
@@ -69,13 +94,133 @@
   <div class="search-overlay" id="search-overlay">
     <span class="close-icon search-close-icon"><a href="javascript:void(0)" id="search-close-icon"><i class="ti-close"></i></a></span>
     <div class="search-overlay-content">
-      <div class="input-box"><form th:action="@{/}"><input type="search" placeholder="Search Products..."></form></div>
-      <div class="search-hint"><span># Hit enter to search or ESC to close</span></div>
+      <div class="input-box">
+        <form th:action="@{/}">
+          <input type="search" placeholder="搜尋商品、文章或品牌…">
+        </form>
+      </div>
+      <div class="search-hint"><span># 按 Enter 開始搜尋，或按 ESC 關閉</span></div>
     </div>
   </div>
 
   <!-- scroll to top -->
   <a href="#" class="scroll-top"></a>
+  
 </div>
+<th:block th:fragment="wishlistMiniStyles()">
+<style id="wishlist-mini-patch">
+/* 標題「我的收藏」 */
+#wishlist-overlay .wishlist-title{
+  font-size: 18px;
+  line-height: 28px;
+  color: #333333;
+  font-weight: 500;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+
+/* 單筆列 */
+#wishlist-overlay .single-wishlist-product{
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 4px 18px 0;
+  border-top: 1px solid #e9e9e9;
+}
+
+/* 右上角 X */
+#wishlist-overlay .single-wishlist-product .wishlist-close-icon{
+  position: absolute;
+  top: 10px; right: 6px; z-index: 2;
+}
+#wishlist-overlay .single-wishlist-product .wishlist-close-icon a{
+  display: inline-flex; padding: 6px; opacity: .6; transition: opacity .15s ease;
+}
+#wishlist-overlay .single-wishlist-product .wishlist-close-icon a:hover{ opacity: 1; }
+
+/* 縮圖尺寸 */
+#wishlist-overlay .single-wishlist-product .image{
+  flex: 0 0 auto;
+  width: 84px; height: 84px;
+  border-radius: 8px; overflow: hidden;
+}
+#wishlist-overlay .single-wishlist-product .image img{
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+
+/* 文字區 */
+#wishlist-overlay .single-wishlist-product .content{
+  min-width: 0; padding-right: 28px;
+}
+/* 如果要限制標題兩行省略，打開下面這段
+#wishlist-overlay .single-wishlist-product .content h5{
+  font-size: 1.05rem; font-weight: 700; line-height: 1.35; margin: 0 0 6px;
+  max-height: 2.7em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+*/
+#wishlist-overlay .single-wishlist-product .content p{ margin: 0; }
+
+/* “1 x $299” 那行（沿用購物車語彙） */
+#wishlist-overlay .single-wishlist-product .cart-count{ color: #666; margin-right: 4px; }
+#wishlist-overlay .single-wishlist-product .discounted-price{ font-weight: 700; }
+
+/* 清單滾動高度 */
+#wishlist-overlay .wishlist-product-container{ max-height: 60vh; overflow: auto; }
+
+/* 收藏數（你指定的樣式） */
+#wishlist-overlay #wishlist-mini-count{
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #eeeeee;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 25px;
+  color: #333333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 按鈕（你指定的樣式） */
+#wishlist-overlay .wishlist-buttons{
+  margin-top: 14px; display: flex; flex-direction: column; gap: 12px;
+}
+#wishlist-overlay .wishlist-buttons a{
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: #ffffff;
+  border-radius: 0;
+  border: 1px solid #333333;
+  background-color: #333333;
+  display: block;
+  text-align: center;
+  padding: 5px 10px;
+  margin-bottom: 15px;
+}
+#wishlist-overlay .wishlist-buttons a:hover,
+#wishlist-overlay .wishlist-buttons a:focus-visible{
+  background-color: #d3122a;
+  border-color: #d3122a;
+  color: #ffffff;
+}
+
+/* 手機更緊湊 */
+@media (max-width: 480px){
+  #wishlist-overlay .single-wishlist-product{ gap: 12px; padding: 14px 2px; }
+  #wishlist-overlay .single-wishlist-product .image{ width: 72px; height: 72px; }
+  /* #wishlist-overlay .single-wishlist-product .content h5{ font-size: 1rem; } */
+}
+</style>
+</th:block>
+
+
+</th:block>
 </body>
+
 </html>
