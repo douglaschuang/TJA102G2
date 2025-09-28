@@ -1,0 +1,83 @@
+<div th:fragment="babyhandbook(babyhandbook, babyWeek)">
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<div class="d-flex align-items-center gap-3">
+
+				<div>
+					<h3 class="mb-1"
+						th:text="${babyhandbook != null ? babyhandbook.babyname : '尚未建立寶寶手冊'}">寶寶姓名</h3>
+					<div class="text-muted small">
+						手冊編號 #<span
+							th:text="${babyhandbook != null ? babyhandbook.babyhandbookid : '-'}">-</span>
+					</div>
+				</div>
+			</div>
+
+			<hr/>
+			<br>
+
+			<div class="row g-3">
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">寶寶名字</div>
+					<div
+						th:text="${babyhandbook != null ? babyhandbook.babyname : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">寶寶性別</div>
+					<div
+						th:text="${babyhandbook != null ? babyhandbook.babygender : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">週齡</div>
+					<div th:text="${babyWeek != null ? babyWeek + ' 週' : '-'}">-</div>
+				</div>
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">寶寶生日</div>
+					<div
+						th:text="${babyhandbook != null && babyhandbook.babybirthday != null ? #dates.format(babyhandbook.babybirthday, 'yyyy/MM/dd') : '-'}"></div>
+				</div>
+
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">照片</div>
+					<img th:if="${babyhandbook != null}"
+						th:src="@{/babyhandbook/DBGifReader(babyhandbookid=${babyhandbook.babyhandbookid})}"
+						width="100px" alt="Baby photo" />
+				</div>
+
+				<div class="col-6 col-md-3">
+					<div class="fw-bold">更新時間</div>
+					<div
+						th:text="${babyhandbook != null && babyhandbook.updatetime != null ? #dates.format(babyhandbook.updatetime,'yyyy/MM/dd HH:mm') : '-'}">-</div>
+				</div>
+			</div>
+
+			<div class="mt-4 d-flex flex-wrap gap-2 justify-content-between">
+				<div class="d-flex gap-2">
+					<a class="btn btn-primary btn-sm" th:if="${babyhandbook != null}"
+						th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook.babyhandbookid})}">
+						檢視寶寶紀錄 </a> 
+					<a class="btn btn-primary btn-sm"
+						th:if="${babyhandbook != null}"
+						th:href="@{'/blog/u/baby/babyhandbook/' + ${babyhandbook.babyhandbookid} + '/chart'}">
+						檢視生長曲線圖 </a> 
+				</div>
+				<div class="d-flex gap-2">			
+					<form th:action="@{/blog/u/baby/babyhandbook/delete}" method="post" class="d-inline"
+					      onsubmit="return confirm('確定刪除？')">
+					    <input type="hidden" name="babyhandbookid" th:value="${babyhandbook.babyhandbookid}" />  
+					    <button type="submit" class="btn btn-sm btn-outline-danger">
+					        <i class="bi bi-trash"></i> 刪除手冊
+					    </button>
+					</form>
+					<a class="btn btn-outline-secondary btn-sm ms-auto"
+						th:if="${babyhandbook != null}"
+						th:href="@{/blog/u/baby/babyhandbook/{id}/edit(id=${babyhandbook.babyhandbookid})}">
+						編輯手冊 </a>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

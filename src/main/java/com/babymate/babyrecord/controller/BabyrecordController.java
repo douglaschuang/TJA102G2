@@ -48,7 +48,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-
+//
 @Controller
 @RequestMapping("/admin/babyrecord")
 public class BabyrecordController {
@@ -215,11 +215,12 @@ public class BabyrecordController {
 	}
 	
 	@GetMapping("records")
-	public String listAllBabyrecord(@RequestParam(value = "babyhandbookid", required = false ) Integer babyhandbookid, Model model) {
+	public String listAllBabyrecord(@RequestParam(value = "babyhandbookid", required = false ) Integer babyhandbookid, Model model,
+			 RedirectAttributes redirectAttributes) {
 		
 	    if (babyhandbookid == null) {
-	        model.addAttribute("error", "缺少必要的 babyhandbookid");
-	        return "admin/babyrecord/error"; // 或導向首頁
+			redirectAttributes.addFlashAttribute("error", "缺少必要的 babyhandbookid");
+	        return "redirect:/admin/babyhandbook/list"; // 導向list頁面
 	    }
 	    
 	 // 防止畫面會 null pointer
