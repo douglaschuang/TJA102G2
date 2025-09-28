@@ -162,6 +162,37 @@
 											</div>
 											<button class="lezada-button lezada-button--medium mt-30">確認結帳</button>
 										</div>
+										
+										<!-- Stripe Checkout Test -->
+										<div>
+										 <h2>Stripe Checkout 範例</h2>
+    <button id="checkoutBtn">立即付款 $20</button>
+    </div>
+
+    <script>
+        const checkoutButton = document.getElementById("checkoutBtn");
+        console.log("get checkout btn");
+        checkoutButton.addEventListener("click", function () {
+        	 console.log("checkout btn click");
+            fetch("/checkout/create-session", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(session => {
+                // 直接跳轉 Stripe 訂單頁面
+                window.location.href = session.url;
+            })
+            .catch(err => {
+                console.error("Error:", err);
+            });
+        });
+        console.log("fetch finished");
+    </script>
+										
+										
 									</div>
 								</div>
 							</div>
