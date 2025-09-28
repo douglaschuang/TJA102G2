@@ -30,7 +30,7 @@ public class StaffLoginFilter implements Filter {
         response.setHeader("Pragma","no-cache");
         response.setDateHeader("Expires", 0);
 
-        System.out.println("Filter triggered, URI = " + request.getRequestURI());
+//        System.out.println("Filter triggered, URI = " + request.getRequestURI());
         
         // 放行不需要登入的頁面
         if (uri.endsWith("/admin/login") || uri.endsWith("/logout") || uri.endsWith("/loginCheck") || uri.endsWith("/permission") 
