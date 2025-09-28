@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.babymate.mhb.model.MhbVO;
-
 @Service("babyhandbookService")
 public class BabyhandbookService {
 
@@ -63,10 +61,11 @@ public class BabyhandbookService {
 	    }
 	   
 	  //前台會用到
-//	    public BabyhandbookVO findLatestByMemberId(Integer memberId) {
-//	    	List<BabyhandbookVO> list = repository.findAllByMemberId(memberId);
-//	        return list.isEmpty() ? null : list.get(0);
-//	    }
+
+	    public BabyhandbookVO findLatestByMemberId(Integer memberId) {
+	    	List<BabyhandbookVO> list = repository.findAllByMemberId(memberId);
+	        return list.isEmpty() ? null : list.get(0);
+	    }
 
 	    public BabyhandbookVO findByIdAndMemberId(Integer babyhandbookId, Integer memberId) {
 	        return repository.findByIdAndMemberId(babyhandbookId, memberId).orElse(null);
