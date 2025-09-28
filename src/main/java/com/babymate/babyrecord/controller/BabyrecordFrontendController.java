@@ -90,6 +90,14 @@ public class BabyrecordFrontendController {
 			return "redirect:/shop/login";
 		}
 	  
+        // 如果會員還沒選手冊id,找最新的手冊
+	    if (babyhandbookid == null) {
+	        BabyhandbookVO latest = babyhandbookSvc.findLatestByMemberId(member.getMemberId());
+	        if (latest != null) {
+	            babyhandbookid = latest.getBabyhandbookid(); 
+	        }
+	    }
+	    
 		if (babyhandbookid != null) {  
 			// 取得手冊
 			BabyhandbookVO babyhandbook = babyhandbookSvc.getOneBabyhandbook(babyhandbookid);
