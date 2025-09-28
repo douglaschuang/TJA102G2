@@ -1,0 +1,33 @@
+<div th:fragment="babyhandbookTabs(activeTab, babyhandbook)">
+  <ul class="nav nav-pills mb-3">
+  <!--  -->
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='babyhandbook' ? ' active' : ''"
+         th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+        寶寶手冊
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='babyrecord' ? ' active' : ''"
+         th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+        寶寶成長紀錄
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='baby-chart' ? ' active' : ''"
+         th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='baby-chart', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+        寶寶生長曲線圖
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link"
+         th:classappend="${activeTab}=='todo' ? ' active' : ''"
+         th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='todo', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+        待辦事項
+      </a>
+    </li>
+  </ul>
+</div>

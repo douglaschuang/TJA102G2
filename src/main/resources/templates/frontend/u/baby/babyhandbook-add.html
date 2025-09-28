@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>新增寶寶手冊</title>
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
+<style>
+.countdown-background {
+	background: #f8f9fa; /* 或放你的背景圖 class: countdown-bg-1 */
+}
+
+.deal-countdown {
+	letter-spacing: .5px;
+}
+</style>
+<!--  -->
+</head>
+<body class="container py-4">
+	<h4 class="mb-3">新增寶寶手冊</h4>
+
+	<div th:if="${alreadyHasOne}" class="alert alert-info">
+		你已經有一本手冊了，建立新的會並存（或你可以返回儀表板使用既有手冊）。</div>
+
+	<form th:action="@{/blog/u/baby/babyhandbook}" th:object="${babyhandbookVO}"
+		method="post" enctype="multipart/form-data" class="row g-3">
+
+		<input type="hidden" th:if="${_csrf != null}"
+			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
+
+
+		<div class="col-md-4">
+			<label class="form-label">小孩姓名:</label> <input class="form-control"
+				type="text" th:field="*{babyname}" required>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">小孩性別:</label> 
+			<select class="form-select" th:field="*{babygender}">
+				  <option value="男">男</option>
+   					<option value="女">女</option>
+			</select>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label">小孩生日</label> <input class="form-control"
+				type="date" th:field="*{babybirthday}">
+		</div>
+		<div class="col-md-8">
+			<label class="form-label">照片</label> <input class="form-control"
+				type="file" name="up" accept="image/*">
+		</div>
+
+		<div class="col-12">
+			<button class="btn btn-primary" type="submit">建立</button>
+			<a class="btn btn-outline-secondary"
+				th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">取消</a>
+		</div>
+	</form>
+
+</body>
+</html>

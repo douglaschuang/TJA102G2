@@ -3,9 +3,7 @@ package com.babymate.babyhandbook.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.babymate.member.model.MemberVO;
@@ -23,7 +21,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
-
+//
 @Entity
 @Table(name = "baby_handbook" )
 public class BabyhandbookVO implements java.io.Serializable{
