@@ -51,11 +51,11 @@ public class CheckoutController {
                         .build();
 
         Session session = Session.create(params);
-        System.out.println("session created");
+//        System.out.println("session created");
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("id", session.getId());
         responseData.put("url", session.getUrl()); // Stripe 會給完整的結帳網址
-        System.out.println("responseData"+responseData);
+//        System.out.println("responseData"+responseData);
         return responseData;
     }
 
