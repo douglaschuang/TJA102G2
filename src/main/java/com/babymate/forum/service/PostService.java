@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.babymate.forum.model.PostRepository;
@@ -37,6 +39,13 @@ public class PostService {
                       "ORDER BY p.postId DESC";
         return entityManager.createQuery(jpql, PostVO.class).getResultList();
     }
+    //拿到分頁後的可見文章
+    public Page<PostVO> findAllVisiblePostsPaged(Pageable pageable) {
+        return postRepository.findAllVisiblePosts(pageable);
+    }
+    
+    
+    
     
     public void createPost(PostVO post) {
         post.setPostStatus((byte)1);           // 預設顯示
@@ -82,10 +91,27 @@ public class PostService {
     
     
     
-    public PostVO getOnePost(Integer postId) {
-        return postRepository.findById(postId).orElse(null);
-    }
+//    public PostVO getOnePost(Integer postId) {
+//        return postRepository.findById(postId).orElse(null);
+//    }
+//  
     
+//取代上面的抓單篇文章的舊方法
+    public PostVO getOnePost(Integer postId) {
+        // 使用 JPQL 查詢，並透過 JOIN FETCH 一次性抓取關聯的 boardVO 和 memberVO
+        String jpql = "SELECT p FROM PostVO p "
+                    + "LEFT JOIN FETCH p.boardVO "
+                    + "LEFT JOIN FETCH p.memberVO "
+                    + "WHERE p.postId = :postId";
+        try {
+            return entityManager.createQuery(jpql, PostVO.class)
+                                .setParameter("postId", postId)
+                                .getSingleResult();
+        } catch (Exception e) {
+            // 如果找不到文章，可以回傳 null 或拋出更明確的例外
+            return null;
+        }
+    }
     
  // 新增方法：抓一篇文章並立即初始化 boardVO
     public PostVO getOnePostWithBoard(Integer postId) {
