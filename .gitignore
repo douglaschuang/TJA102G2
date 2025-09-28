@@ -12,4 +12,3 @@ pom.xml.versionsBackup
 Thumbs.db
 *.log
 node_modules/
-application.properties
