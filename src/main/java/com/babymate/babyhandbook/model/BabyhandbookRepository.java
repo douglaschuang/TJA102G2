@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import com.babymate.mhb.model.MhbVO;
 
 import jakarta.transaction.Transactional;
-
+//
 public interface BabyhandbookRepository extends JpaRepository<BabyhandbookVO, Integer>{
 	
 	//查詢未刪除資料

@@ -2,11 +2,7 @@
 	<div class="card shadow-sm border-0">
 		<div class="card-body">
 			<div class="d-flex align-items-center gap-3">
-<!--  				<img th:if="${babyhandbook != null}"
-					th:src="@{/babyhandbook/photo/{id}(id=${babyhandbook.babyhandbookid})}"
-					class="rounded"
-					style="width: 120px; height: 120px; object-fit: cover" alt="" />
--->	
+
 				<div>
 					<h3 class="mb-1"
 						th:text="${babyhandbook != null ? babyhandbook.babyname : '尚未建立寶寶手冊'}">寶寶姓名</h3>
