@@ -2,6 +2,8 @@ package com.babymate.forum.model;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +23,10 @@ public interface PostRepository extends JpaRepository<PostVO, Integer> {
 	
     @Query("SELECT p FROM PostVO p WHERE p.postStatus = 1 ORDER BY p.postTime DESC")
     List<PostVO> findRecentPosts(); // 查詢最新文章
-    
+    //撈出有效貼文並排頁數
+    @Query(value = "SELECT p FROM PostVO p LEFT JOIN FETCH p.memberVO LEFT JOIN FETCH p.boardVO WHERE p.postStatus = 1",
+            countQuery = "SELECT count(p) FROM PostVO p WHERE p.postStatus = 1")
+     Page<PostVO> findAllVisiblePosts(Pageable pageable);
 
     
 }

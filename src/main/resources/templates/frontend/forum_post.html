@@ -1,19 +1,105 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<!-- 用 forum layout -->
-<head th:replace="~{frontend/layout_forum :: head(~{::title}, ~{::extraHead})}">
-    <title th:text="${post.title} ?: '文章內容'">文章內容</title>
+<head
+	th:replace="~{frontend/layout :: head(${post.postTitle} + ' - BabyMate', ~{})}">
 </head>
 
-<body>
-<div th:replace="~{frontend/layout_forum :: sidebar(boardList=${boardList})}"></div>
+<body
+	th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{}, 'footer-one')}">
 
-<div th:fragment="content">
-    <div class="forum-post card p-3 mb-4 shadow-sm">
-        <h5 th:text="${post.title}"></h5>
-        <div th:utext="${post.postLine}"></div>
+<section th:fragment="content">
+    <div class="blog-page-wrapper mb-100">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <div class="page-sidebar">
+                        <div class="single-sidebar-widget mb-40">
+								<div class="search-widget">
+									<form th:action="@{/forum/search}" method="get">
+										<input type="search" name="keyword" placeholder="尋找文章 ..." />
+										<button type="submit">
+											<i class="ion-android-search"></i>
+										</button>
+									</form>
+								</div>
+							</div>
+
+							<div class="single-sidebar-widget mb-40">
+								<h2 class="single-sidebar-widget--title">看板</h2>
+								<ul
+									class="single-sidebar-widget--list single-sidebar-widget--list--category">
+									<li th:each="board : ${boards}"><a
+										th:href="@{/forum/board/{id}(id=${board.boardId})}"
+										th:text="${board.boardName}">看板名稱</a></li>
+								</ul>
+							</div>
+
+							<div class="single-sidebar-widget mb-40">
+								<div class="blog-sidebar-banner">
+									<img th:src="@{/assets/images/banners/ADS-blog.png}"
+										class="img-fluid" alt="">
+								</div>
+							</div>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
+                    <div class="forum-post card p-4 shadow-sm">
+                        <h3 class="mb-3" th:text="${post.postTitle}">文章標題</h3>
+                        <div class="post-meta text-muted border-bottom pb-3 mb-3">
+                            <span th:text="'看板：' + ${post.boardVO.boardName}"></span>・
+                            <span th:text="'作者：' + ${T(com.babymate.forum.util.MaskingUtils).maskName(post.memberVO?.name)}"></span>・
+                            <span th:text="'時間：' + ${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                        <div class="post-content" th:utext="${post.postLine}">
+                            <p>這裡是文章的內文。</p>
+                        </div>
+                    </div>
+
+                    <div class="replies-section card p-4 shadow-sm mt-5">
+                        <h4 class="mb-4">共 <span th:text="${#lists.size(replyList)}">0</span> 則回覆</h4>
+
+                        <div th:if="${#lists.isEmpty(replyList)}">
+                            <p>還沒有人回覆，快來搶頭香！</p>
+                        </div>
+                        
+                        <div class="single-reply border-bottom pb-3 mb-3" th:each="reply : ${replyList}">
+                            <div class="reply-meta text-muted mb-2">
+                                <strong th:text="${T(com.babymate.forum.util.MaskingUtils).maskName(reply.memberVO?.name)}">
+                                    回覆者
+                                </strong>
+                                <span class="ms-3" th:text="${#dates.format(reply.replyTime, 'yyyy-MM-dd HH:mm')}">
+                                    回覆時間
+                                </span>
+                            </div>
+                            <div class="reply-content" th:utext="${reply.replyLine}">
+                                <p>這裡是回覆的內文。</p>
+                            </div>
+                        </div>
+                    </div>
+
+<div class="reply-form-section card p-4 shadow-sm mt-5">
+    <h4 class="mb-3">我要回覆</h4>
+
+    <div th:if="${loggedInMember != null}">
+        <form th:action="@{/forum/post/{postId}/reply(postId=${post.postId})}" method="post">
+            <input type="hidden" name="boardId" th:value="${post.boardVO.boardId}" />
+        
+            <div class="mb-3">
+                <textarea class="form-control" name="replyLine" rows="4" placeholder="輸入你的回覆..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">送出回覆</button>
+        </form>
+    </div>
+
+    <div th:if="${loggedInMember == null}">
+        <p>請先<a th:href="@{/shop/login}">登入</a>後再進行回覆。</p>
     </div>
 </div>
+
+                </div> </div> </div> </div> </section>
+
 </body>
 </html>
