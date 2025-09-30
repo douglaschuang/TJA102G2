@@ -1,18 +1,52 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>寶寶成長圖表</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <h2>寶寶成長曲線</h2>
-<!--  -->
-    <canvas id="heightChart" width="400" height="200"></canvas>
-    <canvas id="weightChart" width="400" height="200"></canvas>
-    <canvas id="hcChart" width="400" height="200"></canvas>
+<div
+	th:fragment="babyChart(babyhandbook, chartLabels, heightChart, weightChart, hcChart)">
+	
+	<!-- 卡片外觀 -->
+	<div class="card shadow-sm border-0">
+		<div class="card-body">
+			<h4 class="mb-3">寶寶成長圖表</h4>
+			
+			<div class="d-flex justify-content-end mt-4 gap-2">
+				<a class="btn btn-outline-primary btn-sm" 
+					th:if="${babyhandbook != null}"
+					th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
+					回上一頁 </a>
+		 	</div>
+		 	
+			<!-- 身高圖表 -->
+			<div>
+				<h6 class="mb-2">身長 / 身高(公分)</h6>
+				<div class="ratio ratio-16x9 mb-3">
+					<canvas id="heightChart"></canvas>
+				</div>
+			</div>
 
-    <script th:inline="javascript">
+			<!-- 頭圍圖表 -->
+			<div>
+				<h6 class="mb-2">頭圍(公分)</h6>
+				<div class="ratio ratio-16x9 mb-3">
+					<canvas id="weightChart"></canvas>
+				</div>
+			</div>
+				
+			<!-- 體重圖表 -->
+			<div>
+				<h6 class="mb-2">體重(公斤)</h6>
+				<div class="ratio ratio-16x9 mb-3">
+					<canvas id="hcChart"></canvas>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+
+	<!-- 引入 Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+   <!-- 畫圖腳本包在 DOMContentLoaded -->
+  <script th:inline="javascript">
         let babyweek = /*[[${babyweek}]]*/ [];
+        let ageWeeks = /*[[${ageWeeks}]]*/ [];
         let height = /*[[${height}]]*/ [];
         let weight = /*[[${weight}]]*/ [];
         let hc = /*[[${hc}]]*/ [];
@@ -28,20 +62,37 @@
                 {
                     label: '實際資料',
                     data: babyweek.map((w, i) => ({ x: w, y: data[i] })),
-                    borderColor: 'red',
+                    borderColor: 'blue', // 使用者實際資料 = 藍色
                     fill: false,
-                    tension: 0.1
+                    tension: 0.1,
+                    pointRadius: 3,
+                    pointBackgroundColor: 'blue'
                 }
             ];
 
             for (let key in percentiles) {
+            	let color;
+
+                // 根據 key 指定顏色
+                if (key === 'P50') {
+                    color = 'green';
+                } else if (key === 'P15' || key === 'P85') {
+                    color = 'orange';
+                } else if (key === 'P3' || key === 'P97') {
+                    color = 'red';
+                } else {
+                    color = 'gray';  // fallback 顏色
+                }
+                
                 datasets.push({
                     label: `${key} 百分位`,
-                    data: percentiles[key].map((y, i) => ({ x: i, y: y })),
-                    borderColor: 'gray',
+                    data: percentiles[key].map((y, i) => ({ x: ageWeeks[i], y: y })),
+                    borderColor: color,
                     borderDash: [5, 5],
                     fill: false,
-                    tension: 0.1
+                    tension: 0.1,
+                    pointRadius: 1,
+                    pointBackgroundColor: color
                 });
             }
 
@@ -53,6 +104,7 @@
                 options: {
                     scales: {
                         x: {
+                        	type: 'linear', // 確保是線性座標軸
                             title: {
                                 display: true,
                                 text: '週數'
@@ -66,12 +118,17 @@
                         }
                     }
                 }
-            });
+                 
+            });  
         }
-
+        
+        // 等畫面載入後才畫圖
+        document.addEventListener("DOMContentLoaded", function () {
         drawChart('heightChart', height, heightPercentile, '身高 (cm)');
         drawChart('weightChart', weight, weightPercentile, '體重 (kg)');
         drawChart('hcChart', hc, hcPercentile, '頭圍 (cm)');
+        });
+        
     </script>
-</body>
-</html>
+    
+</div>
