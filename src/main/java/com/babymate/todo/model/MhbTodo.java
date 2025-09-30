@@ -105,38 +105,3 @@ public class MhbTodo {
 		this.updatedAt = updatedAt;
 	}
 }
-
-//@Entity @Table(name = "mhb_todo")
-//@Getter @Setter
-//public class MhbTodo {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Integer todoId;
-//
-//    @Column(nullable = false)
-//    private Integer motherHandbookId;
-//
-//    @Column(nullable = false)
-//    private String title;
-//
-//    private LocalDate dueDate;
-//    private String note;
-//
-//    @Column(nullable = false)
-//    private Boolean done = false;
-//
-//    @Column(nullable = false)
-//    private LocalDateTime createdAt = LocalDateTime.now();
-//
-//    @Column(nullable = false)
-//    private LocalDateTime updatedAt = LocalDateTime.now();
-//
-//    @PreUpdate
-//    public void onUpdate(){ this.updatedAt = LocalDateTime.now(); }
-//    
-//    public void setMotherHandbookId(Integer motherHandbookId) {
-//        this.motherHandbookId = motherHandbookId;
-//    }
-//
-//}
