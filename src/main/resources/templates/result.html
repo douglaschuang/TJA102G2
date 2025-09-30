@@ -3,9 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>付款結果</title>
+    <script>
+        // 3 秒後自動跳轉
+        setTimeout(function() {
+            window.location.href = "/frontend/shop-cart";
+        }, 3000);
+    </script>
 </head>
 <body>
     <h2>付款成功！</h2>
     <p th:text="${message}"></p>
+    <p id="countdown">3 秒後將自動返回購物車頁面...</p>
+    
+    <script>
+    let seconds = 3;
+    const countdown = document.getElementById("countdown");
+
+    const timer = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+            countdown.textContent = seconds + " 秒後將自動返回購物車頁面...";
+        } else {
+            clearInterval(timer);
+            window.location.href = "http://localhost:8080/cart/viewCart";
+        }
+    }, 1000);
+</script>
 </body>
 </html>

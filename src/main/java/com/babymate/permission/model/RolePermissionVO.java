@@ -11,22 +11,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+/**
+ * 後台角色權限實體類別
+ */
 @Entity
 @Table(name = "role_permission")
-public class RolePermissionVO  implements java.io.Serializable {
+public class RolePermissionVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer rolePermissionId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
-    private RoleVO roleVO;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer rolePermissionId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "permission_id")
-    private PermissionVO permissionVO;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "role_id")
+	private RoleVO roleVO;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "permission_id")
+	private PermissionVO permissionVO;
 
 	public Integer getRolePermissionId() {
 		return rolePermissionId;

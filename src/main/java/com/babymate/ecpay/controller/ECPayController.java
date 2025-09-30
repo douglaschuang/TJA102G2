@@ -51,6 +51,9 @@ public class ECPayController {
         params.put("OrderResultURL", resultUrl); // 前端顯示付款結果
         params.put("ChoosePayment", "Credit"); // 一次付清
         params.put("EncryptType", "1");
+        
+        // 加入模擬付款參數
+//        params.put("SimulatePaid", "1");
 
         // 計算檢查碼
         String checkMacValue = ECPayCheckMacValue.generate(params, hashKey, hashIV);

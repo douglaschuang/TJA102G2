@@ -60,6 +60,9 @@ public class MemberController {
 	
 	@Autowired
     CartService cartService;
+	
+	@Autowired
+	private MailService mailSvc;
 
 	/*
 	 * This method will be called on select_page.html form submission, handling POST
@@ -305,7 +308,7 @@ public class MemberController {
 		memberSvc.updateMember(memberVO);
 		
 //		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
-		MailService mailSvc = new MailService();
+//		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
@@ -327,7 +330,7 @@ public class MemberController {
 		memberSvc.updateMember(memberVO);
 		
 //		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
-		MailService mailSvc = new MailService();
+//		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
@@ -350,7 +353,7 @@ public class MemberController {
 		memberSvc.updateMember(memberVO);
 		
 //		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
-		MailService mailSvc = new MailService();
+//		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
 		
@@ -380,7 +383,8 @@ public class MemberController {
 	        memberSvc.initMember(account, newCaptcha);
 
 	        String msg = "請謹記此驗證碼: " + newCaptcha;
-	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
+//	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
+	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
 
 	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
@@ -463,7 +467,7 @@ public class MemberController {
 		}
 		
 //		String messageText = "Hello! " + " 請謹記此密碼: " + authCode + "\n" + " 並返回BabyMate註冊頁面輸入";
-		MailService mailSvc = new MailService();
+//		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", authCode), true);
 //		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", getHtmlMailContent(authCode), true);

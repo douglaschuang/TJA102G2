@@ -7,21 +7,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * 後台權限選單群組實體類別
+ */
 @Entity
 @Table(name = "menu_group")
-public class MenuGroupVO  implements java.io.Serializable {
+public class MenuGroupVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "group_id")
-    private Integer groupId;
-	
-    @Column(name = "group_name")
-    private String groupName;
-    
-    @Column(name = "icon")
-    private String icon;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "group_id")
+	private Integer groupId;
+
+	@Column(name = "group_name")
+	private String groupName;
+
+	@Column(name = "icon")
+	private String icon;
 
 	@Override
 	public String toString() {
@@ -51,6 +54,5 @@ public class MenuGroupVO  implements java.io.Serializable {
 	public void setIcon(String icon) {
 		this.icon = icon;
 	}
-    
-    
+
 }

@@ -3,8 +3,8 @@ package com.babymate.staff.filter;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.core.annotation.Order;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.babymate.permission.model.PermissionVO;
 import com.babymate.staff.model.StaffVO;
 
@@ -13,13 +13,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class StaffPermissionFilter implements Filter {
 
+	private static final Logger logger = LoggerFactory.getLogger(StaffPermissionFilter.class);
+	
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -30,6 +31,7 @@ public class StaffPermissionFilter implements Filter {
 
         String uri = request.getRequestURI();
 //        System.out.println("PermissionFilter triggered, URI = " + uri);
+        logger.info("PermissionFilter triggered, URI = {}", uri);
 
         // login 頁面、靜態資源直接放行
         if (uri.endsWith("/admin/login") || uri.endsWith("/loginCheck") || uri.endsWith("/permission")|| uri.endsWith("/logout")
@@ -55,7 +57,9 @@ public class StaffPermissionFilter implements Filter {
         if (permissions != null) {
             for (PermissionVO p : permissions) {
 //            	System.out.println("uri="+uri + ", request.getContextPath()="+request.getContextPath()+", p.getUrl()="+p.getUrl());
+            	logger.info("uri = {}, request.getContextPath() = {}, p.getUrl() = {}", uri, request.getContextPath(), p.getUrl());
 //            	System.out.println(uri.startsWith(request.getContextPath() + p.getUrl()));
+            	logger.info("uri.startsWith(request.getContextPath() + p.getUrl()) {}", uri.startsWith(request.getContextPath() + p.getUrl()));
                 if (uri.startsWith(request.getContextPath() + p.getUrl())) { 
                 	
                     allowed = true;
@@ -66,6 +70,7 @@ public class StaffPermissionFilter implements Filter {
 
         if (allowed) {
 //        	 System.out.println("permission allowed");
+        	logger.info("Permission allowed");
             chain.doFilter(req, res); // 有權限
         } else {
             System.out.println("權限不足：" + staff.getNickname() + " -> " + uri);

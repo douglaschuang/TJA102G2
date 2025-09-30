@@ -30,8 +30,10 @@ public class ECPayCheckMacValue {
                     .replace("%2e", ".")
                     .replace("%5f", "_");
 
-            MessageDigest md5 = MessageDigest.getInstance("SHA-256");
-            byte[] digest = md5.digest(urlEncode.getBytes("UTF-8"));
+//            MessageDigest md5 = MessageDigest.getInstance("SHA-256");
+//            byte[] digest = md5.digest(urlEncode.getBytes("UTF-8"));
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            byte[] digest = sha256.digest(urlEncode.getBytes("UTF-8"));
 
             StringBuilder hex = new StringBuilder();
             for (byte b : digest) {
