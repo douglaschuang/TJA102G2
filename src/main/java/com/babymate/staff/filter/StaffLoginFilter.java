@@ -3,6 +3,9 @@ package com.babymate.staff.filter;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.babymate.permission.model.PermissionVO;
 import com.babymate.staff.model.StaffVO;
 
@@ -16,6 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class StaffLoginFilter implements Filter {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StaffLoginFilter.class);
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -31,11 +36,13 @@ public class StaffLoginFilter implements Filter {
         response.setDateHeader("Expires", 0);
 
 //        System.out.println("Filter triggered, URI = " + request.getRequestURI());
+        logger.info("Filter triggered, URI = {}", request.getRequestURI());
         
         // 放行不需要登入的頁面
         if (uri.endsWith("/admin/login") || uri.endsWith("/logout") || uri.endsWith("/loginCheck") || uri.endsWith("/permission") 
         		|| uri.contains("/mhb/photo") || uri.contains("/css") || uri.contains("/js")) {
 //        	System.out.println("放行不需要登入的頁面");
+        	logger.info("放行不需要登入的頁面.");
             chain.doFilter(req, res);
             return;
         }
@@ -45,47 +52,20 @@ public class StaffLoginFilter implements Filter {
         
         // 檢查是否登入
         if (session != null && session.getAttribute("staff") != null) {
-//        	System.out.println(session.getAttribute("staff"));
-        	System.out.println("success");
+//        	System.out.println("success");
+        	logger.info("Get session or staff success."); 
         	
         	// 取得登入者資料
             StaffVO staff = (StaffVO) session.getAttribute("staff");
+            logger.info("Get Staff = {}", staff);
             @SuppressWarnings("unchecked")
             List<PermissionVO> permissions = (List<PermissionVO>) session.getAttribute("permissions");
-
-//            // login 頁面、靜態資源直接放行
-//            if (uri.endsWith("/admin/login") || uri.contains("/css") || uri.contains("/js")) {
-//                chain.doFilter(req, res);
-//                return;
-//            }
-//
-//            // 權限比對
-//            boolean allowed = false;
-//
-//            if (permissions != null) {
-//                for (PermissionVO p : permissions) {
-//                	System.out.println("uri="+uri + ", request.getContextPath()="+request.getContextPath()+", p.getUrl()="+p.getUrl());
-//                	System.out.println(uri.startsWith(request.getContextPath() + p.getUrl()));
-//                    if (uri.startsWith(request.getContextPath() + p.getUrl())) { 
-//                    	
-//                        allowed = true;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            if (allowed) {
-//            	 System.out.println("permission allowed");
-//                chain.doFilter(req, res); // 有權限
-//            } else {
-//                System.out.println("權限不足：" + staff.getNickname() + " -> " + uri);
-//                response.sendError(HttpServletResponse.SC_FORBIDDEN, "您沒有權限訪問此功能");
-//            }
-        	
+            logger.info("Staff permissions: {}", permissions.toString());       	
         	
             chain.doFilter(req, res); // 已登入，放行
         } else {
-        	System.out.println("failed");
+//        	System.out.println("failed");
+        	logger.info("Get session or staff failed.");     
             response.sendRedirect(request.getContextPath() + "/admin/login");
         }
 		

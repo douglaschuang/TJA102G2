@@ -1,86 +1,80 @@
 package com.babymate.member.model;
 
 import java.io.Serializable;
-import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.babymate.cart.model.CartVO;
-
 import jakarta.persistence.*;
 
+/**
+ * 會員實體類別
+ */
 @Entity
 @Table(name = "member")
 public class MemberVO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	public MemberVO() {
 		super();
 	}
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id", nullable = false, updatable = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_id", nullable = false, updatable = false)
 	private Integer memberId;
-	
+
 	@Column(name = "account", nullable = false, unique = true, length = 50)
 	private String account; // email
-	
+
 	@Column(name = "password", nullable = false, length = 50)
 	private String password;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "email_verified", nullable = false)
 	private byte emailVerified;
-	
+
 	@Column(name = "register_date", nullable = false)
 	private LocalDateTime registerDate;
-	
+
 	@Column(name = "last_login_time")
 	private LocalDateTime lastLoginTime;
-	
+
 	@Column(name = "account_status", nullable = false)
 	private byte accountStatus;
-	
+
 	@Column(name = "phone")
 	private String phone;
-	
+
 	@Column(name = "recipient_name")
 	private String recipientName;
-	
+
 	@Column(name = "address")
 	private String address;
-	
+
 	@Column(name = "gender")
 	@Enumerated(EnumType.STRING)
-	private Gender gender; 
-	
+	private Gender gender;
+
 	@Column(name = "birthday")
 	private LocalDate birthday;
-	
+
 	@Lob
 	@Column(name = "profile_picture", columnDefinition = "LONGBLOB")
-	private byte[] profilePicture; 
-	
+	private byte[] profilePicture;
+
 	@Column(name = "email_auth_token")
-	private String emailAuthToken; 
-	
+	private String emailAuthToken;
+
 	@Column(name = "pwd_reset_token")
 	private String pwdResetToken;
-	
+
 	@Column(name = "pwd_reset_expire")
 	private LocalDateTime pwdResetExpire;
 
 	@Column(name = "update_date", nullable = false)
 	private LocalDateTime updateDate;
-	
-//	private Set<CartVO> carts = new HashSet<CartVO>();
-	
+
 	public Integer getMemberId() {
 		return memberId;
 	}
@@ -216,7 +210,7 @@ public class MemberVO implements Serializable {
 	public void setRegisterDate(LocalDateTime registerDate) {
 		this.registerDate = registerDate;
 	}
-	
+
 	public LocalDateTime getUpdateDate() {
 		return updateDate;
 	}
@@ -224,51 +218,41 @@ public class MemberVO implements Serializable {
 	public void setUpdateDate(LocalDateTime updateDate) {
 		this.updateDate = updateDate;
 	}
-	
+
 	@Transient
 	public String getFormattedDate(LocalDateTime dateTime) {
-	    if (dateTime == null) return "";
-	    return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		if (dateTime == null)
+			return "";
+		return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
-	
+
 	@Transient
 	public String getFormattedDateTime(LocalDateTime dateTime) {
-	    if (dateTime == null) return "";
-	    return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		if (dateTime == null)
+			return "";
+		return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 	}
-	
-//	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="cartVO")
-//	@OrderBy("memberId asc")
-//	public Set<CartVO> getCarts() {
-//		return this.carts;
-//	}
-//
-//	public void setCarts(Set<CartVO> carts) {
-//		this.carts = carts;
-//	}
 
 	@Override
 	public String toString() {
 		int picSize = 0;
-		
+
 		try {
-			picSize = profilePicture.length;
-		} catch (Exception e) {
-//			e.printStackTrace();
+		    picSize = profilePicture.length;
+		} catch (NullPointerException e) {
+		    System.err.println("Profile picture is null.");
 		}
-		
+
 		return "Member [memberId=" + memberId + ", account=" + account + ", password=" + password + ", name=" + name
 				+ ", emailVerified=" + emailVerified + ", registerDate=" + registerDate + ", lastLoginTime="
 				+ lastLoginTime + ", accountStatus=" + accountStatus + ", phone=" + phone + ", recipientName="
 				+ recipientName + ", address=" + address + ", gender=" + gender + ", birthday=" + birthday
-				+ ", profilePicture size=" + picSize /*Arrays.toString(profilePicture)*/ + ", emailAuthToken=" + emailAuthToken
-				+ ", pwdResetToken=" + pwdResetToken + ", pwdResetExpire=" + pwdResetExpire + ", updateDate="
-				+ updateDate + "]";
+				+ ", profilePicture size=" + picSize + ", emailAuthToken="
+				+ emailAuthToken + ", pwdResetToken=" + pwdResetToken + ", pwdResetExpire=" + pwdResetExpire
+				+ ", updateDate=" + updateDate + "]";
 	}
 
-	public enum Gender{
-		  男,
-		  女,
-		  其他
-		}
+	public enum Gender {
+		男, 女, 其他
+	}
 }
