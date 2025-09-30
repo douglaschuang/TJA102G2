@@ -49,25 +49,26 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
+<!-- 改用logback (Spring Boot原生支持) -->
 		<!-- 用途說明6: for log4j.properties -->
 		<!-- Spring Boot日誌系統預設是使用logback -->
 		<!-- 對於習慣了log4j的開發者，Spring Boot依然有很好的支援 -->
 		<!-- 不過我們在引入log4j之前，需要先排除該logback jar的依賴，再引入log4j的依賴，如下所示: -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j2</artifactId>
-			<!-- <version>3.4.1</version> -->
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter</artifactId>-->
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.springframework.boot</groupId>-->
+<!--					<artifactId>spring-boot-starter-logging</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-log4j2</artifactId>-->
+<!--			 <version>3.4.1</version> -->
+<!--		</dependency>-->
 
 		<!--
 		========================================================================================== -->

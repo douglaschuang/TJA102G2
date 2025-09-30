@@ -11,11 +11,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 
+/**
+ * 後台權限實體類別
+ */
 @Entity
 @Table(name = "permission")
 public class PermissionVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Override
 	public String toString() {
 		return "PermissionVO [permisisonId=" + permisisonId + ", name=" + name + ", url=" + url + ", menuGroupVO="
@@ -23,31 +26,31 @@ public class PermissionVO implements java.io.Serializable {
 	}
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "permission_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "permission_id")
 	private Integer permisisonId; // 權限ID
-	
+
 	@Column(name = "name")
-	@NotEmpty(message="權限名稱: 請勿空白")
+	@NotEmpty(message = "權限名稱: 請勿空白")
 	private String name; // 權限名稱
-	
+
 	@Column(name = "url")
-	@NotEmpty(message="URL路徑: 請勿空白")
+	@NotEmpty(message = "URL路徑: 請勿空白")
 	private String url; // URL路徑
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "group_id", nullable = false)
-	private MenuGroupVO menuGroupVO; // 群組ID
-	
+	private MenuGroupVO menuGroupVO; // 群組
+
 	@Column(name = "icon")
-	private String icon;  // 按鈕類型
-	
+	private String icon; // 按鈕類型
+
 	@Column(name = "type")
 	private Integer type; // 選單顯示類型
-	
+
 	@Column(name = "service")
 	private String service; // 連結服務名稱
-	
+
 	public Integer getPermisisonId() {
 		return permisisonId;
 	}
