@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.babymate.forum.model.BoardService;
 import com.babymate.forum.model.BoardVO;
-import com.babymate.forum.model.PostService;
 import com.babymate.forum.model.PostVO;
+import com.babymate.forum.service.BoardService;
+import com.babymate.forum.service.PostService;
 
 import jakarta.validation.Valid;
 

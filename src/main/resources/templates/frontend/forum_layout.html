@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title, extraHead)" 
+      th:replace="~{frontend/layout :: head(${title}, ${extraHead})}">
+</head>
+
+<body>
+    <!-- Header -->
+    <div th:replace="~{frontend/layout :: header}"></div>
+
+    <div class="blog-page-wrapper mb-100">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar (論壇專用) -->
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <div class="single-sidebar-widget mb-40" th:fragment="sidebar(boards)">
+                        <h2 class="single-sidebar-widget--title">看板列表</h2>
+                        <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
+                            <li th:each="board : ${boards}">
+                                <a th:href="@{/forum/board/{id}(id=${board.boardId})}"
+                                   th:text="${board.boardName}">看板名稱</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Content 插槽 -->
+                <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70"
+                     th:fragment="content">
+                    <!-- forum.html 的文章內容會插在這裡 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{frontend/layout :: footer}"></div>
+</body>
+</html>

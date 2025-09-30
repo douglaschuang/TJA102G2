@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<div class="page-title-section" th:fragment="page-title(title)">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-content">
+                    <h2 class="title" th:text="${title}"></h2>
+                    <ul class="breadcrumb">
+                        <li><a th:href="@{/}">Home</a></li>
+                        <li th:text="${title}"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

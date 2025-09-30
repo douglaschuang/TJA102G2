@@ -1,4 +1,4 @@
-package com.babymate.forum.model;
+package com.babymate.forum.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.babymate.forum.model.BoardRepository;
+import com.babymate.forum.model.BoardVO;
 
 @Service
 @Transactional
@@ -18,6 +21,13 @@ public class BoardService {
     public List<BoardVO> findAllBoards() {
         return boardRepository.findAll();
     }
+    // 呼叫啟用的看板
+    public List<BoardVO> findAllActiveBoards() {
+        
+        return boardRepository.findAllByBoardStatus((byte) 1);
+    }
+    
+    
 
     // 透過 ID 取得單一看板
     public Optional<BoardVO> findBoardById(Integer boardId) {
