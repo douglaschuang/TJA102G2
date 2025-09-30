@@ -1,6 +1,8 @@
 package com.babymate.todo.model;
 
 import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,14 @@ public class MhbTodoService {
 
     public List<MhbTodo> listByMhb(Integer mhbId){
         return repo.findByMotherHandbookIdOrderByDoneAscDueDateAsc(mhbId);
+    }
+    
+    public List<MhbTodo> searchTopN(Integer mhbId, String kw, int topN){
+        return repo.searchTopN(mhbId, kw == null ? "" : kw.trim(), PageRequest.of(0, topN));
+    }
+    
+    public List<MhbTodo> searchAll(Integer mhbId, String kw){
+        return repo.searchAll(mhbId, kw == null ? "" : kw.trim());
     }
 
     @Transactional
