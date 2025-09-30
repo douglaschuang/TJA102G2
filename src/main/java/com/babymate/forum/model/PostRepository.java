@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface PostRepository extends JpaRepository<PostVO, Integer> {
@@ -28,5 +29,15 @@ public interface PostRepository extends JpaRepository<PostVO, Integer> {
             countQuery = "SELECT count(p) FROM PostVO p WHERE p.postStatus = 1")
      Page<PostVO> findAllVisiblePosts(Pageable pageable);
 
-    
+    /**
+     * 根據 boardId 和 postStatus 查詢文章，並預先載入會員資訊 (MemberVO)，支援分頁。
+     */
+    @Query(value = "SELECT p FROM PostVO p JOIN FETCH p.memberVO JOIN FETCH p.boardVO WHERE p.boardVO.boardId = :boardId AND p.postStatus = :postStatus",
+            countQuery = "SELECT count(p) FROM PostVO p WHERE p.boardVO.boardId = :boardId AND p.postStatus = :postStatus")
+    Page<PostVO> findPostsWithMemberByBoardId(
+        @Param("boardId") Integer boardId,
+        @Param("postStatus") byte postStatus,
+        Pageable pageable
+    );
 }
+

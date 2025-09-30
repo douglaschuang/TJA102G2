@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardVO, Integer> {
 	// Repository 或 DAO
-	@Query("SELECT p FROM PostVO p JOIN FETCH p.boardVO WHERE p.id = :id")
-	PostVO findPostWithBoard(@Param("id") Long id);
-	
+//	@Query("SELECT p FROM PostVO p JOIN FETCH p.boardVO WHERE p.id = :id")
+//	PostVO findPostWithBoard(@Param("id") Long id);
+//	
 	
 	
 	
