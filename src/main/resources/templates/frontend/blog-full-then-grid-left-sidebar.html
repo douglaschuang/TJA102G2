@@ -61,8 +61,8 @@
 											<li><a
 												th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶成長紀錄</a></li>
 											<li><a
-												th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
-											<li><a th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='todo')}">待辦事項</a></li>
+												th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
+											<li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li>
 
 										</ul></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='calender')}">我的日曆</a></li>
@@ -399,7 +399,7 @@
 							<div
 								th:replace="~{frontend/u/baby/babyhandbook-tabs :: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
 							<div
-								th:replace="~{frontend/u/baby/babychart :: babyChart(${babyhandbook}, ${chartLabels}, ${heightChart}, ${weightChart}, ${headCircumferenceChart})}"></div>
+								th:replace="~{frontend/u/baby/baby-chart :: babyChart(${babyhandbook}, ${chartLabels}, ${heightChart}, ${weightChart}, ${hcChart})}"></div>
 						</div>
 
 						<!-- 待辦事項 -->
@@ -410,7 +410,7 @@
 								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${todo})}"></div>
 						</div>
 
-
+						
 						<!-- 預設首頁（當 activeTab 為空或未知時顯示） -->
 
 						<div th:case="*">
@@ -543,12 +543,7 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶手冊</p>
-<<<<<<< HEAD
-																		<a
-																			th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">+
-=======
-																		<a th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">+
->>>>>>> 890e56d (Update frontend babyhandbook & babyrecord)
+																		<a th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">
 																			查看寶寶手冊</a>
 																	</div>
 																	<p class="product-count">成長足跡一手掌握</p>
@@ -566,12 +561,7 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶成長紀錄</p>
-<<<<<<< HEAD
-																		<a
-																			th:href="@{/blog/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
-=======
 																		<a th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">
->>>>>>> 890e56d (Update frontend babyhandbook & babyrecord)
 																			查看成長紀錄</a>
 																	</div>
 																	<p class="product-count">紀錄寶寶每個里程碑</p>
@@ -600,13 +590,13 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶生長圖表</p>
-																		<a th:href="@{/blog/full-grid-left-bb(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">
+																		<a th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">
 																			查看圖表</a>
 																	</div>
 																	<p class="product-count">成長軌跡看得見</p>
 																</div>
-																<a href="/shop/left" class="banner-link"
-																	th:href="@{/blog/full-grid-left-bb(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}"></a>
+																<a class="banner-link"
+																	th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}"></a>
 															</div>
 														</div>
 
@@ -616,17 +606,9 @@
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
-<<<<<<< HEAD
-
-																		<p>代辦事項</p>
-																		<a th:href="@{/blog/full-grid-left-bb(tab='todo')}">+
-																			查看代辦事項</a>
-
-=======
 																		<p>待辦事項</p>
-																		<a th:href="@{/blog/full-grid-left-bb(tab='todo')}">+
+																		<a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">+
 																			查看待辦事項</a>
->>>>>>> 890e56d (Update frontend babyhandbook & babyrecord)
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
@@ -637,7 +619,7 @@
 																		th:src="@{/assets/images/category/bluememo.jpg}">
 																</div>
 																<a class="banner-link"
-																	th:href="@{/blog/full-grid-left-bb(tab='todo')}"></a>
+																	th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}"></a>
 															</div>
 														</div>
 
@@ -746,12 +728,7 @@
 																		<div
 																			class="single-category__content single-category__content--two mt-25">
 																			<div class="title">
-<<<<<<< HEAD
-																				<a
-																					th:href="@{/blog/full-grid-left-bb(tab='notice')}">通知</a>
-=======
 																				<a th:href="@{/blog/full-grid-left-bb(tab='notice')}">通知</a>
->>>>>>> 890e56d (Update frontend babyhandbook & babyrecord)
 																			</div>
 																			<p class="product-count"></p>
 																		</div>

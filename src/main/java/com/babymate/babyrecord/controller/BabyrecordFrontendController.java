@@ -1,7 +1,7 @@
 package com.babymate.babyrecord.controller;
 
 import java.io.IOException;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -316,6 +316,285 @@ public class BabyrecordFrontendController {
 
 	    return "frontend/u/baby/babyrecord-add"; 
 	}
+	
+	
+	@GetMapping("baby-chart/full-grid-left-ch")
+	public String showBabyrecordChart(@RequestParam(value = "babyhandbookid", required = false) Integer babyhandbookid,
+	                                  Model model,
+	                                  HttpSession session) {
+
+	    MemberVO member = (MemberVO) session.getAttribute("member");
+	    if (member == null) {
+	        return "redirect:/shop/login";
+	    }
+	    
+	    // 如果會員還沒選手冊id,找最新的手冊
+	    if (babyhandbookid == null) {
+	        BabyhandbookVO latest = babyhandbookSvc.findLatestByMemberId(member.getMemberId());
+	        if (latest != null) {
+	            babyhandbookid = latest.getBabyhandbookid(); 
+	        } else {
+	            return "redirect:/u/baby/babyhandbook-add";
+	        }
+	    }
+	    
+	    // 取得手冊資訊
+	    BabyhandbookVO babyhandbook = babyhandbookSvc.getOneBabyhandbook(babyhandbookid);
+	    
+	    // 沒有手冊或不是此會員的
+	    if (babyhandbook == null || !babyhandbook.getMember().getMemberId().equals(member.getMemberId())) {
+	        return "redirect:/blog/u/baby/babyhandbook-add";
+	        
+	    }
+	    
+	    model.addAttribute("babyhandbook", babyhandbook);
+
+	    // 取得紀錄資料
+	    List<BabyrecordVO> records = babyrecordSvc.findByBabyhandbookId(babyhandbookid);
+	    List<Integer> babyweek = records.stream().map(BabyrecordVO::getBabyweek).collect(Collectors.toList());
+	    List<BigDecimal> height = records.stream().map(BabyrecordVO::getHeight).collect(Collectors.toList());
+	    List<BigDecimal> weight = records.stream().map(BabyrecordVO::getWeight).collect(Collectors.toList());
+	    List<BigDecimal> hc = records.stream().map(BabyrecordVO::getHc).collect(Collectors.toList());
+
+	    model.addAttribute("activeTab", "baby-chart");
+	    model.addAttribute("tab", "baby-chart");
+	    model.addAttribute("babyweek", babyweek);
+	    model.addAttribute("height", height);
+	    model.addAttribute("weight", weight);
+	    model.addAttribute("hc", hc);
+
+	    // 根據性別決定參考曲線
+	    String gender = babyhandbook.getBabygender();
+
+	    Map<String, List<BigDecimal>> heightPercentile = "男".equals(gender) ? getMaleHeightPercentile() : getFemaleHeightPercentile();
+	    Map<String, List<BigDecimal>> weightPercentile = "男".equals(gender) ? getMaleWeightPercentile() : getFemaleWeightPercentile();
+	    Map<String, List<BigDecimal>> hcPercentile = "男".equals(gender) ? getMaleHcPercentile() : getFemaleHcPercentile();
+
+	    
+	    List<Double> ageWeeks = List.of(0.0, 26.0, 52.0, 78.0);
+	    model.addAttribute("ageWeeks", ageWeeks);
+	    
+	    model.addAttribute("heightPercentile", heightPercentile);
+	    model.addAttribute("weightPercentile", weightPercentile);
+	    model.addAttribute("hcPercentile", hcPercentile);
+
+//	    return "frontend/u/baby/baby-chart"; 
+	    return "frontend/blog-full-then-grid-left-sidebar";
+	}
+
+	//以下是hardcode
+	
+	private Map<String, List<BigDecimal>> getMaleHeightPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(46.3),
+	        BigDecimal.valueOf(63.6),
+	        BigDecimal.valueOf(71.3),
+	        BigDecimal.valueOf(77.2)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(47.9),
+	        BigDecimal.valueOf(65.4),
+	        BigDecimal.valueOf(73.3),
+	        BigDecimal.valueOf(79.5)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(49.9),
+	        BigDecimal.valueOf(67.6),
+	        BigDecimal.valueOf(75.7),
+	        BigDecimal.valueOf(82.3)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(51.8),
+	        BigDecimal.valueOf(69.8),
+	        BigDecimal.valueOf(78.2),
+	        BigDecimal.valueOf(85.1)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(53.4),
+	        BigDecimal.valueOf(71.6),
+	        BigDecimal.valueOf(80.2),
+	        BigDecimal.valueOf(87.3)
+	    ));
+	    return map;
+	}
+
+	private Map<String, List<BigDecimal>> getMaleWeightPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(2.5),
+	        BigDecimal.valueOf(6.4),
+	        BigDecimal.valueOf(7.8),
+	        BigDecimal.valueOf(8.9)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(2.9),
+	        BigDecimal.valueOf(7.1),
+	        BigDecimal.valueOf(8.6),
+	        BigDecimal.valueOf(9.7)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(3.3),
+	        BigDecimal.valueOf(7.9),
+	        BigDecimal.valueOf(9.6),
+	        BigDecimal.valueOf(10.9)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(3.9),
+	        BigDecimal.valueOf(8.9),
+	        BigDecimal.valueOf(10.8),
+	        BigDecimal.valueOf(12.3)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(4.3),
+	        BigDecimal.valueOf(9.7),
+	        BigDecimal.valueOf(11.8),
+	        BigDecimal.valueOf(13.5)
+	    ));
+	    return map;
+	}
+
+	private Map<String, List<BigDecimal>> getMaleHcPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(32.0),
+	        BigDecimal.valueOf(41.0),
+	        BigDecimal.valueOf(43.5),
+	        BigDecimal.valueOf(44.7)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(33.0),
+	        BigDecimal.valueOf(42.0),
+	        BigDecimal.valueOf(44.7),
+	        BigDecimal.valueOf(46.0)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(34.5),
+	        BigDecimal.valueOf(43.0),
+	        BigDecimal.valueOf(46.0),
+	        BigDecimal.valueOf(47.4)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(36.0),
+	        BigDecimal.valueOf(44.5),
+	        BigDecimal.valueOf(47.5),
+	        BigDecimal.valueOf(48.7)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(37.0),
+	        BigDecimal.valueOf(45.5),
+	        BigDecimal.valueOf(48.5),
+	        BigDecimal.valueOf(50.0)
+	    ));
+	    return map;
+	}
+
+	private Map<String, List<BigDecimal>> getFemaleHeightPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(45.6),
+	        BigDecimal.valueOf(61.5),
+	        BigDecimal.valueOf(69.2),
+	        BigDecimal.valueOf(75.2)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(47.2),
+	        BigDecimal.valueOf(63.4),
+	        BigDecimal.valueOf(71.3),
+	        BigDecimal.valueOf(77.7)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(49.1),
+	        BigDecimal.valueOf(65.7),
+	        BigDecimal.valueOf(74.0),
+	        BigDecimal.valueOf(80.7)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(51.1),
+	        BigDecimal.valueOf(68.1),
+	        BigDecimal.valueOf(76.7),
+	        BigDecimal.valueOf(83.7)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(52.7),
+	        BigDecimal.valueOf(70.0),
+	        BigDecimal.valueOf(78.9),
+	        BigDecimal.valueOf(86.2)
+	    ));
+	    return map;
+	}
+
+	private Map<String, List<BigDecimal>> getFemaleWeightPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(2.4),
+	        BigDecimal.valueOf(5.8),
+	        BigDecimal.valueOf(7.1),
+	        BigDecimal.valueOf(8.2)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(2.8),
+	        BigDecimal.valueOf(6.4),
+	        BigDecimal.valueOf(7.9),
+	        BigDecimal.valueOf(9.0)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(3.2),
+	        BigDecimal.valueOf(7.3),
+	        BigDecimal.valueOf(8.9),
+	        BigDecimal.valueOf(10.2)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(3.7),
+	        BigDecimal.valueOf(8.3),
+	        BigDecimal.valueOf(10.2),
+	        BigDecimal.valueOf(11.6)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(4.2),
+	        BigDecimal.valueOf(9.2),
+	        BigDecimal.valueOf(11.3),
+	        BigDecimal.valueOf(13.0)
+	    ));
+	    return map;
+	}
+
+	private Map<String, List<BigDecimal>> getFemaleHcPercentile() {
+	    Map<String, List<BigDecimal>> map = new HashMap<>();
+	    map.put("P3", List.of(
+	        BigDecimal.valueOf(31.8),
+	        BigDecimal.valueOf(39.8),
+	        BigDecimal.valueOf(42.2),
+	        BigDecimal.valueOf(43.5)
+	    ));
+	    map.put("P15", List.of(
+	        BigDecimal.valueOf(32.8),
+	        BigDecimal.valueOf(40.8),
+	        BigDecimal.valueOf(43.5),
+	        BigDecimal.valueOf(44.8)
+	    ));
+	    map.put("P50", List.of(
+	        BigDecimal.valueOf(34.0),
+	        BigDecimal.valueOf(42.1),
+	        BigDecimal.valueOf(45.0),
+	        BigDecimal.valueOf(46.2)
+	    ));
+	    map.put("P85", List.of(
+	        BigDecimal.valueOf(35.0),
+	        BigDecimal.valueOf(43.5),
+	        BigDecimal.valueOf(46.3),
+	        BigDecimal.valueOf(47.8)
+	    ));
+	    map.put("P97", List.of(
+	        BigDecimal.valueOf(36.0),
+	        BigDecimal.valueOf(44.5),
+	        BigDecimal.valueOf(47.5),
+	        BigDecimal.valueOf(48.9)
+	    ));
+	    return map;
+	}
+
+	
 	
 }
 

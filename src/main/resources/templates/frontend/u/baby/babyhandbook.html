@@ -58,7 +58,7 @@
 						檢視寶寶紀錄 </a> 
 					<a class="btn btn-primary btn-sm"
 						th:if="${babyhandbook != null}"
-						th:href="@{'/blog/u/baby/babyhandbook/' + ${babyhandbook.babyhandbookid} + '/chart'}">
+						th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='baby-chart', babyhandbookid=${babyhandbook.babyhandbookid})}">
 						檢視生長曲線圖 </a> 
 				</div>
 				<div class="d-flex gap-2">			
