@@ -1,119 +1,64 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<!-- head -->
-<head th:replace="~{frontend/layout :: head('看板 - BabyMate', ~{::extraHead})}">
-    <th:block th:fragment="extraHead">
-        <!-- forum_board 頁面專屬的 CSS 或 JS -->
-        <link rel="stylesheet" href="assets/css/main.css"/>
-    </th:block>
-</head>
+<head th:replace="~{frontend/forum_layout :: forumHead('看板 - ' + ${board.boardName}, null)}"></head>
 
-<!-- body with layout -->
-<body th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{::extraJs}, 'footer-one')}">
+<body th:replace="~{frontend/forum_layout :: forumLayout(
+    pageTitle       = '看板 - ' + ${board.boardName},
+    headerType      = 'forum',
+    content         = ~{:: pageContent},
+    extraJs         = ~{:: pageScripts},
+    footerClass     = 'footer-one',
+    breadcrumbTitle = ${board.boardName}
+)}">
 
-<!-- 主內容區 -->
-<section th:fragment="content">
-    <div class="blog-page-wrapper mb-100">
-        <div class="container">
-            <div class="row">
-
-                <!-- 側邊欄 -->
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="page-sidebar">
-
-                        <!-- 搜尋框 -->
-                        <div class="single-sidebar-widget mb-40">
-                            <div class="search-widget">
-                                <form th:action="@{/forum/search}" method="get">
-                                    <input type="search" name="keyword" placeholder="尋找文章 ..." />
-                                    <button type="submit"><i class="ion-android-search"></i></button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- 看板清單 -->
-                        <div class="single-sidebar-widget mb-40">
-                            <h2 class="single-sidebar-widget--title">看板</h2>
-                            <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
-                                <li th:each="b : ${boardsSidebar}">
-                                    <a th:href="@{/forum/board/{id}(id=${b.boardId})}"
-                                       th:text="${b.boardName}">看板名稱</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- 廣告 Banner -->
-                        <div class="single-sidebar-widget mb-40">
-                            <div class="blog-sidebar-banner">
-                                <img src="assets/images/banners/ADS-blog.png" class="img-fluid" alt="">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 主內容 -->
-                <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
-                    <div class="row">
-
-                        <!-- 看板標題與介紹 -->
-                        <div class="col-lg-12">
-                            <h3 th:text="${board.boardName}">看板名稱</h3>
-                            <p th:text="${board.boardLine}">看板介紹</p>
-                        </div>
-
-                        <!-- 若沒有文章 -->
-                        <div class="col-lg-12" th:if="${postListData.isEmpty()}">
-                            <p>目前還沒有文章。</p>
-                        </div>
-
-                        <!-- 文章列表 -->
-                        <div class="col-lg-12" th:each="post : ${postListData}">
-                            <div class="forum-post card p-3 mb-4 shadow-sm">
-                                <div class="post-meta text-muted mb-2">
-                                    <span th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}">時間</span>
-                                    ・作者：<span th:text="${post.memberVO.name}">作者</span>
-                                </div>
-                                <h5 class="post-title" th:utext="${post.postTitle}">文章標題</h5>
-                                <p class="post-excerpt" th:utext="${post.summary}">文章摘要</p>
-                                <div class="post-stats mt-2">
-                                    <a th:href="@{/post/{id}(id=${post.postId})}">
-                                        <span style="cursor:pointer;">💬 查看</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 分頁 -->
-                        <div class="col-lg-12" th:if="${totalPages > 1}">
-                            <div class="pagination text-center">
-                                <ul>
-                                    <li th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                        th:classappend="${i == currentPage} ? 'active'">
-                                        <a th:href="@{'/forum/board/' + ${board.boardId} + '(page=' + ${i} + ')'}"
-                                           th:text="${i}">1</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
+<th:block th:fragment="pageContent">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span>
+                    <h3 th:text="${board.boardName}" class="mb-0">看板名稱</h3>
+                    <p th:text="${board.boardLine}" class="text-muted mb-0">看板介紹</p>
+                </span>
+                <a th:href="@{/forum/board/{boardId}/post/new(boardId=${board.boardId})}" class="btn btn-primary">發表新文章</a>
             </div>
         </div>
+        
+        <div class="col-lg-12" th:replace="~{frontend/forum_layout :: postList(${postPage.content}, ${postPage.number + 1}, ${postPage.totalPages})}">
+        </div>
     </div>
-</section>
-
-<!-- JS -->
-<th:block th:fragment="extraJs">
-    <script src="assets/js/vendor/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/plugins.js"></script>
-    <script src="assets/js/main.js"></script>
 </th:block>
+
+    <th:block th:fragment="pageScripts">
+        <script>
+        // 把跟 forum.html 一模一樣的 AJAX 腳本複製過來
+        document.addEventListener("DOMContentLoaded", function() {
+            const likeButtons = document.querySelectorAll('.like-btn');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const postId = this.dataset.postId;
+                    fetch(`/api/posts/${postId}/toggle-like`, { method: 'POST' })
+                    .then(response => {
+                        if (!response.ok) {
+                            alert('請先登入才能收藏文章！');
+                            throw new Error('Server error');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.liked) {
+                            this.innerHTML = '<span>❤️</span>';
+                        } else {
+                            this.innerHTML = '<span>♡</span>';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+        </script>
+    </th:block>
 
 </body>
 </html>
