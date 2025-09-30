@@ -1,117 +1,120 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<!-- head -->
-<head
-	th:replace="~{frontend/layout :: head('討論區 - BabyMate', ~{::extraHead})}">
-<th:block th:fragment="extraHead">
-	<!-- forum 頁面專屬的 CSS 或 JS -->
-	<link rel="stylesheet" href="assets/css/main.css" />
-</th:block>
-</head>
+<head th:replace="~{frontend/forum_layout :: forumHead('論壇首頁', null)}"></head>
 
-<!-- body with layout -->
-<body
-	th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{::extraJs}, 'footer-one')}">
+<body th:replace="~{frontend/forum_layout :: forumLayout(
+    pageTitle = '論壇首頁',
+    headerType = 'forum',
+    content = ~{:: pageContent},
+    extraJs = ~{:: pageScripts},  
+    footerClass = 'footer-one',
+    breadcrumbTitle = '論壇'
+)}">
 
-	<!-- 主內容區 -->
-	<section th:fragment="content">
-		<div class="blog-page-wrapper mb-100">
-			<div class="container">
-				<div class="row">
+    <th:block th:fragment="pageContent">
+        <div th:replace="~{frontend/forum_layout :: postList(${postPage.content}, ${postPage.number + 1}, ${postPage.totalPages})}"></div>
+    </th:block>
 
-					<!-- 側邊欄 -->
-					<div class="col-lg-3 order-2 order-lg-1">
-						<div class="page-sidebar">
+    <th:block th:fragment="pageScripts">
+        <script>
+     // 等待整個網頁文件都載入完成後再執行
 
-							<!-- 搜尋框 -->
-							<div class="single-sidebar-widget mb-40">
-								<div class="search-widget">
-									<form th:action="@{/forum/search}" method="get">
-										<input type="search" name="keyword" placeholder="尋找文章 ..." />
-										<button type="submit">
-											<i class="ion-android-search"></i>
-										</button>
-									</form>
-								</div>
-							</div>
+        document.addEventListener("DOMContentLoaded", function() {
 
-							<!-- 看板清單 (動態) -->
-							<div class="single-sidebar-widget mb-40">
-								<h2 class="single-sidebar-widget--title">看板</h2>
-								<ul
-									class="single-sidebar-widget--list single-sidebar-widget--list--category">
-									<li th:each="board : ${boards}"><a
-										th:href="@{/forum/board/{id}(id=${board.boardId})}"
-										th:text="${board.boardName}">看板名稱</a></li>
-								</ul>
-							</div>
 
-							<!-- 廣告 Banner -->
-							<div class="single-sidebar-widget mb-40">
-								<div class="blog-sidebar-banner">
-									<img src="assets/images/banners/ADS-blog.png" class="img-fluid"
-										alt="">
-								</div>
-							</div>
 
-						</div>
-					</div>
+            // 找到頁面上所有 class 為 "like-btn" 的按鈕
 
-					<!-- 文章區塊 -->
-					<div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
-						<div class="row">
+            const likeButtons = document.querySelectorAll('.like-btn');
 
-							<!-- 若沒有文章 -->
-							<div class="col-lg-12" th:if="${postListData.isEmpty()}">
-								<p>目前還沒有文章。</p>
-							</div>
 
-							<!-- 文章列表 -->
-							<div class="col-lg-12" th:each="post : ${postListData}">
-								<div class="forum-post card p-3 mb-4 shadow-sm">
-									<div class="post-meta text-muted mb-2">
-										<span th:text="${post.boardVO.boardName}">看板</span>・ <span
-											th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}">時間</span>
-									</div>
-									<h5 class="post-title" th:utext="${post.postTitle}">文章標題</h5>
-									<p class="post-excerpt" th:utext="${post.summary}">文章摘要</p>
-									<div class="post-stats mt-2">
-										<span>❤️ 0</span> <a
-											th:href="@{/forum/board/{boardId}/post/{postId}(boardId=${post.boardVO.boardId}, postId=${post.postId})}">
-											<span style="cursor: pointer;">💬 查看</span>
-										</a> <span>⭐ 0</span> <span>↗ 分享</span>
-									</div>
-								</div>
-							</div>
 
-							<!-- 分頁 -->
-							<div class="col-lg-12" th:if="${totalPages > 1}">
-								<div class="pagination text-center">
-									<ul>
-										<li th:each="i : ${#numbers.sequence(1, totalPages)}"
-											th:classappend="${i == currentPage} ? 'active'"><a
-											th:href="@{'/forum'(page=${i})}" th:text="${i}">1</a></li>
-									</ul>
-								</div>
-							</div>
+            // 為每一個按鈕加上點擊事件監聽器
 
-						</div>
-					</div>
+            likeButtons.forEach(button => {
 
-				</div>
-			</div>
-		</div>
-	</section>
+                button.addEventListener('click', function(event) {
 
-	<!-- JS -->
-	<th:block th:fragment="extraJs">
-		<script src="assets/js/vendor/jquery.min.js"></script>
-		<script src="assets/js/popper.min.js"></script>
-		<script src="assets/js/bootstrap.min.js"></script>
-		<script src="assets/js/plugins.js"></script>
-		<script src="assets/js/main.js"></script>
-	</th:block>
+                    
+
+                    // 阻止 <a> 標籤的預設跳轉行為
+
+                    event.preventDefault(); 
+
+
+
+                    // 從按鈕的 data-post-id 屬性中讀取文章 ID
+
+                    const postId = this.dataset.postId;
+
+                    
+
+                    // 準備發送 AJAX 請求
+
+                    fetch(`/api/posts/${postId}/toggle-like`, {
+
+                        method: 'POST',
+
+                        headers: {
+
+                            'Content-Type': 'application/json',
+
+                            // 如果你的 Spring Security 有 CSRF 保護，還需要加上 token header
+
+                        },
+
+                    })
+
+                    .then(response => {
+
+                        if (!response.ok) {
+
+                            // 如果伺服器返回錯誤 (例如 401 未登入)，就跳出提示
+
+                            alert('請先登入才能收藏文章！');
+
+                            throw new Error('Server returned an error');
+
+                        }
+
+                        return response.json(); // 解析伺服器返回的 JSON 資料
+
+                    })
+
+                    .then(data => {
+
+                        // data 會是像 { "liked": true } 或 { "liked": false } 的物件
+
+                        // 根據返回的最新狀態，更新愛心圖示
+
+                        if (data.liked) {
+
+                            this.innerHTML = '<span>❤️</span>'; // 更新為實心愛心
+
+                        } else {
+
+                            this.innerHTML = '<span>♡</span>'; // 更新為空心愛心
+
+                        }
+
+                    })
+
+                    .catch(error => {
+
+                        console.error('Error:', error);
+
+                    });
+
+                });
+
+            });
+
+
+
+        });
+        </script>
+    </th:block>
 
 </body>
 </html>
