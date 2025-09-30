@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -32,6 +33,9 @@ import jakarta.validation.constraints.NotEmpty;
 public class PostVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	
+	
+
     private Integer postId;
     private BoardVO boardVO;   // 多對一：文章屬於一個看板
     private MemberVO memberVO; // 多對一：文章屬於一個會員
@@ -40,6 +44,11 @@ public class PostVO implements java.io.Serializable {
     private Timestamp postTime;
     private Timestamp postModify;
     private Byte postStatus;
+    
+    
+    private boolean likedByCurrentUser = false;
+    
+    
 
 	public PostVO() { //必需有一個不傳參數建構子(JavaBean基本知識)
 	}
@@ -53,8 +62,19 @@ public class PostVO implements java.io.Serializable {
 
 	public void setPostId(Integer postId) {
 		this.postId = postId;
-	}	
-
+	}
+	@Transient
+    public boolean isLikedByCurrentUser() {
+        return likedByCurrentUser;
+    }
+    public void setLikedByCurrentUser(boolean likedByCurrentUser) {
+        this.likedByCurrentUser = likedByCurrentUser;
+    }
+	
+	
+	
+	
+	
 
     // 關聯到 BoardVO
     @ManyToOne(fetch = FetchType.LAZY)
@@ -122,6 +142,17 @@ public class PostVO implements java.io.Serializable {
     public Byte getPostStatus() { return postStatus; }
     public void setPostStatus(Byte postStatus) { this.postStatus = postStatus; }
     // ⚡ 這裡重點：更新前自動執行
+    
+    // ★★★ 在原本的 @PreUpdate 上方，多加一個 @PrePersist ★★★
+    @PrePersist // 在「新增」資料前執行
+    protected void onCreate() {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        this.postTime = now;
+        this.postModify = now; // 新增時，建立時間 = 修改時間
+    } 
+    
+    
+    
     @PreUpdate
     protected void onUpdate() {
         this.postModify = new Timestamp(System.currentTimeMillis());
