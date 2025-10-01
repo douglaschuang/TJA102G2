@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,17 @@ public interface LikeRepository extends JpaRepository<LikeVO, Integer> {
     
     
     Optional<LikeVO> findByMemberVO_MemberIdAndPostVO_PostId(Integer memberId, Integer postId);
+    
+    // 根據會員ID和收藏狀態(1)來查找，並回傳分頁結果
+    @Query(value = "SELECT l FROM LikeVO l " +
+            "JOIN FETCH l.postVO p " +
+            "JOIN FETCH p.memberVO " +
+            "JOIN FETCH p.boardVO " +
+            "WHERE l.memberVO.memberId = :memberId AND l.likeStatus = :status",
+    countQuery = "SELECT count(l) FROM LikeVO l WHERE l.memberVO.memberId = :memberId AND l.likeStatus = :status")
+Page<LikeVO> findActiveLikesByMemberIdWithDetails(
+ @Param("memberId") Integer memberId, 
+ @Param("status") byte status, 
+ Pageable pageable
+);
 }
