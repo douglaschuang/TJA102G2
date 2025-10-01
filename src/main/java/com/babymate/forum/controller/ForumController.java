@@ -374,5 +374,42 @@ public class ForumController {
             return "redirect:/forum";
         }
     }
+    
+    
+    
+    
+    
+    
+    @GetMapping("/forum/my-likes")
+    public String showMyLikesPage(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            Model model, 
+            HttpSession session) {
+
+        // 1. 權限檢查：必須登入才能看收藏頁
+        MemberVO currentUser = (MemberVO) session.getAttribute("member");
+        if (currentUser == null) {
+            return "redirect:/shop/login"; // 沒登入，請他去登入
+        }
+
+        // 2. 準備分頁資訊
+        Pageable pageable = PageRequest.of(page > 0 ? page - 1 : 0, 5, Sort.by("postVO.postTime").descending());
+
+        // 3. 呼叫 Service 的新方法來取得收藏文章的分頁結果
+        Page<PostVO> postPage = postService.findLikedPostsByUser(currentUser, pageable);
+
+        // 4. 把資料放進 Model
+        model.addAttribute("postPage", postPage);
+        
+        // 5. 側邊欄需要的看板列表也別忘了
+        List<BoardVO> allBoards = boardService.findAllActiveBoards();
+        model.addAttribute("boards", allBoards);
+
+        // 6. 準備麵包屑標題
+        model.addAttribute("breadcrumbTitle", "我的收藏");
+        
+        // 7. 回傳新頁面的模板路徑
+        return "frontend/forum_my_likes";
+    }
 
 }
