@@ -9,51 +9,61 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import jakarta.annotation.PostConstruct;
 
 @Component
 public class MailService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MailService.class);
+	
+	private static final String SMTP_HOST = "smtp.gmail.com";
+    private static final String SMTP_PORT = "465";
+    private static final String SMTP_SOCKET_FACTORY_CLASS = "javax.net.ssl.SSLSocketFactory";
 	
 	@Autowired
 	private MailProperties mailProperties;
 	
 	@PostConstruct
 	public void init() {
-	    System.out.println("MailProperties loaded: " + mailProperties.getSender());
+		
+		if (mailProperties != null) {
+            logger.info("MailProperties loaded: {}", mailProperties.getSender());
+        } else {
+            logger.error("MailProperties is null! Email sending may fail.");
+        }
 	}
 
-	// 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
+	/**
+     * 寄送 Email
+     *
+     * @param to             收件人
+     * @param subject        主旨
+     * @param messageContent 內容
+     * @param isHtml         是否為 HTML 格式
+     */
 	public void sendMail(String to, String subject, String messageContent, boolean isHtml) {
+		
+        if (mailProperties == null) {
+            logger.error("MailProperties is null! 無法寄送郵件.");
+            return;
+        }
+        
+        final String myGmail = mailProperties.getSender();
+		final String myGmail_password = mailProperties.getPassword();
 
 		try {
-			// 設定使用SSL連線至 Gmail smtp Server
-			Properties props = new Properties();
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.socketFactory.port", "465");
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.port", "465");
+			// 設定使用SSL連線至 Gmail SMTP Server
+			Properties props = new Properties();		
+			props.put("mail.smtp.host", SMTP_HOST);
+	        props.put("mail.smtp.socketFactory.port", SMTP_PORT);
+	        props.put("mail.smtp.socketFactory.class", SMTP_SOCKET_FACTORY_CLASS);
+	        props.put("mail.smtp.auth", "true");
+	        props.put("mail.smtp.port", SMTP_PORT);
 
-	        // ●設定 gmail 的帳號 & 密碼 (將藉由你的Gmail來傳送Email)
-	        // ●1) 登入你的Gmail的: 
-	        // ●2) 點選【管理你的 Google 帳戶】
-	        // ●3) 點選左側的【安全性】
-	       
-	        // ●4) 完成【兩步驟驗證】的所有要求如下:
-	        //     ●4-1) (請自行依照步驟要求操作之.....)
-	       
-	        // ●5) 完成【應用程式密碼】的所有要求如下:
-	        //     ●5-1) 下拉式選單【選取應用程式】--> 選取【郵件】
-	        //     ●5-2) 下拉式選單【選取裝置】--> 選取【Windows 電腦】
-	        //     ●5-3) 最後按【產生】密碼
-			final String myGmail = mailProperties.getSender();
-			final String myGmail_password = mailProperties.getPassword();
-//			System.out.println(myGmail);
-//			System.out.println(myGmail_password);
 			Session session = Session.getInstance(props, new Authenticator() {
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(myGmail, myGmail_password);
@@ -76,10 +86,9 @@ public class MailService {
 	        }
 
 			Transport.send(message);
-			System.out.println("傳送成功!");
+			logger.info("郵件已成功傳送至 {}", to);
 		} catch (MessagingException e) {
-			System.out.println("傳送失敗!");
-			e.printStackTrace();
+			logger.error("傳送失敗! {}", e.getMessage(), e);
 		}
 	}
 
