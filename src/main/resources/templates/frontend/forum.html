@@ -18,7 +18,9 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="mb-0">最新文章</h3>
                     
-                    <a th:if="${session.member != null}" th:href="@{/forum/my-likes}" class="btn btn-info">我的收藏</a>
+                   <a th:if="${session.member != null}" th:href="@{/forum/my-likes}" class="btn btn-info">我的收藏</a>
+
+<a th:unless="${session.member != null}" th:href="@{/shop/login}" class="btn btn-info">我的收藏</a>
                 </div>
             </div>
             <div class="col-lg-12" th:replace="~{frontend/forum_layout :: postList(${postPage.content}, ${postPage.number + 1}, ${postPage.totalPages})}"></div>
