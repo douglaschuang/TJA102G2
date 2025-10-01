@@ -299,7 +299,7 @@ public class PostService {
     public List<PostVO> getAll() {
         return postRepository.findAllActive();
     }
-
+    
 	
 	
 	
@@ -310,5 +310,23 @@ public class PostService {
         }
         return allPosts;
     }
+    
+    
+    
+    @Transactional(readOnly = true)
+    public Page<PostVO> findLikedPostsByUser(MemberVO currentUser, Pageable pageable) {
+        // 1. 呼叫我們 Repository 的新方法
+        Page<LikeVO> pageOfLikes = likeRepository.findActiveLikesByMemberIdWithDetails(currentUser.getMemberId(), (byte) 1, pageable);
+
+        // 2. 直接用 map 把 PostVO 抽出來就行了，因為所有關聯都已經被 JOIN FETCH 載入了
+        Page<PostVO> pageOfPosts = pageOfLikes.map(LikeVO::getPostVO);
+
+        // 3. 收藏頁的文章，收藏狀態當然是 true
+        pageOfPosts.getContent().forEach(post -> post.setLikedByCurrentUser(true));
+
+        return pageOfPosts;
+    }
+    
+    
 
 }
