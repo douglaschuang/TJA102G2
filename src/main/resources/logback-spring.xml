@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- 使用 Spring 屬性定義日誌路徑，確保路徑正確 -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path" defaultValue="logs"/>
+    <property name="APP_NAME" value="babymate"/>
+
+    <!-- Console 輸出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File 輸出 - 使用 SizeAndTimeBasedRollingPolicy 支援按大小和按時間滾動 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 應用程式當前輸出檔案 (永遠是這個檔案) -->
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+
+        <!-- 關鍵修正: 將 Policy 類別改為 SizeAndTimeBasedRollingPolicy -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            
+            <!-- 歷史檔案名稱模式：必須包含 %d (時間) 和 %i (索引) -->
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            
+            <!-- 單一檔案最大大小 (例如 100MB) -->
+            <maxFileSize>100MB</maxFileSize> 
+            
+            <!-- 歷史檔案最多保留 7 天 -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+    
+</configuration>

@@ -3,6 +3,7 @@ package com.babymate.cart.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,6 +68,12 @@ public class CartPageController {
             totalQty += item.getQuantity();
         }
 
+        // 新增 itemName 字串（for ECPay）
+        String itemName = displayItems.stream()
+            .map(item -> item.getProductName() + " x" + item.getQuantity())
+            .collect(Collectors.joining("#"));
+        model.addAttribute("itemName", itemName); // 傳給前端
+        
         model.addAttribute("cartItems", displayItems);
         model.addAttribute("totalQty", totalQty);
         model.addAttribute("total", subtotal); // 可加運費或其他費用再計算
