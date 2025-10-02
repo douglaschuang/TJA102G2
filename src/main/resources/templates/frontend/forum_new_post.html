@@ -4,11 +4,10 @@
 <head th:replace="~{frontend/forum_layout :: forumHead('發表新文章 - ' + ${board.boardName}, ~{::extraHead})}">
     <th:block th:fragment="extraHead">
         <style>
-        /* 針對 CKEditor 5 的編輯區塊設定最小高度 */
-        .ck-editor__editable {
-            min-height: 400px;
-        }
-    </style>
+            .ck-editor__editable {
+                min-height: 400px;
+            }
+        </style>
         <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     </th:block>
 </head>
@@ -26,7 +25,7 @@
         <div class="new-post-container card p-4 shadow-sm">
             <h4 class="mb-3">在看板「<span th:text="${board.boardName}"></span>」發表新文章</h4>
 
-            <form th:action="@{/forum/post/create}" th:object="${postVO}" method="post">
+            <form id="newPostForm" th:action="@{/forum/post/create}" th:object="${postVO}" method="post">
 
                 <input type="hidden" name="boardId" th:value="${board.boardId}" />
 
@@ -37,7 +36,7 @@
 
                 <div class="mb-3">
                     <label for="postLine" class="form-label">文章內容</label>
-                    <textarea id="postLine" class="form-control" th:field="*{postLine}" rows="10" placeholder="寫下你的內容..." required></textarea>
+                    <textarea id="postLine" class="form-control" th:field="*{postLine}" rows="10" placeholder="寫下你的內容..." ></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-success">送出文章</button>
@@ -47,16 +46,28 @@
 
     <th:block th:fragment="pageScripts">
         <script>
-            // 使用 ClassicEditor.create 來初始化
-            // 它會找到 id="postLine" 的 textarea，並把它變成編輯器
+            // 用一個變數來接住我們建立的編輯器實體
+            let editor;
+
             ClassicEditor
                 .create( document.querySelector( '#postLine' ), {
-                    // 這裡可以放一些 CKEditor 的額外設定，例如語言
                     language: 'zh'
+                } )
+                .then( newEditor => {
+                    editor = newEditor; // 把建立好的編輯器存起來
                 } )
                 .catch( error => {
                     console.error( error );
                 } );
+
+            // ★★★ 步驟二：監聽表單的提交事件 ★★★
+            document.getElementById('newPostForm').addEventListener('submit', function(event) {
+                if (editor) {
+                    // 在表單提交前，呼叫 updateSourceElement() 方法
+                    // 這會把 CKEditor 編輯介面裡的內容，同步回原本的 <textarea>
+                    editor.updateSourceElement();
+                }
+            });
         </script>
     </th:block>
 
