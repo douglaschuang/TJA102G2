@@ -25,6 +25,7 @@ import com.babymate.forum.model.ReplyVO;
 import com.babymate.forum.service.BoardService;
 import com.babymate.forum.service.PostService;
 import com.babymate.forum.service.ReplyService;
+import com.babymate.forum.service.ReportService;
 import com.babymate.member.model.MemberVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -42,6 +43,9 @@ public class ForumController {
 	
 	@Autowired
 	private ReplyService replyService;
+	
+	@Autowired
+	private ReportService reportService;
 	
 	
 	/*====前台文章首頁==========================================================================================================*/
@@ -411,5 +415,43 @@ public class ForumController {
         // 7. 回傳新頁面的模板路徑
         return "frontend/forum_my_likes";
     }
+    
+    
+    
+    
+    @PostMapping("/api/posts/{postId}/report")
+    @ResponseBody
+    public ResponseEntity<?> handlePostReport(
+            @PathVariable("postId") Integer postId,
+            @RequestParam("reason") Byte reason,
+            HttpSession session) {
+
+        // 1. 權限驗證：檢查使用者是否登入
+        MemberVO currentUser = (MemberVO) session.getAttribute("member");
+        if (currentUser == null) {
+            // 未登入，返回 401 Unauthorized 錯誤
+            return ResponseEntity.status(401).body(Map.of("message", "請先登入才能檢舉"));
+        }
+
+        // 2. 業務邏輯：嘗試呼叫 Service 處理檢舉
+        try {
+            reportService.createReport(postId, currentUser.getMemberId(), reason);
+            // 成功，返回 200 OK 狀態碼與成功訊息
+            return ResponseEntity.ok(Map.of("message", "檢舉已成功送出，感謝您的回報！"));
+
+        } catch (IllegalStateException e) {
+            // 捕獲 Service 拋出的「重複檢舉」錯誤
+            // 返回 409 Conflict 狀態碼，告知前端這個請求有衝突
+            return ResponseEntity.status(409).body(Map.of("message", e.getMessage()));
+
+        } catch (Exception e) {
+            // 捕獲其他所有未預期的錯誤
+            // 返回 500 Internal Server Error 狀態碼
+            System.err.println("處理檢舉時發生錯誤: " + e.getMessage()); // 在後台印出詳細錯誤
+            return ResponseEntity.status(500).body(Map.of("message", "系統發生未知錯誤，請稍後再試。"));
+        }
+    }
+    
+    
 
 }
