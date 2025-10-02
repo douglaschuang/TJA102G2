@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+  <head th:replace="~{frontend/layout :: head('聯絡我們', ~{::extraHead})}">
+    <th:block th:fragment="extraHead">
+      </th:block>
+  </head>
+
+  <body th:replace="~{frontend/layout :: layout('default', ~{::content}, ~{::extraJs}, '')}">
+
+    <th:block th:fragment="content">
+
+        <div class="breadcrumb-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h2 class="py-2">聯絡我們</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="contact-section">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="material-card h-100">
+                            
+                            <div th:if="${successMessage}" class="alert alert-success" role="alert"
+                                 style="background-color: #d4edda; border-color: #c3e6cb; color: #155724; padding: 1rem; margin-bottom: 1.5rem; border-radius: 0.25rem;">
+                                <h4 th:text="${successMessage}"></h4>
+                            </div>
+
+                            <h3>留下您的訊息</h3>
+                            <form th:action="@{/contact/submit}" method="post" class="row g-4 mt-1">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label">您的姓名</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="請輸入您的姓名" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">電子郵件</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="請輸入您的 Email" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="subject" class="form-label">主旨</label>
+                                    <input type="text" class="form-control" id="subject" name="subject" placeholder="訊息主旨" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label">訊息內容</label>
+                                    <textarea class="form-control" id="message" name="message" rows="5" placeholder="請在此輸入您的訊息..." required></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-solid-default" type="submit">送出訊息</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="material-card h-100">
+                            <div class="contact-details">
+                                <h3>我們的資訊</h3>
+                                <ul class="contact-list">
+                                    <li>
+                                        <div class="contact-icon">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            <h6>我們的地址</h6>
+                                        </div>
+                                        <div class="contact-content">
+                                            <p>220 新北市板橋區文化路一段 1 號</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="contact-icon">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <h6>聯絡電話</h6>
+                                        </div>
+                                        <div class="contact-content">
+                                            <p>+886 2 1234 5678</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="contact-icon">
+                                            <i class="fa-regular fa-envelope"></i>
+                                            <h6>電子郵箱</h6>
+                                        </div>
+                                        <div class="contact-content">
+                                            <p>service@babymate.com</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </th:block>
+
+    <th:block th:fragment="extraJs">
+        </th:block>
+  </body>
+
+</html>

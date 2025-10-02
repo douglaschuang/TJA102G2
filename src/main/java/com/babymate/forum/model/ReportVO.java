@@ -37,12 +37,12 @@ public class ReportVO implements Serializable {
     public Integer getReportId() { return reportId; }
     public void setReportId(Integer reportId) { this.reportId = reportId; }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false)
     public PostVO getPostVO() { return postVO; }
     public void setPostVO(PostVO postVO) { this.postVO = postVO; }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", nullable = false)
     public MemberVO getMemberVO() { return memberVO; }
     public void setMemberVO(MemberVO memberVO) { this.memberVO = memberVO; }
