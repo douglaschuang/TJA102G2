@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/forum_layout :: forumHead('發表新文章 - ' + ${board.boardName}, null)}"></head>
+<head th:replace="~{frontend/forum_layout :: forumHead('發表新文章 - ' + ${board.boardName}, ~{::extraHead})}">
+    <th:block th:fragment="extraHead">
+        <style>
+        /* 針對 CKEditor 5 的編輯區塊設定最小高度 */
+        .ck-editor__editable {
+            min-height: 400px;
+        }
+    </style>
+        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    </th:block>
+</head>
 
 <body th:replace="~{frontend/forum_layout :: forumLayout(
     pageTitle       = '發表新文章',
     headerType      = 'forum',
     content         = ~{:: pageContent},
-    extraJs         = null,
+    extraJs         = ~{:: pageScripts},  
     footerClass     = 'footer-one',
     breadcrumbTitle = '發表新文章'
 )}">
@@ -33,6 +43,21 @@
                 <button type="submit" class="btn btn-success">送出文章</button>
             </form>
         </div>
+    </th:block>
+
+    <th:block th:fragment="pageScripts">
+        <script>
+            // 使用 ClassicEditor.create 來初始化
+            // 它會找到 id="postLine" 的 textarea，並把它變成編輯器
+            ClassicEditor
+                .create( document.querySelector( '#postLine' ), {
+                    // 這裡可以放一些 CKEditor 的額外設定，例如語言
+                    language: 'zh'
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+        </script>
     </th:block>
 
 </body>
