@@ -31,13 +31,19 @@
         <hr th:if="${session.member != null and post.memberVO.memberId == session.member.memberId}" />
 
 <div class="post-actions text-end" th:if="${session.member != null and post.memberVO.memberId == session.member.memberId}">
-
     <a th:href="@{/forum/post/edit/{postId}(postId=${post.postId})}" class="btn btn-secondary">編輯文章</a>
-
     <form th:action="@{/forum/post/delete/{postId}(postId=${post.postId})}" method="post" style="display: inline;" onsubmit="return confirm('確定要刪除這篇文章嗎？');">
         <button type="submit" class="btn btn-danger ms-2">刪除文章</button>
     </form>
+    </div>
 
+<div class="post-actions text-end" th:if="${session.member != null and post.memberVO.memberId != session.member.memberId}">
+    <button type="button" class="btn btn-sm btn-outline-danger" 
+            data-bs-toggle="modal" 
+            data-bs-target="#reportModal"
+            th:data-post-id="${post.postId}">
+        <i class="fa fa-flag"></i> 檢舉
+    </button>
 </div>
     </div>
 
@@ -73,6 +79,37 @@
             <p>請先<a th:href="@{/shop/login}">登入</a>後再進行回覆。</p>
         </div>
     </div>
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">檢舉文章</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm">
+                    <div class="mb-3">
+                        <label for="reportReason" class="form-label">請選擇檢舉理由：</label>
+                        <select class="form-select" id="reportReason" name="reason" required>
+                            <option value="" disabled selected>-- 請選擇 --</option>
+                            <option value="1">垃圾廣告或詐騙</option>
+                            <option value="2">騷擾或人身攻擊</option>
+                            <option value="3">不當內容 (色情、暴力)</option>
+                            <option value="4">其他違規事項</option>
+                        </select>
+                    </div>
+
+                    <div id="reportMessageArea" class="mt-3"></div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-danger">確認送出</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </th:block>
 
 	<th:block th:fragment="pageScripts">
@@ -105,6 +142,86 @@
             }
         });
         </script>
+        <script th:inline="javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const reportModal = document.getElementById('reportModal');
+    let currentPostId = null;
+
+    // 1. 在 Modal 視窗準備彈出時，從觸發它的按鈕上讀取 post-id
+    reportModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // 觸發 modal 的那個按鈕
+        currentPostId = button.getAttribute('data-post-id'); // 讀取我們藏好的文章 ID
+        
+        // 重置表單狀態
+        const form = document.getElementById('reportForm');
+        form.reset();
+        const messageArea = document.getElementById('reportMessageArea');
+        messageArea.innerHTML = '';
+        messageArea.className = '';
+        form.querySelector('button[type="submit"]').disabled = false;
+    });
+
+    // 2. 監聽表單的提交事件
+    const reportForm = document.getElementById('reportForm');
+    reportForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // ★★★ 阻止表單用傳統方式提交，這很重要！
+
+        const reason = document.getElementById('reportReason').value;
+        const submitButton = this.querySelector('button[type="submit"]');
+        const messageArea = document.getElementById('reportMessageArea');
+        
+        if (!reason) {
+            alert('請選擇一個檢舉理由。');
+            return;
+        }
+
+        // 禁用按鈕，防止重複提交
+        submitButton.disabled = true;
+        messageArea.textContent = '處理中...';
+        messageArea.className = 'alert alert-info';
+
+        // 3. 使用 Fetch API 發送非同步請求到後端
+        fetch(`/api/posts/${currentPostId}/report`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            // 將要發送的資料轉換成表單格式
+            body: new URLSearchParams({
+                'reason': reason
+            })
+        })
+        .then(response => {
+            // 不論成功或失敗，都先將回應的 body 解析成 JSON
+            return response.json().then(data => ({ ok: response.ok, status: response.status, data: data }));
+        })
+        .then(({ ok, status, data }) => {
+            // 4. 根據後端的回應，在畫面上顯示訊息
+            messageArea.textContent = data.message;
+            if (ok) { // HTTP 狀態碼 200-299
+                messageArea.className = 'alert alert-success';
+                // 成功後可以選擇幾秒後自動關閉視窗
+                setTimeout(() => {
+                    const modalInstance = bootstrap.Modal.getInstance(reportModal);
+                    modalInstance.hide();
+                }, 2000);
+            } else { // HTTP 狀態碼 4xx, 5xx
+                messageArea.className = 'alert alert-danger';
+                submitButton.disabled = false; // 失敗了，讓使用者可以重試
+            }
+        })
+        .catch(error => {
+            // 處理網路錯誤等問題
+            console.error('Fetch Error:', error);
+            messageArea.textContent = '發生網路錯誤，請檢查您的連線。';
+            messageArea.className = 'alert alert-danger';
+            submitButton.disabled = false;
+        });
+    });
+
+});
+</script>
 	</th:block>
 
 </body>
