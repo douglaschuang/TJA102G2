@@ -26,7 +26,7 @@ public class GoogleCalendarService {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    // ✅ 從資料夾中讀取該使用者的 Credential（前提是他已經授權過）
+    // 從資料夾中讀取該使用者的 Credential（前提是他已經授權過）
     private Credential getCredentials(final NetHttpTransport httpTransport, String userId) throws Exception {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
                 new InputStreamReader(getClass().getResourceAsStream(CREDENTIALS_FILE_PATH)));

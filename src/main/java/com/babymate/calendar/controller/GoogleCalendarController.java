@@ -103,7 +103,7 @@ public class GoogleCalendarController {
         String userId = member.getMemberId().toString(); // userId 必須與 service 中相同
         Credential credential = flow.createAndStoreCredential(tokenResponse, userId);
 
-        // （可選）也可以暫時存到 session，以便當前頁面直接用
+        // 可以暫時存到 session，以便當前頁面直接用
         session.setAttribute("google_credential", credential);
 
         // Debug log
