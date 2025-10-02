@@ -452,6 +452,31 @@ public class ForumController {
         }
     }
     
-    
+    @GetMapping("/forum/search")
+    public String searchPosts(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            Model model) {
+
+        int pageNumber = page > 0 ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(pageNumber, 5, Sort.by("postTime").descending());
+
+        // 呼叫 Service 層執行搜尋
+        Page<PostVO> postPage = postService.searchPostsByKeyword(keyword, pageable);
+
+        // 把搜尋結果和相關資訊放進 Model
+        model.addAttribute("postPage", postPage);
+        model.addAttribute("keyword", keyword); // 把關鍵字也傳回去，讓頁面可以顯示「你搜尋了 XXX」
+
+        // 側邊欄需要的看板列表也別忘了
+        List<BoardVO> allBoards = boardService.findAllActiveBoards();
+        model.addAttribute("boards", allBoards);
+
+        // 麵包屑標題
+        model.addAttribute("breadcrumbTitle", "搜尋結果：" + keyword);
+
+        // 指向一個新的搜尋結果頁面
+        return "frontend/forum_search_results";
+    }
 
 }

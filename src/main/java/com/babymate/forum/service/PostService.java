@@ -328,5 +328,13 @@ public class PostService {
     }
     
     
+    
+    
+    
+    public Page<PostVO> searchPostsByKeyword(String keyword, Pageable pageable) {
+        // 直接把任務轉交給 Repository
+        return postRepository.searchByTitleOrContent(keyword, pageable);
+    }
+    
 
 }
