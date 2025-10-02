@@ -65,7 +65,7 @@
 											<li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li>
 
 										</ul></li>
-									<li><a th:href="@{/blog/full-grid-left(tab='calender')}">我的日曆</a></li>
+									<li><a th:href="@{/blog/full-grid-left(tab='calendar')}">我的日曆</a></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a></li>
 									<li><a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a></li>
@@ -403,11 +403,17 @@
 						</div>
 
 						<!-- 待辦事項 -->
-						<div th:case="'todo'">
+						<div th:case="'baby-todo'">
 							<div
 								th:replace="~{frontend/u/baby/babyhandbook-tabs :: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
 							<div
-								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${todo})}"></div>
+								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${baby-todo})}"></div>
+						</div>
+						
+						<!-- 日曆 -->
+						<div th:case="'calendar'">
+							<div
+								th:replace="~{frontend/u/baby/calendar :: calendar(${babyhandbook})}"></div>
 						</div>
 
 						
@@ -664,12 +670,12 @@
 																		<div
 																			class="single-category__content single-category__content--two mt-25">
 																			<div class="title">
-																				<a th:href="@{/blog/full-grid-left(tab='calender')}">我的日曆</a>
+																				<a th:href="@{/blog/full-grid-left(tab='calendar')}">我的日曆</a>
 																			</div>
 																			<p class="product-count"></p>
 																		</div>
 																		<a  class="banner-link"
-																			th:href="@{/blog/full-grid-left(tab='calender')}"></a>
+																			th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
 																	</div>
 																</div>
 

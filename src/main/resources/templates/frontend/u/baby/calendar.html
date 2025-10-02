@@ -1,0 +1,103 @@
+<div th:fragment="calendar(babyhandbook)">
+	
+
+		<!-- 登入按鈕 -->
+		<a href="/google-auth">連結 Google Calendar</a>
+
+		<!-- FullCalendar 容器 -->
+  		<div id="calendar"></div>
+		
+		<!-- FullCalendar JS -->
+		<script
+			src="https://unpkg.com/@fullcalendar/core@6.1.8/index.global.min.js"></script>
+		<script
+			src="https://unpkg.com/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
+		<script
+			src="https://unpkg.com/@fullcalendar/interaction@6.1.8/index.global.min.js"></script>
+
+		<!-- 初始化 FullCalendar -->
+		<script th:inline="javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+		  var calendarEl = document.getElementById('calendar');
+		  var calendar = new FullCalendar.Calendar(calendarEl, {
+		    initialView: 'dayGridMonth',
+		    editable: true,
+		    selectable: true,
+		    events: {
+		      url: '/api/google-calendar/events',
+		      method: 'GET',
+		      extraParams: function(fetchInfo) {
+		    	  if (!fetchInfo) {
+		    		    // 防呆機制，避免fetchInfo沒傳進來報錯
+		    		    return {};
+		    		  }
+		    	    return {
+		    	      start: fetchInfo.start.toISOString(),
+		    	      end: fetchInfo.end.toISOString()
+		    	    };
+		    	  },
+		      failure: function() {
+		        alert('需要同步行事曆？請點擊「連結 Google Calendar」完成授權。');
+		      }
+		    },
+		    select: function(info) {
+		      // 當使用者拖曳選好一段時間來新增事件
+		      var title = prompt('事件標題：');
+		      if (title) {
+		        fetch('/api/google-calendar/events', {
+		          method: 'POST',
+		          headers: { 'Content-Type': 'application/json' },
+		          body: JSON.stringify({
+		            summary: title,
+		            start: info.start.toISOString(),
+		            end: info.end ? info.end.toISOString() : null
+		          })
+		        }).then(response => {
+		          if (response.ok) {
+		            calendar.refetchEvents();
+		          } else {
+		            alert('新增失敗');
+		          }
+		        });
+		      }
+		      calendar.unselect();
+		    },
+		    eventChange: function(info) {
+		      // 拖拉／改時間後更新事件
+		      var ev = info.event;
+		      fetch(`/api/google-calendar/events/${ev.id}`, {
+		        method: 'PUT',
+		        headers: { 'Content-Type': 'application/json' },
+		        body: JSON.stringify({
+		          summary: ev.title,
+		          start: ev.start.toISOString(),
+		          end: ev.end ? ev.end.toISOString() : null
+		        })
+		      }).then(r => {
+		        if (!r.ok) {
+		          alert('更新失敗');
+		        }
+		      });
+		    },
+		    eventClick: function(info) {
+		      // 刪除事件
+		      var ev = info.event;
+		      fetch(`/api/google-calendar/events/${ev.id}`, {
+		        method: 'DELETE'
+		      }).then(r => {
+		        if (!r.ok) {
+		          alert('刪除失敗');
+		        }else {
+		            calendar.refetchEvents(); // ✅ 加這行
+		        }
+		      });
+		    }
+		  
+		  });
+		
+		  calendar.render();
+		});
+		</script>
+
+	</div>
+
