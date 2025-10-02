@@ -39,5 +39,10 @@ public interface PostRepository extends JpaRepository<PostVO, Integer> {
         @Param("postStatus") byte postStatus,
         Pageable pageable
     );
+    
+    
+    @Query("SELECT p FROM PostVO p JOIN FETCH p.boardVO WHERE p.postStatus = 1 AND LOWER(p.postTitle) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<PostVO> searchByTitleOrContent(@Param("keyword") String keyword, Pageable pageable);
+    
 }
 
