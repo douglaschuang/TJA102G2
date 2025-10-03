@@ -96,9 +96,13 @@
 			<td class="text-center">
 <!-- 			  <form method="get" th:action="@{/member/memberSuspend}+ '?memberId=' + ${memberVO.memberId}" style="margin-bottom: 0px;"> -->
 			  <form method="post" th:action="@{/member/memberSuspend}" style="margin-bottom: 0px;">
-<!-- 			     <input type="submit" value="停用" th:attr="disabled=${memberVO.accountStatus != 1}"> -->
- 				 <input type="submit" th:value="${memberVO.accountStatus == 1} ? '停用' : '啟用'"
-      				th:attr="class=${memberVO.accountStatus == 1} ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'" />
+<!--  				 <input type="submit" th:value="${memberVO.accountStatus == 1} ? '停用' : '啟用'" -->
+<!--       				th:attr="class=${memberVO.accountStatus == 1} ? 'btn btn-danger btn-sm' : 'btn btn-success btn-sm'" /> -->
+					<input type="submit"
+       					th:value="${memberVO.accountStatus == 1} ? '停用' : (${memberVO.accountStatus == 2} ? '啟用' : '未啟用')"
+      					th:classappend="${memberVO.accountStatus == 1} ? 'btn btn-danger btn-sm' : (${memberVO.accountStatus == 2} ? 'btn btn-success btn-sm' : 'btn btn-secondary btn-sm')"
+       					th:attr="disabled=${memberVO.accountStatus != 1 and memberVO.accountStatus != 2}" />
+
 			     <input type="hidden" name="memberId" th:value="${memberVO.memberId}"></form>
 			</td >
 			
