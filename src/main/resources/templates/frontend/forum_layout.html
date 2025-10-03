@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="emptyFragment"></th:block>
+
+<head th:fragment="forumHead(title, extraHead)">
+	<th:block th:replace="~{frontend/layout :: head(${title}, ${extraHead} ?: ~{::emptyFragment})}"></th:block>
+</head>
+
+<div th:fragment="forumSidebar">
+    <div class="page-sidebar">
+        <div class="single-sidebar-widget mb-40">
+            <div class="search-widget">
+                <form th:action="@{/forum/search}" method="get">
+                    <input type="search" name="keyword" placeholder="尋找文章 ..." />
+                    <button type="submit"><i class="ion-android-search"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="single-sidebar-widget mb-40">
+            <h2 class="single-sidebar-widget--title">看板</h2>
+            <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
+                <li th:each="board : ${boards}">
+                    <a th:href="@{/forum/board/{id}(id=${board.boardId})}" th:text="${board.boardName}">看板名稱</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="single-sidebar-widget mb-40">
+            <div class="blog-sidebar-banner">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<section th:fragment="forumMainContent(content, breadcrumbTitle)">
+    <div th:if="${breadcrumbTitle}" th:replace="~{frontend/fragments/breadcrumb :: breadcrumb(${breadcrumbTitle})}"></div>
+    
+    <div class="blog-page-wrapper mb-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <div th:replace="~{frontend/forum_layout :: forumSidebar}"></div>
+                </div>
+
+                <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
+                    <th:block th:replace="${content}"></th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:fragment="postCard(post)">
+    <div class="forum-post card p-3 mb-4 shadow-sm">
+        <div class="post-meta text-muted mb-2">
+            <span th:text="${post.boardVO != null ? post.boardVO.boardName : '未知看板'}">看板名稱</span>・
+            <span th:text="${#dates.format(post.postTime, 'yyyy-MM-dd HH:mm')}">時間</span>
+        </div>
+        
+        <h5 class="post-title" th:utext="${post.postTitle}">文章標題</h5>
+        
+        <p class="post-excerpt" th:utext="${post.getSummary()}">文章摘要</p>
+        
+        <div class="post-stats mt-2">
+    <a href="#" class="like-btn" th:data-post-id="${post.postId}"> 
+        <span th:if="${post.isLikedByCurrentUser()}">❤️</span>
+        <span th:unless="${post.isLikedByCurrentUser()}">♡</span>
+    </a>
+
+            <a th:href="@{/forum/board/{boardId}/post/{postId}(boardId=${post.boardVO.boardId}, postId=${post.postId})}">
+                <span style="cursor: pointer;">💬 查看</span>
+            </a>
+            
+            </div>
+    </div>
+</div>
+
+<div th:fragment="postList(postListData, currentPage, totalPages)">
+    <div class="row">
+        <div class="col-lg-12" th:if="${postListData == null or postListData.isEmpty()}">
+            <div class="alert alert-info text-center">
+                <p class="mb-0">目前還沒有文章。</p>
+            </div>
+        </div>
+        
+        <div class="col-lg-12" th:each="post : ${postListData}">
+            <div th:replace="~{frontend/forum_layout :: postCard(${post})}"></div>
+        </div>
+        
+        <div class="col-lg-12" th:if="${totalPages != null and totalPages > 1}">
+            <div class="pagination text-center">
+                <ul>
+                    <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a th:href="@{/forum(page=${i})}" th:text="${i}">1</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body th:fragment="forumLayout(pageTitle, headerType, content, extraJs, footerClass, breadcrumbTitle)">
+    <th:block th:replace="~{frontend/layout :: layout(
+        ${headerType} ?: 'forum',
+        ~{frontend/forum_layout :: forumMainContent(${content}, ${breadcrumbTitle})},
+        
+        ${extraJs} ?: ~{::emptyFragment},
+        
+        ${footerClass} ?: 'footer-one'
+    )}"></th:block>
+</body>
+
+</html>

@@ -32,11 +32,6 @@
 	border-bottom: 1px solid #C5D3E8 !important;
 	color: #777 !important
 }
-
-#google-map-one {
-	height: 520px;
-	width: 100%
-}
 </style>
 	<link rel="stylesheet"
 		href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -85,7 +80,7 @@
 						<option value="婦產科">婦產科</option>
 						<option value="小兒科">小兒科</option>
 						<option value="綜合醫院">綜合醫院</option>
-						<option value="身心科診所">身心科診所</option>
+						<option value="身心科診所">身心科</option>
 					</select>
 
 					<!-- <select id="dept"
@@ -132,6 +127,12 @@
 	</section>
 
 	<th:block th:fragment="extraJs">
+		<script>
+			// 例：/TJA102_Babymate_SpringBootMVC 或 "/"（根目錄）
+			window.APP_CTX = /*[[@{/}]]*/'/';
+			if (window.APP_CTX.endsWith('/'))
+				window.APP_CTX = window.APP_CTX.slice(0, -1);
+		</script>
 		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 		<script th:src="@{/assets/js/map.js}"></script>
 	</th:block>

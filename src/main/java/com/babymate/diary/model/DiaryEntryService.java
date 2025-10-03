@@ -18,5 +18,11 @@ public class DiaryEntryService {
     public List<DiaryEntry> latest3(Integer memberId) {
         return repo.findRecentTop3(memberId, org.springframework.data.domain.PageRequest.of(0, 3));
     }
+    
+ // ★ 新增：關鍵字搜尋
+    public List<DiaryEntry> searchByMember(Integer memberId, String kw) {
+        if (kw == null || kw.isBlank()) return findByMember(memberId);
+        return repo.searchAll(memberId, kw.trim());
+    }
 
 }

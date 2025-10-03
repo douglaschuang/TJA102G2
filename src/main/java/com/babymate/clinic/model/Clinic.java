@@ -11,6 +11,14 @@ public class Clinic {
 
   @Column(name = "clinic_name")
   private String clinicName;
+  
+//  @Lob
+//  @Basic(fetch = FetchType.LAZY)
+//  @Column(name = "cover_data", columnDefinition = "LONGBLOB")
+//  private byte[] coverData;
+//
+//  @Column(name = "cover_content_type")
+//  private String coverContentType;
 
   // getter / setter
   public Integer getClinicId() { return clinicId; }

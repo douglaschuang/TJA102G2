@@ -8,15 +8,15 @@
 
 				
 				<div class="d-flex justify-content-end mt-4 gap-2">
-				<a class="btn btn-outline-primary btn-sm" 
-					th:if="${babyhandbook != null}"
-					th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
-					回上一頁 </a>
-				
-				<a class="btn btn-success btn-sm" 
-		            th:if="${babyhandbook != null}"
-		            th:href="@{/u/baby/babyrecord-add(babyhandbookid=${babyhandbook.babyhandbookid})}">
-		            ➕ 新增寶寶紀錄
+					<a class="btn btn-outline-primary btn-sm" 
+						th:if="${babyhandbook != null}"
+						th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
+						回上一頁 </a>
+					
+					<a class="btn btn-success btn-sm" 
+			            th:if="${babyhandbook != null}"
+			            th:href="@{/u/baby/babyrecord-add(babyhandbookid=${babyhandbook.babyhandbookid})}">
+			            ➕ 新增寶寶紀錄
 		        </a>
 		        </div>
 			</div>

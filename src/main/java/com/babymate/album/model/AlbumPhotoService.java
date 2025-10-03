@@ -14,4 +14,10 @@ public class AlbumPhotoService {
     public Optional<AlbumPhoto> findById(Integer id) { return repo.findById(id); }
     
     public void delete(Integer id) { repo.deleteById(id); }
+    
+ // ★ 新增：關鍵字搜尋
+    public List<AlbumPhoto> searchByMember(Integer memberId, String kw) {
+        if (kw == null || kw.isBlank()) return findByMember(memberId);
+        return repo.searchAll(memberId, kw.trim());
+    }
 }

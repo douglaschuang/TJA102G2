@@ -112,6 +112,7 @@ public class MhbController {
 
 		model.addAttribute("success", "- (修改成功)");
 		model.addAttribute("mhbVO", mhbSvc.getOneMhb(mhbVO.getMotherHandbookId()));
+		model.addAttribute("pageTitle", "媽媽手冊｜修改成功");
 		return "admin/mhb/listOneMhb";
 	}
 

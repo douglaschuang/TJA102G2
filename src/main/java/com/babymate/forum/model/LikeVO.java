@@ -51,6 +51,6 @@ public class LikeVO implements Serializable {
     public void setLikeTime(Timestamp likeTime) { this.likeTime = likeTime; }
 
     @Column(name = "like_status", nullable = false)
-    public Byte getlikeStatus() { return likeStatus; }
-    public void setlikeStatus(Byte likeStatus) { this.likeStatus = likeStatus; }
+    public Byte getLikeStatus() { return likeStatus; }
+    public void setLikeStatus(Byte likeStatus) { this.likeStatus = likeStatus; }
 }

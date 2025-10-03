@@ -18,14 +18,14 @@
     <li class="nav-item">
       <a class="nav-link"
          th:classappend="${activeTab}=='baby-chart' ? ' active' : ''"
-         th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='baby-chart', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+         th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='baby-chart', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
         寶寶生長曲線圖
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link"
          th:classappend="${activeTab}=='todo' ? ' active' : ''"
-         th:href="@{/u/baby/babyrecord/full-grid-left-bb(tab='todo', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
+         th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='baby-todo', babyhandbookid=${babyhandbook != null ? babyhandbook.babyhandbookid : null})}">
         待辦事項
       </a>
     </li>
