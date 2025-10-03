@@ -1,138 +1,130 @@
 <!DOCTYPE html>
-<html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('討論區 - BabyMate', ~{::extraHead})}">
-    <th:block th:fragment="extraHead">
-        <!-- Favicon -->
-        <link rel="icon" href="assets/images/mother_baby_icon.ico">
+<head th:replace="~{frontend/forum_layout :: forumHead('論壇首頁', null)}"></head>
 
-        <!-- CSS ============================================ -->
-        <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-        <link href="assets/css/font-awesome.min.css" rel="stylesheet">
-        <link href="assets/css/ionicons.min.css" rel="stylesheet">
-        <link href="assets/css/themify-icons.css" rel="stylesheet">
-        <link href="assets/css/plugins.css" rel="stylesheet">
-        <link href="assets/css/helper.css" rel="stylesheet">
-        <link href="assets/css/main.css" rel="stylesheet">
+<body th:replace="~{frontend/forum_layout :: forumLayout(
+    pageTitle = '論壇首頁',
+    headerType = 'forum',
+    content = ~{:: pageContent},
+    extraJs = ~{:: pageScripts},  
+    footerClass = 'footer-one',
+    breadcrumbTitle = '論壇'
+)}">
 
-        <!-- Modernizer JS -->
-        <script src="assets/js/vendor/modernizr-2.8.3.min.js"></script>
-    </th:block>
-</head>
+    <th:block th:fragment="pageContent">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0">最新文章</h3>
+                    
+                   <a th:if="${session.member != null}" th:href="@{/forum/my-likes}" class="btn btn-info">我的收藏</a>
 
-<body th:replace="~{frontend/layout :: layout('forum', ~{::content}, ~{::extraJs}, 'footer-one')}">
-
-    <section th:fragment="content">
-        <div class="blog-page-wrapper mb-100">
-            <div class="container">
-                <div class="row">
-                    <!-- 側邊欄 -->
-                    <div class="col-lg-3 order-2 order-lg-1">
-                        <div class="page-sidebar">
-
-                            <!-- 搜尋框 -->
-                            <div class="single-sidebar-widget mb-40">
-                                <div class="search-widget">
-                                    <form action="#">
-                                        <input type="search" placeholder="尋找文章 ...">
-                                        <button type="button"><i class="ion-android-search"></i></button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <!-- 看板清單 -->
-                            <div class="single-sidebar-widget mb-40">
-                                <h2 class="single-sidebar-widget--title">看板</h2>
-                                <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
-                                    <li class="has-children">
-                                        <a href="forum.html">熱門看板 </a> <span class="quantity">5</span>
-                                        <ul>
-                                            <li><a href="#">熱門1</a></li>
-                                            <li><a href="#">熱門2</a></li>
-                                            <li><a href="#">熱門3</a></li>
-                                            <li><a href="#">熱門4</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="forum_board.html">孕期交流 </a> <span class="quantity">34</span></li>
-                                    <li><a href="#">產檢與醫療 </a> <span class="quantity">8</span></li>
-                                    <li><a href="#">待產準備 </a> <span class="quantity">10</span></li>
-                                    <li><a href="#">哺乳與母乳 </a> <span class="quantity">11</span></li>
-                                    <li><a href="#">寶寶成長 </a> <span class="quantity">45</span></li>
-                                    <li><a href="#">育兒經驗 </a> <span class="quantity">14</span></li>
-                                    <li><a href="#">飲食與營養 </a> <span class="quantity">19</span></li>
-                                    <li><a href="#">心理支持 </a> <span class="quantity">19</span></li>
-                                    <li><a href="#">親子生活 </a> <span class="quantity">19</span></li>
-                                </ul>
-                            </div>
-
-                            <!-- 廣告 Banner -->
-                            <div class="single-sidebar-widget mb-40">
-                                <div class="blog-sidebar-banner">
-                                    <img src="assets/images/banners/ADS-blog.png" class="img-fluid" alt="">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- 主內容 -->
-                    <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
-                        <div class="row">
-                            <div class="col-lg-12 mt-3">
-                                <div class="forum-post card p-3 mb-4 shadow-sm">
-                                    <div class="post-meta text-muted mb-2">孕期交流・22 小時前</div>
-                                    <h5 class="post-title">懷孕初期的經驗分享</h5>
-                                    <p class="post-excerpt">懷孕初期最常困擾我的就是孕吐...</p>
-                                    <div class="post-stats mt-2">
-                                        <span>❤️ 2704</span>
-                                        <a href="forum_post.html"><span style="cursor:pointer;">💬 1321</span></a>
-                                        <span>⭐ 2869</span>
-                                        <span>↗ 2292</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="forum-post card p-3 mb-4 shadow-sm">
-                                    <div class="post-meta text-muted mb-2">感情板・22 小時前</div>
-                                    <h5 class="post-title">男友跟同事好像沒什麼邊界感</h5>
-                                    <p class="post-excerpt">收到了很多建議，謝謝大家，今天上班一整天心情還算穩定...</p>
-                                    <div class="post-stats mt-2">
-                                        <span>❤️ 2704</span>
-                                        <span style="cursor:pointer;">💬 1321</span>
-                                        <span>⭐ 2869</span>
-                                        <span>↗ 2292</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 分頁 -->
-                            <div class="col-lg-12">
-                                <div class="pagination text-center">
-                                    <ul>
-                                        <li class="active"><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                        <li><a href="#">NEXT</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
+<a th:unless="${session.member != null}" th:href="@{/shop/login}" class="btn btn-info">我的收藏</a>
                 </div>
             </div>
+            <div class="col-lg-12" th:replace="~{frontend/forum_layout :: postList(${postPage.content}, ${postPage.number + 1}, ${postPage.totalPages})}"></div>
         </div>
-    </section>
+    </th:block>
 
-    <th:block th:fragment="extraJs">
-        <script src="assets/js/vendor/jquery.min.js"></script>
-        <script src="assets/js/popper.min.js"></script>
-        <script src="assets/js/bootstrap.min.js"></script>
-        <script src="assets/js/plugins.js"></script>
-        <script src="assets/js/main.js"></script>
+    <th:block th:fragment="pageScripts">
+        <script>
+     // 等待整個網頁文件都載入完成後再執行
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+
+
+            // 找到頁面上所有 class 為 "like-btn" 的按鈕
+
+            const likeButtons = document.querySelectorAll('.like-btn');
+
+
+
+            // 為每一個按鈕加上點擊事件監聽器
+
+            likeButtons.forEach(button => {
+
+                button.addEventListener('click', function(event) {
+
+                    
+
+                    // 阻止 <a> 標籤的預設跳轉行為
+
+                    event.preventDefault(); 
+
+
+
+                    // 從按鈕的 data-post-id 屬性中讀取文章 ID
+
+                    const postId = this.dataset.postId;
+
+                    
+
+                    // 準備發送 AJAX 請求
+
+                    fetch(`/api/posts/${postId}/toggle-like`, {
+
+                        method: 'POST',
+
+                        headers: {
+
+                            'Content-Type': 'application/json',
+
+                            // 如果你的 Spring Security 有 CSRF 保護，還需要加上 token header
+
+                        },
+
+                    })
+
+                    .then(response => {
+
+                        if (!response.ok) {
+
+                            // 如果伺服器返回錯誤 (例如 401 未登入)，就跳出提示
+
+                            alert('請先登入才能收藏文章！');
+
+                            throw new Error('Server returned an error');
+
+                        }
+
+                        return response.json(); // 解析伺服器返回的 JSON 資料
+
+                    })
+
+                    .then(data => {
+
+                        // data 會是像 { "liked": true } 或 { "liked": false } 的物件
+
+                        // 根據返回的最新狀態，更新愛心圖示
+
+                        if (data.liked) {
+
+                            this.innerHTML = '<span>❤️</span>'; // 更新為實心愛心
+
+                        } else {
+
+                            this.innerHTML = '<span>♡</span>'; // 更新為空心愛心
+
+                        }
+
+                    })
+
+                    .catch(error => {
+
+                        console.error('Error:', error);
+
+                    });
+
+                });
+
+            });
+
+
+
+        });
+        </script>
     </th:block>
 
 </body>

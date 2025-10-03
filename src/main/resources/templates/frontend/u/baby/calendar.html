@@ -1,0 +1,153 @@
+<div th:fragment="calendar(babyhandbook)">
+	
+<head>
+		<!-- 登入按鈕 -->
+		<a href="/google-auth">連結 Google Calendar</a>
+
+		<!-- FullCalendar 容器 -->
+  		<div id="calendar"></div>
+		
+		<!-- FullCalendar JS -->
+		<script
+			src="https://unpkg.com/@fullcalendar/core@6.1.8/index.global.min.js"></script>
+		<script
+			src="https://unpkg.com/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
+		<script
+			src="https://unpkg.com/@fullcalendar/interaction@6.1.8/index.global.min.js"></script>
+			
+		<!-- ✅ CSS (讓視窗有美化樣式) -->
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+		
+		<!-- ✅ JS (讓 SweetAlert2 功能能用) -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+
+		<!-- 初始化 FullCalendar! -->
+		<script th:inline="javascript">
+		   document.addEventListener('DOMContentLoaded', function () {
+			      const calendarEl = document.getElementById('calendar');
+
+			      const calendar = new FullCalendar.Calendar(calendarEl, {
+			        initialView: 'dayGridMonth',
+			        selectable: true,
+			        editable: true,
+			        displayEventTime: false,
+
+			        eventSources: [
+			          {
+			            url: '/api/google-calendar/events',
+			            method: 'GET',
+			            failure: () => console.warn('⚠ 無法取得 Google 事件'),
+			            color: '#4285F4'
+			          },
+			          {
+			            events: function (fetchInfo, successCallback, failureCallback) {
+			              const localEvents = JSON.parse(localStorage.getItem('localEvents') || '[]');
+			              successCallback(localEvents);
+			            },
+			            color: '#34A853'
+			          }
+			        ],
+
+			        select: function (info) {
+			          Swal.fire({
+			            title: '新增事件',
+			            input: 'text',
+			            inputLabel: '請輸入事件標題',
+			            showCancelButton: true,
+			            confirmButtonText: '新增',
+			            cancelButtonText: '取消',
+			            preConfirm: (title) => {
+			              if (!title) {
+			                Swal.showValidationMessage('標題不能為空');
+			              }
+			              return title;
+			            }
+			          }).then(result => {
+			            if (!result.isConfirmed) return;
+
+			            const title = result.value;
+
+			            // 嘗試新增到 Google Calendar
+			            fetch('/api/google-calendar/events', {
+			              method: 'POST',
+			              headers: {
+			                'Content-Type': 'application/json'
+			              },
+			              body: JSON.stringify({
+			                summary: title,
+			                start: info.start.toISOString(),
+			                end: info.end ? info.end.toISOString() : null
+			              })
+			            }).then(response => {
+			              if (response.ok) {
+			                Swal.fire('新增成功 ✅', '已同步至 Google Calendar', 'success');
+			              } else {
+			                throw new Error('新增到 Google 失敗');
+			              }
+			            }).catch(() => {
+			              // fallback 存 localStorage
+			              const newEvent = {
+			                id: 'local-' + Date.now(),
+			                title: title,
+			                start: info.start.toISOString(),
+			                end: info.end ? info.end.toISOString() : null
+			              };
+			              const localEvents = JSON.parse(localStorage.getItem('localEvents') || '[]');
+			              localEvents.push(newEvent);
+			              localStorage.setItem('localEvents', JSON.stringify(localEvents));
+			              Swal.fire('已儲存至本地 ✅', '未登入 Google Calendar', 'info');
+			            }).finally(() => {
+			              calendar.refetchEvents();
+			            });
+
+			            calendar.unselect();
+			          });
+			        },
+
+			        eventClick: function (info) {
+			          const event = info.event;
+
+			          Swal.fire({
+			            title: '確定要刪除嗎？',
+			            text: `"${event.title}" 將會被刪除`,
+			            icon: 'warning',
+			            showCancelButton: true,
+			            confirmButtonText: '刪除',
+			            cancelButtonText: '取消'
+			          }).then(result => {
+			            if (!result.isConfirmed) return;
+
+			            if (event.id.startsWith('local-')) {
+			              // 本地事件
+			              let localEvents = JSON.parse(localStorage.getItem('localEvents') || '[]');
+			              localEvents = localEvents.filter(e => e.id !== event.id);
+			              localStorage.setItem('localEvents', JSON.stringify(localEvents));
+			              Swal.fire('本地事件已刪除 ✅', '', 'success');
+			              calendar.refetchEvents();
+			            } else {
+			              // Google Calendar 事件
+			              fetch(`/api/google-calendar/events/${event.id}`, {
+			                method: 'DELETE'
+			              }).then(response => {
+			                if (!response.ok) {
+			                  throw new Error();
+			                }
+			                Swal.fire('Google 事件已刪除 ✅', '', 'success');
+			              }).catch(() => {
+			                Swal.fire('刪除失敗 ❌', '請確認您已登入 Google 帳戶', 'error');
+			              }).finally(() => {
+			                calendar.refetchEvents();
+			              });
+			            }
+			          });
+			        }
+			      });
+
+			      calendar.render();
+		    });
+		</script>
+
+	</div>
+

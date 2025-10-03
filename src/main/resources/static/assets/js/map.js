@@ -1,4 +1,8 @@
 (function () {
+  // 讓所有請求都自動帶上 context path
+  let CP = (typeof window !== 'undefined' && window.APP_CTX) ? window.APP_CTX : '';
+  if (CP.endsWith('/')) CP = CP.slice(0, -1);
+
   const defaultCenter = { lat: 25.033964, lng: 121.564468 }; // 台北101
   let map, markersLayer;
   const markerById = new Map();
@@ -13,7 +17,7 @@
 
     markersLayer = L.layerGroup().addTo(map);
 
-    // 科別固定（不再打後端）
+    // 科別固定（不打後端）
     setupFixedDepartments();
 
     // 控制元件
@@ -25,10 +29,11 @@
     const runSearch = (pos) => {
       const lat = pos.lat, lng = pos.lng;
       const radiusKm = parseFloat(radiusSel?.value || "3");
-      const dept = deptSel?.value || "";
+      let dept = deptSel?.value || "";
+      if (dept === "身心科診所") dept = "身心科"; // 保險
       const [sortBy, order] = (sortSel?.value || "distance,asc").split(",");
 
-      const url = `/api/clinics/nearby?lat=${lat}&lng=${lng}`
+      const url = `${CP}/api/clinics/nearby?lat=${lat}&lng=${lng}`
                 + `&radiusKm=${radiusKm}`
                 + `&department=${encodeURIComponent(dept)}`
                 + `&sortBy=${encodeURIComponent(sortBy)}&order=${encodeURIComponent(order)}`;
@@ -54,7 +59,7 @@
       runSearch({ lat: c.lat, lng: c.lng });
     }));
   }
-  
+
   // ---- 固定科別清單（不打後端）----
   function setupFixedDepartments() {
     const sel = document.getElementById("dept");
@@ -66,39 +71,6 @@
     });
     sel.innerHTML = html;
   }
-  
-  // ---- 固定科別清單 ----
-  //function setupFixedDepartments() {
-    //const sel = byId("dept");
-    //if (!sel) return;
-    //const keepAll = '<option value="">全部</option>';
-    //const fixed = ['小兒科','婦產科','綜合醫院'];
-    //sel.innerHTML = keepAll + fixed.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
-  //}
-  // 取代 setupFixedDepartments()
-  
-  // ---- 動態的科別載入 ----
-  //function setupFixedDepartments() {
-  //  const sel = document.getElementById("dept");
-  //  if (!sel) return;
-    // 先清空並放入「全部」
-  //  sel.innerHTML = '<option value="">全部</option>';
-  //  fetch('/api/clinics/departments')
-  //    .then(r => r.json())
-  //    .then(list => {
-  //      if (Array.isArray(list)) {
-  //        sel.innerHTML = '<option value="">全部</option>' +
-  //          list.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
-  //      }
-  //    })
-  //    .catch(() => {
-  //      // 後端若還沒就緒，就退回固定選單
-  //      const fixed = ['小兒科','婦產科','綜合醫院'];
-  //      sel.innerHTML = '<option value="">全部</option>' +
-  //        fixed.map(d => `<option value="${escapeHtml(d)}">${escapeHtml(d)}</option>`).join('');
-  //    });
-  // }
-
 
   // ---- 只允許距離排序的選單；若 HTML 沒放，這裡自動補一個 ----
   function ensureSortSelect() {
@@ -156,16 +128,25 @@
     // 診所標記
     (list || []).forEach(item => {
       const marker = L.marker([item.latitude, item.longitude]).addTo(markersLayer);
+
+      // ★ 純靜態封面路徑：/assets/clinics/{id}.jpg
       marker.bindPopup(`
         <div style="min-width:220px">
-          <strong>${escapeHtml(item.clinicName)}</strong><br/>
-          ${escapeHtml(item.clinicAddress)}<br/>
-          科別：${escapeHtml(item.department) || "-"}<br/>
-          電話：${escapeHtml(item.clinicPhone) || "-"}<br/>
-          距離：約 ${typeof item.distanceKm === "number" ? item.distanceKm.toFixed(2) : "?"} km<br/>
-          <a target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${item.latitude},${item.longitude}">用 Google 地圖導航</a>
+          <img src="${CP}/assets/images/clinics/${item.clinicId}.jpg"
+               alt="封面"
+               style="width:100%;max-height:120px;object-fit:cover;border-radius:8px"
+               onerror="this.onerror=null;this.src='${CP}/assets/images/clinic-default.jpg'">
+          <div class="mt-2">
+            <strong>${escapeHtml(item.clinicName)}</strong><br/>
+            ${escapeHtml(item.clinicAddress)}<br/>
+            科別：${escapeHtml(item.department) || "-"}<br/>
+            電話：${escapeHtml(item.clinicPhone) || "-"}<br/>
+            距離：約 ${typeof item.distanceKm === "number" ? item.distanceKm.toFixed(2) : "?"} km<br/>
+            <a target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=${item.latitude},${item.longitude}">用 Google 地圖導航</a>
+          </div>
         </div>
       `);
+
       marker.on('click', () => setActiveListItem(item.clinicId));
       markerById.set(item.clinicId, marker);
       bounds.push([item.latitude, item.longitude]);
@@ -196,9 +177,18 @@
       const li = document.createElement('li');
       li.className = 'list-group-item clinic-item';
       li.dataset.id = item.clinicId;
+
+      // ★ 每列縮圖：/assets/clinics/{id}.jpg
       li.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
+        <div class="d-flex gap-2 align-items-start">
+          <div class="flex-shrink-0">
+            <img src="${CP}/assets/images/clinics/${item.clinicId}.jpg"
+                 alt="封面"
+                 class="rounded"
+                 style="width:92px;height:64px;object-fit:cover"
+                 onerror="this.onerror=null;this.src='${CP}/assets/images/clinic-default.jpg'">
+          </div>
+          <div class="flex-grow-1">
             <div class="title">${escapeHtml(item.clinicName)}</div>
             <div class="small text-muted">${escapeHtml(item.clinicAddress)}</div>
             <div class="small">科別：${escapeHtml(item.department) || '-'}　電話：${escapeHtml(item.clinicPhone) || '-'}</div>
