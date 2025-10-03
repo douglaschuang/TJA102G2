@@ -28,7 +28,7 @@ public class ReportAdminController {
         // 設定分頁，每頁 10 筆，按檢舉時間倒序排列
         Pageable pageable = PageRequest.of(page, 10, Sort.by("reportTime").descending());
         Page<ReportVO> reportPage = reportService.findAllReports(pageable);
-        
+        model.addAttribute("pageTitle", "檢舉管理｜列表");
         model.addAttribute("reportPage", reportPage);
         return "admin/forum/report_management"; // 指向我們的後台模板頁面
     }
