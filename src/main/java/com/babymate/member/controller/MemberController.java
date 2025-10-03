@@ -1,18 +1,18 @@
 package com.babymate.member.controller;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,24 +35,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.babymate.cart.service.CartService;
 import com.babymate.member.model.MemberVO;
 import com.babymate.member.service.MemberService;
-import com.babymate.staff.model.StaffVO;
-import com.babymate.staff.service.StaffService;
 import com.babymate.util.EncodingUtil;
 import com.babymate.util.MailService;
 import com.babymate.util.SimpleCaptchaGenerator;
 import com.babymate.valid.UpdateGroup;
-import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.NotEmpty;
 
 
 @Controller
 @Validated
 @RequestMapping("/member")
 public class MemberController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
 	@Autowired
 	MemberService memberSvc; 
@@ -147,7 +146,25 @@ public class MemberController {
 			@RequestParam(name = "pic", required = false) MultipartFile[] parts, HttpSession session, RedirectAttributes redirectAttrs) throws IOException {
 
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		// 去除BindingResult中pic欄位的FieldError紀錄 --> 見第172行
+		
+		logger.info("updateBasicInfo - Member basic info start checking.");
+		if (memberVO == null) {
+			logger.info("updateBasicInfo - Cannot get MemberVO.");
+			model.addAttribute("errorMessage", "查無資料");
+		} else {
+			LocalDate birthday = memberVO.getBirthday();
+			logger.info("updateBasicInfo - 生日預期修改為{}", birthday);
+			
+			if (birthday != null && birthday.isAfter(LocalDate.now())) {
+				// 生日在未來日期
+				logger.info("updateBasicInfo - 當前日期為{}, 生日不可為未來日期", LocalDate.now());
+//				model.addAttribute("errorMessage", "生日必須小於當前日期");
+				redirectAttrs.addFlashAttribute("errorMessage", "生日必須小於當前日期");
+			    result.rejectValue("birthday", "birthday.invalid", "生日必須小於當前日期");
+			}
+		}
+		
+		// 去除BindingResult中pic欄位的FieldError紀錄
 		result = removeFieldError(memberVO, result, "pic");
 
 		if (parts == null || parts.length == 0 || parts[0].isEmpty()) { // 使用者未選擇要上傳的新圖片時
@@ -173,7 +190,8 @@ public class MemberController {
 		
 		if (result.hasErrors()) {
 			model.addAttribute("MemberVO", memberVO);
-			return "my-account#account-info";
+//			return "my-account#account-info";
+			return "redirect:/my-account#account-info";
 		}
 		/*************************** 2.開始修改資料 *****************************************/
 		// 載入其他欄位資訊
@@ -258,10 +276,13 @@ public class MemberController {
 	    if (memberVO != null) {
 	        // 切換狀態
 		  byte currentStatus = memberVO.getAccountStatus();
+		  logger.info("Member {} current status={}",memberId,String.valueOf(currentStatus));
           if (currentStatus == 1) {
             memberVO.setAccountStatus((byte) 2); // 停用
+            logger.info("Member {} status changed to 2 (suspend).", memberId);
           } else if (currentStatus == 2) {
             memberVO.setAccountStatus((byte) 1); // 啟用
+            logger.info("Member {} status changed to 1 (active).", memberId);
           }
 	    }
 
@@ -269,8 +290,6 @@ public class MemberController {
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("successMessage", "ID: "+memberId+" 狀態變更成功");
 		model.addAttribute("memberVO", memberVO);
-//		return "back-end/staff/listAllStaff"; // 修改成功後轉交listAllStaff.html
-//		return "redirect:/backend/member/listAllMember";
 		
 		// 返回會員清單, 重新抓取所有會員資料
 		List<MemberVO> memberList = memberSvc.getAll();
@@ -278,13 +297,12 @@ public class MemberController {
 		model.addAttribute("pageTitle", "會員管理｜列表");
 		
 		return "admin/member/memberlist";
-//		return "redirect:/admin/member/listAllMember";
 	}
 	
 	@PostMapping("memberForgotPwd")
 	public String memberForgotPwd(@RequestParam("account") String account, ModelMap model) {
 	    MemberVO memberVO = memberSvc.getOneMember(account);
-	    System.out.println("account:"+ account);
+	    logger.info("Member forgot password processing for {}", account);
 
 	    if (memberVO == null) {
 	        model.addAttribute("errorMessage", "帳號不存在，請重新輸入");
@@ -292,7 +310,8 @@ public class MemberController {
 	        return "frontend/shop-customer-login";
 	    }
 
-	    System.out.println("accountstatus"+memberVO.getAccountStatus());
+//	    System.out.println("accountstatus"+memberVO.getAccountStatus());
+	    logger.info("Member forgot password processing - account current status= {}", memberVO.getAccountStatus());
 	    if (memberVO.getAccountStatus() == 2) {
 	        model.addAttribute("errorMessage", "帳號停用，請聯繫管理員。");
 	        model.addAttribute("errorSource", "resetpwd");
@@ -311,6 +330,7 @@ public class MemberController {
 //		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
+		logger.info("(Member) Already sent password changed e-mail to Member {}", account);
 		
 		model.addAttribute("logoutMessage", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
 		model.addAttribute("logoutSource", "resetpwd");
@@ -351,11 +371,13 @@ public class MemberController {
 		memberVO.setUpdateDate(LocalDateTime.now());
 		
 		memberSvc.updateMember(memberVO);
+		logger.info("Admin forced to reset member password processing for {}", memberVO.getAccount());
 		
 //		String messageText = "Hello! " + " 您的密碼已更新為: " + newPwd + "\n" + " 並返回BabyMate登入後至會員資料變更密碼.";
 //		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
+		logger.info("(Admin) Already sent password changed e-mail to Member {}", memberVO.getAccount());
 		
 		model.addAttribute("successMessage", "ID: "+memberId+" 密碼重設成功");
 		model.addAttribute("memberVO", memberVO);
@@ -366,7 +388,6 @@ public class MemberController {
 		model.addAttribute("pageTitle", "會員管理｜列表");
 		
 		return "admin/member/memberlist";
-//		return "redirect:/admin/member/listAllMember";
 	}
 	
 	@PostMapping("registerCheck")
@@ -382,10 +403,12 @@ public class MemberController {
 	        String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
 	        memberSvc.initMember(account, newCaptcha);
 
-	        String msg = "請謹記此驗證碼: " + newCaptcha;
+//	        String msg = "請謹記此驗證碼: " + newCaptcha;
 //	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
-	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
-
+//	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
+	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", newCaptcha), true);
+	        logger.info("(Already sent auth-code to register e-mail {}", account);
+	        
 	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
 	        redirectAttributes.addFlashAttribute("account", account);
@@ -432,7 +455,9 @@ public class MemberController {
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
 		String account = request.get("account");
 		Map<String, Object> response = new HashMap<>();
-		System.out.println("account:"+account);
+//		System.out.println("account:"+account);
+		logger.info("(resendAuthCode - Get acccount email: {}", account);
+		
 		
 		if (account.isEmpty()) {
 		  response.put("success", false);
@@ -450,10 +475,12 @@ public class MemberController {
 			
 			Byte accountStatus = memberVO.getAccountStatus();
 			if ( accountStatus == 0) {
-				System.out.println("accountStatus == 0");
+//				System.out.println("accountStatus == 0");
+				logger.info("(resendAuthCode - account status = 0, get current authCode.");
 				authCode = memberVO.getEmailAuthToken();
 			} else {
-				System.out.println("accountStatus != 0");
+//				System.out.println("accountStatus != 0");
+				logger.info("(resendAuthCode - account status = {}, member should be already finish the registeration.", accountStatus);
 				response.put("success", false);
 		        response.put("message", account+"已經完成註冊驗證, 請前往登入.");
 		        return ResponseEntity.ok(response);
@@ -471,6 +498,7 @@ public class MemberController {
 //		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", authCode), true);
 //		mailSvc.sendMail("douglas.chuang@gmail.com", "請驗證您的信箱 - BabyMate", getHtmlMailContent(authCode), true);
+		logger.info("(resendAuthCode - authcode: {} already sent to {}", authCode, memberVO.getAccount());
 		
 		response.put("success", true);
         response.put("message", "驗證碼已寄出，請檢查您的信箱.");
@@ -490,12 +518,13 @@ public class MemberController {
 	                           HttpSession session,
 	                           RedirectAttributes redirectAttributes, ModelMap model) {
 	    String hashedPwd = EncodingUtil.hashMD5(password);
-	    System.out.println(account +"," + password+ "," + hashedPwd);
+//	    System.out.println(account +"," + password+ "," + hashedPwd);
+	    logger.info("loginCheck - account: {}", account);
 
 	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account));
 	    
 	    if (member.isPresent()) {
-    	
+	    	logger.info("loginCheck - account {} exists and get account info.", account);    	
 	    	MemberVO loginMember = member.get();
 	    	
 		    // 狀態為未通過驗證
@@ -515,7 +544,8 @@ public class MemberController {
 	    	
 	        // 設定 session
 	        session.setAttribute("member", loginMember);
-	        System.out.println("memberId: "+loginMember.getMemberId());
+//	        System.out.println("memberId: "+loginMember.getMemberId());
+	        logger.info("loginCheck - get login memberId: {}", loginMember.getMemberId());
 
 	        // 合併購物車 (登入成功才做)
 	        cartService.loginMergeCart(session.getId(), loginMember.getMemberId());
@@ -523,7 +553,8 @@ public class MemberController {
 	        loginMember.setLastLoginTime(LocalDateTime.now());
 	        memberSvc.updateMember(loginMember);
 	        
-	        System.out.println("Login success, cart merged for memberId=" + loginMember.getMemberId());
+//	        System.out.println("Login success, cart merged for memberId=" + loginMember.getMemberId());
+	        logger.info("Login success, cart merged for memberId= {}", loginMember.getMemberId());
 	    	
 	        session.setAttribute("member", member.get());
 //	        System.out.println(member);
