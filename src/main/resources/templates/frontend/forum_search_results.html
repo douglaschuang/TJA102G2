@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{frontend/forum_layout :: forumHead('搜尋結果 - ' + ${keyword}, null)}"></head>
+
+<body th:replace="~{frontend/forum_layout :: forumLayout(
+                        pageTitle       = '搜尋結果',
+                        headerType      = 'forum',
+                        content         = ~{:: pageContent},
+                        extraJs         = null,
+                        footerClass     = 'footer-one',
+                        breadcrumbTitle = ${breadcrumbTitle}
+                     )}">
+
+    <th:block th:fragment="pageContent">
+
+        <div class="search-result-header mb-4">
+            <h4>搜尋「<span class="text-danger" th:text="${keyword}"></span>」的結果</h4>
+            <p th:if="${postPage.totalElements > 0}" th:text="'共找到 ' + ${postPage.totalElements} + ' 篇文章'"></p>
+        </div>
+
+        <div th:if="${postPage.empty}">
+            <div class="alert alert-warning text-center">
+                找不到與「<span th:text="${keyword}"></span>」相關的文章，試試別的關鍵字吧！
+            </div>
+        </div>
+        
+        <div th:unless="${postPage.empty}">
+            <div class="row">
+                <div class="col-lg-12" th:each="post : ${postPage.content}">
+                    <div th:replace="~{frontend/forum_layout :: postCard(${post})}"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-12" th:if="${postPage.totalPages > 1}">
+                <div class="pagination text-center">
+                    <ul>
+                        <li th:each="i : ${#numbers.sequence(1, postPage.totalPages)}"
+                            th:classappend="${i == postPage.number + 1} ? 'active'">
+                            <a th:href="@{/forum/search(keyword=${keyword}, page=${i})}" th:text="${i}">1</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </th:block>
+
+</body>
+</html>
