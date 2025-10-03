@@ -60,7 +60,11 @@ public class StaffLoginFilter implements Filter {
             logger.info("Get Staff = {}", staff);
             @SuppressWarnings("unchecked")
             List<PermissionVO> permissions = (List<PermissionVO>) session.getAttribute("permissions");
-            logger.info("Staff permissions: {}", permissions.toString());       	
+            if (permissions != null) {
+            	logger.info("Staff permissions: {}", permissions.toString());       	
+            } else { 
+            	logger.info("no permissions got.");
+            }
         	
             chain.doFilter(req, res); // 已登入，放行
         } else {
