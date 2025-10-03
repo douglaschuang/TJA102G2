@@ -50,7 +50,10 @@
                           </div>                                     
                           <div class="single-input-item">
                             <label for="full-name" class="required">姓名</label>
-                            <input type="text" th:field="*{name}" id="full-name" class="form-control fs-6" />
+                            <input type="text" th:field="*{name}" id="full-name" class="form-control fs-6" 
+                            	required minlength="2" maxlength="20"
+         						pattern="^[\u4e00-\u9fa5a-zA-Z\s]+$"
+         						title="請輸入中文或英文姓名 (2-20字)" />
                             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error" id="name.errors"></span>
                           </div>
                           <div class="single-input-item mt-3">
