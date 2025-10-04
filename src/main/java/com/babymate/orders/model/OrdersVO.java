@@ -56,7 +56,7 @@ public class OrdersVO implements java.io.Serializable{
 	
 	@Column(name = "PAY_TIME")
 	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-	@NotNull
+
 	private LocalDateTime payTime;
 
 	@Column(name = "AMOUNT", precision = 18, scale = 2)
