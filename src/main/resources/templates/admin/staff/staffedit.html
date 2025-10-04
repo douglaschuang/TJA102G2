@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
@@ -36,15 +36,13 @@
 		<div class="col-md-6">
 			員工帳號: <input type="text" th:field="*{account}" pattern="[A-Za-z0-9]+"
 				title="僅允許數字或英文大小寫" placeholder="請輸入員工帳號(僅允許數字或英文大小寫)" minlength=3
-				maxlength=20 required class="form-control" /> <span
-				th:if="${#fields.hasErrors('account')}" th:errors="account"
-				class="error" id="account.errors"></span>
+				maxlength=20 required class="form-control" /> 
+				<span th:if="${#fields.hasErrors('account')}" th:errors="account" class="error" id="account.errors"></span>
 		</div>
 		<div class="col-md-6">
 			員工暱稱: <input type="text" th:field="*{nickname}" placeholder="請輸入員工暱稱"
-				minlength=3 maxlength=20 required class="form-control" /><span
-				th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"
-				class="error" id="nickname.errors"></span>
+				minlength=3 maxlength=20 required class="form-control" />
+				<span th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"	class="error" id="nickname.errors"></span>
 		</div>
 		<!-- Password改用密碼變更功能, 不在基本資料變更頁面修改 -->
 		<div class="col-md-6">
