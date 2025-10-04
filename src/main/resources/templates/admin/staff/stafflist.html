@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
@@ -23,16 +23,6 @@
           </div>
         </div>
 			
-<!-- 				<div class="card-header"> -->
-<!-- 					<h3>使用者列表</h3> -->
-
-<!-- 					錯誤表列 -->
-<!-- 					<div class="errorblock" th:utext="${errorMessage}">${errorMessage}</div> -->
-<!-- 					<br> <a href="/staff/staffadd" class="btn btn-success mb-3"> -->
-<!-- 						<i class="fas fa-plus"></i> 新增 -->
-<!-- 					</a> -->
-<!-- 				</div> -->
-
 				<div class="card-body">
 					<!--         <table id="example1" class="table table-bordered table-hover"> -->
 					<table id="example1"
@@ -40,7 +30,7 @@
 						<!--           <thead class="thead-dark"> -->
 						<thead class="thead-light">
 							<tr>
-								<th>員工ID</th>
+								<th class="text-center">員工ID</th>
 								<th>帳號</th>
 								<th>暱稱</th>
 								<th class="text-center">角色</th>
@@ -55,7 +45,7 @@
 						<tbody>
 							<th:block th:each="staffVO : ${staffListData}">
 								<tr>
-									<td th:text="${staffVO.staffId}"></td>
+									<td class="text-center" th:text="${staffVO.staffId}"></td>
 									<td th:text="${staffVO.account}"></td>
 									<td th:text="${staffVO.nickname}"></td>
 									<!-- 				<td th:text="${staffVO.password}"></td> -->
@@ -65,9 +55,9 @@
 									
 <!-- 									<td th:text="${staffVO.status == 1 ? '啟用' : '停用'}"></td> -->
 									<td class="text-center" th:switch="${staffVO.status ?: -1}">
-  										<span th:case="0" class="badge bg-secondary">已停用</span>
-  										<span th:case="1" class="badge bg-success">已啟用</span>
-  										<span th:case="*" class="badge bg-dark">未知狀態</span>
+  										<span th:case="0" class="badge bg-secondary fs-6">已停用</span>
+  										<span th:case="1" class="badge bg-success fs-6">已啟用</span>
+  										<span th:case="*" class="badge bg-dark fs-6">未知狀態</span>
 									</td>
 									
 									<td class="text-center" th:text="${staffVO.getFormattedUpdateDate()}"></td>
@@ -78,7 +68,7 @@
 										<form method="post" th:action="@{/staff/staffedit}"
 											style="margin-bottom: 0px;">
 <!-- 											<input type="submit" value="修改"> -->
-											<input type="submit" class="btn btn btn-outline-dark btn-sm" value="修改">
+											<input type="submit" class="btn btn btn-outline-dark" value="修改">
 											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
@@ -88,7 +78,7 @@
 											style="margin-bottom: 0px;"
 											onsubmit="return confirm('確定要刪除嗎?')">
 <!-- 											<input type="submit" value="刪除"> -->
-											<input type="submit" class="btn btn-danger btn-sm" value="刪除">
+											<input type="submit" class="btn btn-danger" value="刪除">
 											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
@@ -96,20 +86,10 @@
 									<td class="text-center">
 										<form method="post" th:action="@{/staff/staffchangepwd}"
 											style="margin-bottom: 0px;">
-											<input type="submit" class="btn btn-warning btn-sm" value="密碼變更">
+											<input type="submit" class="btn btn-warning" value="密碼變更">
 											<input type="hidden" name="staffId" th:value="${staffVO.staffId}">
 										</form>
 									</td>
-
-
-									<!--                 <td> -->
-									<!--                 <a href="/staff/staffedit" class="btn btn-sm btn-primary"> -->
-									<!--                   <i class="fas fa-edit"></i> 修改 -->
-									<!--                 </a> -->
-									<!--                 <button class="btn btn-sm btn-danger" onclick="deleteUser(1)"> -->
-									<!--                   <i class="fas fa-trash"></i> 刪除 -->
-									<!--                 </button> -->
-									<!--                 </td> -->
 								</tr>
 
 								<!-- 可依需求新增更多列 -->
