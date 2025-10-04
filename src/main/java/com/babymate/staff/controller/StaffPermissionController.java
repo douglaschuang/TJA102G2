@@ -31,6 +31,11 @@ public class StaffPermissionController {
     public String dashboard(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         StaffVO staff = (StaffVO) session.getAttribute("staff");
         
+        if (staff == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "請先登入");
+            return "redirect:/admin/login";
+        }
+        
         // 取得權限URL清單 (filter過濾用)
         List<PermissionVO> permissions = permissionService.getPermissionsByRoleId(staff.getRoleVO().getRoleId());
 //        System.out.println("permissions: "+permissions.size());
