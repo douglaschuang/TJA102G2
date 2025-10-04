@@ -9,7 +9,7 @@
 .preview-img {
 	width: 120px;
 	height: 90px;
-	object-fit: cover;
+	object-fit: contain;
 	border-radius: .25rem
 }
 </style>
@@ -25,21 +25,22 @@
 					<div
 						class="card-header d-flex justify-content-between align-items-center">
 						<h3 class="card-title mb-0">小孩紀錄手冊｜修改</h3>
-						<a class="btn btn-sm btn-outline-secondary"
-							th:href="@{/admin/babyrecord/records}"> <i
-							class="bi bi-arrow-left"></i> 回列表
-						</a>
+						<div class="ms-auto">
+							<a class="btn btn-sm btn-outline-secondary"
+								th:href="@{/admin/babyrecord/records(babyhandbookid=${babyrecordVO.babyhandbook.babyhandbookid})}">
+								<i class="bi bi-arrow-left"></i> 回列表
+							</a>
+						</div>
 					</div>
 
 					<div class="card-body">
 						<form th:action="@{/admin/babyrecord/update}" method="post"
 							th:object="${babyrecordVO}" enctype="multipart/form-data"
 							class="row g-3">
-							
-							<input type="hidden" th:field="*{babyrecordid}" />
-							
-							<input type="hidden" th:field="*{babyhandbook.babyhandbookid}" value="1" /> <input
-								th:if="${_csrf != null}" type="hidden"
+
+							<input type="hidden" th:field="*{babyrecordid}" /> <input
+								type="hidden" th:field="*{babyhandbook.babyhandbookid}"
+								value="1" /> <input th:if="${_csrf != null}" type="hidden"
 								th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
 							<div class="col-md-6">
@@ -49,8 +50,7 @@
 							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">小孩週數:</label> 
-								<input type="text"
+								<label class="form-label">小孩週數:</label> <input type="text"
 									th:field="*{babyweek}" class="form-control"
 									th:classappend="${#fields.hasErrors('babyweek')}? ' is-invalid'" />
 								<div class="invalid-feedback"
@@ -59,8 +59,7 @@
 							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">檢查日:</label>
-								<input type="date"
+								<label class="form-label">檢查日:</label> <input type="date"
 									th:field="*{visitdate}" class="form-control"
 									th:classappend="${#fields.hasErrors('visitdate')}? ' is-invalid'" />
 								<div class="invalid-feedback"
@@ -69,90 +68,80 @@
 							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">診所 ID:</label> 
-								<input type="text"
+								<label class="form-label">診所 ID:</label> <input type="text"
 									th:field="*{clinicid}" class="form-control"
 									th:classappend="${#fields.hasErrors('clinicid')}? ' is-invalid'" />
 								<div class="invalid-feedback"
 									th:if="${#fields.hasErrors('clinicid')}"
 									th:errors="*{clinicid}"></div>
-							</div>		
-												
+							</div>
+
 							<div class="col-md-6">
-								<label class="form-label">檢查記錄:</label> 
-								<input type="text"
+								<label class="form-label">檢查記錄:</label> <input type="text"
 									th:field="*{bodycondition}" class="form-control"
 									th:classappend="${#fields.hasErrors('bodycondition')}? ' is-invalid'" />
 								<div class="invalid-feedback"
 									th:if="${#fields.hasErrors('bodycondition')}"
 									th:errors="*{bodycondition}"></div>
-							</div>							
+							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">下次檢查日:</label>
-								<input type="date"
+								<label class="form-label">下次檢查日:</label> <input type="date"
 									th:field="*{nextcheckdate}" class="form-control"
 									th:classappend="${#fields.hasErrors('nextcheckdate')}? ' is-invalid'" />
 								<div class="invalid-feedback"
 									th:if="${#fields.hasErrors('nextcheckdate')}"
 									th:errors="*{nextcheckdate}"></div>
 							</div>
-							
+
 							<div class="col-md-6">
-								<label class="form-label">下次提醒:</label>
-								<input type="text"
+								<label class="form-label">下次提醒:</label> <input type="text"
 									th:field="*{nextreminder}" class="form-control"
 									th:classappend="${#fields.hasErrors('nextreminder')}? ' is-invalid'" />
 								<div class="invalid-feedback"
 									th:if="${#fields.hasErrors('nextreminder')}"
 									th:errors="*{nextreminder}"></div>
 							</div>
-							
+
 							<div class="col-md-6">
-								<label class="form-label">身高:</label>
-								<input type="text"
+								<label class="form-label">身高:</label> <input type="text"
 									th:field="*{height}" class="form-control"
 									th:classappend="${#fields.hasErrors('height')}? ' is-invalid'" />
 								<div class="invalid-feedback"
-									th:if="${#fields.hasErrors('height')}"
-									th:errors="*{height}"></div>
+									th:if="${#fields.hasErrors('height')}" th:errors="*{height}"></div>
 							</div>
-							
+
 							<div class="col-md-6">
-								<label class="form-label">體重:</label>
-								<input type="text"
+								<label class="form-label">體重:</label> <input type="text"
 									th:field="*{weight}" class="form-control"
 									th:classappend="${#fields.hasErrors('weight')}? ' is-invalid'" />
 								<div class="invalid-feedback"
-									th:if="${#fields.hasErrors('weight')}"
-									th:errors="*{weight}"></div>
+									th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}"></div>
 							</div>
-							
+
 							<div class="col-md-6">
-								<label class="form-label">頭圍:</label>
-								<input type="text"
+								<label class="form-label">頭圍:</label> <input type="text"
 									th:field="*{hc}" class="form-control"
 									th:classappend="${#fields.hasErrors('hc')}? ' is-invalid'" />
-								<div class="invalid-feedback"
-									th:if="${#fields.hasErrors('hc')}"
+								<div class="invalid-feedback" th:if="${#fields.hasErrors('hc')}"
 									th:errors="*{hc}"></div>
 							</div>
 
 							<div class="col-md-6">
-								<label class="form-label">照片:</label> 
-								<input type="file" class="form-control"
-									th:field="*{babyrecordfiles}" 
+								<label class="form-label">照片:</label> <input type="file"
+									class="form-control" th:field="*{babyrecordfiles}"
 									onchange="previewImage(); hideContent('babyrecordfiles.errors');"
 									accept="image/*" />
-							
-							<div class="text-danger small" th:utext="${errorMessage}" id="babyrecordfiles.errors"></div>
-							
-							<!-- 預覽區 -->
-							<div class="mt-2">
-								<img id="preview" class="img-thumbnail preview-img d-none"
-									alt="預覽圖">
-							</div>
-							
+
+								<div class="text-danger small" th:utext="${errorMessage}"
+									id="babyrecordfiles.errors"></div>
+
+								<!-- 預覽區 -->
+								<div class="mt-2">
+									<img id="preview" class="img-thumbnail preview-img d-none"
+										alt="預覽圖">
+								</div>
+
 							</div>
 
 							<div class="col-12 d-flex gap-2">
@@ -169,7 +158,24 @@
 		</section>
 
 		<!-- 本頁不需額外 JS -->
-		<th:block th:fragment="extraJs"></th:block>
+		<th:block th:fragment="extraJs">
+			<script>
+				function previewImage() {
+					const input = document.querySelector('input[type="file"]');
+					const preview = document.getElementById('preview');
+					const file = input.files[0];
+
+					if (file) {
+						const reader = new FileReader();
+						reader.onload = function(e) {
+							preview.src = e.target.result;
+							preview.classList.remove('d-none');
+						};
+						reader.readAsDataURL(file);
+					}
+				}
+			</script>
+		</th:block>
 	</div>
 </body>
 </html>
