@@ -3,13 +3,15 @@
 <!-- 讓 layout 的 <head> 接手，並把本頁的 extraHead 傳進去 -->
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
-<body class="sidebar-expand-lg bg-body-tertiary">
+<body class="sidebar-expand-lg sidebar-open bg-body-tertiary">
 	<!-- 本頁額外 CSS（可留空） -->
-	<th:block th:fragment="extraHead"></th:block>
+	<th:block th:fragment="extraHead">
+		<link rel="stylesheet"
+			href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+	</th:block>
 
 	<!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
-	<div
-		th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+	<div th:replace="~{admin/layout :: layout(~{::content}, ~{::extraJs})}">
 
 		<!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
 		<section th:fragment="content">
@@ -18,16 +20,19 @@
 					<div
 						class="card-header d-flex justify-content-between align-items-center">
 						<h3 class="card-title mb-0">小孩手冊｜垃圾桶</h3>
-						<a class="btn btn-sm btn-outline-secondary"
-							th:href="@{/admin/babyhandbook/list}"> <i
-							class="bi bi-arrow-left"></i> 回列表
-						</a>
+						<div class="ms-auto">
+							<a class="btn btn-sm btn-outline-secondary"
+								th:href="@{/admin/babyhandbook/list}"> <i
+								class="bi bi-arrow-left"></i> 回列表
+							</a>
+						</div>
 					</div>
 
-					<div class="card-body p-0">
+					<div class="card-body">
 						<div class="table-responsive">
-							<table class="table table-hover align-middle mb-0">
-								<thead class="table-light">
+							<table id="babydeletedTable"
+								class="table table-striped table-bordered align-middle w-100">
+								<thead>
 									<tr>
 										<th class="text-center align-middle"># 手冊編號</th>
 										<th class="text-center align-middle">會員ID</th>
@@ -41,22 +46,29 @@
 
 								<tbody>
 									<tr th:each="babyhandbookVO : ${deletedList}">
-										<td class="text-center align-middle" th:text="${babyhandbookVO.babyhandbookid}"></td>
-										<td class="text-center align-middle" th:text="${babyhandbookVO.member.memberId}"></td>
-										<td class="text-center align-middle" th:text="${babyhandbookVO.babyname}"></td>
-										<td class="text-center align-middle" th:text="${babyhandbookVO.babygender}"></td>
+										<td class="text-center align-middle"
+											th:text="${babyhandbookVO.babyhandbookid}"></td>
+										<td class="text-center align-middle"
+											th:text="${babyhandbookVO.member.memberId}"></td>
+										<td class="text-center align-middle"
+											th:text="${babyhandbookVO.babyname}"></td>
+										<td class="text-center align-middle"
+											th:text="${babyhandbookVO.babygender}"></td>
 										<td class="text-center align-middle"
 											th:text="${#dates.format(babyhandbookVO.babybirthday, 'yyyy/MM/dd')}">2024-02-01</td>
-										<td class="text-center align-middle"><img th:src="@{/babyhandbook/DBGifReader(babyhandbookid=${babyhandbookVO.babyhandbookid})}" width="100px" alt="Baby photo"/></td>
+										<td class="text-center align-middle"><img
+											th:src="@{/babyhandbook/DBGifReader(babyhandbookid=${babyhandbookVO.babyhandbookid})}"
+											width="100px" alt="Baby photo" /></td>
 										<td class="text-center align-middle">
-										<form th:action="@{/admin/babyhandbook/restore}" method="post"
-											class="d-inline">
-											<input type="hidden" name="babyhandbookid"
-												th:value="${babyhandbookVO.babyhandbookid}">
-											<button type="submit" class="btn btn-sm btn-outline-primary">
-												<i class="bi bi-arrow-counterclockwise"></i> 復原
-											</button>
-										</form>
+											<form th:action="@{/admin/babyhandbook/restore}"
+												method="post" class="d-inline"
+												onsubmit="return confirm('確定復原？')">
+												<input type="hidden" name="babyhandbookid"
+													th:value="${babyhandbookVO.babyhandbookid}">
+												<button type="submit" class="btn btn-sm btn-outline-primary">
+													<i class="bi bi-arrow-counterclockwise"></i> 復原
+												</button>
+											</form>
 										</td>
 									</tr>
 
@@ -73,7 +85,50 @@
 			</div>
 
 			<!-- 本頁額外 JS（可留空） -->
-			<th:block th:fragment="extraJs"></th:block>
+			<th:block th:fragment="extraJs">
+				<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+				<script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+				<script
+					src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+				<script>
+					document
+							.addEventListener(
+									'DOMContentLoaded',
+									function() {
+										const sel = '#babydeletedTable';
+										if ($.fn.DataTable.isDataTable(sel))
+											return; // 防止重複初始化
+										$(sel)
+												.DataTable(
+														{
+															retrieve : true,
+															lengthMenu : [ 3,
+																	5, 10, 20,
+																	50, 100 ],
+															language : {
+																processing : "處理中...",
+																loadingRecords : "載入中...",
+																lengthMenu : "顯示 _MENU_ 筆結果",
+																zeroRecords : "沒有符合的結果",
+																info : "顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+																infoEmpty : "顯示第 0 至 0 筆結果，共 0 筆",
+																infoFiltered : "(從 _MAX_ 筆結果中過濾)",
+																search : "搜尋：",
+																paginate : {
+																	first : "第一頁",
+																	previous : "上一頁",
+																	next : "下一頁",
+																	last : "最後一頁"
+																},
+																aria : {
+																	sortAscending : ": 升冪排列",
+																	sortDescending : ": 降冪排列"
+																}
+															}
+														});
+									});
+				</script>
+			</th:block>
 	</div>
 </body>
 </html>
