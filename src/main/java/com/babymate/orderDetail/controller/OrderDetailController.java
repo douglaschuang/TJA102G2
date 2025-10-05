@@ -84,6 +84,8 @@ public class OrderDetailController {
 			        list = orderDetailSvc.getAll();
 			    }
 			    model.addAttribute("orderDetailList", list);
+				model.addAttribute("pageTitle", "訂單明細");
+			    
 			    return "admin/orderdetail/list";
 			}
 }

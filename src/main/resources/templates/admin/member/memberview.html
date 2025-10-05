@@ -48,10 +48,10 @@
 						<div class="row mb-2">
 							<div class="col-md-3 fw-bold">狀態</div>
 							<div class="col-md-9" th:switch="${memberVO.accountStatus}">
-  								<span th:case="0" class="badge bg-secondary">未啟用</span>
-  								<span th:case="1" class="badge bg-success">已啟用</span>
-  								<span th:case="2" class="badge bg-danger">已停用</span>
-  								<span th:case="*" class="badge bg-dark">未知狀態</span>
+  								<span th:case="0" class="badge bg-secondary fs-6">未啟用</span>
+  								<span th:case="1" class="badge bg-success fs-6">已啟用</span>
+  								<span th:case="2" class="badge bg-danger fs-6">已停用</span>
+  								<span th:case="*" class="badge bg-dark fs-6">未知狀態</span>
 							</div>
 						</div>
 

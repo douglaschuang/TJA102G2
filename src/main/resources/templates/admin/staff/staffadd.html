@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
@@ -25,28 +25,26 @@
 
           <div class="card-body">
             <form id="editForm" th:action="@{insert}" method="post"
-		th:object="${StaffVO}" enctype="multipart/form-data" class="row g-3">
+				th:object="${StaffVO}" enctype="multipart/form-data" class="row g-3">
 		<!--     <input type="hidden" id="userId" name="id" /> -->
 		<!--     <input type="hidden" id="account" name="account"/> -->
 
 		<div class="col-md-6">
 			員工帳號: <input type="text" th:field="*{account}" pattern="[A-Za-z0-9]+"
 				title="僅允許數字或英文大小寫" placeholder="請輸入員工帳號(僅允許數字或英文大小寫)" minlength=3
-				maxlength=20 required class="form-control" /> <span
-				th:if="${#fields.hasErrors('account')}" th:errors="account"
-				class="error" id="account.errors"></span>
+				maxlength=20 required class="form-control" />
+			<span th:if="${#fields.hasErrors('account')}" th:errors="account" class="error" id="account.errors"></span>
 		</div>
 		<div  class="col-md-6">
 			員工暱稱: <input type="text" th:field="*{nickname}" placeholder="請輸入員工暱稱"
-				minlength=3 maxlength=20 required class="form-control" /><span
-				th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"
-				class="error" id="nickname.errors"></span>
+				minlength=3 maxlength=20 required class="form-control" />
+			<span th:if="${#fields.hasErrors('nickname')}" th:errors="nickname"	class="error" id="nickname.errors"></span>
 		</div>
 		<div  class="col-md-6">
 			帳號密碼: <input type="password" th:field="*{password}"
-				placeholder="請設定密碼" minlength=6 maxlength=20 required class="form-control" /><span
-				th:if="${#fields.hasErrors('password')}" th:errors="password"
-				class="error" id="password.errors"></span>
+				placeholder="請設定密碼" minlength=6 maxlength=20 required class="form-control" 
+				pattern="[A-Za-z0-9]+" title="僅允許數字或英文大小寫" />
+			<span th:if="${#fields.hasErrors('password')}" th:errors="password"	class="error" id="password.errors"></span>
 		</div>
 		<div  class="col-md-6">
 		角色: <select th:field="*{roleVO.roleId}" name="roleId" class="form-control" required>
@@ -71,8 +69,8 @@
 			</div>
 		</div>
 		<div class="col-12 d-flex gap-2">
-		<button type="submit" class="btn btn-primary">儲存</button>
-		<a href="/admin/staff/listAllStaff" class="btn btn-secondary">取消</a>
+			<button type="submit" class="btn btn-primary">儲存</button>
+			<a href="/admin/staff/listAllStaff" class="btn btn-secondary">取消</a>
 		</div>
 	</form>
 	

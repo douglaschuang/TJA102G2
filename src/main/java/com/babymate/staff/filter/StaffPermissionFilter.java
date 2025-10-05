@@ -73,7 +73,8 @@ public class StaffPermissionFilter implements Filter {
         	logger.info("Permission allowed");
             chain.doFilter(req, res); // 有權限
         } else {
-            System.out.println("權限不足：" + staff.getNickname() + " -> " + uri);
+//            System.out.println("權限不足：" + staff.getNickname() + " -> " + uri);
+            logger.info("StaffPermissionFilter - 權限不足: staff nickname: {} , uri: {} , redirect to 403.", staff.getNickname(), uri);
 //            response.sendError(HttpServletResponse.SC_FORBIDDEN, "您沒有權限訪問此功能");
             response.sendRedirect(request.getContextPath() + "/error/403");
         }
