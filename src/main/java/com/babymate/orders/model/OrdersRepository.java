@@ -2,6 +2,7 @@ package com.babymate.orders.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -57,4 +58,5 @@ public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
   // 依各自會員訂單查詢(按訂單編號排序)
   List<OrdersVO> findByMemberVO_MemberIdOrderByOrderTimeDesc(Integer memberId);
 
+  Optional<OrdersVO> findByOrderNo(String orderNo);
 }

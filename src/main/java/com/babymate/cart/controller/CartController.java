@@ -208,10 +208,16 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping("/clear/{memberId}")
-    public void clearCart(@PathVariable Integer memberId, HttpSession session) {
-    	String cartkey = getCartKey(session);
-        cartService.clearCart(cartkey);
-    }
+    // 在綠界結帳跳回商城頁面時session已經丟失，getCartKey(session)會拿不到對應的會員或session購物車
+//    @DeleteMapping("/clear/{memberId}")
+//    public void clearCart(@PathVariable Integer memberId, HttpSession session) {
+//    	String cartkey = getCartKey(session);
+//        cartService.clearCart(cartkey);
+//    }
     
+    @DeleteMapping("/clear/{memberId}")
+    public void clearCart(@PathVariable Integer memberId) {
+        String cartKey = "cart:member:" + memberId;
+        cartService.clearCart(cartKey);
+    }
 }

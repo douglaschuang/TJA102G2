@@ -415,7 +415,7 @@
 			       th:attr="data-id=${p.productId}"
 			       aria-label="分享連結"
 			       title="分享連結">
-					<i class="bi bi-share" aria-hidden="true"></i>
+					<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
 				</a>
 			</span>
             <span class="quickview">
@@ -456,11 +456,15 @@
                  <i th:class="${(favIds != null and favIds.contains(p.productId))} ? 'ion-android-favorite' : 'ion-android-favorite-outline'"></i>
               </a>
             </span>
-            <span class="compare">
-              <a href="#" aria-label="加入比較">
-                <i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
-              </a>
-            </span>
+            <span class="share">
+				<a href="javascript:void(0)"
+			       class="btn-share"
+			       th:attr="data-id=${p.productId}"
+			       aria-label="分享連結"
+			       title="分享連結">
+					<i class="ion-ios-shuffle-strong" aria-hidden="true"></i>
+				</a>
+			</span>
             <span class="quickview">
               <a class="cd-trigger" th:href="'#qv-' + ${p.productId}" aria-label="快速瀏覽">
                 <i class="ion-ios-search-strong" aria-hidden="true"></i>
@@ -885,18 +889,7 @@ document.addEventListener('click', async function(e){
   // 用目前來源自動組：協議+網域+port -> http://localhost:8080
   const url = window.location.origin + '/shop/product-basic?id=' + encodeURIComponent(pid);
 
-  // 1) 若瀏覽器支援原生分享（多在行動裝置、https 或 localhost）
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: document.title, url });
-      return;
-    } catch (err) {
-      // 使用者取消 or 失敗，就改走複製
-      // console.warn('Web Share 取消或失敗', err);
-    }
-  }
-
-  // 2) 複製到剪貼簿（需安全環境：HTTPS 或 localhost；不支援時再用老方法）
+  // 1) 複製到剪貼簿（需安全環境：HTTPS 或 localhost；不支援時再用老方法）
   if (navigator.clipboard && window.isSecureContext) {
     try {
       await navigator.clipboard.writeText(url);
@@ -907,7 +900,7 @@ document.addEventListener('click', async function(e){
     }
   }
 
-  // 3) 最終 fallback（建立暫時 input 選取複製）
+  // 2) 最終 fallback（建立暫時 input 選取複製）
   const temp = document.createElement('input');
   temp.value = url;
   document.body.appendChild(temp);

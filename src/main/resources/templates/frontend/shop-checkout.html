@@ -18,7 +18,7 @@
 				<div class="col-12">
 					<div class="lezada-form">
 						<!-- Checkout Form s-->
-						<form action="#" class="checkout-form">
+						<form th:action="@{/ecpay/checkout}" method="post" class="checkout-form  needs-validation" novalidate>
 							<div class="row row-40">
 								<div class="col-lg-7 mb-20">
 									<!-- Billing Address -->
@@ -26,27 +26,37 @@
 										<h4 class="checkout-title">配送資訊</h4>
 										<div class="row">
 											<div class="col-md-6 col-12 mb-20">
-												<label>姓名*</label> <input type="text" placeholder="全名">
+												<label>姓名*</label>
+												<input type="text" class="form-control" name="recipient" placeholder="全名" required>
+												<div class="invalid-feedback">請填寫收件人</div>
 											</div>
 
 											<div class="col-md-6 col-12 mb-20">
-												<label>電話號碼*</label> <input type="text" placeholder="電話號碼">
+												<label>電話號碼*</label> 
+												<input type="text" class="form-control" name="phone" placeholder="手機號碼（09xxxxxxxx）" required minlength="10" maxlength="10" pattern="^(?!([0-9])\1{9})09\d{8}$" title="請輸入有效的手機號碼（09 開頭，共 10 碼）">
+												<div class="invalid-feedback">請輸入有效的手機號碼</div>
 											</div>
 
 											<div class="col-12 mb-20">
-												<label>電子郵件*</label> <input type="email" placeholder="Email">
+												<label>電子郵件</label> 
+												<input type="email" class="form-control" name="email" placeholder="Email">
+												<div class="invalid-feedback">Email 格式不正確</div>
 											</div>
 
 										<div class="col-12 mb-20">
 										    <label>地址*</label>
 										    <div id="twzipcode" class="form-row mb-2"></div>
-										    <input type="text" class="form-control" name="address" placeholder="請輸入巷、弄、號、樓等詳細地址">
+										    <input type="text" class="form-control" id="addrDetail" placeholder="請輸入巷、弄、號、樓等詳細地址" required pattern="^[\u4e00-\u9fa5a-zA-Z0-9\s#\-]+$" title="請輸入正確的地址 (需包含文字或號碼)">
+										    <div class="invalid-feedback">請填寫詳細地址</div>
+										    
+										    <!-- 隱藏完整地址 -->
+										    <input type="hidden" name="address" id="fullAddress">
 										</div>
 										</div>
 									</div>
 
 									<!-- Shipping Address -->
-									<div id="shipping-form" class="mb-40">
+									<!-- <div id="shipping-form" class="mb-40">
 										<h4 class="checkout-title">Shipping Address</h4>
 										<div class="row">
 											<div class="col-md-6 col-12 mb-20">
@@ -95,7 +105,7 @@
 													placeholder="Zip Code">
 											</div>
 										</div>
-									</div>
+									</div> -->
 								</div>
 
 								<div class="col-lg-5">
@@ -136,10 +146,10 @@
 												</h4>
 												
 												<!-- 運費 -->
-												<h4>
+												<!-- <h4>
 													<strong>運費：</strong>
 													<span>$0</span>
-												</h4>
+												</h4> -->
 
 												<!-- 總付款金額 -->
 											    <h4>
@@ -151,23 +161,32 @@
 
 										<!-- Payment Method -->
 										<div class="col-12">
-											<h4 class="checkout-title">付款方式</h4>
+											<!-- <h4 class="checkout-title">付款方式</h4>
 											<div class="checkout-payment-method">
 												<div class="single-method">
 													<input type="radio" id="payment_paypal"
 														name="payment-method" value="paypal"> <label
 														for="payment_paypal">信用卡</label>
-													<p data-method="paypal">即將前往綠界ECPay支付</p>
+													<p data-method="paypal">即將前往測試用綠界ECPay支付</p>
 												</div>
+											</div> -->
+											<div>
+												<!-- <label>訂單編號：</label> -->
+													<input type="hidden" name="orderNo" th:value="${orderNo}"><br><br>
+												<!-- <label>訂單金額：</label> -->
+													<input type="hidden" name="amount" th:value="${total}" required><br><br>
+    
+    											<!-- <label>商品名稱：</label> -->
+													<input type="hidden" name="itemName" th:value="${itemName}" required><br><br>
 											</div>
-											<button class="lezada-button lezada-button--medium mt-30">確認結帳</button>
+											<button class="lezada-button lezada-button--medium mt-30" type="submit">確認結帳</button>
 										</div>
 										
 										<!-- Stripe Checkout Test -->
-										<div>
+										<!-- <div>
 										  <h2>Stripe Checkout 範例</h2>
     									  <button id="checkoutBtn">立即付款 $20</button>
-    									</div>
+    									</div> -->
 
     									<script>
         									const checkoutButton = document.getElementById("checkoutBtn");
@@ -194,6 +213,31 @@
 									</div>
 								</div>
 							</div>
+							
+	<!-- 						<script>
+  document.querySelector('.checkout-form').addEventListener('submit', function (e) {
+    const amountEl = this.querySelector('input[name="amount"]');
+    const itemNameEl = this.querySelector('input[name="itemName"]');
+
+    console.log('[ECPay submit] amount=', amountEl?.value, ' itemName=', itemNameEl?.value);
+
+    // 先做基本驗證：整數金額 + 非空商品名
+    const amount = String(amountEl?.value || '').trim();
+    const itemName = String(itemNameEl?.value || '').trim();
+
+    // 金額必須是「只有數字」的整數（綠界 TotalAmount 不能有小數或逗號）
+    if (!/^\d+$/.test(amount)) {
+      e.preventDefault();
+      alert('金額格式錯誤，需為整數（新台幣、無小數、無逗號）。目前值：' + amount);
+      return;
+    }
+    if (!itemName) {
+      e.preventDefault();
+      alert('商品名稱不得為空');
+      return;
+    }
+  });
+</script> -->
 						</form>
 					</div>
 				</div>
@@ -210,6 +254,14 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
+	<!-- 手機號碼驗證 -->
+	<script>
+		document.querySelector('input[name="phone"]').addEventListener('input', function(){
+		  this.value = this.value.replace(/\D/g, '').slice(0, 10); // 只留數字、最多10碼
+		});
+	</script>
+	
+	<!-- 初始化 twzipcode -->
 	<script>
 		$("#twzipcode").twzipcode({
 			zipcodeBeforeCounty: true,             // 郵遞區號排在最前面
@@ -218,7 +270,61 @@
 		    countyName: 'county',     // select 的 name 屬性
 		    districtName: 'district'
 		});
+		
+		// 強制 required
+		$('[name="county"]').attr("required", true);
+		$('[name="district"]').attr("required", true);
 	</script>
+	<!-- 驗證 + 組完整地址 -->
+	<script>
+	    (function () {
+	      const form = document.querySelector('.checkout-form');
+	
+	      form.addEventListener('submit', function (e) {
+	        const zip = $('[name="zipcode"]').val() || '';
+	        const county = $('[name="county"]').val() || '';
+	        const district = $('[name="district"]').val() || '';
+	        const detail = document.getElementById('addrDetail').value.trim();
+	
+	   	    // 組完整地址
+	        const full = `${zip}${county}${district}${detail}`;
+	        document.getElementById('fullAddress').value = full;
+	
+	        let valid = true;
+	        
+	     	// 縣市必填
+	        if (!county) {
+	          $('[name="county"]').addClass("is-invalid");
+	          valid = false;
+	        } else {
+	          $('[name="county"]').removeClass("is-invalid");
+	        }
+	        
+	        // 鄉鎮必填
+	        if (!district) {
+	          $('[name="district"]').addClass("is-invalid");
+	          valid = false;
+	        } else {
+	          $('[name="district"]').removeClass("is-invalid");
+	        }
+	     	
+	        // 詳細地址必填 & 格式
+	        if (!detail || !/[\u4e00-\u9fa5a-zA-Z]/.test(detail)) {
+		      document.getElementById('addrDetail').classList.add("is-invalid");
+		      valid = false;
+		    } else {
+		      document.getElementById('addrDetail').classList.remove("is-invalid");
+		    }
+		
+		    if (!valid || !form.checkValidity()) {
+		      e.preventDefault();
+		      e.stopPropagation();
+		    }
+	
+	        form.classList.add('was-validated');
+	      }, false);
+	    })();
+	  </script>
   </th:block>
 </body>
 </html>
