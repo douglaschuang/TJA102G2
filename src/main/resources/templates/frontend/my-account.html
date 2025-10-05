@@ -20,14 +20,9 @@
           <!-- 側邊選單 -->
           <div class="col-lg-12 col-md-12">
             <div class="myaccount-tab-menu nav" role="tablist">
-<!--               <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
-<!--               <a href="#orders" data-bs-toggle="tab">Orders</a> -->
-<!--               <a href="#download" data-bs-toggle="tab">Download</a> -->
-<!--               <a href="#payment-method" data-bs-toggle="tab">Payment Method</a> -->
               <a href="#account-info" class="active" data-bs-toggle="tab">基本資料</a>
               <a href="#password-info" data-bs-toggle="tab">密碼變更</a>
               <a href="#weather-info" data-bs-toggle="tab">即時天氣</a>
-<!--               <a th:href="@{/shop/customer-login}">Logout</a> -->
             </div>
           </div>
 
@@ -76,19 +71,22 @@
                           <!-- Addressee -->
                           <div class="single-input-item">
                             <label for="recipient" >收件人</label>
-                            <input type="text" th:field="*{recipientName}" id="recipientName" class="form-control fs-6" />
+                            <input type="text" th:field="*{recipientName}" id="recipientName" class="form-control fs-6" 
+                            	maxlength="50"/>
                             <span th:if="${#fields.hasErrors('recipientName')}" th:errors="*{recipientName}" class="error" id="recipientName.errors"></span>
                           </div>
                           
                           <div class="single-input-item">
                             <label for="address" >地址</label>
-                            <input type="text" th:field="*{address}" id="address" class="form-control fs-6" />
+                            <input type="text" th:field="*{address}" id="address" class="form-control fs-6" 
+                            	maxlength="100"/>
                             <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error" id="address.errors"></span>
                           </div>
                           
                           <div class="single-input-item">
                             <label for="phone" >電話</label>
-                            <input type="tel" th:field="*{phone}" id="phone" class="form-control fs-6" />
+                            <input type="tel" th:field="*{phone}" id="phone" class="form-control fs-6" 
+                            	pattern="^09\d{8}$" title="請輸入有效的台灣手機號碼 (09開頭，共10碼)" />
                             <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error" id="phone.errors"></span>
                           </div>
                           
