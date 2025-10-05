@@ -46,10 +46,15 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
+
+import com.babymate.diary.model.DiaryEntryService;
 //
 @Controller
 @RequestMapping("/u/baby")
 public class BabyrecordFrontendController {
+	
+	@Autowired
+	private DiaryEntryService diaryEntryService;
 
 	@Autowired
 	BabyhandbookService babyhandbookSvc;
@@ -89,6 +94,10 @@ public class BabyrecordFrontendController {
 		if (member == null) {
 			return "redirect:/shop/login";
 		}
+		
+		 // <<< 新增：側邊欄需要的「最新日記」（三筆） >>>
+	    model.addAttribute("latestDiary",
+	            diaryEntryService.latest3(member.getMemberId()));
 	  
         // 如果會員還沒選手冊id,找最新的手冊
 	    if (babyhandbookid == null) {
@@ -327,6 +336,9 @@ public class BabyrecordFrontendController {
 	    if (member == null) {
 	        return "redirect:/shop/login";
 	    }
+	    // <<< 新增：側邊欄需要的「最新日記」（三筆） >>>
+	    model.addAttribute("latestDiary",
+	            diaryEntryService.latest3(member.getMemberId()));
 	    
 	    // 如果會員還沒選手冊id,找最新的手冊
 	    if (babyhandbookid == null) {
