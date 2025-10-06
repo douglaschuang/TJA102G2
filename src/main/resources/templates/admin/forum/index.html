@@ -2,162 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/layout :: head(~{::extraHead})}">
   <meta charset="UTF-8">
- 
-  <title>所有文章 - listAllPost.html</title>
-
-  <!-- Bootstrap & DataTables CSS 統一版本 -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
-
-  <style type="text/css">
-    body {
-        margin: 1rem 12rem 2rem 12rem;
-    }
-    .actionBtn {
-        display: inline-block;
-        padding: 4px 10px;
-        font-size: 12px;
-        border: 1px solid #999;
-        border-radius: 4px;
-        background-color: #f5f5f5;
-        cursor: pointer;
-        white-space: nowrap;
-    }
-    .actionBtn:hover { background-color: #ddd; }
-    .actionBtn.edit { background-color: #e6f3ff; border-color: #3399ff; color: #004d99; }
-    .actionBtn.edit:hover { background-color: #cce6ff; }
-    .actionBtn.toggle { background-color: #fff0e6; border-color: #ff6600; color: #994d00; }
-    .actionBtn.toggle:hover { background-color: #ffd9b3; }
-  </style>
+  <title>論壇管理</title>
 </head>
 <body>
 
-  <!-- 本頁額外 CSS（可留空） -->
   <th:block th:fragment="extraHead"></th:block>
 
-  <!-- 用 layout 插入 content & extraJs -->
   <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
-    <!-- 主要內容 -->
-    <section th:fragment="content">
-      <div class="container-fluid">
-        <div class="card">
-          <div class="card-header">
-          
-                  <a th:href="@{/admin/forum/report}" class="btn btn-warning mb-3">
-            <i class="fa fa-flag"></i> 查看文章檢舉
+  
+ <section th:fragment="content">
+  <div class="container-fluid">
+    <div class="card">
+    
+      <div class="card-header d-flex align-items-center">
+        <h3 class="card-title mb-0">文章管理中心</h3>
+        <a th:href="@{/admin/forum/report}" class="btn btn-warning ms-3">
+            <i class="bi bi-flag-fill"></i> 查看文章檢舉
         </a>
-          
-          
-            <table id="example" class="table table-striped table-bordered display nowrap" style="width:100%">
-              <thead>
-                <tr style="background-color:#CCCCFF">
-                  <th>文章編號</th>
-                  <th>標題</th>
-                  <th>內容</th>
-                  <th>發文時間</th>
-                  <th>修改時間</th>
-                  <th>狀態</th>
-                  <th>版塊</th>
-                  <th>會員</th>
-                  <th>修改</th>
-                  <th>刪除</th>
-                </tr>
-              </thead>
-              <tbody>
-                <th:block th:each="postVO : ${postListData}">
-                  <tr>
-                    <td th:text="${postVO.postId}"></td>
-                    <td th:text="${postVO.postTitle}"></td>
-                    <td th:text="${postVO.summary}"></td>
-                    <td th:text="${postVO.postTime}"></td>
-                    <td th:text="${postVO.postModify}"></td>
-                    <td th:text="${postVO.postStatus == 1 ? '顯示' : '隱藏'}"></td>
-                    <td th:text="${postVO.boardVO.boardName}"></td>
-                    <td th:text="${postVO.memberVO.name}"></td>
-                    <td>
-                      <form method="get" th:action="@{updatePost}" style="margin:0;">
-                        <input type="hidden" name="postId" th:value="${postVO.postId}">
-                        <button type="submit" class="actionBtn edit">修改</button>
-                      </form>
-                    </td>
-                    <td>
-                      <button type="button" class="actionBtn toggle toggleBtn"
-                              th:data-postid="${postVO.postId}"
-                              th:text="${postVO.postStatus == 1 ? '隱藏' : '顯示'}"></button>
-                    </td>
-                  </tr>
-                </th:block>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
-    </section>
+      
+      <div class="card-body">
+        <table id="example" class="table table-striped table-bordered display nowrap" style="width:100%">
+          <thead>
+            <tr style="background-color:#CCCCFF">
+              <th>文章編號</th>
+              <th>標題</th>
+              <th>內容</th>
+              <th>發文時間</th>
+              <th>修改時間</th>
+              <th>狀態</th>
+              <th>版塊</th>
+              <th>會員</th>
+              <th>修改</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <th:block th:each="postVO : ${postListData}">
+              <tr>
+                <td th:text="${postVO.postId}"></td>
+                <td th:text="${postVO.postTitle}"></td>
+                <td th:text="${postVO.summary}"></td>
+                <td th:text="${postVO.postTime}"></td>
+                <td th:text="${postVO.postModify}"></td>
+                <td th:text="${postVO.postStatus == 1 ? '顯示' : '隱藏'}"></td>
+                <td th:text="${postVO.boardVO.boardName}"></td>
+                <td th:text="${postVO.memberVO.name}"></td>
+                <td>
+                  <form method="get" th:action="@{updatePost}" style="margin:0;">
+                    <input type="hidden" name="postId" th:value="${postVO.postId}">
+                    <button type="submit" class="btn btn-sm btn-info">修改</button>
+                  </form>
+                </td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-secondary toggleBtn"
+                          th:data-postid="${postVO.postId}"
+                          th:text="${postVO.postStatus == 1 ? '隱藏' : '顯示'}"></button>
+                </td>
+              </tr>
+            </th:block>
+          </tbody>
+        </table>
+      </div>
+      
+    </div>
+  </div>
+</section>
 
-    <!-- 本頁額外 JS -->
-    <th:block th:fragment="extraJs">
-      <!-- jQuery & DataTables JS 統一版本 -->
-      <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-      <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-      <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
+<th:block th:fragment="extraJs">
 
-      <script>
-        $(function() {
-          $('#example').DataTable({
-              "lengthMenu": [3, 5, 10, 20, 50, 100],
-              "searching": true,
-              "paging": true,
-              "ordering": true,
-              "responsive": true,
-              "language": {
-                  "processing": "處理中...",
-                  "loadingRecords": "載入中...",
-                  "lengthMenu": "顯示 _MENU_ 筆結果",
-                  "zeroRecords": "沒有符合的結果",
-                  "info": "顯示第 _START_ 至 _END_ 筆結果，共<font color=red> _TOTAL_ </font>筆",
-                  "infoEmpty": "顯示第 0 至 0 筆結果，共 0 筆",
-                  "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
-                  "search": "搜尋:",
-                  "paginate": { "first": "第一頁", "previous": "上一頁", "next": "下一頁", "last": "最後一頁" },
-                  "aria": { "sortAscending": ": 升冪排列", "sortDescending": ": 降冪排列" }
-              }
-          });
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script>
+  
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.1/css/responsive.bootstrap5.min.css">
 
-          // 顯示/隱藏切換按鈕
-          $('#example').on('click', '.toggleBtn', function() {
-            var btn = $(this);
-            var postId = btn.data('postid');
-            $.post('/post/toggleStatus', { postId: postId }, function(response) {
-              if(response.startsWith("success")) {
-                var newStatus = response.split(":")[1];
-                btn.closest('tr').find('td:nth-child(6)').text(newStatus == 1 ? '顯示' : '隱藏');
-                btn.text(newStatus == 1 ? '隱藏' : '顯示');
-              } else {
-                alert('切換失敗');
-              }
-            });
-          });
+  <script>
+    $(function() {
+      // DataTables 初始化回歸到最單純的狀態
+      $('#example').DataTable({
+          "lengthMenu": [3, 5, 10, 20, 50, 100],
+          "searching": true,
+          "paging": true,
+          "ordering": true,
+          "responsive": true,
+          // (不再需要 dom 設定，讓它使用預設值)
+          "language": {
+              "processing": "處理中...",
+              "loadingRecords": "載入中...",
+              "lengthMenu": "顯示 _MENU_ 筆",
+              "zeroRecords": "沒有符合的結果",
+              "info": "顯示 _START_ 至 _END_ 筆，共 _TOTAL_ 筆",
+              "infoEmpty": "顯示第 0 至 0 筆，共 0 筆",
+              "infoFiltered": "(從 _MAX_ 筆結果中過濾)",
+              "search": "搜尋:", // 恢復預設的 "搜尋:" 標籤
+              "paginate": { "first": "第一頁", "previous": "上一頁", "next": "下一頁", "last": "最後一頁" },
+          }
+      });
 
-          // AJAX 刪除
-          $('#example').on('click', '.deleteBtn', function() {
-            var btn = $(this);
-            var postId = btn.data('postid');
-            if(confirm("確定要隱藏這篇文章嗎？")) {
-              $.post('/post/deleteAjax', { postId: postId }, function(response) {
-                if(response === "success") {
-                  btn.closest('tr').find('td:nth-child(6)').text('隱藏');
-                } else {
-                  alert('操作失敗！');
-                }
-              });
-            }
-          });
+      // (不再需要任何搬移按鈕或設定 CSS 的 jQuery 程式碼)
+
+      // 你自己寫的功能，例如 toggleBtn 事件，我們完整保留
+      $('#example').on('click', '.toggleBtn', function() {
+        var btn = $(this);
+        var postId = btn.data('postid');
+        $.post('/post/toggleStatus', { postId: postId }, function(response) {
+          if(response.startsWith("success")) {
+            var newStatus = response.split(":")[1];
+            btn.closest('tr').find('td:nth-child(6)').text(newStatus == 1 ? '顯示' : '隱藏');
+            btn.text(newStatus == 1 ? '隱藏' : '顯示');
+          } else {
+            alert('切換失敗');
+          }
         });
-      </script>
-    </th:block>
+      });
+      
+    });
+  </script>
+</th:block>
 
   </div>
 </body>

@@ -159,6 +159,10 @@ public class PostController {
     public String listAllPostsForAdmin(ModelMap model) {
         List<PostVO> list = postSvc.getAllWithMemberAndBoard();
         model.addAttribute("postListData", list);
+
+        // 就是加上這一行，把標題傳給前端
+        model.addAttribute("pageTitle", "論壇管理｜列表");
+
         return "admin/forum/index";
     }
 

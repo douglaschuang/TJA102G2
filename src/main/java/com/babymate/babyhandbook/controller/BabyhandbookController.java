@@ -67,7 +67,9 @@ public class BabyhandbookController {
 		m.setMemberId(1); 
 		babyhandbookVO.setMember(m);
 		
-		model.addAttribute("babyhandbookVO", babyhandbookVO); // model.addAttribute("變數名稱", 變數值);
+		model.addAttribute("babyhandbookVO", babyhandbookVO); 
+		model.addAttribute("pageTitle", "小孩手冊｜新增");
+		
 		return "admin/babyhandbook/addBabyhandbook";
 	}
 
@@ -91,12 +93,11 @@ public class BabyhandbookController {
 			}
 		}
 		
-		
 		if (result.hasErrors()) {  //有表單錯誤就返回原頁面
+			model.addAttribute("pageTitle", "小孩手冊｜新增");
 			return "admin/babyhandbook/addBabyhandbook";
 		}
 
-		
 		Integer memberId = babyhandbookVO.getMember() != null ? babyhandbookVO.getMember().getMemberId() : null; // 把 memberId 從 babyhandbookVO 裡拿出來
 		
 		if (memberId == null) {
@@ -127,6 +128,8 @@ public class BabyhandbookController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("babyhandbookVO", babyhandbookVO);
+		model.addAttribute("pageTitle", "小孩手冊｜修改");
+		
 		return "admin/babyhandbook/update_babyhandbook_input";
 	}
 
@@ -202,7 +205,7 @@ public class BabyhandbookController {
 	public String deleted(ModelMap model) {
 		List<BabyhandbookVO> list = babyhandbookSvc.findAllDeleted();
 		model.addAttribute("deletedList", list);
-		model.addAttribute("pageTitle", "小孩手冊｜列表");
+		model.addAttribute("pageTitle", "小孩手冊｜垃圾桶");
 		return "admin/babyhandbook/deleted";
 	}
 

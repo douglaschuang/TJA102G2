@@ -3,97 +3,121 @@
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
 <body class="sidebar-expand-lg bg-body-tertiary">
-  <!-- 本頁額外 CSS -->
-  <th:block th:fragment="extraHead">
-    <style>
-      .photo-lg{ width:100%; max-height:260px; object-fit:cover; border-radius:.5rem; }
-      .field dt{ width: 9rem; }
-      .field dd{ margin-left: 0; }
-      @media (max-width: 576px){ .field dt{ width: 7.5rem; } }
-    </style>
-  </th:block>
+	<!-- 本頁額外 CSS -->
+	<th:block th:fragment="extraHead">
+		<style>
+.photo-lg {
+	width: 100%;
+	max-height: 260px;
+	object-fit: cover;
+	border-radius: .5rem;
+}
 
-  <!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
-  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+.field dt {
+	width: 9rem;
+}
 
-    <section th:fragment="content">
-      <div class="container-fluid">
-        <!-- 成功訊息（有帶 success 就顯示） -->
-        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-          <i class="bi bi-check-circle"></i>
-          <span th:text="${success}">操作成功</span>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+.field dd {
+	margin-left: 0;
+}
 
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0">小孩手冊｜詳細資料</h3>
-            <div class="d-flex gap-2">
-              <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/babyhandbook/list}">
-                <i class="bi bi-arrow-left"></i> 回列表
-              </a>
+@media ( max-width : 576px) {
+	.field dt {
+		width: 7.5rem;
+	}
+}
+</style>
+	</th:block>
 
-              <!-- 修改 -->
-              <form th:action="@{/admin/babyhandbook/getOne_For_Update}" method="post" class="d-inline">
-                <input type="hidden" name="babyhandbookid" th:value="${babyhandbookVO.babyhandbookid}">
-                <button type="submit" class="btn btn-sm btn-primary">
-                  <i class="bi bi-pencil-square"></i> 修改
-                </button>
-              </form>
+	<!-- 用 layout 取代此容器，並把 content / extraJs 傳入 -->
+	<div
+		th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
 
-              <!-- 刪除 -->
-              <form th:action="@{/admin/babyhandbook/delete}" method="post" class="d-inline"
-                    onsubmit="return confirm('確定刪除？');">
-                <input type="hidden" name="babyhandbookid" th:value="${babyhandbookVO.babyhandbookid}">
-                <button type="submit" class="btn btn-sm btn-outline-danger">
-                  <i class="bi bi-trash"></i> 刪除
-                </button>
-              </form>
-            </div>
-          </div>
+		<section th:fragment="content">
+			<div class="container-fluid">
+				<!-- 成功訊息（有帶 success 就顯示） -->
+				<div th:if="${success}"
+					class="alert alert-success alert-dismissible fade show"
+					role="alert">
+					<i class="bi bi-check-circle"></i> <span th:text="${success}">操作成功</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert"
+						aria-label="Close"></button>
+				</div>
 
-          <div class="card-body">
-            <div class="row g-4">
-              <!-- 左：欄位資訊 -->
-              <div class="col-lg-8">
-                <dl class="row field mb-0">
-                  <dt class="col-sm-3 text-body-secondary">小孩手冊編號</dt>
-                  <dd class="col-sm-9" th:text="${babyhandbookVO.babyhandbookid}"></dd>
+				<div class="card">
+					<div
+						class="card-header d-flex justify-content-between align-items-center">
+						<h3 class="card-title mb-0">小孩手冊｜詳細資料</h3>
+						<div class="d-flex gap-2">
+							<a class="btn btn-sm btn-outline-secondary"
+								th:href="@{/admin/babyhandbook/list}"> <i
+								class="bi bi-arrow-left"></i> 回列表
+							</a>
 
-                  <dt class="col-sm-3 text-body-secondary">會員ID</dt>
-                  <dd class="col-sm-9" th:text="${babyhandbookVO.member.memberId}"></dd>
+							<!-- 修改 -->
+							<form th:action="@{/admin/babyhandbook/getOne_For_Update}"
+								method="post" class="d-inline">
+								<input type="hidden" name="babyhandbookid"
+									th:value="${babyhandbookVO.babyhandbookid}">
+								<button type="submit" class="btn btn-sm btn-primary">
+									<i class="bi bi-pencil-square"></i> 修改
+								</button>
+							</form>
 
-                  <dt class="col-sm-3 text-body-secondary">小孩姓名</dt>
-                  <dd class="col-sm-9" th:text="${babyhandbookVO.babyname}"></dd>
+							<!-- 刪除 -->
+							<form th:action="@{/admin/babyhandbook/delete}" method="post"
+								class="d-inline" onsubmit="return confirm('確定刪除？');">
+								<input type="hidden" name="babyhandbookid"
+									th:value="${babyhandbookVO.babyhandbookid}">
+								<button type="submit" class="btn btn-sm btn-outline-danger">
+									<i class="bi bi-trash"></i> 刪除
+								</button>
+							</form>
+						</div>
+					</div>
 
-                  <dt class="col-sm-3 text-body-secondary">小孩性別</dt>
-                  <dd class="col-sm-9" th:text="${babyhandbookVO.babygender}"></dd>
+					<div class="card-body">
+						<div class="row g-4">
+							<!-- 左：欄位資訊 -->
+							<div class="col-lg-8">
+								<dl class="row field mb-0">
+									<dt class="col-sm-3 text-body-secondary">小孩手冊編號</dt>
+									<dd class="col-sm-9" th:text="${babyhandbookVO.babyhandbookid}"></dd>
 
-                  <dt class="col-sm-3 text-body-secondary">小孩生日</dt>
-                  <dd class="col-sm-9"
-                      th:text="${#temporals.format(babyhandbookVO.babybirthday,'yyyy-MM-dd')}"></dd>
+									<dt class="col-sm-3 text-body-secondary">會員ID</dt>
+									<dd class="col-sm-9"
+										th:text="${babyhandbookVO.member.memberId}"></dd>
 
-                  <dt class="col-sm-3 text-body-secondary">最後更新</dt>
-                  <dd class="col-sm-9"
-                      th:text="${#dates.format(babyhandbookVO.updateTime,'yyyy-MM-dd HH:mm:ss')}"></dd>
-                </dl>
-              </div>
+									<dt class="col-sm-3 text-body-secondary">小孩姓名</dt>
+									<dd class="col-sm-9" th:text="${babyhandbookVO.babyname}"></dd>
 
-              <!-- 右：照片 -->
-              <div class="col-lg-4">
-					<img src="/babyhandbook/DBGifReader" />
+									<dt class="col-sm-3 text-body-secondary">小孩性別</dt>
+									<dd class="col-sm-9" th:text="${babyhandbookVO.babygender}"></dd>
 
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+									<dt class="col-sm-3 text-body-secondary">小孩生日</dt>
+									<dd class="col-sm-9"
+										th:text="${#temporals.format(babyhandbookVO.babybirthday,'yyyy-MM-dd')}"></dd>
 
-      </div>
-    </section>
+									<dt class="col-sm-3 text-body-secondary">最後更新</dt>
+									<dd class="col-sm-9"
+										th:text="${#dates.format(babyhandbookVO.updateTime,'yyyy-MM-dd HH:mm:ss')}"></dd>
+								</dl>
+							</div>
 
-    <!-- 本頁不需額外 JS -->
-    <th:block th:fragment="extraJs"></th:block>
-  </div>
+							<!-- 右：照片 -->
+							<div class="col-lg-4">
+								<img src="/babyhandbook/DBGifReader" />
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	</div>
+	</section>
+
+	<!-- 本頁不需額外 JS -->
+	<th:block th:fragment="extraJs"></th:block>
+	</div>
 </body>
 </html>
