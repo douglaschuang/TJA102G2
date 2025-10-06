@@ -40,21 +40,40 @@
 </div>
 
 <section th:fragment="forumMainContent(content, breadcrumbTitle)">
+
     <div th:if="${breadcrumbTitle}" th:replace="~{frontend/fragments/breadcrumb :: breadcrumb(${breadcrumbTitle})}"></div>
     
     <div class="blog-page-wrapper mb-100">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 order-2 order-lg-1">
+
+                <div class="col-lg-3 order-2 order-lg-1 d-none d-lg-block">
                     <div th:replace="~{frontend/forum_layout :: forumSidebar}"></div>
                 </div>
 
                 <div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70">
+                    
+                    <button class="btn btn-outline-secondary w-100 d-lg-none mb-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#forumOffcanvasSidebar">
+                        <i class="fa-solid fa-bars"></i>
+                        功能選單 (看板/搜尋)
+                    </button>
+
                     <th:block th:replace="${content}"></th:block>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="forumOffcanvasSidebar" aria-labelledby="forumOffcanvasSidebarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="forumOffcanvasSidebarLabel">功能選單</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div th:replace="~{frontend/forum_layout :: forumSidebar}"></div>
+      </div>
+    </div>
+
 </section>
 
 <div th:fragment="postCard(post)">
