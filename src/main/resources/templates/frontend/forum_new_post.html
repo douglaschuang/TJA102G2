@@ -3,12 +3,7 @@
 
 <head th:replace="~{frontend/forum_layout :: forumHead('發表新文章 - ' + ${board.boardName}, ~{::extraHead})}">
     <th:block th:fragment="extraHead">
-        <style>
-            .ck-editor__editable {
-                min-height: 400px;
-            }
-        </style>
-        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     </th:block>
 </head>
 
@@ -26,50 +21,76 @@
             <h4 class="mb-3">在看板「<span th:text="${board.boardName}"></span>」發表新文章</h4>
 
             <form id="newPostForm" th:action="@{/forum/post/create}" th:object="${postVO}" method="post">
-
                 <input type="hidden" name="boardId" th:value="${board.boardId}" />
-
                 <div class="mb-3">
                     <label for="postTitle" class="form-label">文章標題</label>
                     <input type="text" id="postTitle" class="form-control" th:field="*{postTitle}" placeholder="請輸入標題" required />
                 </div>
-
                 <div class="mb-3">
                     <label for="postLine" class="form-label">文章內容</label>
                     <textarea id="postLine" class="form-control" th:field="*{postLine}" rows="10" placeholder="寫下你的內容..." ></textarea>
                 </div>
-
                 <button type="submit" class="btn btn-success">送出文章</button>
             </form>
         </div>
     </th:block>
 
-    <th:block th:fragment="pageScripts">
-        <script>
-            // 用一個變數來接住我們建立的編輯器實體
-            let editor;
-
-            ClassicEditor
-                .create( document.querySelector( '#postLine' ), {
-                    language: 'zh'
-                } )
-                .then( newEditor => {
-                    editor = newEditor; // 把建立好的編輯器存起來
-                } )
-                .catch( error => {
-                    console.error( error );
-                } );
-
-            // ★★★ 步驟二：監聽表單的提交事件 ★★★
-            document.getElementById('newPostForm').addEventListener('submit', function(event) {
-                if (editor) {
-                    // 在表單提交前，呼叫 updateSourceElement() 方法
-                    // 這會把 CKEditor 編輯介面裡的內容，同步回原本的 <textarea>
-                    editor.updateSourceElement();
+<th:block th:fragment="pageScripts">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-zh-TW.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // 初始化 Summernote 編輯器 (這部分是正確的)
+            $('#postLine').summernote({
+                placeholder: '寫下你的內容...',
+                height: 400,
+                lang: 'zh-TW',
+                callbacks: {
+                    onImageUpload: function(files) {
+                        var file = files[0];
+                        var formData = new FormData();
+                        formData.append('upload', file);
+                        
+                        $.ajax({
+                            url: '/forum/uploadImage',
+                            method: 'POST',
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                if (response && response.url) {
+                                    $('#postLine').summernote('insertImage', response.url);
+                                } else {
+                                    alert('圖片上傳成功，但伺服器回傳格式錯誤！');
+                                }
+                            },
+                            error: function() {
+                                alert('圖片上傳 AJAX 請求失敗！');
+                            }
+                        });
+                    }
                 }
             });
-        </script>
-    </th:block>
+
+            // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+            // ★★★ 就是加上這一段，所有問題的最終解答 ★★★
+            // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+            
+            // 監聽表單的提交事件
+            $('#newPostForm').on('submit', function() {
+                // 在表單正式提交前，手動將 Summernote 畫板上的內容
+                // 同步回我們原本隱藏的 <textarea> 信紙上
+                
+                // 'code' 這個指令可以取得 Summernote 編輯器裡所有的 HTML 內容
+                var summernoteContent = $('#postLine').summernote('code');
+                
+                // 用 .val() 方法，把內容塞回 <textarea>
+                $('#postLine').val(summernoteContent);
+            });
+        });
+    </script>
+</th:block>
 
 </body>
 </html>
