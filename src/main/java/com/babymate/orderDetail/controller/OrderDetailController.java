@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.babymate.orderDetail.model.OrderDetailService;
 import com.babymate.orderDetail.model.OrderDetailVO;
@@ -88,4 +90,20 @@ public class OrderDetailController {
 			    
 			    return "admin/orderdetail/list";
 			}
+			
+			@GetMapping("/detail")
+			public String showOrderDetail(@RequestParam("orderId") Integer orderId, Model model) {
+			    OrdersVO orders = ordersSvc.getOneOrder(orderId);
+
+			    if (orders == null) {
+			        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此訂單");
+			    }
+
+			    model.addAttribute("orders", orders);
+			    model.addAttribute("orderDetailList", orderDetailSvc.findByOrderId(orderId));
+				model.addAttribute("pageTitle", "訂單明細");
+				
+			    return "admin/orderdetail/list";  
+			}
+			
 }

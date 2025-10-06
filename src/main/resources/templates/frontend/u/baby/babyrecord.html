@@ -3,16 +3,8 @@
 	<!--  -->
 		<div class="card-body">
 			<div class="d-flex justify-content-between align-items-center mb-3">
-
-				<h4 class="mb-0" th:text="${babyhandbook.babyname} + '成長紀錄'"></h4>
-
-				
-				<div class="d-flex justify-content-end mt-4 gap-2">
-					<a class="btn btn-outline-primary btn-sm" 
-						th:if="${babyhandbook != null}"
-						th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
-						回上一頁 </a>
-					
+				<h4 class="mb-0" th:text="${babyhandbook.babyname} + '成長紀錄'"></h4>			
+				<div class="d-flex justify-content-end mt-4 gap-2">				
 					<a class="btn btn-success btn-sm" 
 			            th:if="${babyhandbook != null}"
 			            th:href="@{/u/baby/babyrecord-add(babyhandbookid=${babyhandbook.babyhandbookid})}">

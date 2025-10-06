@@ -1,18 +1,43 @@
 <div
 	th:fragment="babyChart(babyhandbook, chartLabels, heightChart, weightChart, hcChart)">
-	
+
+	<style>
+.info-box {
+	border: 2px solid #5a9bd4; /* 淡藍色邊框 */
+	border-radius: 12px;
+	padding: 20px 25px;
+	background-color: #e8f0fe; /* 淡藍色背景 */
+	color: #2c3e50; /* 深藍灰色文字 */
+	max-width:750px;
+	font-family: 'Noto Sans TC', sans-serif;
+	box-shadow: 0 2px 8px rgba(90, 155, 212, 0.2); /* 淡藍色陰影 */
+	margin: 20px auto;
+}
+
+.info-box h4 {
+	margin-top: 0;
+	color: #3178c6; /* 深藍色標題 */
+	font-weight: 700;
+}
+
+.info-box p {
+	line-height: 1.6;
+	margin-bottom: 1em;
+}
+</style>
+
 	<!-- 卡片外觀 -->
 	<div class="card shadow-sm border-0">
 		<div class="card-body">
 			<h4 class="mb-3">寶寶成長圖表</h4>
-			
-			<div class="d-flex justify-content-end mt-4 gap-2">
-				<a class="btn btn-outline-primary btn-sm" 
-					th:if="${babyhandbook != null}"
-					th:href="@{/blog/full-grid-left-bb(tab='babyhandbook', babyhandbookid=${babyhandbook.babyhandbookid})}">
-					回上一頁 </a>
-		 	</div>
-		 	
+			<div class="info-box">
+				<h4>生長曲線圖怎麼看？</h4>
+				<p>掌握嬰兒生長曲線，讓寶寶健康快樂成長</p>
+				<p>
+					一般而言，嬰幼兒之生長指標若落在第97百分位及第3百分位的兩曲線之間，都屬於正常範圍內；如果高於第97百分位或低於第3百分位時，就要考慮寶寶的該項生長指標有過高或過低之情形。另外，寶寶長的太快或太慢，一下偏離自己的生長曲線區間時，建議媽媽諮詢醫師，了解寶寶更進一步的生長情形喔！
+				</p>
+			</div>
+			<br>
 			<!-- 身高圖表 -->
 			<div>
 				<h6 class="mb-2">身長 / 身高(公分)</h6>
@@ -28,7 +53,7 @@
 					<canvas id="weightChart"></canvas>
 				</div>
 			</div>
-				
+
 			<!-- 體重圖表 -->
 			<div>
 				<h6 class="mb-2">體重(公斤)</h6>
@@ -36,15 +61,16 @@
 					<canvas id="hcChart"></canvas>
 				</div>
 			</div>
-		
+
 		</div>
 	</div>
 
 	<!-- 引入 Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  
-   <!-- 畫圖腳本包在 DOMContentLoaded -->
-  <script th:inline="javascript">
+	<script
+		src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+	<!-- 畫圖腳本包在 DOMContentLoaded -->
+	<script th:inline="javascript">
         let babyweek = /*[[${babyweek}]]*/ [];
         let ageWeeks = /*[[${ageWeeks}]]*/ [];
         let height = /*[[${height}]]*/ [];
@@ -130,5 +156,5 @@
         });
         
     </script>
-    
+
 </div>

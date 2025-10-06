@@ -1,5 +1,6 @@
 package com.babymate.babyrecord.model;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,5 +26,19 @@ public interface BabyrecordRepository extends JpaRepository<BabyrecordVO, Intege
     byte[] findPhotoBytesById(@Param("id") Integer id);
 
 	List<BabyrecordVO> findByBabyhandbook_Babyhandbookid(Integer babyhandbookid);
-
+	
+	//一天前通知使用
+//	List<BabyrecordVO> findByBabyhandbook_BabyhandbookidAndNextReminderLessThanEqualAndReminderSentFalseAndNextCheckDateIsNotNull(
+//	        Integer babyhandbookid,
+//	        LocalDate today
+//	    );
+	//一天前通知使用
+//	@Query("SELECT b FROM BabyrecordVO b WHERE " +
+//		       "b.babyhandbook.babyhandbookid = :babyhandbookid AND " +
+//		       "b.nextreminder <= :today AND " +
+//		       "b.reminderSent = false AND " +
+//		       "b.nextcheckdate IS NOT NULL AND " +
+//		       "b.nextreminder IS NOT NULL")
+//		List<BabyrecordVO> findDueReminders(@Param("babyhandbookid") Integer babyhandbookid,
+//		                                    @Param("today") LocalDate today);
 }
