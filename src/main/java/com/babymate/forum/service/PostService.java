@@ -1,5 +1,6 @@
 package com.babymate.forum.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -122,19 +123,32 @@ public class PostService {
     
     
  // 在 PostService.java 裡
-    @Transactional // 確保你有這個
-    public void createPost(PostVO post) {
-        // 1. 清洗從 CKEditor 送過來的 HTML 內容
-        String unsafeHtml = post.getPostLine();
-        // 使用 Jsoup 的 basic() Safelist，它只允許基本的格式化標籤，比如 <b>, <p>, <ul> 等
-        String safeHtml = Jsoup.clean(unsafeHtml, Safelist.basic());
-        post.setPostLine(safeHtml); // 把清洗過的乾淨 HTML 存回去
-
-        // 2. 設定業務邏輯相關的狀態
-        post.setPostStatus((byte)1);
+    @Transactional
+    public PostVO createPost(PostVO postVO) {
         
-        // 3. 儲存到資料庫 (時間的部分 @PrePersist 會自動處理)
-        postRepository.save(post);
+        String unsafeHtml = postVO.getPostLine();
+        if (unsafeHtml != null) {
+            // 1. 我們從一個更基礎的白名單開始，它本身不處理圖片
+            Safelist safelist = Safelist.basic();
+            
+            // 2. 我們手動、明確地告訴它，<img> 標籤是安全的
+            //    並且追加一些你可能需要的文字格式標籤
+            safelist.addTags("img", "p", "br", "u", "strike", "strong", "em", "b", "i");
+            
+            // 3. 我們告訴它，<img> 標籤可以擁有這些屬性
+            safelist.addAttributes("img", "src", "style", "width", "height", "alt");
+            
+            // 4. 【最關鍵】我們 *不* 呼叫 addProtocols() 方法。
+            //    不特別去限制 src 屬性必須符合 http/https協定，Jsoup 預設就會放行相對路徑。
+            
+            String safeHtml = Jsoup.clean(unsafeHtml, safelist);
+            postVO.setPostLine(safeHtml);
+        }
+
+        postVO.setPostStatus((byte) 1);
+        // 時間的部分由 @PrePersist 自動處理，這裡不需要
+        
+        return postRepository.save(postVO);
     }
 
     public void updatePost(Integer id, PostVO post) {
@@ -160,22 +174,25 @@ public class PostService {
         PostVO originalPost = postRepository.findById(postId)
             .orElseThrow(() -> new RuntimeException("找不到ID為 " + postId + " 的文章"));
 
-        // 權限驗證：確保文章作者就是當前使用者
         if (!originalPost.getMemberVO().getMemberId().equals(currentUser.getMemberId())) {
             throw new SecurityException("權限不足，您不能編輯他人文章");
         }
 
-        // 只更新標題和內容
         originalPost.setPostTitle(formPost.getPostTitle());
         
+        // --- 同樣在這裡使用我們最終版的白名單邏輯 ---
         String unsafeHtml = formPost.getPostLine();
-        String safeHtml = Jsoup.clean(unsafeHtml, Safelist.basic());
-        originalPost.setPostLine(safeHtml);
-
+        if (unsafeHtml != null) {
+            Safelist safelist = Safelist.basic();
+            safelist.addTags("img", "p", "br", "u", "strike", "strong", "em", "b", "i");
+            safelist.addAttributes("img", "src", "style", "width", "height", "alt");
+            String safeHtml = Jsoup.clean(unsafeHtml, safelist);
+            originalPost.setPostLine(safeHtml);
+        }
+        
+        // 時間的部分由 @PreUpdate 自動處理，這裡不需要
         return postRepository.save(originalPost);
     }
-    
-    
     
     
     public void softDeletePost(Integer postId) {

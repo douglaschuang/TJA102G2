@@ -4,12 +4,12 @@
 <head th:replace="~{frontend/forum_layout :: forumHead('論壇首頁', null)}"></head>
 
 <body th:replace="~{frontend/forum_layout :: forumLayout(
-    pageTitle = '論壇首頁',
+    pageTitle = '討論區首頁',
     headerType = 'forum',
     content = ~{:: pageContent},
     extraJs = ~{:: pageScripts},  
     footerClass = 'footer-one',
-    breadcrumbTitle = '論壇'
+    breadcrumbTitle = '討論區'
 )}">
 
     <th:block th:fragment="pageContent">
