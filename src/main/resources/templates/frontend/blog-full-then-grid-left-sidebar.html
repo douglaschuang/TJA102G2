@@ -69,7 +69,7 @@
 									<li><a th:href="@{/blog/full-grid-left(tab='album')}">我的相簿</a></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='diary')}">我的日記</a></li>
 									<li><a href="/sleep/quiz" th:href="@{/sleep/quiz}">睡眠健康測驗</a></li>
-									<li><a th:href="@{/blog/full-grid-left(tab='notice')}">通知</a></li>
+									<!-- <li><a th:href="@{/blog/full-grid-left(tab='notice')}">通知</a></li> -->
 								</ul>
 							</div>
 
@@ -363,7 +363,7 @@
 									th:href="@{/blog/u/baby/babyhandbook}"> ➕ 新增寶寶手冊 </a>
 							</div>
 							
-							<!-- ✅ 顯示多筆寶寶手冊 -->
+							<!-- 顯示多筆寶寶手冊 -->
 							<div class="row row-cols-1 g-4"
 								th:if="${babyhandbookList != null and #lists.size(babyhandbookList) > 0}">
 								<div class="col" th:each="baby : ${babyhandbookList}">
@@ -375,7 +375,7 @@
 								</div>
 							</div>
 
-							<!-- ❌ 無手冊資料 -->
+							<!-- 無手冊資料 -->
 							<div
 								th:if="${babyhandbookList == null or #lists.isEmpty(babyhandbookList)}"
 								class="alert alert-info">
@@ -403,12 +403,12 @@
 						</div>
 
 						<!-- 待辦事項 -->
-						<div th:case="'baby-todo'">
+						<!-- <div th:case="'baby-todo'">
 							<div
 								th:replace="~{frontend/u/baby/babyhandbook-tabs :: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
 							<div
 								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${baby-todo})}"></div>
-						</div>
+						</div> -->
 						
 						<!-- 日曆 -->
 						<div th:case="'calendar'">
@@ -612,9 +612,9 @@
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
-																		<p>待辦事項</p>
-																		<a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">+
-																			查看待辦事項</a>
+																		<p>我的日曆</p>
+																		<a th:href="@{/blog/full-grid-left(tab='calendar')}">+
+																			查看我的日曆</a>
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
@@ -723,7 +723,7 @@
 																	</div>
 																</div>
 
-																<div class="col">
+																<!-- <div class="col">
 																	<div class="single-category single-category--two">
 																		<div
 																			class="single-category__image single-category__image--two">
@@ -741,7 +741,7 @@
 																		<a class="banner-link"
 																			th:href="@{/blog/full-grid-left-bb(tab='notice')}"></a>
 																	</div>
-																</div>
+																</div> -->
 
 																<div class="col">
 																	<div class="single-category single-category--two">
