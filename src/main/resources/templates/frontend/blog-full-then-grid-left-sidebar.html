@@ -62,7 +62,7 @@
 												th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶成長紀錄</a></li>
 											<li><a
 												th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
-											<li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li>
+											<!-- <li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li> -->
 
 										</ul></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='calendar')}">我的日曆</a></li>
@@ -363,7 +363,7 @@
 									th:href="@{/blog/u/baby/babyhandbook}"> ➕ 新增寶寶手冊 </a>
 							</div>
 							
-							<!-- 顯示多筆寶寶手冊 -->
+							<!-- ✅ 顯示多筆寶寶手冊 -->
 							<div class="row row-cols-1 g-4"
 								th:if="${babyhandbookList != null and #lists.size(babyhandbookList) > 0}">
 								<div class="col" th:each="baby : ${babyhandbookList}">
@@ -375,7 +375,7 @@
 								</div>
 							</div>
 
-							<!-- 無手冊資料 -->
+							<!-- ❌ 無手冊資料 -->
 							<div
 								th:if="${babyhandbookList == null or #lists.isEmpty(babyhandbookList)}"
 								class="alert alert-info">
@@ -625,7 +625,7 @@
 																		th:src="@{/assets/images/category/bluememo.jpg}">
 																</div>
 																<a class="banner-link"
-																	th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}"></a>
+																	th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
 															</div>
 														</div>
 
