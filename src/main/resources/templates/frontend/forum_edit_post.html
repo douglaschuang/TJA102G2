@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/forum_layout :: forumHead('編輯文章', ~{:: pageStyles})}"></head>
+<head th:replace="~{frontend/forum_layout :: forumHead('編輯文章', ~{:: extraHead})}">
+    <th:block th:fragment="extraHead">
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    </th:block>
+</head>
+
 
 <body th:replace="~{frontend/forum_layout :: forumLayout(
     pageTitle       = '編輯文章',
@@ -17,7 +22,7 @@
             
             <h4 class="mb-3">正在編輯文章：「<span th:text="${postVO.postTitle}"></span>」</h4>
 
-            <form th:action="@{/forum/post/update}" th:object="${postVO}" method="post">
+            <form id="editPostForm" th:action="@{/forum/post/update}" th:object="${postVO}" method="post">
 
                 <input type="hidden" th:field="*{postId}" />
 
@@ -37,36 +42,51 @@
         </div>
     </th:block>
 	
-    <th:block th:fragment="pageStyles">
-        <style>
-            .ck-editor__editable_inline {
-                min-height: 400px;
-            }
-        </style>
-    </th:block>
+	<th:block th:fragment="pageStyles"></th:block>
 	
 	<th:block th:fragment="pageScripts">
-        <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/lang/summernote-zh-TW.min.js"></script>
+        
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                let postEditor;
-
-                ClassicEditor
-                    .create(document.querySelector('#postLine'))
-                    .then(editor => {
-                        postEditor = editor;
-                    })
-                    .catch(error => {
-                        console.error('CKEditor 初始化發生錯誤:', error);
-                    });
-
-                const form = document.querySelector('form');
-                form.addEventListener('submit', function(event) {
-                    if (postEditor) {
-                        const editorData = postEditor.getData();
-                        document.querySelector('#postLine').value = editorData;
+            $(document).ready(function() {
+                // 初始化 Summernote 編輯器
+                $('#postLine').summernote({
+                    placeholder: '編輯你的內容...',
+                    height: 400,
+                    lang: 'zh-TW',
+                    focus: true, // 載入頁面後自動聚焦到編輯器
+                    callbacks: {
+                        onImageUpload: function(files) {
+                            var file = files[0];
+                            var formData = new FormData();
+                            formData.append('upload', file);
+                            
+                            $.ajax({
+                                url: '/forum/uploadImage',
+                                method: 'POST',
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function(response) {
+                                    if (response && response.url) {
+                                        $('#postLine').summernote('insertImage', response.url);
+                                    } else {
+                                        alert('圖片上傳成功，但伺服器回傳格式錯誤！');
+                                    }
+                                },
+                                error: function() {
+                                    alert('圖片上傳 AJAX 請求失敗！');
+                                }
+                            });
+                        }
                     }
+                });
+
+                // 同樣加上表單提交前的同步邏輯，確保修改後的內容能被送出
+                $('#editPostForm').on('submit', function() {
+                    var summernoteContent = $('#postLine').summernote('code');
+                    $('#postLine').val(summernoteContent);
                 });
             });
         </script>

@@ -21,6 +21,10 @@
         <div class="single-sidebar-widget mb-40">
             <h2 class="single-sidebar-widget--title">看板</h2>
             <ul class="single-sidebar-widget--list single-sidebar-widget--list--category">
+            
+                <li>
+                    <a th:href="@{/forum}">回到論壇首頁</a>
+                </li>
                 <li th:each="board : ${boards}">
                     <a th:href="@{/forum/board/{id}(id=${board.boardId})}" th:text="${board.boardName}">看板名稱</a>
                 </li>
