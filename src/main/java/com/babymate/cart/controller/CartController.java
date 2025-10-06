@@ -61,12 +61,10 @@ public class CartController {
    	
         if (member != null) {
         	// 若是已登入會員，使用會員 ID 作為購物車的唯一識別 key
-        	logger.info("getCart - cartkey={}",CART_KEY_MEMBER_PREFIX + member.getMemberId());
             return CART_KEY_MEMBER_PREFIX + member.getMemberId();
             
         } else {
         	// 若未登入，則使用 session ID 作為購物車的唯一識別 key
-        	logger.info("getCart - cartkey={}",CART_KEY_MEMBER_PREFIX + session.getId());
             return CART_KEY_SESSION_PREFIX + session.getId();
         }
     }
