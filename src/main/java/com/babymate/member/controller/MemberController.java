@@ -220,16 +220,23 @@ public class MemberController {
 	}
 
 	@PostMapping("updatePassword")
-	public String updatePassword(@Validated(UpdateGroup.class) @ModelAttribute("MemberVO") MemberVO memberVO, BindingResult result, ModelMap model,
+	public String updatePassword(@Validated(UpdateGroup.class) @ModelAttribute("MemberVO") MemberVO memberVO, 
+			BindingResult result, 
+			ModelMap model,
 			@RequestParam(name = "newPassword", required = true) String newPassword,
 	        @RequestParam(name = "confirmPassword", required = true) String confirmPassword,
-	        HttpSession session, RedirectAttributes redirectAttrs) throws IOException {
+	        HttpSession session, 
+	        RedirectAttributes redirectAttrs) throws IOException {
 
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		// step 1: 驗證表單格式
 		// 去除BindingResult中password欄位的FieldError紀錄
 		result = removeFieldError(memberVO, result, "password");
+		if (result.hasErrors()) {
+			model.addAttribute("MemberVO", memberVO);
+			return "my-account";
+		}
 
-		// 新密碼和確認密碼不相同
+		// step 2: 新舊密碼檢查
 		if (!newPassword.equals(confirmPassword)) {
 			redirectAttrs.addFlashAttribute("errorMessage", "新密碼與確認新密碼不相同, 請確認.");
 			redirectAttrs.addFlashAttribute("newPassword", newPassword);
@@ -237,7 +244,7 @@ public class MemberController {
 			return "redirect:/my-account#password-info";
 		}
 		
-		// 取得會員
+		// step 3: 取得會員並驗證原密碼
 		MemberVO originalMember = memberSvc.getOneMember(memberVO.getMemberId());
 		// 密碼驗證失敗
 		if (!originalMember.getPassword().equals(EncodingUtil.hashMD5(memberVO.getPassword()))) {
@@ -247,18 +254,14 @@ public class MemberController {
 			return "redirect:/my-account#password-info";
 		} 
 		
-		if (result.hasErrors()) {
-			model.addAttribute("MemberVO", memberVO);
-			return "my-account";
-		}
-		/*************************** 2.開始修改資料 *****************************************/
+		// step 4: 更新密碼/
      	// Hash加密編碼(新密碼)
 		originalMember.setPassword(EncodingUtil.hashMD5(newPassword));
 		// 更新時間
 		originalMember.setUpdateDate(LocalDateTime.now());
 		memberSvc.updateMember(originalMember);
 
-		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+		// step 5: 更新session與回應訊息
 		model.addAttribute("success", "- (修改成功)");
 		memberVO = memberSvc.getOneMember(Integer.valueOf(originalMember.getMemberId()));
 		model.addAttribute("memberVO", originalMember);
@@ -354,6 +357,7 @@ public class MemberController {
 //		MailService mailSvc = new MailService();
 //		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", messageText, false);
 		mailSvc.sendMail(memberVO.getAccount(), "BabyMate - 密碼變更通知", getHtmlMailContent("密碼變更通知", "請以此密碼返回BabyMate登入後至會員資料變更密碼。", newPwd), true);
+		logger.info("memberResetPwd4Member - account {} password already reset.", memberVO.getAccount());
 		
 		model.addAttribute("logoutSource", "帳號: "+memberVO.getAccount()+" 密碼重設成功, 請檢查信箱.");
 		model.addAttribute("logoutSource", "resetpwd");
