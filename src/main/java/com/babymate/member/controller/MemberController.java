@@ -534,6 +534,13 @@ public class MemberController {
 		    	return "redirect:/shop/login";
 	    	}
 	    	
+	    	// 狀態為停用
+	    	if (loginMember.getAccountStatus() == 2) {
+	    		redirectAttributes.addFlashAttribute("errorMessage", "帳號已停用, 請洽客服或網站管理員.");
+		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	return "redirect:/shop/login";
+	    	}
+	    	
 	    	// 密碼檢核
 	    	if (!hashedPwd.equals(loginMember.getPassword())) {
 	    		// 密碼不相等
