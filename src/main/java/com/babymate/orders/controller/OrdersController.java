@@ -60,36 +60,31 @@ public class OrdersController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("ordersVO", ordersVO);
+		model.addAttribute("pageTitle", "訂單明細1｜修改");
+		
 		return "admin/orders/update_orders_input";
 	}
-
+	
 	@PostMapping("update")
 	public String update(@Valid @ModelAttribute("ordersVO") OrdersVO ordersVO, BindingResult result, ModelMap model
 		    ) throws IOException {
 
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		// 去除BindingResult中upFiles欄位的FieldError紀錄 --> 見第143行
-//		result = removeFieldError(ordersVO, result, null);
 
 	    if (result.hasErrors()) {
 	        // 若有錯誤，回到編輯頁
+			model.addAttribute("pageTitle", "訂單明細｜修改");
+			
 	        return "admin/orders/update_orders_input";
 	    }
 	    
-	    // 從資料庫撈原本資料
-	    OrdersVO originalOrders = ordersSvc.getOneOrder(ordersVO.getOrderId());
-	    // 將不會從表單送出但必須有的欄位補上
-	    ordersVO.setOrderTime(originalOrders.getOrderTime());
-	    ordersVO.setPayTime(originalOrders.getPayTime());
-	    ordersVO.setUpdateTime(LocalDateTime.now()); // 也可以改成更新時的現在時間
-		
-	    /*************************** 2.開始修改資料 *****************************************/
-
+	
 		ordersSvc.updateOrders(ordersVO);
 
 		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
 
 		model.addAttribute("success", "修改成功");
+		model.addAttribute("pageTitle", "訂單明細｜修改");
 
 	    return "redirect:/admin/orders/list";
 
@@ -151,7 +146,8 @@ public class OrdersController {
 		    model.addAttribute("ordersList", list);
 		    model.addAttribute("orderId", orderId);
 		    model.addAttribute("listCountMap", listCountMap); 
-
+			model.addAttribute("pageTitle", "訂單管理｜列表");
+			
 		    return "admin/orders/list";
 		}
 		

@@ -1,5 +1,6 @@
 package com.babymate.orderDetail.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -42,7 +43,7 @@ public class OrderDetailVO implements java.io.Serializable{
 	
 	@Column(name = "PRICE")
 	@NotNull
-	private Double price;
+	private BigDecimal price;
 	
 	@Column(name = "UPDATE_TIME")
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -82,11 +83,11 @@ public class OrderDetailVO implements java.io.Serializable{
 		this.quantity = quantity;
 	}
 	
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 	
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 

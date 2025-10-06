@@ -272,22 +272,16 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
 
-    /**
-     * 清空指定會員的購物車。
-     *
-     * <p>此方法會根據會員的 ID 清空對應的購物車。它會根據 session 中的購物車 key，
-     * 呼叫服務層的方法來清空購物車中的所有商品。</p>
-     *
-     * @param memberId 會員的 ID，用於識別要清空購物車的會員。
-     * @param session 當前用戶的 HTTP session，用於取得購物車的唯一識別 key。
-     */
-    @DeleteMapping("/clear/{memberId}")
-    public void clearCart(@PathVariable Integer memberId, HttpSession session) {
-    	// 取得購物車唯一值
-    	String cartkey = getCartKey(session);
-    	
-    	// 清空購物車
-        cartService.clearCart(cartkey);
-    }
+    // 在綠界結帳跳回商城頁面時session已經丟失，getCartKey(session)會拿不到對應的會員或session購物車
+//    @DeleteMapping("/clear/{memberId}")
+//    public void clearCart(@PathVariable Integer memberId, HttpSession session) {
+//    	String cartkey = getCartKey(session);
+//        cartService.clearCart(cartkey);
+//    }
     
+    @DeleteMapping("/clear/{memberId}")
+    public void clearCart(@PathVariable Integer memberId) {
+        String cartKey = "cart:member:" + memberId;
+        cartService.clearCart(cartKey);
+    }
 }
