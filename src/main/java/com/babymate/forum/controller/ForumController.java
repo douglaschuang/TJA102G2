@@ -235,7 +235,8 @@ public class ForumController {
             @ModelAttribute("postVO") PostVO postVO, 
             @RequestParam("boardId") Integer boardId,
             HttpSession session) {
-
+    	 System.out.println("--- DEBUG: Controller 收到的 postLine 內容 ---");
+    	    System.out.println(postVO.getPostLine());
         // 1. 從 session 取得當前使用者，設定為文章作者
         MemberVO currentUser = (MemberVO) session.getAttribute("member");
         if (currentUser == null) {
