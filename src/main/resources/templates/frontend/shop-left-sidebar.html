@@ -723,14 +723,17 @@ $(document).ready(function() {
           quantity: qty
         },
       success: function() {
-    	  
-//     	  window.Swal && Swal.fire({
-//               icon: 'success',
-//               title: '已加入購物車',
-//               showConfirmButton: false,
-//               timer: 1200
-//             });
-        alert("已加入購物車！");
+    	  $(".cd-quick-view").removeClass("is-visible").hide();
+    	  window.Swal && Swal.fire({
+//     	  Swal.fire({
+              icon: 'success',
+              title: '已加入購物車',
+              background: '#fff',
+              backdrop: 'rgba(0, 0, 0, 0.4)',
+              showConfirmButton: false,
+              timer: 1200
+            });
+        //alert("已加入購物車！");
         // 刷新購物車 icon 顯示數量
         refreshCart();
       },
