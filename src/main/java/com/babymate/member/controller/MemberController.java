@@ -197,7 +197,6 @@ public class MemberController {
 		// 載入其他欄位資訊
 		memberVO.setAccount(originalMember.getAccount());
 		memberVO.setPassword(originalMember.getPassword());
-		memberVO.setAccountStatus(originalMember.getAccountStatus());
 		memberVO.setEmailAuthToken(originalMember.getEmailAuthToken());
 		memberVO.setEmailVerified(originalMember.getEmailVerified());
 		memberVO.setLastLoginTime(originalMember.getLastLoginTime());
@@ -442,7 +441,6 @@ public class MemberController {
 	    // 驗證成功，啟用帳號 + 儲存密碼
 	    member.setPassword(EncodingUtil.hashMD5(password));
 	    member.setAccountStatus((byte) 1); // account status狀態變更為啟用
-	    logger.info("registerCheck - Member current status= {}", member.getAccountStatus());
 	    member.setEmailVerified((byte) 1); // email驗證狀態變更為1
 	    memberSvc.updateMember(member);
 
