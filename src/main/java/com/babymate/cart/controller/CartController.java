@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,21 +15,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.babymate.cart.model.CartItemDisplayVO;
 import com.babymate.cart.model.CartRedisVO;
 import com.babymate.cart.service.CartService;
-import com.babymate.category.model.CategoryService;
 import com.babymate.member.model.MemberVO;
 import com.babymate.product.model.ProductService;
 import com.babymate.product.model.ProductVO;
 
-import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -37,10 +35,9 @@ public class CartController {
 	@Autowired
 	private ProductService productSvc;
 	
-	@Autowired
-	private CategoryService categorySvc;
-
     private final CartService cartService;
+    
+    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
     
     private static final String CART_KEY_MEMBER_PREFIX = "cart:member:";
     private static final String CART_KEY_SESSION_PREFIX = "cart:session:";
@@ -49,22 +46,57 @@ public class CartController {
         this.cartService = cartService;
     }
     
+    /**
+     * 根據當前 session 取得購物車的唯一識別 key。
+     *
+     * <p>此方法會檢查當前 session 是否與已登入的會員關聯，若是已登入會員，
+     * 則返回以會員 ID 作為識別的購物車 key；若是訪客，則返回基於 session ID 的購物車 key。</p>
+     *
+     * @param session 當前 HTTP session，包含當前用戶的登入狀態或訪客狀態。
+     * @return 以會員 ID 或 session ID 為基礎生成的購物車唯一識別 key。
+     */
     private String getCartKey(HttpSession session) {
+    	// 從 session 中取得當前登入的會員資訊
     	MemberVO member = (MemberVO) session.getAttribute("member");
    	
         if (member != null) {
+        	// 若是已登入會員，使用會員 ID 作為購物車的唯一識別 key
+        	logger.info("getCart - cartkey={}",CART_KEY_MEMBER_PREFIX + member.getMemberId());
             return CART_KEY_MEMBER_PREFIX + member.getMemberId();
+            
         } else {
+        	// 若未登入，則使用 session ID 作為購物車的唯一識別 key
+        	logger.info("getCart - cartkey={}",CART_KEY_MEMBER_PREFIX + session.getId());
             return CART_KEY_SESSION_PREFIX + session.getId();
         }
     }
 
+    /**
+     * 根據當前 session 獲取用戶的購物車商品列表。
+     *
+     * <p>此方法會根據當前 session 生成唯一的購物車識別 key，然後透過該 key 從 Redis 中獲取對應的購物車商品列表。</p>
+     *
+     * @param memberId 會員 ID，用於路由映射，實際上在這個方法中並未使用，但可以作為識別符或未來擴展的參數。
+     * @param session 當前的 HTTP session，用來獲取或生成購物車的唯一識別 key。
+     * @return 返回購物車內的所有商品詳細資料，格式為 `List<CartRedisVO>`。
+     */
     @GetMapping("/get/{memberId}")
     public List<CartRedisVO> getCart(@PathVariable Integer memberId, HttpSession session) {
     	String cartkey = getCartKey(session);
+    	
+    	// 根據 cartkey 從 Redis 中獲取對應的購物車商品列表
     	return cartService.getCart(cartkey);
     }
     
+    /**
+     * 取得購物車內所有商品的明細資料。
+     *
+     * <p>根據目前的 session，從 Redis 取得購物車內容，並整合每個商品的詳細資訊，
+     * 包含商品名稱、價格、數量、總金額等，回傳 JSON 格式的結果。</p>
+     *
+     * @param session 當前使用者的 HTTP session
+     * @return 包含商品清單、總數量與總金額的 ResponseEntity（JSON 格式）
+     */
     @GetMapping("/getCartDetail")
     public ResponseEntity<?> getCartList(HttpSession session) {
         String cartKey = getCartKey(session);
@@ -75,6 +107,7 @@ public class CartController {
 
         List<Map<String, Object>> items = new ArrayList<>();
         
+        // List all items in cart
         for (CartRedisVO item : cartItems) {
             ProductVO product = productSvc.getOneProduct(item.getProductId());
             BigDecimal lineTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
@@ -98,6 +131,18 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
     
+    /**
+     * 新增或更新購物車中的商品項目。
+     *
+     * <p>根據傳入的商品編號與數量，將該商品新增至購物車，
+     * 若購物車中已存在該商品，則會更新其數量。</p>
+     *
+     * @param memberId 會員編號（目前未直接使用，作為後續擴充用）
+     * @param productId 商品編號
+     * @param quantity 數量
+     * @param session 當前使用者的 HTTP session，用於判斷購物車 key（會員或訪客）
+     * @return 更新後的購物車項目資料（CartRedisVO）
+     */
     @PostMapping("/add")
     public CartRedisVO addItem(@RequestParam Integer memberId,
                                @RequestParam Integer productId,
@@ -107,31 +152,46 @@ public class CartController {
         return cartService.addOrUpdateItem(cartkey, productId, quantity);
     }
     
+    /**
+     * 新增商品到購物車。
+     *
+     * <p>根據傳入的商品編號與數量，將該商品新增至購物車，
+     * 若購物車中已存在該商品，則會更新其數量。</p>
+     *
+     * @param productId 商品編號
+     * @param quantity 數量
+     * @param session 當前使用者的 HTTP session，用於判斷購物車 key（會員或訪客）
+     * @return ResponseEntity<String> 加入購物車成功
+     */
     @PostMapping("/addToCart")
     public ResponseEntity<String> addToCart(
     		@RequestParam Integer productId,
             @RequestParam Integer quantity,
             HttpSession session) {
     	
+    	// 驗證數量有效性
         if (quantity == null || quantity <= 0) {
             return ResponseEntity.badRequest().body("數量必須大於 0");
         }
 
     	String cartkey = getCartKey(session);
         
+    	// 新增商品或更新購物車中的商品
         cartService.addOrUpdateItem(cartkey, productId, quantity);
         return ResponseEntity.ok("加入購物車成功");
     }
 
-//    @PutMapping("/update")
-//    public CartRedisVO updateQuantity(@RequestParam Integer memberId,
-//                                      @RequestParam Integer productId,
-//                                      @RequestParam Integer quantity,
-//                                      HttpSession session) {
-//    	String cartkey = getCartKey(session);
-//        return cartService.updateQuantity(cartkey, productId, quantity);
-//    }
-    
+    /**
+     * 將指定商品加入購物車或更新數量。
+     *
+     * <p>根據傳入的商品編號與數量，將該商品加入購物車。如果商品數量無效（<= 0），
+     * 會回傳錯誤訊息。若商品已存在於購物車中，則更新該商品的數量。</p>
+     *
+     * @param productId 商品編號
+     * @param quantity 需要新增的數量（必須大於 0）
+     * @param session 目前使用者的 HTTP session，用於識別購物車 key（針對不同用戶）
+     * @return 回應結果，包含成功或錯誤訊息
+     */
     @PutMapping("/update")
     @ResponseBody
     public ResponseEntity<?> updateItem(@RequestParam Integer productId,
@@ -173,13 +233,16 @@ public class CartController {
 		return ResponseEntity.ok(result);
 	}
 
-//    @DeleteMapping("/del/{productId}")
-//    public void removeItem(@PathVariable Integer productId,
-//                           HttpSession session) {
-//    	String cartkey = getCartKey(session);
-//        cartService.removeItem(cartkey, productId);
-//    }
-    
+    /**
+     * 從購物車中刪除指定商品。
+     *
+     * <p>根據商品 ID 刪除購物車中的商品，並重新計算購物車的總數量與總金額。
+     * 刪除後會回傳更新後的購物車資訊（包括總數量和總金額）。</p>
+     *
+     * @param productId 商品 ID，表示要從購物車中刪除的商品。
+     * @param session 當前使用者的 HTTP session，用於識別購物車 key（針對不同用戶）
+     * @return 更新後的購物車資訊，包括總數量（totalQty）和總金額（total）。
+     */
     @DeleteMapping("/del/{productId}")
     @ResponseBody
     public ResponseEntity<?> removeItem(@PathVariable Integer productId,
@@ -195,6 +258,7 @@ public class CartController {
         int totalQty = 0;
         BigDecimal total = BigDecimal.ZERO;
 
+     // 遍歷購物車中的每一項商品，計算總數量與總金額
         for (CartRedisVO item : cartItems) {
             ProductVO product = productSvc.getOneProduct(item.getProductId());
             totalQty += item.getQuantity();
