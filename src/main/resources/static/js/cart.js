@@ -41,12 +41,12 @@ function refreshCart() {
                 </a>
               </span>
               <div class="image">
-                <a href="/product/${item.productId}">
+                <a href="/shop/product-basic?id=${item.productId}">
                   <img src="${item.imageUrl}" class="img-fluid" alt="${item.name}">
                 </a>
               </div>
               <div class="content">
-                <h5><a href="/product/${item.productId}">${item.name}</a></h5>
+                <h5><a href="/shop/product-basic?id=${item.productId}">${item.name}</a></h5>
                 <p><span class="cart-count">${item.quantity} x </span>
                 <span class="discounted-price">${formattedPrice}</span></p>
               </div>
