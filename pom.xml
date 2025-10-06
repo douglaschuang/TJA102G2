@@ -287,6 +287,13 @@
 			<version>5.2.3</version>
 		</dependency>
 		
+		<!-- PDF -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.13.3</version>
+		</dependency>
+		
 		<!-- Stripe 金流 -->
 		<dependency>
   			<groupId>com.stripe</groupId>
