@@ -58,5 +58,6 @@ public interface OrdersRepository extends JpaRepository<OrdersVO, Integer> {
   // 依各自會員訂單查詢(按訂單編號排序)
   List<OrdersVO> findByMemberVO_MemberIdOrderByOrderTimeDesc(Integer memberId);
 
+  // 依訂單編號查詢單筆訂單(PDF匯出用)
   Optional<OrdersVO> findByOrderNo(String orderNo);
 }
