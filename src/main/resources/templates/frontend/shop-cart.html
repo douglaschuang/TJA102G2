@@ -38,12 +38,12 @@
 							<tbody>
   <tr th:each="item : ${cartItems}">
     <td class="product-thumbnail">
-      <a th:href="@{'/shop/product-basic/' + ${item.productId}}">
+      <a th:href="@{'/shop/product-basic?id=' + ${item.productId}}">
         <img th:src="@{/product/DBGifReader(productId=${item.productId})}" class="img-fluid" alt="商品主圖">
       </a>
     </td>
     <td class="product-name">
-      <a th:href="@{'/shop/product-basic/' + ${item.productId}}"
+      <a th:href="@{'/shop/product-basic?id=' + ${item.productId}}"
          th:text="${item.productName}">Product Name</a>
     </td>
     <td class="product-price">
