@@ -48,8 +48,8 @@
                         <span th:case="1">垃圾廣告</span>
                         <span th:case="2">人身攻擊</span>
                         <span th:case="3">不當內容</span>
-                        <span th:case="4">其他違規</span>
-                        <span th:case="*">未知理由</span>
+                        <span th:case="4">看板錯誤</span>
+                        <span th:case="5">其他違規</span>
                     </span>
                   </td>
                   <td th:text="${#dates.format(report.reportTime, 'yyyy-MM-dd HH:mm')}"></td>
