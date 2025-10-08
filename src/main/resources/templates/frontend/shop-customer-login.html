@@ -71,7 +71,7 @@
 								</div>
 								<form th:action="@{/member/loginCheck}" method="post" onsubmit="return validateLoginForm()">
 								<div class="col-lg-12 mb-60">
-									<input type="text" name="account" id="accountInput" placeholder="請輸入會員帳號(Email address)" autocomplete="username"
+									<input type="text" name="accountLogin" id="accountInput" th:value="${accountLogin}" placeholder="請輸入會員帳號(Email address)" autocomplete="username"
 										maxlength="50" required pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="請輸入有效的Email地址">
 								</div>
 								<div class="col-lg-12 mb-60">
