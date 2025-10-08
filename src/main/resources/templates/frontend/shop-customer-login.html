@@ -122,7 +122,8 @@
 								<form th:action="@{/member/registerCheck}" method="post" onsubmit="return validateRegisterForm()">
 								<div class="col-lg-12 mb-30">
 									<label for="regEmail">會員帳號 (Email Address) <span	class="required">*</span></label>
-									<input type="text" id="regEmail" name="account" maxlength="50" th:value="${account}" autocomplete="email" required>
+									<input type="text" id="regEmail" name="account" maxlength="50" th:value="${account}" autocomplete="email" required
+									pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$">
 								</div>
 								<div class="col-lg-12 mb-30">
 									<label for="regPassword">信箱驗證碼 <span	class="required">*</span></label> 
