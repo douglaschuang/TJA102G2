@@ -404,42 +404,49 @@ public class MemberController {
 	    MemberVO member = memberSvc.getOneMember(account);
 
 	    if (member == null) {
+	    	logger.info("registerCheck - 帳號 {} 不存在, 進入新會員註冊流程", account);
 	        // 新會員註冊流程
 	        String newCaptcha = SimpleCaptchaGenerator.generateCaptcha(6);
 	        memberSvc.initMember(account, newCaptcha);
 
-//	        String msg = "請謹記此驗證碼: " + newCaptcha;
-//	        new MailService().sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
-//	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", msg, false);
 	        mailSvc.sendMail(account, "請驗證您的信箱 - BabyMate", getHtmlMailContent("驗證您的身份", "請輸入此驗證碼以完成您的登入或操作。", newCaptcha), true);
-	        logger.info("(Already sent auth-code to register e-mail {}", account);
+	        logger.info("registerCheck - Already sent auth-code to register e-mail {}", account);
 	        
 	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼已發出, 請輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
-	        redirectAttributes.addFlashAttribute("account", account);
+	        redirectAttributes.addFlashAttribute("account", account); // 回填帳號
+	        redirectAttributes.addFlashAttribute("captcha", captcha); // 回填驗證碼
 	        return "redirect:/shop/login";
 	    }
 
 	    // 會員已存在
 	    if ((member.getAccountStatus() == 1) || (member.getAccountStatus() == 2)) {
+	    	logger.info("registerCheck - 帳號 {} 已存在且已完成註冊, 不可重複註冊", account);
 	        // 帳號已啟用
 	        redirectAttributes.addFlashAttribute("errorMessage", "會員帳號: 已存在, 請重新輸入");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
+	        redirectAttributes.addFlashAttribute("account", account); // 回填帳號
+	        redirectAttributes.addFlashAttribute("captcha", captcha); // 回填驗證碼
 	        return "redirect:/shop/login";
 	    }
 
-	    // 驗證碼驗證流程（帳號存在但尚未啟用）
+	    // 前端未輸入驗證碼
 	    if (captcha.isEmpty()) {
+	    	logger.info("registerCheck - 未輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorMessage", "請輸入驗證碼");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
-	        redirectAttributes.addFlashAttribute("account", account);
+	        redirectAttributes.addFlashAttribute("account", account); // 回填帳號
+	        redirectAttributes.addFlashAttribute("captcha", captcha); // 回填驗證碼
 	        return "redirect:/shop/login";
 	    }
 
+	   // 檢查輸入驗證碼和系統驗證碼是否相符
 	    if (!captcha.equals(member.getEmailAuthToken())) {
+	    	logger.info("registerCheck - 驗證碼不相符");
 	        redirectAttributes.addFlashAttribute("errorMessage", "驗證碼不相符, 請確認");
 	        redirectAttributes.addFlashAttribute("errorSource", "register");
-	        redirectAttributes.addFlashAttribute("account", account);
+	        redirectAttributes.addFlashAttribute("account", account); // 回填帳號
+	        redirectAttributes.addFlashAttribute("captcha", captcha); // 回填驗證碼
 	        return "redirect:/shop/login";
 	    }
 
@@ -450,6 +457,7 @@ public class MemberController {
 	    member.setEmailVerified((byte) 1); // email驗證狀態變更為1
 	    memberSvc.updateMember(member);
 
+	    logger.info("registerCheck - {} 註冊成功", account);
 	    redirectAttributes.addFlashAttribute("logoutMessage", "註冊成功, 請至登入頁面登入");
 	    redirectAttributes.addFlashAttribute("logoutSource", "register");
 	    return "redirect:/shop/login";
@@ -519,24 +527,32 @@ public class MemberController {
 	}
 	
 	@PostMapping("loginCheck")
-	public String loginCheck(@RequestParam String account,
+	public String loginCheck(@RequestParam String accountLogin,
 	                           @RequestParam String password,
 	                           HttpSession session,
 	                           RedirectAttributes redirectAttributes, ModelMap model) {
 	    String hashedPwd = EncodingUtil.hashMD5(password);
 //	    System.out.println(account +"," + password+ "," + hashedPwd);
-	    logger.info("loginCheck - account: {}", account);
+	    logger.info("loginCheck - account: {}", accountLogin);
 
-	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(account));
+	    Optional<MemberVO> member = Optional.ofNullable(memberSvc.login(accountLogin));
+	    
+//	    if (member.isEmpty()) {
+//	        model.addAttribute("errorMessage", "帳號不存在，請先註冊。");
+//	        model.addAttribute("errorSource", "login");
+//	        model.addAttribute("account", account); // 保留輸入的帳號
+//	        return "frontend/shop-customer-login"; // 不redirect，回原頁
+//	    }
 	    
 	    if (member.isPresent()) {
-	    	logger.info("loginCheck - account {} exists and get account info.", account);    	
+	    	logger.info("loginCheck - account {} exists and get account info.", accountLogin);    	
 	    	MemberVO loginMember = member.get();
 	    	
 		    // 狀態為未通過驗證
 	    	if (loginMember.getAccountStatus() == 0) {
 	    		redirectAttributes.addFlashAttribute("errorMessage", "帳號未完成註冊, 請返回註冊輸入驗證碼完成確認.");
 		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	redirectAttributes.addFlashAttribute("accountLogin", accountLogin); // 回填帳號
 		    	return "redirect:/shop/login";
 	    	}
 	    	
@@ -544,6 +560,7 @@ public class MemberController {
 	    	if (loginMember.getAccountStatus() == 2) {
 	    		redirectAttributes.addFlashAttribute("errorMessage", "帳號已停用, 請洽客服或網站管理員.");
 		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	redirectAttributes.addFlashAttribute("accountLogin", accountLogin); // 回填帳號
 		    	return "redirect:/shop/login";
 	    	}
 	    	
@@ -552,6 +569,7 @@ public class MemberController {
 	    		// 密碼不相等
 		    	redirectAttributes.addFlashAttribute("errorMessage", "密碼錯誤, 請重新輸入.");
 		    	redirectAttributes.addFlashAttribute("errorSource", "login");
+		    	redirectAttributes.addFlashAttribute("accountLogin", accountLogin); // 回填帳號
 		    	return "redirect:/shop/login";
 	    	}
 	    	
@@ -575,7 +593,7 @@ public class MemberController {
 	    } else {
 	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號不存在, 請先註冊.");
 	    	redirectAttributes.addFlashAttribute("errorSource", "login");
-//	        model.addAttribute("error", "帳號或密碼錯誤");
+	    	redirectAttributes.addFlashAttribute("accountLogin", accountLogin); // 回填帳號
 	        return "redirect:/shop/login";
 	    }
 	}
