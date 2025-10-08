@@ -2,7 +2,33 @@
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
-  <th:block th:fragment="extraHead"></th:block>
+  <th:block th:fragment="extraHead">
+  	<link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+  </th:block>
+  <style>
+  	/* 初始狀態：白底紅字 */
+	.btn-outline-danger {
+	  color: #dc3545 !important;
+	  border-color: #dc3545 !important;
+	  background-color: transparent !important;
+	  transition: all 0.2s ease-in-out;
+	}
+	
+	/* 滑鼠移入：紅底白字 */
+	.btn-outline-danger:hover,
+	.btn-outline-danger:focus {
+	  color: #fff !important;
+	  background-color: #dc3545 !important;
+	  border-color: #dc3545 !important;
+	}
+	
+	/* 點擊瞬間（active 狀態）：維持紅底白字 */
+	.btn-outline-danger:active {
+	  color: #fff !important;
+	  background-color: #c82333 !important; /* 比紅底略深 */
+	  border-color: #bd2130 !important;
+	}
+  </style>
 </head>
 
 <body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
@@ -21,7 +47,10 @@
 							<div class="myaccount-tab-menu nav" role="tablist">
 								<!-- <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
 								<a href="#orders" class="active" data-bs-toggle="tab">訂單查詢</a>
-								<a href="#download" data-bs-toggle="tab">下載</a>
+								<!-- 全部匯出 -->
+								<!-- <a href="/orders/export/pdf" class="btn btn-danger btn-sm">
+									<i class="bi bi-file-earmark-pdf"></i> 下載全部訂單 PDF
+								</a> -->
 <!-- 								<a href="#payment-method" data-bs-toggle="tab">付款方式</a> -->
 <!-- 								<a href="#address-edit" data-bs-toggle="tab">地址</a> -->
 <!-- 								<a href="#account-info" data-bs-toggle="tab">帳戶詳情</a> -->
@@ -53,17 +82,13 @@
 									<div class="myaccount-content">
 										<h3>我的訂單</h3>
 										<div class="myaccount-table table-responsive text-center">
-											<table class="table table-bordered">
+											<table id="myOrdersTable" class="table table-bordered">
 												<thead class="thead-light">
 													<tr>
 														<th>訂單日期</th>
 														<th>訂單編號</th>
 														<th>訂單狀態</th>
 														<th>訂單總額</th>
-														<!-- <th>收件人</th>
-														<th>地址</th>
-														<th>電話</th>
-														<th>E-Mail</th> -->
 														<th>備註</th>
 														<th>訂單明細</th>
 													</tr>
@@ -83,164 +108,26 @@
 															<span th:case="*" class="text-dark">未知狀態</span>
 														</td>
 														<td th:text="'$' + ${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')}"></td>
-														<!-- <td th:text="${order.recipient}"></td>
-														<td th:text="${order.address}"></td>
-														<td th:text="${order.phone}"></td>
-														<td th:text="${order.email}"></td> -->
 														<td th:text="${order.remark}"></td>
 														<td class="text-nowrap">
 										                	<a class="btn btn-sm btn-outline-success"
 										                       th:href="@{/my-order-detail/{id}(id=${order.orderId})}">
 										                    	<i class="bi bi-journal-medical"></i> 訂單明細
 										                  </a>
+										                  
+										                  <a class="btn btn-sm btn-outline-danger"
+												             th:href="@{/my-orders/{orderNo}/export/pdf(orderNo=${order.orderNo})}"
+												             title="下載此訂單 PDF"
+												             >
+												          	<i class="bi bi-file-earmark-pdf"></i> 匯出PDF
+												          </a>
 										                </td>
 													</tr>
-												
-													<!-- <tr>
-														<td>1</td>
-														<td>Aug 22, 2022</td>
-														<td>Pending</td>
-														<td>$3000</td>
-														<td><a th:href="@{/shop/cart}"
-															class="check-btn sqr-btn ">View</a></td>
-													</tr>
-													<tr>
-														<td>2</td>
-														<td>July 22, 2022</td>
-														<td>Approved</td>
-														<td>$200</td>
-														<td><a th:href="@{/shop/cart}"
-															class="check-btn sqr-btn ">View</a></td>
-													</tr>
-													<tr>
-														<td>3</td>
-														<td>June 12, 2017</td>
-														<td>On Hold</td>
-														<td>$990</td>
-														<td><a th:href="@{/shop/cart}"
-															class="check-btn sqr-btn ">View</a></td>
-													</tr> -->
 												</tbody>
 											</table>
 										</div>
 									</div>
 								</div>
-
-								<div class="tab-pane fade" id="download" role="tabpanel">
-									<div class="myaccount-content">
-										<h3>下載</h3>
-										<div class="myaccount-table table-responsive text-center">
-											<table class="table table-bordered">
-												<thead class="thead-light">
-													<tr>
-														<th>Product</th>
-														<th>Date</th>
-														<th>Expire</th>
-														<th>Download</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr>
-														<td>Haven - Free Real Estate PSD Template</td>
-														<td>Aug 22, 2022</td>
-														<td>Yes</td>
-														<td><a href="#" class="check-btn sqr-btn "><i
-																class="fa fa-cloud-download"></i> Download File</a></td>
-													</tr>
-													<tr>
-														<td>HasTech - Profolio Business Template</td>
-														<td>Sep 12, 2022</td>
-														<td>Never</td>
-														<td><a href="#" class="check-btn sqr-btn "><i
-																class="fa fa-cloud-download"></i> Download File</a></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
-									</div>
-								</div>
-
-								<!-- <div class="tab-pane fade" id="payment-method" role="tabpanel">
-									<div class="myaccount-content">
-										<h3>Payment Method</h3>
-										<p class="saved-message">You Can't Saved Your Payment
-											Method yet.</p>
-									</div>
-								</div>
-
-								<div class="tab-pane fade" id="address-edit" role="tabpanel">
-									<div class="myaccount-content">
-										<h3>Billing Address</h3>
-										<address>
-											<p>
-												<strong>Alex Tuntuni</strong>
-											</p>
-											<p>
-												1355 Market St, Suite 900 <br>San Francisco, CA 94103
-											</p>
-											<p>Mobile: (123) 456-7890</p>
-										</address>
-										<a href="#" class="check-btn sqr-btn "><i
-											class="fa fa-edit"></i> Edit Address</a>
-									</div>
-								</div>
-
-								<div class="tab-pane fade" id="account-info" role="tabpanel">
-									<div class="myaccount-content">
-										<h3>Account Details</h3>
-										<div class="account-details-form">
-											<form action="#">
-												<div class="row">
-													<div class="col-lg-6">
-														<div class="single-input-item">
-															<label for="first-name" class="required">First
-																Name</label> <input type="text" id="first-name" />
-														</div>
-													</div>
-													<div class="col-lg-6">
-														<div class="single-input-item">
-															<label for="last-name" class="required">Last Name</label>
-															<input type="text" id="last-name" />
-														</div>
-													</div>
-												</div>
-												<div class="single-input-item">
-													<label for="display-name" class="required">Display
-														Name</label> <input type="text" id="display-name" />
-												</div>
-												<div class="single-input-item">
-													<label for="email" class="required">Email Addres</label> <input
-														type="email" id="email" />
-												</div>
-												<fieldset>
-													<legend>Password change</legend>
-													<div class="single-input-item">
-														<label for="current-pwd" class="required">Current
-															Password</label> <input type="password" id="current-pwd" />
-													</div>
-													<div class="row">
-														<div class="col-lg-6">
-															<div class="single-input-item">
-																<label for="new-pwd" class="required">New
-																	Password</label> <input type="password" id="new-pwd" />
-															</div>
-														</div>
-														<div class="col-lg-6">
-															<div class="single-input-item">
-																<label for="confirm-pwd" class="required">Confirm
-																	Password</label> <input type="password" id="confirm-pwd" />
-															</div>
-														</div>
-													</div>
-												</fieldset>
-												<div class="single-input-item">
-													<button class="check-btn sqr-btn ">Save Changes</button>
-												</div>
-											</form>
-										</div>
-									</div>
-								</div> -->
-
 							</div>
 						</div>
 						<!-- /tab content -->
@@ -251,9 +138,34 @@
 	</div>
 	<!-- end page wrapper -->
 </section>
-<th:block th:fragment="extraJs">
+	<th:block th:fragment="extraJs">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
     <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const sel = '#myOrdersTable';
+          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
+          $(sel).DataTable({
+            retrieve: true,
+            lengthMenu: [5, 10, 20, 50],
+         // 不要搜尋框：拿掉 f，並把元件排版在同一行
+            dom: "<'d-flex justify-content-between align-items-center mb-2'l i>t<'d-flex justify-content-between align-items-center mt-2'p>",
+            searching: false,
+            order: [0, 'desc'],
+            language: {
+              lengthMenu:"顯示 _MENU_ 筆結果",
+              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
+              infoFiltered:"",
+              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
+              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
+            }
+          });
+        });
+    </script>
   </th:block>
 </body>
 </html>

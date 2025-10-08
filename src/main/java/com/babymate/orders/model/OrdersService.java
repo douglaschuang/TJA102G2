@@ -198,4 +198,10 @@ public class OrdersService {
 
         repository.save(order);
     }
+    
+    // 查詢單筆訂單（依訂單編號）
+    public OrdersVO findByOrderNo(String orderNo) {
+        return repository.findByOrderNo(orderNo)
+        		.orElseThrow(() -> new RuntimeException("找不到訂單 orderNo=" + orderNo));
+    }
 }
