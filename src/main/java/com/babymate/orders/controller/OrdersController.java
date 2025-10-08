@@ -1,6 +1,7 @@
 package com.babymate.orders.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +34,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.babymate.babyhandbook.model.BabyhandbookVO;
 import com.babymate.babyrecord.model.BabyrecordVO;
 import com.babymate.orderDetail.model.OrderDetailService;
+import com.babymate.orders.model.OrdersRepository;
 import com.babymate.orders.model.OrdersService;
 import com.babymate.orders.model.OrdersVO;
 
@@ -39,19 +43,22 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/admin/orders")
 public class OrdersController {
-	
+
 	@Autowired
 	OrdersService ordersSvc;
-	
+
 	@Autowired
 	OrderDetailService orderDetailSvc;
+
+	@Autowired
+	private OrdersRepository ordersRepository;
 
 	public OrdersController(OrdersService ordersSvc, OrderDetailService orderDetailSvc) {
 		super();
 		this.ordersSvc = ordersSvc;
 		this.orderDetailSvc = orderDetailSvc;
 	}
-	
+
 	@PostMapping("getOne_For_Update")
 	public String getOne_For_Update(@RequestParam("orderId") String orderId, ModelMap model) {
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
@@ -60,25 +67,24 @@ public class OrdersController {
 
 		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("ordersVO", ordersVO);
-		model.addAttribute("pageTitle", "訂單明細1｜修改");
-		
+		model.addAttribute("pageTitle", "訂單明細｜修改");
+
 		return "admin/orders/update_orders_input";
 	}
-	
+
 	@PostMapping("update")
-	public String update(@Valid @ModelAttribute("ordersVO") OrdersVO ordersVO, BindingResult result, ModelMap model
-		    ) throws IOException {
+	public String update(@Valid @ModelAttribute("ordersVO") OrdersVO ordersVO, BindingResult result, ModelMap model)
+			throws IOException {
 
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
 
-	    if (result.hasErrors()) {
-	        // 若有錯誤，回到編輯頁
+		if (result.hasErrors()) {
+			// 若有錯誤，回到編輯頁
 			model.addAttribute("pageTitle", "訂單明細｜修改");
-			
-	        return "admin/orders/update_orders_input";
-	    }
-	    
-	
+
+			return "admin/orders/update_orders_input";
+		}
+
 		ordersSvc.updateOrders(ordersVO);
 
 		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
@@ -86,13 +92,13 @@ public class OrdersController {
 		model.addAttribute("success", "修改成功");
 		model.addAttribute("pageTitle", "訂單明細｜修改");
 
-	    return "redirect:/admin/orders/list";
+		return "redirect:/admin/orders/list";
 
 	}
 
-	
-	 /* Method used to populate the Map Data in view. 如 : 
-	 * <form:select path="deptno" id="deptno" items="${depMapData}" />
+	/*
+	 * Method used to populate the Map Data in view. 如 : <form:select path="deptno"
+	 * id="deptno" items="${depMapData}" />
 	 */
 	@ModelAttribute("status") //
 	protected Map<Integer, String> referenceMapData() {
@@ -106,50 +112,101 @@ public class OrdersController {
 		map.put(6, "已退款");
 		return map;
 	}
-	 
+
 	// 去除BindingResult中某個欄位的FieldError紀錄
-		public BindingResult removeFieldError(OrdersVO ordersVO, BindingResult result,
-				String removedFieldname) {
-			List<FieldError> errorsListToKeep = result.getFieldErrors().stream()
-					.filter(fieldname -> !fieldname.getField().equals(removedFieldname)).collect(Collectors.toList());
-			result = new BeanPropertyBindingResult(ordersVO, "ordersVO");
-			for (FieldError fieldError : errorsListToKeep) {
-				result.addError(fieldError);
-			}
-			return result;
+	public BindingResult removeFieldError(OrdersVO ordersVO, BindingResult result, String removedFieldname) {
+		List<FieldError> errorsListToKeep = result.getFieldErrors().stream()
+				.filter(fieldname -> !fieldname.getField().equals(removedFieldname)).collect(Collectors.toList());
+		result = new BeanPropertyBindingResult(ordersVO, "ordersVO");
+		for (FieldError fieldError : errorsListToKeep) {
+			result.addError(fieldError);
 		}
-		
-		@GetMapping("list")
-		public String listAllOrders(@RequestParam(value = "orderId", required = false) Integer orderId, Model model) {
-		    
-		    List<OrdersVO> list;
-		    
-		    if (orderId != null) {
-		        OrdersVO orders = ordersSvc.getOneOrder(orderId);
-		        model.addAttribute("orders", orders);
+		return result;
+	}
 
-		        list = ordersSvc.findByorderId(orderId);
-		    } else {
-		        list = ordersSvc.getAll();
-		    }
-		 
-		 // 確保 list 不為 null
-		    list = (list != null) ? list : Collections.emptyList();
-		    
-		 // 新增 listCountMap
-		    Map<Integer, Integer> listCountMap = new HashMap<>();
-		    for (OrdersVO order : list) {
-		        listCountMap.put(order.getOrderId(), 
-		                         order.getOrderDetails() != null ? order.getOrderDetails().size() : 0);
-		    }
+	@GetMapping("list")
+	public String listAllOrders(@RequestParam(value = "orderId", required = false) Integer orderId, Model model) {
 
-		    model.addAttribute("ordersList", list);
-		    model.addAttribute("orderId", orderId);
-		    model.addAttribute("listCountMap", listCountMap); 
-			model.addAttribute("pageTitle", "訂單管理｜列表");
-			
-		    return "admin/orders/list";
+		List<OrdersVO> list;
+
+		if (orderId != null) {
+			OrdersVO orders = ordersSvc.getOneOrder(orderId);
+			model.addAttribute("orders", orders);
+
+			list = ordersSvc.findByorderId(orderId);
+		} else {
+			list = ordersSvc.getAll();
 		}
+
+		// 確保 list 不為 null
+		list = (list != null) ? list : Collections.emptyList();
+
+		// 新增 listCountMap
+		Map<Integer, Integer> listCountMap = new HashMap<>();
+		for (OrdersVO order : list) {
+			listCountMap.put(order.getOrderId(), order.getOrderDetails() != null ? order.getOrderDetails().size() : 0);
+		}
+
+		model.addAttribute("ordersList", list);
+		model.addAttribute("orderId", orderId);
+		model.addAttribute("listCountMap", listCountMap);
+		model.addAttribute("pageTitle", "訂單管理｜列表");
+
+		return "admin/orders/list";
+	}
+
+	@GetMapping("/detail")
+	public String showOrderDetail(@RequestParam("orderId") Integer orderId, Model model) {
+		OrdersVO orders = ordersSvc.getOneOrder(orderId);
+
+		if (orders == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此訂單");
+		}
+
+		model.addAttribute("orders", orders);
+		model.addAttribute("orderDetailList", orderDetailSvc.findByOrderId(orderId));
+
+		return "admin/orderdetail/list"; // 對應到你目前的 Thymeleaf 頁面
+	}
+
+	@GetMapping("/search")
+	public String searchOrders(@RequestParam(required = false) String orderNo,
+			@RequestParam(required = false) BigDecimal minAmount, 
+			@RequestParam(required = false) BigDecimal maxAmount,
+			@RequestParam(required = false) Integer memberId,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime,
+			Model model,
+            RedirectAttributes redirectAttributes) {
+
+	    // 若無任何條件，給空結果避免全表查詢或錯誤
+	    if (orderNo == null && minAmount == null && maxAmount == null && memberId == null && startTime == null && endTime == null) {
+	        model.addAttribute("ordersList", Collections.emptyList());
+	        model.addAttribute("listCountMap", new HashMap<>());
+	        model.addAttribute("pageTitle", "訂單管理");
+	        return "admin/orders/list";
+	    }
+	    
+	    // 建立查詢條件
+		Specification<OrdersVO> spec = Specification.where(null);
+		spec = spec.and(OrderSpecs.orderNoLike(orderNo)).and(OrderSpecs.amountBetween(minAmount, maxAmount))
+				.and(OrderSpecs.memberIdEqual(memberId)).and(OrderSpecs.orderTimeBetween(startTime, endTime));
+
+	    // 執行查詢
+		List<OrdersVO> ordersList = ordersRepository.findAll(spec);
+
+		// 如果查無資料，設定提示變數
+		if (ordersList.isEmpty()) {
+	        redirectAttributes.addFlashAttribute("noResult", true);
+	        return "redirect:/admin/orders/list";  // 導回查詢起始頁
+	    }
 		
+		// 傳送查詢結果
+		model.addAttribute("ordersList", ordersList);
+		model.addAttribute("pageTitle", "訂單管理｜查詢結果");
 		
+		return "admin/orders/list"; // 顯示查詢結果頁
+
+	}
+
 }

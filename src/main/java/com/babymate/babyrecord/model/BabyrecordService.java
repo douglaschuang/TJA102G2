@@ -64,5 +64,4 @@ public class BabyrecordService {
 		    return repository.findByBabyhandbook_Babyhandbookid(babyhandbookid);
 		}
 	   
-	   
 }

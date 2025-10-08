@@ -7,7 +7,7 @@
 <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}">
 <style>
 .countdown-background {
-	background: #f8f9fa; 
+	background: #f8f9fa;
 }
 
 .deal-countdown {
@@ -23,75 +23,61 @@
 		method="post" enctype="multipart/form-data" class="row g-3">
 
 		<input type="hidden" th:if="${_csrf != null}"
-			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
-			
-		<input type="hidden" th:field="*{babyhandbook.babyhandbookid}" />
+			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" /> <input
+			type="hidden" th:field="*{babyhandbook.babyhandbookid}" />
 
 		<div class="col-md-6">
-			<label class="form-label">小孩週數</label> 
-			<input
-				class="form-control"
-				th:field="*{babyweek}" 
-				type="number" 
-				min="0" max="80" step="1" required>
+			<label class="form-label">小孩週數</label> <input class="form-control"
+				th:field="*{babyweek}" type="number" min="0" max="80" step="1"
+				required>
 		</div>
 
 		<div class="col-md-4">
-			<label class="form-label">檢查日</label> 
-			<input class="form-control"
+			<label class="form-label">檢查日</label> <input class="form-control"
 				type="date" th:field="*{visitdate}">
-			<div class="text-danger" th:if="${#fields.hasErrors('visitdate')}" th:errors="*{visitdate}"></div>
+			<div class="text-danger" th:if="${#fields.hasErrors('visitdate')}"
+				th:errors="*{visitdate}"></div>
 		</div>
-
+<!--  
 		<div class="col-md-6">
-			<label class="form-label">診所</label> 
-			<input
-				class="form-control"
+			<label class="form-label">診所</label> <input class="form-control"
 				th:field="*{clinicid}">
 		</div>
 		<div class="col-md-6">
-			<label class="form-label">身高</label> 
-			<input
-				class="form-control"
-				step="0.01" min="0"
-				th:field="*{height}">
+			<label class="form-label">院所</label> <input class="form-control"
+				th:field="*{clinic.clinicName}">
+		</div>
+ -->
+
+		<div class="col-md-6">
+			<label class="form-label">身高</label> <input class="form-control"
+				step="0.01" min="0" th:field="*{height}">
 		</div>
 		<div class="col-md-6">
-			<label class="form-label">體重</label> 
-			<input
-				class="form-control"
-				step="0.01" min="0"
-				th:field="*{weight}">
+			<label class="form-label">體重</label> <input class="form-control"
+				step="0.01" min="0" th:field="*{weight}">
 		</div>
 		<div class="col-md-6">
-			<label class="form-label">頭圍</label> 
-			<input
-				class="form-control"
-				step="0.01" min="0"
-				th:field="*{hc}">
+			<label class="form-label">頭圍</label> <input class="form-control"
+				step="0.01" min="0" th:field="*{hc}">
 		</div>
 		<div class="col-md-6">
-			<label class="form-label">檢查紀錄</label> 
-			<input
-				class="form-control"
-				maxlength="200"
-				th:field="*{bodycondition}">
+			<label class="form-label">檢查紀錄</label> <input class="form-control"
+				maxlength="200" th:field="*{bodycondition}">
 		</div>
 		<div class="col-md-4">
-			<label class="form-label">下次檢查日</label> 
-			<input class="form-control"
+			<label class="form-label">下次檢查日</label> <input class="form-control"
 				type="date" th:field="*{nextcheckdate}">
-			<div class="text-danger" th:if="${#fields.hasErrors('nextcheckdate')}" th:errors="*{nextcheckdate}"></div>
+			<div class="text-danger"
+				th:if="${#fields.hasErrors('nextcheckdate')}"
+				th:errors="*{nextcheckdate}"></div>
 		</div>
-			<label class="form-label">下次提醒</label> 
-			<input
-				class="form-control"
-				maxlength="100"
-				th:field="*{nextreminder}">
+		<div class="col-md-4">
+			<label class="form-label">下次提醒</label> <input class="form-control"
+				maxlength="100" th:field="*{nextreminder}">
 		</div>
 		<div class="col-md-8">
-			<label class="form-label">照片</label> 
-			<input class="form-control"
+			<label class="form-label">照片</label> <input class="form-control"
 				type="file" name="up" accept="image/*">
 		</div>
 		<div class="col-12">
