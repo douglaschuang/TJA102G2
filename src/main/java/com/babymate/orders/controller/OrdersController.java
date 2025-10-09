@@ -1,6 +1,7 @@
 package com.babymate.orders.controller;
 
 import java.io.IOException;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +14,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.babymate.babyhandbook.model.BabyhandbookVO;
 import com.babymate.babyrecord.model.BabyrecordVO;
 import com.babymate.orderDetail.model.OrderDetailService;
+
 import com.babymate.orders.model.OrdersRepository;
 import com.babymate.orders.model.OrdersService;
 import com.babymate.orders.model.OrdersVO;
@@ -84,7 +88,6 @@ public class OrdersController {
 
 			return "admin/orders/update_orders_input";
 		}
-
 		ordersSvc.updateOrders(ordersVO);
 
 		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
@@ -92,6 +95,14 @@ public class OrdersController {
 		model.addAttribute("success", "修改成功");
 		model.addAttribute("pageTitle", "訂單明細｜修改");
 
+	    return "redirect:/admin/orders/list";
+
+	}
+
+	
+	 /* Method used to populate the Map Data in view. 如 : 
+	 * <form:select path="deptno" id="deptno" items="${depMapData}" />
+=======
 		return "redirect:/admin/orders/list";
 
 	}
@@ -99,6 +110,7 @@ public class OrdersController {
 	/*
 	 * Method used to populate the Map Data in view. 如 : <form:select path="deptno"
 	 * id="deptno" items="${depMapData}" />
+>>>>>>> origin/master
 	 */
 	@ModelAttribute("status") //
 	protected Map<Integer, String> referenceMapData() {
@@ -208,5 +220,4 @@ public class OrdersController {
 		return "admin/orders/list"; // 顯示查詢結果頁
 
 	}
-
 }

@@ -14,7 +14,6 @@
 		th:object="${babyhandbookVO}" method="post"
 		enctype="multipart/form-data" class="row g-3">
 
-
 		<input type="hidden" th:field="*{babyhandbookid}" /> <input
 			type="hidden" th:if="${_csrf != null}"
 			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">

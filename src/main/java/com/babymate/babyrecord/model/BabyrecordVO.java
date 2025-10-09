@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.babymate.babyhandbook.model.BabyhandbookVO;
+
 import com.babymate.clinic.model.Clinic;
 
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ import jakarta.validation.constraints.Size;
 //
 @Entity
 @Table(name = "baby_record")
+
 public class BabyrecordVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 

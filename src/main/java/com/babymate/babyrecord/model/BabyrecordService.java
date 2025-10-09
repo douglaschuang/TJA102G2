@@ -63,5 +63,4 @@ public class BabyrecordService {
 	   public List<BabyrecordVO> findByBabyhandbookId(Integer babyhandbookid) {
 		    return repository.findByBabyhandbook_Babyhandbookid(babyhandbookid);
 		}
-	   
 }
