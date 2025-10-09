@@ -62,8 +62,8 @@
 												th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶成長紀錄</a></li>
 											<li><a
 												th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
-											<li><a
-												th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li>
+
+											<!-- <li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li> -->
 
 										</ul></li>
 									<li><a th:href="@{/blog/full-grid-left(tab='calendar')}">我的日曆</a></li>
@@ -123,110 +123,96 @@
 
 					<!-- main -->
 					<div class="col-lg-9 order-1 order-lg-2 mb-md-70 mb-sm-70"
-						th:with="
-						activeTab=${tab != null ? tab : (param.tab != null ? param.tab[0] : null)},
-						kw=${param.q != null ? #strings.trim(param.q[0]) : null},
-       					searchMode=${kw != null and !#strings.isEmpty(kw)}
-						"
+						th:with="activeTab=${tab != null ? tab : (param.tab != null ? param.tab[0] : null)}"
 						th:switch="${activeTab}">
-
+						
 						<!-- 搜尋結果（最小可視化 + debug 計數） -->
-						<div th:case="'search'">
-							<h4 class="mb-2">
-								搜尋結果：<span th:text="${q}">kw</span>
-							</h4>
+<div th:case="'search'">
+  <h4 class="mb-2">搜尋結果：<span th:text="${q}">kw</span></h4>
 
-							<div th:if="${needLogin}" class="alert alert-info">
-								請先<a th:href="@{/shop/login}">登入</a>，才能搜尋你的內容。
-							</div>
+  <div th:if="${needLogin}" class="alert alert-info">
+    請先<a th:href="@{/shop/login}">登入</a>，才能搜尋你的內容。
+  </div>
 
-							<div th:if="${!needLogin}">
-								<p class="text-muted small">
-									查詢結果 → 日記: <span
-										th:text="${diaries != null ? diaries.size() : 0}">0</span>、
-									相簿: <span th:text="${photos  != null ? photos.size()  : 0}">0</span>、
-									代辦清單: <span th:text="${todos   != null ? todos.size()   : 0}">0</span>
-								</p>
+  <div th:if="${!needLogin}">
+    <p class="text-muted small">
+      查詢結果 → 日記: <span th:text="${diaries != null ? diaries.size() : 0}">0</span>、
+      相簿: <span th:text="${photos  != null ? photos.size()  : 0}">0</span>、
+      代辦清單:  <span th:text="${todos   != null ? todos.size()   : 0}">0</span>
+    </p>
 
-								<!-- 日記 -->
-								<div class="mb-3">
-									<div class="d-flex justify-content-between align-items-center">
-										<h6 class="mb-2">日記</h6>
-										<a class="btn btn-sm btn-outline-secondary"
-											th:href="@{/blog/full-grid-left(tab='diary', q=${q})}">更多</a>
-									</div>
-									<div th:if="${diaries == null or #lists.isEmpty(diaries)}"
-										class="text-muted small">沒有符合的日記</div>
-									<div class="list-group"
-										th:if="${diaries != null and !#lists.isEmpty(diaries)}">
-										<a class="list-group-item list-group-item-action"
-											th:each="e : ${diaries}" th:href="@{'/u/diary/' + ${e.id}}">
-											<div class="d-flex w-100 justify-content-between">
-												<!-- <strong th:text="${e.title ?: '（無標題）'}">標題</strong> -->
-												<strong th:text="${e.title != null ? e.title : '（無標題）'}">標題</strong>
+    <!-- 日記 -->
+    <div class="mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="mb-2">日記</h6>
+        <a class="btn btn-sm btn-outline-secondary"
+           th:href="@{/blog/full-grid-left(tab='diary', q=${q})}">更多</a>
+      </div>
+      <div th:if="${diaries == null or #lists.isEmpty(diaries)}" class="text-muted small">沒有符合的日記</div>
+      <div class="list-group" th:if="${diaries != null and !#lists.isEmpty(diaries)}">
+        <a class="list-group-item list-group-item-action" th:each="e : ${diaries}" th:href="@{'/u/diary/' + ${e.id}}">
+          <div class="d-flex w-100 justify-content-between">
+            <!-- <strong th:text="${e.title ?: '（無標題）'}">標題</strong> -->
+            <strong th:text="${e.title != null ? e.title : '（無標題）'}">標題</strong>
+            
+            <small class="text-muted"
+              th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">日期</small>
+          </div>
+          <div class="text-muted" th:text="${#strings.abbreviate(e.content, 80)}">摘要</div>
+        </a>
+      </div>
+    </div>
 
-												<small class="text-muted"
-													th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">日期</small>
-											</div>
-											<div class="text-muted"
-												th:text="${#strings.abbreviate(e.content, 80)}">摘要</div>
-										</a>
-									</div>
-								</div>
+    <!-- 相簿 -->
+    <div class="mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="mb-2">相簿</h6>
+        <a class="btn btn-sm btn-outline-secondary"
+           th:href="@{/blog/full-grid-left(tab='album', q=${q})}">更多</a>
+      </div>
+      <div th:if="${photos == null or #lists.isEmpty(photos)}" class="text-muted small">沒有符合的照片</div>
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"
+           th:if="${photos != null and !#lists.isEmpty(photos)}">
+        <div class="col" th:each="p : ${photos}">
+          <a th:href="@{'/album/photo/' + ${p.id}}" target="_blank">
+            <img class="img-fluid rounded" th:src="@{'/album/photo/' + ${p.id}}" alt="photo">
+          </a>
+        </div>
+      </div>
+    </div>
 
-								<!-- 相簿 -->
-								<div class="mb-3">
-									<div class="d-flex justify-content-between align-items-center">
-										<h6 class="mb-2">相簿</h6>
-										<a class="btn btn-sm btn-outline-secondary"
-											th:href="@{/blog/full-grid-left(tab='album', q=${q})}">更多</a>
-									</div>
-									<div th:if="${photos == null or #lists.isEmpty(photos)}"
-										class="text-muted small">沒有符合的照片</div>
-									<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"
-										th:if="${photos != null and !#lists.isEmpty(photos)}">
-										<div class="col" th:each="p : ${photos}">
-											<a th:href="@{'/album/photo/' + ${p.id}}" target="_blank">
-												<img class="img-fluid rounded"
-												th:src="@{'/album/photo/' + ${p.id}}" alt="photo">
-											</a>
-										</div>
-									</div>
-								</div>
-
-								<!-- 待辦 -->
-								<div class="mb-3">
-									<div class="d-flex justify-content-between align-items-center">
-										<h6 class="mb-2">待辦事項</h6>
-										<a class="btn btn-sm btn-outline-secondary"
-											th:href="@{/blog/full-grid-left(tab='todos')}">前往待辦</a>
-									</div>
-									<div th:if="${todos == null or #lists.isEmpty(todos)}"
-										class="text-muted small">沒有符合的待辦</div>
-									<ul class="list-group"
-										th:if="${todos != null and !#lists.isEmpty(todos)}">
-										<!-- <li class="list-group-item d-flex justify-content-between align-items-center" th:each="t : ${todos}">
+    <!-- 待辦 -->
+    <div class="mb-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h6 class="mb-2">待辦事項</h6>
+        <a class="btn btn-sm btn-outline-secondary"
+           th:href="@{/blog/full-grid-left(tab='todos')}">前往待辦</a>
+      </div>
+      <div th:if="${todos == null or #lists.isEmpty(todos)}" class="text-muted small">沒有符合的待辦</div>
+      <ul class="list-group" th:if="${todos != null and !#lists.isEmpty(todos)}">
+        <!-- <li class="list-group-item d-flex justify-content-between align-items-center" th:each="t : ${todos}">
           <span>
             <span th:text="${t.title}">標題</span>
             <small class="text-muted ms-2" th:if="${t.note != null}" th:text="${#strings.abbreviate(t.note, 60)}">備註</small>
           </span>
           <span class="badge text-bg-light" th:text="${t.status}">狀態</span>
         </li> -->
-										<li
-											class="list-group-item d-flex justify-content-between align-items-center"
-											th:each="t : ${todos}"><span> <span
-												th:text="${t.title != null ? t.title : '（無標題）'}">標題</span> <small
-												class="text-muted ms-2" th:if="${t.note != null}"
-												th:text="${#strings.abbreviate(t.note, 60)}">備註</small>
-										</span> <span class="badge text-bg-light"
-											th:text="${(t.done != null and t.done) ? '已完成' : '未完成'}">狀態</span>
-										</li>
-
-									</ul>
-								</div>
-							</div>
-						</div>
-
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="t : ${todos}">
+  <span>
+    <span th:text="${t.title != null ? t.title : '（無標題）'}">標題</span>
+    <small class="text-muted ms-2"
+           th:if="${t.note != null}"
+           th:text="${#strings.abbreviate(t.note, 60)}">備註</small>
+  </span>
+  <span class="badge text-bg-light"
+        th:text="${(t.done != null and t.done) ? '已完成' : '未完成'}">狀態</span>
+</li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+						
 
 						<!-- 媽媽手冊 -->
 						<div th:case="'mhb'">
@@ -271,35 +257,19 @@
 						<div th:case="'album'">
 							<div
 								class="d-flex justify-content-between align-items-center mb-3">
-								<h4 class="mb-0">
-									我的相簿
-									<!-- 有搜尋時顯示關鍵字＋筆數 -->
-									<small class="text-muted ms-2" th:if="${searchMode}">
-										關鍵字「<span th:text="${kw}">kw</span>」 <span
-										class="badge text-bg-light ms-1"
-										th:text="${'共 ' + (#lists.isEmpty(photos) ? 0 : #lists.size(photos)) + ' 張'}">共
-											0 張</span>
-									</small>
-								</h4>
+
+								<h4 class="mb-0">我的相簿</h4>
 								<a class="btn btn-primary btn-sm" th:href="@{/u/album/new}">上傳照片</a>
 							</div>
 
-							<!-- 空狀態：分成「搜尋無結果」與「真的沒有任何照片」 -->
-							<div th:if="${photos == null or #lists.isEmpty(photos)}">
-								<!-- 搜尋無結果（帶 q 過來但查不到） -->
-								<div class="alert alert-warning" th:if="${searchMode}">
-									沒有找到符合「<strong th:text="${kw}">kw</strong>」的照片。 <a
-										class="btn btn-sm btn-outline-secondary ms-2"
-										th:href="@{/blog/full-grid-left(tab='album')}">清除搜尋，查看全部照片</a>
-								</div>
-								<!-- 完全沒有照片（沒有 q） -->
-								<div class="alert alert-info" th:if="${!searchMode}">
-									目前還沒有照片～<a class="btn btn-primary btn-sm ms-2"
-										th:href="@{/u/album/new}">立即上傳</a>
-								</div>
+							<!-- 空狀態 -->
+							<div th:if="${photos == null or #lists.isEmpty(photos)}"
+								class="alert alert-info">
+								目前還沒有照片～<a class="btn btn-primary btn-sm ms-2"
+									th:href="@{/u/album/new}">立即上傳</a>
 							</div>
 
-							<!-- 照片格狀牆（有資料時） -->
+							<!-- 照片格狀牆 -->
 							<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3"
 								th:if="${photos != null and !#lists.isEmpty(photos)}">
 								<div class="col" th:each="p : ${photos}">
@@ -327,38 +297,19 @@
 								</div>
 							</div>
 						</div>
-
 						<!-- 我的日記 -->
 						<div th:case="'diary'">
 							<div
 								class="d-flex justify-content-between align-items-center mb-3">
-								<h4 class="mb-0">
-									我的日記
-									<!-- 有搜尋時顯示關鍵字+筆數 -->
-									<small class="text-muted ms-2" th:if="${searchMode}">
-										關鍵字「<span th:text="${kw}">kw</span>」
-										<span class="badge text-bg-light ms-1"
-										th:text="${'共 ' + (#lists.isEmpty(entries) ? 0 : #lists.size(entries)) + ' 筆'}">共
-											0 筆</span>
-
-									</small>
-								</h4>
+								<h4 class="mb-0">我的日記</h4>
 								<a class="btn btn-primary btn-sm" th:href="@{/u/diary/new}">新增日記</a>
 							</div>
 
-							<!-- 空狀態：分成「搜尋無結果」與「真的沒有任何日記」 -->
-							<div th:if="${entries == null or #lists.isEmpty(entries)}">
-								<!-- 搜尋無結果（帶著 q 過來但查不到） -->
-								<div class="alert alert-warning" th:if="${searchMode}">
-									沒有找到符合「<strong th:text="${kw}">kw</strong>」的日記。 <a
-										class="btn btn-sm btn-outline-secondary ms-2"
-										th:href="@{/blog/full-grid-left(tab='diary')}">清除搜尋，查看全部日記</a>
-								</div>
-								<!-- 完全沒有日記（沒有 q） -->
-								<div class="alert alert-info" th:if="${!searchMode}">
-									還沒有日記～<a class="btn btn-primary btn-sm ms-2"
-										th:href="@{/u/diary/new}">寫第一篇</a>
-								</div>
+							<!-- 空狀態 -->
+							<div th:if="${entries == null or #lists.isEmpty(entries)}"
+								class="alert alert-info">
+								還沒有日記～<a class="btn btn-primary btn-sm ms-2"
+									th:href="@{/u/diary/new}">寫第一篇</a>
 							</div>
 
 							<!-- 日記清單（有資料時） -->
@@ -378,8 +329,11 @@
 												<small class="text-muted"
 													th:text="${#temporals.format(e.writtenAt != null ? e.writtenAt : e.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</small>
 											</div>
+											<!-- <p class="mb-2 text-muted"
+												th:text="${#strings.abbreviate(e.content, 120)}">內容前幾行預覽…</p> -->
 											<small class="text-muted d-block mb-2"
 												th:if="${e.tags != null}" th:text="${e.tags}">#tag</small>
+
 											<div class="d-flex gap-2">
 												<a class="btn btn-sm btn-outline-secondary"
 													th:href="@{'/u/diary/' + ${e.id}}">查看</a> <a
@@ -403,13 +357,17 @@
 							<div
 								th:replace="~{frontend/u/baby/babyhandbook-tabs:: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
 
+							
+
 							<!-- 一次性的新增按鈕 -->
 							<div class="d-flex justify-content-end mt-4">
 								<a class="btn btn-success btn-sm"
 									th:href="@{/blog/u/baby/babyhandbook}"> ➕ 新增寶寶手冊 </a>
 							</div>
 
-							<!-- 顯示多筆寶寶手冊 -->
+							
+							<!-- ✅ 顯示多筆寶寶手冊 -->
+
 							<div class="row row-cols-1 g-4"
 								th:if="${babyhandbookList != null and #lists.size(babyhandbookList) > 0}">
 								<div class="col" th:each="baby : ${babyhandbookList}">
@@ -421,7 +379,8 @@
 								</div>
 							</div>
 
-							<!-- 無手冊資料 -->
+
+							<!-- ❌ 無手冊資料 -->
 							<div
 								th:if="${babyhandbookList == null or #lists.isEmpty(babyhandbookList)}"
 								class="alert alert-info">
@@ -430,15 +389,13 @@
 							</div>
 
 						</div>
-
+						
 						<!-- 寶寶紀錄 -->
 						<div th:case="'babyrecord'">
-
-							<div
-								th:replace="~{frontend/u/baby/babyhandbook-tabs :: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
-
-							<div
-								th:replace="~{frontend/u/baby/babyrecord :: babyrecord(${babyhandbook}, ${babyrecord}, ${babyWeek})}"></div>
+					
+							<div th:replace="~{frontend/u/baby/babyhandbook-tabs :: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
+		        
+							<div th:replace="~{frontend/u/baby/babyrecord :: babyrecord(${babyhandbook}, ${babyrecord}, ${babyWeek})}"></div>
 
 						</div>
 
@@ -457,13 +414,13 @@
 							<div
 								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${baby-todo})}"></div>
 						</div> -->
+						
 
 						<!-- 日曆 -->
 						<div th:case="'calendar'">
 							<div
 								th:replace="~{frontend/u/baby/calendar :: calendar(${babyhandbook})}"></div>
 						</div>
-
 
 						<!-- 預設首頁（當 activeTab 為空或未知時顯示） -->
 
@@ -597,8 +554,7 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶手冊</p>
-																		<a
-																			th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">+
+																		<a th:href="@{/blog/full-grid-left-bb(tab='babyhandbook')}">+
 																			查看寶寶手冊</a>
 																	</div>
 																	<p class="product-count">成長足跡一手掌握</p>
@@ -616,8 +572,7 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶成長紀錄</p>
-																		<a
-																			th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
+																		<a th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
 																			查看成長紀錄</a>
 																	</div>
 																	<p class="product-count">紀錄寶寶每個里程碑</p>
@@ -646,8 +601,9 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶生長圖表</p>
-																		<a
-																			th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
+
+																		<a th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
+
 																			查看圖表</a>
 																	</div>
 																	<p class="product-count">成長軌跡看得見</p>
@@ -663,9 +619,12 @@
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
+
 																		<p>我的日曆</p>
 																		<a th:href="@{/blog/full-grid-left(tab='calendar')}">+
 																			查看我的日曆</a>
+
+
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
@@ -676,7 +635,10 @@
 																		th:src="@{/assets/images/category/bluememo.jpg}">
 																</div>
 																<a class="banner-link"
-																	th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}"></a>
+
+																	th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
+
+
 															</div>
 														</div>
 
@@ -725,7 +687,8 @@
 																			</div>
 																			<p class="product-count"></p>
 																		</div>
-																		<a class="banner-link"
+
+																		<a  class="banner-link"
 																			th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
 																	</div>
 																</div>

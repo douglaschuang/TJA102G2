@@ -12,9 +12,4 @@ pom.xml.versionsBackup
 Thumbs.db
 *.log
 node_modules/
-tokens/StoredCredentialtokens/
-
-# secrets
-.tokens/
-tokens/
-StoredCredential
+tokens/StoredCredential

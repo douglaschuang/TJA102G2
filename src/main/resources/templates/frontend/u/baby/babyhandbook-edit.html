@@ -14,48 +14,46 @@
 		th:object="${babyhandbookVO}" method="post"
 		enctype="multipart/form-data" class="row g-3">
 
-
- 	   <input type="hidden" th:field="*{babyhandbookid}"/>
- 	   
-		<input type="hidden" th:if="${_csrf != null}"
+		<input type="hidden" th:field="*{babyhandbookid}" /> <input
+			type="hidden" th:if="${_csrf != null}"
 			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}">
 
 
 		<div class="col-md-6">
-			<label class="form-label">小孩手冊編號</label> 
-			<input
+			<label class="form-label">小孩手冊編號</label> <input
 				class="form-control-plaintext fw-semibold"
 				th:value="${babyhandbookVO.babyhandbookid}" readonly>
 		</div>
 
 		<div class="col-md-6">
-			<label class="form-label">小孩姓名</label> 
-			<input class="form-control"
+			<label class="form-label">小孩姓名</label> <input class="form-control"
 				type="text" th:field="*{babyname}" required>
-			<div class="text-danger" th:if="${#fields.hasErrors('babyname')}" th:errors="*{babyname}"></div>
+			<div class="text-danger" th:if="${#fields.hasErrors('babyname')}"
+				th:errors="*{babyname}"></div>
 		</div>
 
-		<div class="col-md-4">
-			<label class="form-label">小孩生日</label> 
-			<input class="form-control"
+		<div class="col-md-6">
+			<label class="form-label">小孩生日</label> <input class="form-control"
 				type="date" th:field="*{babybirthday}">
-			<div class="text-danger" th:if="${#fields.hasErrors('babybirthday')}" th:errors="*{babybirthday}"></div>
+			<div class="text-danger" th:if="${#fields.hasErrors('babybirthday')}"
+				th:errors="*{babybirthday}"></div>
 		</div>
 
-		<div class="col-md-8">
+
+		<div class="col-md-6">
+			<label class="form-label">性別</label> <select class="form-select"
+				th:field="*{babygender}">
+				<option value="男">男</option>
+				<option value="女">女</option>
+			</select>
+			<div class="text-danger" th:if="${#fields.hasErrors('babygender')}"
+				th:errors="*{babygender}"></div>
+		</div>
+
+		<div class="col-md-6">
 			<label class="form-label">照片</label> <input class="form-control"
 				type="file" name="up" accept="image/*">
 		</div>
-		
-		<div class="col-md-4">
-    		<label class="form-label">性別</label>
-    		<select class="form-select" th:field="*{babygender}">
-      			      <option value="男">男</option>
-   						 <option value="女">女</option>
-    		</select>
-   			 <div class="text-danger" th:if="${#fields.hasErrors('babygender')}" th:errors="*{babygender}"></div>
-		</div>
-		
 
 		<div class="col-12">
 			<button class="btn btn-primary" type="submit">儲存</button>
