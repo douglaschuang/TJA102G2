@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.babymate.member.controller.MemberController;
 import com.babymate.staff.model.StaffVO;
 import com.babymate.staff.service.StaffService;
 import com.babymate.util.EncodingUtil;
@@ -46,6 +49,8 @@ import java.util.stream.Collectors;
 @Validated
 @RequestMapping("/staff")
 public class StaffController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StaffController.class);
 	
 	@Autowired
 	StaffService staffSvc;

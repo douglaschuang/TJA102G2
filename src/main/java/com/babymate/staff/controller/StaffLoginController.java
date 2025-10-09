@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +35,8 @@ import jakarta.validation.ConstraintViolationException;
 @Validated
 @RequestMapping("/admin/checkin")
 public class StaffLoginController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StaffLoginController.class);
 
 	@Autowired
 	StaffService staffSvc;
@@ -47,7 +51,8 @@ public class StaffLoginController {
 	                           @RequestParam String password,
 	                           HttpSession session,
 	                           RedirectAttributes redirectAttributes) {
-		System.out.println("loginCheck trigger.");
+//		System.out.println("loginCheck trigger.");
+		logger.info("loginCheck - loginCheck trigger.");
 	    String hashedPwd = EncodingUtil.hashMD5(password);
 
 	    Optional<StaffVO> staff = Optional.ofNullable(staffSvc.login(account, hashedPwd));
