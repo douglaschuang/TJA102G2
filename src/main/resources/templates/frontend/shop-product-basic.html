@@ -126,7 +126,7 @@
 												role="tabpanel" aria-labelledby="product-tab-1">
 												<div class="shop-product__long-desc mb-30">
 													<!-- 特色說明 -->
-													<p th:text="${product.featureDesc}"></p>
+													<p th:utext="${#strings.replace(product.featureDesc, '\n', '<br/>')}"></p>
 												</div>
 											</div>
 
@@ -134,7 +134,7 @@
 												role="tabpanel" aria-labelledby="product-tab-2">
 												<div class="shop-product__long-desc mb-30">
 													<!-- 規格說明 -->
-													<p th:text="${product.specDesc}"></p>
+													<p th:utext="${#strings.replace(product.specDesc, '\n', '<br/>')}"></p>
 												</div>
 											</div>
 
@@ -142,7 +142,7 @@
 												role="tabpanel" aria-labelledby="product-tab-3">
 												<div class="shop-product__long-desc mb-30">
 													<!-- 特色說明 -->
-													<p th:text="${product.note}"></p>
+													<p th:utext="${#strings.replace(product.note, '\n', '<br/>')}"></p>
 												</div>
 											</div>
 
