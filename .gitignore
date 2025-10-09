@@ -13,3 +13,25 @@ Thumbs.db
 *.log
 node_modules/
 tokens/StoredCredentialtokens/
+
+# Ignore IntelliJ, Eclipse, and Mac system files
+.idea/
+*.iml
+.DS_Store
+
+# Ignore build & temp
+/target/
+/logs/
+/tmp/
+
+# Ignore credentials & secret files
+tokens/
+*.keystore
+*.p12
+*.pem
+*.crt
+*.env
+*.json
+
+# Ignore OS or editor junk
+Thumbs.db
