@@ -62,6 +62,7 @@
 												th:href="@{/u/baby/babyrecord/full-grid-left-br(tab='babyrecord', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶成長紀錄</a></li>
 											<li><a
 												th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">寶寶生長曲線圖</a></li>
+
 											<!-- <li><a th:href="@{/u/baby/baby-todo/full-grid-left-td(tab='todo')}">待辦事項</a></li> -->
 
 										</ul></li>
@@ -256,6 +257,7 @@
 						<div th:case="'album'">
 							<div
 								class="d-flex justify-content-between align-items-center mb-3">
+
 								<h4 class="mb-0">我的相簿</h4>
 								<a class="btn btn-primary btn-sm" th:href="@{/u/album/new}">上傳照片</a>
 							</div>
@@ -295,8 +297,6 @@
 								</div>
 							</div>
 						</div>
-
-
 						<!-- 我的日記 -->
 						<div th:case="'diary'">
 							<div
@@ -356,14 +356,18 @@
 						<div th:case="'babyhandbook'">
 							<div
 								th:replace="~{frontend/u/baby/babyhandbook-tabs:: babyhandbookTabs(${activeTab}, ${babyhandbook})}"></div>
+
 							
+
 							<!-- 一次性的新增按鈕 -->
 							<div class="d-flex justify-content-end mt-4">
 								<a class="btn btn-success btn-sm"
 									th:href="@{/blog/u/baby/babyhandbook}"> ➕ 新增寶寶手冊 </a>
 							</div>
+
 							
 							<!-- ✅ 顯示多筆寶寶手冊 -->
+
 							<div class="row row-cols-1 g-4"
 								th:if="${babyhandbookList != null and #lists.size(babyhandbookList) > 0}">
 								<div class="col" th:each="baby : ${babyhandbookList}">
@@ -374,6 +378,7 @@
 									</div>
 								</div>
 							</div>
+
 
 							<!-- ❌ 無手冊資料 -->
 							<div
@@ -410,13 +415,13 @@
 								th:replace="~{frontend/u/baby/baby-todo :: babyTodo(${babyhandbook}, ${baby-todo})}"></div>
 						</div> -->
 						
+
 						<!-- 日曆 -->
 						<div th:case="'calendar'">
 							<div
 								th:replace="~{frontend/u/baby/calendar :: calendar(${babyhandbook})}"></div>
 						</div>
 
-						
 						<!-- 預設首頁（當 activeTab 為空或未知時顯示） -->
 
 						<div th:case="*">
@@ -596,7 +601,9 @@
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
 																		<p>寶寶生長圖表</p>
+
 																		<a th:href="@{/u/baby/baby-chart/full-grid-left-ch(tab='babychart', babyhandbookid=${babyhandbook?.babyhandbookid})}">+
+
 																			查看圖表</a>
 																	</div>
 																	<p class="product-count">成長軌跡看得見</p>
@@ -612,9 +619,12 @@
 																<div
 																	class="single-category__content single-category__content--one mt-25 mb-25">
 																	<div class="title">
+
 																		<p>我的日曆</p>
 																		<a th:href="@{/blog/full-grid-left(tab='calendar')}">+
 																			查看我的日曆</a>
+
+
 																	</div>
 																	<p class="product-count">育兒行程小幫手</p>
 																</div>
@@ -625,7 +635,10 @@
 																		th:src="@{/assets/images/category/bluememo.jpg}">
 																</div>
 																<a class="banner-link"
+
 																	th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
+
+
 															</div>
 														</div>
 
@@ -674,6 +687,7 @@
 																			</div>
 																			<p class="product-count"></p>
 																		</div>
+
 																		<a  class="banner-link"
 																			th:href="@{/blog/full-grid-left(tab='calendar')}"></a>
 																	</div>

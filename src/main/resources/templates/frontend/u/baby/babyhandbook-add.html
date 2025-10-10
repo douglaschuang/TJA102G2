@@ -28,22 +28,23 @@
 			th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
 
 
-		<div class="col-md-4">
+		<div class="col-md-6">
 			<label class="form-label">小孩姓名:</label> <input class="form-control"
 				type="text" th:field="*{babyname}" required>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-6">
+
 			<label class="form-label">小孩性別:</label> 
 			<select class="form-select" th:field="*{babygender}">
 				  <option value="男">男</option>
    					<option value="女">女</option>
 			</select>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-6">
 			<label class="form-label">小孩生日</label> <input class="form-control"
 				type="date" th:field="*{babybirthday}">
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-6">
 			<label class="form-label">照片</label> <input class="form-control"
 				type="file" name="up" accept="image/*">
 		</div>

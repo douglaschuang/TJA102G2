@@ -19,7 +19,13 @@
 			<div class="card">
 				<div
 					class="card-header d-flex justify-content-between align-items-center">
-					<h3 class="card-title mb-0">訂單明細</h3>
+
+					<h3 class="card-title mb-0">訂單明細 — <span
+								th:text="${orders != null ? orders.orderId : '未知'}">訂單ID</span>
+							<small class="text-muted">（訂單ID #<span
+								th:text="${orders != null ? orders.orderId : '無資料'}">訂單ID</span>）
+							</small>
+					</h3>
 					<div class="ms-auto">
 						<a class="btn btn-sm btn-outline-secondary"
 							th:href="@{/admin/orders/list}"> <i class="bi bi-arrow-left"></i>
@@ -33,11 +39,12 @@
 						class="table table-striped table-bordered align-middle w-100">
 						<thead>
 							<tr>
-								<th class="text-center align-middle"># 訂單明細ID</th>
-								<th class="text-center align-middle">訂單ID</th>
+								<th class="text-center align-middle">項號</th>
 								<th class="text-center align-middle">商品ID</th>
+								<th class="text-center align-middle">商品編號</th>
+								<th class="text-center align-middle">商品名稱</th>
 								<th class="text-center align-middle">訂購數量</th>
-								<th class="text-center align-middle">價格</th>
+								<th class="text-center align-middle">單價</th>
 								<th class="text-center align-middle">更新時間</th>
 							</tr>
 						</thead>
@@ -46,33 +53,18 @@
 								<td class="text-center align-middle"
 									th:text="${orderDetailVO.orderDetailId}"></td>
 								<td class="text-center align-middle"
-									th:text="${orderDetailVO.ordersVO.orderId}"></td>
-								<td class="text-center align-middle"
 									th:text="${orderDetailVO.productVO.productId}"></td>
+								<td class="text-center align-middle"
+									th:text="${orderDetailVO.productVO.productNo}"></td>
+								<td class="text-center align-middle"
+									th:text="${orderDetailVO.productVO.productName}"></td>
+									
 								<td class="text-center align-middle"
 									th:text="${orderDetailVO.quantity}"></td>
 								<td class="text-center align-middle"
 									th:text="${orderDetailVO.price}"></td>
 								<td
 									th:text="${orderDetailVO.updateTime != null ? #temporals.format(orderDetailVO.updateTime, 'yyyy年MM月dd日 HH:mm')  : ''}"></td>
-
-								<!--            <td class="text-nowrap">
-                  <form th:action="@{/admin/orders/getOne_For_Update}" method="post" class="d-inline">
-                    <input type="hidden" name="orderId" th:value="${ordersVO.orderId}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-primary">
-                      <i class="bi bi-pencil-square"></i> 修改
-                    </button>
-                  </form>
--->
-								<!--               <form th:action="@{/admin/babyhandbook/delete}" method="post" class="d-inline"
-                        onsubmit="return confirm('確定刪除？')">
-                    <input type="hidden" name="babyhandbookid" th:value="${babyhandbookVO.babyhandbookid}"/>
-                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                      <i class="bi bi-trash"></i> 刪除
-                    </button>
-                  </form>
-                </td>
--->
 							</tr>
 						</tbody>
 					</table>

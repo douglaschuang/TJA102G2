@@ -97,8 +97,8 @@
 			              const localEvents = JSON.parse(localStorage.getItem('localEvents') || '[]');
 			              localEvents.push(newEvent);
 			              localStorage.setItem('localEvents', JSON.stringify(localEvents));
-			              Swal.fire('已儲存至本地 ✅', '未登入 Google Calendar', 'info');
-			            }).finally(() => {
+			              Swal.fire('新增成功 ✅', '若想要同步至Google<br>請點選連結 Google Calendar' , 'info');
+			            }).finally(() => { 
 			              calendar.refetchEvents();
 			            });
 
@@ -124,7 +124,7 @@
 			              let localEvents = JSON.parse(localStorage.getItem('localEvents') || '[]');
 			              localEvents = localEvents.filter(e => e.id !== event.id);
 			              localStorage.setItem('localEvents', JSON.stringify(localEvents));
-			              Swal.fire('本地事件已刪除 ✅', '', 'success');
+			              Swal.fire('已刪除 ✅', '', 'success');
 			              calendar.refetchEvents();
 			            } else {
 			              // Google Calendar 事件
@@ -134,7 +134,7 @@
 			                if (!response.ok) {
 			                  throw new Error();
 			                }
-			                Swal.fire('Google 事件已刪除 ✅', '', 'success');
+			                Swal.fire('已刪除 ✅', '', 'success');
 			              }).catch(() => {
 			                Swal.fire('刪除失敗 ❌', '請確認您已登入 Google 帳戶', 'error');
 			              }).finally(() => {

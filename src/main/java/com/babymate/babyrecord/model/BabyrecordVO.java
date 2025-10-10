@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.babymate.babyhandbook.model.BabyhandbookVO;
 
+import com.babymate.clinic.model.Clinic;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,56 +27,61 @@ import jakarta.validation.constraints.Size;
 //
 @Entity
 @Table(name = "baby_record")
-public class BabyrecordVO implements java.io.Serializable{
+
+public class BabyrecordVO implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@Column(name = "baby_record_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer babyrecordid;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "baby_handbook_id")
 	@NotNull(message = "嬰兒手冊ID不得為空")
 	private BabyhandbookVO babyhandbook;
-	
+
 	@Column(name = "baby_week")
 	@NotNull(message = "嬰兒週數不得為空")
 	private Integer babyweek;
-	
+
 	@Column(name = "visit_date")
 	@NotNull(message = "請選擇檢查日期")
 	@Past(message = "日期必須是在今日(含)之前")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date visitdate;
-	
+
 	@Column(name = "clinic_id")
 	private Integer clinicid;
 	
+	@ManyToOne
+	@JoinColumn(name = "clinic_id", insertable = false, updatable = false)
+	private Clinic clinic;
+
 	@Column(name = "body_condition")
 	@Size(max = 100, message = "不得超過 100 字元")
-	private String  bodycondition;
-	
+	private String bodycondition;
+
 	@Column(name = "next_check_date")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date nextcheckdate;
-	
+
 	@Column(name = "next_reminder")
 	@Size(max = 100, message = "不得超過 100 字元")
 	private String nextreminder;
-	
+
 	@Column(name = "height", precision = 5, scale = 2)
 	private BigDecimal height;
-	
+
 	@Column(name = "weight", precision = 5, scale = 2)
 	private BigDecimal weight;
 
 	@Column(name = "hc", precision = 5, scale = 2)
 	private BigDecimal hc;
-	
+
 	@Column(name = "baby_record_files")
-	private byte[] babyrecordfiles; 
-	
+	private byte[] babyrecordfiles;
+
 	@Column(name = "update_time")
 	@UpdateTimestamp
 	private Timestamp updatetime;
@@ -184,5 +190,12 @@ public class BabyrecordVO implements java.io.Serializable{
 		this.updatetime = updatetime;
 	}
 
+	public Clinic getClinic() {
+		return clinic;
+	}
+
+	public void setClinic(Clinic clinic) {
+		this.clinic = clinic;
+	}
 
 }

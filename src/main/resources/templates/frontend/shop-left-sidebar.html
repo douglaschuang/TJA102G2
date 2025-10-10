@@ -710,11 +710,14 @@ $(document).ready(function() {
 
     const productId = $(this).data("product-id");
     if (!productId) return; // 避免空值觸發
-    
-    const qtyInput = $("input.cart-qty[data-product-id='" + productId + "']");
+
+    // 只在當前商品卡片區塊中找 input
+    const qtyInput = $(this).closest(".lezada-item-info").find(".cart-qty");
+    // const qtyInput = $("input.cart-qty[data-product-id='" + productId + "']");
     const qty = parseInt(qtyInput.val(), 10) || 1;
 
-    console.log("Selector:", qtyInput);
+    console.log("qtyInput:", qtyInput);
+    console.log("qtyInput.val():", qtyInput.val());
     console.log("productId:", productId);
     console.log("qty:", qty);
 
