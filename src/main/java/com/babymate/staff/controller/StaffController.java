@@ -1,19 +1,14 @@
 package com.babymate.staff.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -24,16 +19,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.babymate.member.controller.MemberController;
 import com.babymate.staff.model.StaffVO;
 import com.babymate.staff.service.StaffService;
 import com.babymate.util.EncodingUtil;
@@ -44,125 +35,149 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 @Controller
 @Validated
 @RequestMapping("/staff")
 public class StaffController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(StaffController.class);
-	
+
 	@Autowired
 	StaffService staffSvc;
 
-	/*
-	 * This method will be called on select_page.html form submission, handling POST
-	 * request It also validates the user input
-	 */
+	/**
+     * 根據員工編號查詢並顯示對應員工資料。
+     *
+     * @param staffId 使用者輸入的員工編號。
+     * @param model 用於傳遞資料至 View 的 ModelMap 物件。
+     * @return 返回對應的 View 名稱：
+     *         - 若查無資料，返回 "admin/staff/select_page"
+     *         - 查詢成功則返回 "admin/staff/listOneStaff"
+     */
 	@PostMapping("getOne_For_Display")
 	public String getOne_For_Display(
-		/***************************1.接收請求參數 - 輸入格式的錯誤處理*************************/
-		@NotEmpty(message="員工編號: 請勿空白")
-//		@Digits(integer = 4, fraction = 0, message = "員工編號: 請填數字-請勿超過{integer}位數")
-//		@Min(value = 7001, message = "員工編號: 不能小於{value}")
-//		@Max(value = 7777, message = "員工編號: 不能超過{value}")
-		@RequestParam("staffId") String staffId,
-		ModelMap model) {
-		
-		/***************************2.開始查詢資料*********************************************/
-//		EmpService empSvc = new EmpService();
+			@NotEmpty(message = "員工編號: 請勿空白")
+			@RequestParam("staffId") String staffId, ModelMap model) {
+
 		StaffVO staffVO = staffSvc.getOneStaff(Integer.valueOf(staffId));
-		
+
 		List<StaffVO> list = staffSvc.getAll();
-		model.addAttribute("staffListData", list);     // for select_page.html 第97 109行用
-	
+		model.addAttribute("staffListData", list); 
+
 		if (staffVO == null) {
+			logger.info("getOne_For_Display - 查無員工資料");
 			model.addAttribute("errorMessage", "查無資料");
 			return "admin/staff/select_page";
 		}
-		
-		/***************************3.查詢完成,準備轉交(Send the Success view)*****************/
-		model.addAttribute("staffVO", staffVO); // for1 --> listOneEmp.html 的第37~44行用
-                                            // for2 --> select_page.html的第156用
-		return "admin/staff/listOneStaff";   // 查詢完成後轉交listOneEmp.html
+
+		model.addAttribute("staffVO", staffVO);
+		return "admin/staff/listOneStaff"; 
 	}
-	
-    @GetMapping("/staffadd")
+
+	/**
+     * 新增員工資料。
+     *
+     * @param model 用於傳遞資料至 View 的 Model 物件。
+     * @return 返回對應的 View 名稱 admin/staff/staffadd，用於顯示新增員工頁面。
+     */
+	@GetMapping("/staffadd")
 	public String staffAdd(Model model) {
-    	StaffVO staff = new StaffVO(); 
-    	model.addAttribute("StaffVO", staff);
-    	model.addAttribute("pageTitle", "員工管理｜新增員工");
+		StaffVO staff = new StaffVO();
+		model.addAttribute("StaffVO", staff);
+		model.addAttribute("pageTitle", "員工管理｜新增員工");
 		return "admin/staff/staffadd";
 	}
-	
+
+	/**
+	 * 處理新增員工的請求。
+	 *
+	 * @param staffVO 表單綁定的員工資料物件，包含新增的資料欄位。
+	 * @param result 用於接收驗證結果，若有錯誤會回傳新增頁面。
+	 * @param model 用來傳遞資料到 View，如錯誤訊息或成功提示等。
+	 * @param parts 上傳的員工圖片（MultipartFile 陣列），只取第一張圖片儲存。
+	 * @return 若新增成功，導向員工列表頁面（listAllStaff）；若有錯誤，返回新增頁面（staffadd）。
+	 * @throws IOException 處理圖片上傳過程中若發生 I/O 錯誤會拋出此例外。
+	 */
 	@PostMapping("insert")
 	public String insert(@Valid StaffVO staffVO, BindingResult result, ModelMap model,
 			@RequestParam("pic") MultipartFile[] parts) throws IOException {
 
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		// 去除BindingResult中upFiles欄位的FieldError紀錄 --> 見第172行
-		// 檢查account是否重複
 		StaffVO staffTemp = staffSvc.getOneStaffByAccount(staffVO.getAccount());
+		
+		// 確定員工是否已經存在, 若存在不允許新增
 		if (staffTemp != null) {
+			logger.info("insert - 員工帳號 {}: 已存在, 請重新輸入", staffTemp.getAccount());
 			model.addAttribute("errorMessage", "員工帳號: 已存在, 請重新輸入");
 			model.addAttribute("StaffVO", staffVO);
 			return "admin/staff/staffadd";
 		}
-		
+
 		// 移除圖片欄位的綁定錯誤（若有）
 		result = removeFieldError(staffVO, result, "pic");
-		
+
 		// 如果有上傳圖片才處理圖片
-	    if (!parts[0].isEmpty()) {
-	        for (MultipartFile multipartFile : parts) {
-	            byte[] buf = multipartFile.getBytes();
-	            staffVO.setPic(buf);
-	        }
-	    }
-	    
-	    // 密碼欄位轉碼MD5 Hash
-	    staffVO.setPassword(EncodingUtil.hashMD5(staffVO.getPassword()));
-	    
-//		if (result.hasErrors() || parts[0].isEmpty()) {
-	    if (result.hasErrors()) {
+		if (!parts[0].isEmpty()) {
+			for (MultipartFile multipartFile : parts) {
+				byte[] buf = multipartFile.getBytes();
+				staffVO.setPic(buf);
+			}
+		}
+
+		// 密碼欄位轉碼MD5 Hash
+		staffVO.setPassword(EncodingUtil.hashMD5(staffVO.getPassword()));
+
+		if (result.hasErrors()) {
 			model.addAttribute("StaffVO", staffVO);
 			return "admin/staff/staffadd";
 		}
-		/*************************** 2.開始新增資料 *****************************************/
-		// EmpService empSvc = new EmpService();
+		
 		staffSvc.addStaff(staffVO);
-		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
 		List<StaffVO> list = staffSvc.getAll();
-		model.addAttribute("staffListData", list); // for listAllEmp.html 第117 133行用
+		
+		model.addAttribute("staffListData", list); 
 		model.addAttribute("success", "- (新增成功)");
-		return "redirect:/admin/staff/listAllStaff"; // 新增成功後重導至IndexController_inSpringBoot.java的第50行@GetMapping("/emp/listAllEmp")
+		logger.info("insert - 員工帳號 {}: 新增成功", staffVO.getAccount());
+		
+		return "redirect:/admin/staff/listAllStaff"; 
 	}
-	
+
+	/**
+     * 編輯員工資料。
+     *
+     * @param staffId 前端欲編輯的員工Id
+     * @param model 用於傳遞資料至 View 的 ModelMap 物件。
+     * @return 返回對應的 View 名稱 admin/staff/staffedit，用於顯示編輯員工頁面。
+     */
 	@PostMapping("staffedit")
 	public String getOne_For_Update(@RequestParam("staffId") String staffId, ModelMap model) {
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		/*************************** 2.開始查詢資料 *****************************************/
-		// EmpService empSvc = new EmpService();
+		
 		StaffVO staffVO = staffSvc.getOneStaff(Integer.valueOf(staffId));
 
-		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("StaffVO", staffVO);
 		model.addAttribute("pageTitle", "員工管理｜編輯員工");
-		return "admin/staff/staffedit"; // 查詢完成後轉交update_emp_input.html
+		return "admin/staff/staffedit"; 
 	}
-	/*
-	 * This method will be called on staffedit.html form submission, handling POST request It also validates the user input
+
+	/**
+	 * 處理更新員工資料的請求。
+	 *
+	 * @param staffVO 綁定的員工資料物件，包含更新內容。使用 {@code UpdateGroup} 驗證群組進行欄位驗證。
+	 * @param result Spring 的驗證結果，包含是否有欄位錯誤。
+	 * @param model 用於傳遞資料至前端 View，例如成功訊息或錯誤資料。
+	 * @param parts 上傳的員工圖片檔案陣列，僅處理第一張圖片。
+	 * @return 若驗證失敗則返回編輯頁面 {@code admin/staff/staffedit}；
+	 *         成功則重導至 {@code /admin/staff/listAllStaff} 員工列表頁。
+	 * @throws IOException 處理圖片檔案時若發生 I/O 錯誤會拋出此例外。
 	 */
 	@PostMapping("update")
-	public String update(@Validated(UpdateGroup.class) @ModelAttribute("StaffVO") StaffVO staffVO, BindingResult result, ModelMap model,
-			@RequestParam("pic") MultipartFile[] parts) throws IOException {
+	public String update(@Validated(UpdateGroup.class) @ModelAttribute("StaffVO") StaffVO staffVO, BindingResult result,
+			ModelMap model, @RequestParam("pic") MultipartFile[] parts) throws IOException {
 
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		// 去除BindingResult中pic欄位的FieldError紀錄 --> 見第172行
+		// 移除圖片欄位的驗證錯誤（若有）
 		result = removeFieldError(staffVO, result, "pic");
 
-		if (parts[0].isEmpty()) { // 使用者未選擇要上傳的新圖片時
-			// EmpService empSvc = new EmpService();
+		// 若使用者未上傳新圖片，則保留原圖片
+		if (parts[0].isEmpty()) {
 			byte[] pic = staffSvc.getOneStaff(staffVO.getStaffId()).getPic();
 			staffVO.setPic(pic);
 		} else {
@@ -171,127 +186,120 @@ public class StaffController {
 				staffVO.setPic(pic);
 			}
 		}
-		
-		// 因為input type=password會帶出時會自動改為null, 所以若未重新輸入, 則維持原密碼
+
+	    // 若前端未重新輸入密碼（密碼為 null 或空字串），保留原密碼
 		StaffVO originalStaff = staffSvc.getOneStaff(staffVO.getStaffId());
-//		// 若密碼欄位空白，保留原始密碼
-	    if (staffVO.getPassword() == null || staffVO.getPassword().isEmpty()) {
-	        staffVO.setPassword(originalStaff.getPassword());
-//	        System.out.println("staffVO="+staffVO.getPassword()+" original="+originalStaff.getPassword());
-	    } else {
-	    	// Hash加密編碼
-	    	staffVO.setPassword(EncodingUtil.hashMD5(staffVO.getPassword()));
-	    }
-		
+		// 若密碼欄位空白，保留原始密碼
+		if (staffVO.getPassword() == null || staffVO.getPassword().isEmpty()) {
+			staffVO.setPassword(originalStaff.getPassword());
+		} else {
+			// Hash加密編碼
+			staffVO.setPassword(EncodingUtil.hashMD5(staffVO.getPassword()));
+		}
+
+		// 如果資料檢核有錯誤時, 返回員工編輯頁面
 		if (result.hasErrors()) {
 			model.addAttribute("StaffVO", staffVO);
 			return "admin/staff/staffedit";
 		}
-		
-	    // 資料更新時間
-	    staffVO.setUpdateDate(LocalDateTime.now());
-	    
-		/*************************** 2.開始修改資料 *****************************************/
+
+		staffVO.setUpdateDate(LocalDateTime.now()); // 資料更新時間
 		staffSvc.updateStaff(staffVO);
 
-		/*************************** 3.修改完成,準備轉交(Send the Success view) **************/
+		logger.info("update - 修改員工{} 成功", staffVO.getAccount());
 		model.addAttribute("success", "- (修改成功)");
 		staffVO = staffSvc.getOneStaff(Integer.valueOf(staffVO.getStaffId()));
 		model.addAttribute("staffVO", staffVO);
+		
 		return "redirect:/admin/staff/listAllStaff";
 	}
 
+	/**
+     * 變更員工密碼。
+     *
+     * @param staffId 前端欲編輯的員工Id
+     * @param model 用於傳遞資料至 View 的 ModelMap 物件。
+     * @return 返回對應的 View 名稱 admin/staff/staffchangepwd，用於顯示編輯員工密碼變更頁面。
+     */
 	@PostMapping("staffchangepwd")
 	public String getOneForChangePwd(@RequestParam("staffId") String staffId, ModelMap model) {
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		/*************************** 2.開始查詢資料 *****************************************/
-		// EmpService empSvc = new EmpService();
 		StaffVO staffVO = staffSvc.getOneStaff(Integer.valueOf(staffId));
 
-		/*************************** 3.查詢完成,準備轉交(Send the Success view) **************/
 		model.addAttribute("StaffVO", staffVO);
 		model.addAttribute("pageTitle", "員工管理｜密碼變更");
-		return "admin/staff/staffchangepwd"; // 查詢完成後轉交staffchangepwd.html
+		return "admin/staff/staffchangepwd"; 
 	}
-	
-	/*
-	 * This method will be called on listAllStaff.html form submission, handling POST request
-	 */
+
+	/**
+     * 刪除指定員工。
+     *
+     * @param staffId 前端欲刪除的員工Id
+     * @param model 用於傳遞資料至 View 的 ModelMap 物件。
+     * @return 返回對應的 View 名稱 admin/staff/listAllStaff，用於顯示員工列表頁面。
+     */
 	@PostMapping("delete")
 	public String delete(@RequestParam("staffId") String staffId, ModelMap model) {
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
-		/*************************** 2.開始刪除資料 *****************************************/
-		// EmpService empSvc = new EmpService();
 		staffSvc.deleteStaff(Integer.valueOf(staffId));
-		/*************************** 3.刪除完成,準備轉交(Send the Success view) **************/
 		List<StaffVO> list = staffSvc.getAll();
-		model.addAttribute("staffListData", list); // for listAllEmp.html 第117 133行用
+		
+		logger.info("delete - 刪除員工ID: {} 成功",staffId);
+		model.addAttribute("staffListData", list);
 		model.addAttribute("success", "- (刪除成功)");
-//		return "back-end/staff/listAllStaff"; // 刪除完成後轉交listAllEmp.html
+		
 		return "redirect:/admin/staff/listAllStaff";
 	}
-// 移往StaffLoginController	
-//	@GetMapping("login")
-//	public String loginPage() {
-//	    return "admin/login"; // 要有 login.html 
-//	}
-// 移往StaffLoginController
-//	@PostMapping("loginCheck")
-//	public String loginCheck(@RequestParam String account,
-//	                           @RequestParam String password,
-//	                           HttpSession session,
-//	                           RedirectAttributes redirectAttributes) {
-//	    String hashedPwd = EncodingUtil.hashMD5(password);
-//
-//	    Optional<StaffVO> staff = Optional.ofNullable(staffSvc.login(account, hashedPwd));
-//	    if (staff.isPresent()) {
-//	        session.setAttribute("staff", staff.get());
-//	        return "redirect:/staff/permission";
-//	    } else {
-//	    	redirectAttributes.addFlashAttribute("errorMessage", "帳號或密碼錯誤");
-//	        return "redirect:/admin/login";
-//	    }
-//	}
-// 移往StaffLoginController
-//	@GetMapping("/logout")
-//	public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
-//		
-//	    if (session != null) {
-//		session.removeAttribute("staff");
-//	    session.invalidate(); // 讓 session 失效（登出）
-//	    }
-//	 
-//	    redirectAttributes.addFlashAttribute("logoutMessage", "您已成功登出");
-//	    return "redirect:/admin/login"; // 返回登入頁
-//	}
-	
-	// 去除BindingResult中某個欄位的FieldError紀錄
+
+	/**
+	 * 移除指定欄位的驗證錯誤。
+	 *
+	 * @param staffVO 表單綁定的物件，用於建立新的 BindingResult。
+	 * @param result 原始的 BindingResult，包含所有欄位的驗證結果。
+	 * @param removedFieldname 要移除驗證錯誤的欄位名稱。
+	 * @return 回傳一個新的 BindingResult，已移除指定欄位的錯誤訊息。
+	 */
 	public BindingResult removeFieldError(StaffVO staffVO, BindingResult result, String removedFieldname) {
+		
+		// 過濾掉指定欄位的錯誤，只保留其他欄位的錯誤
 		List<FieldError> errorsListToKeep = result.getFieldErrors().stream()
-				.filter(fieldname -> !fieldname.getField().equals(removedFieldname))
-				.collect(Collectors.toList());
+				.filter(fieldname -> !fieldname.getField().equals(removedFieldname)).collect(Collectors.toList());
+		
+		// 建立一個新的 BindingResult 物件，並重新加入保留的錯誤
 		result = new BeanPropertyBindingResult(staffVO, "staffVO");
 		for (FieldError fieldError : errorsListToKeep) {
 			result.addError(fieldError);
 		}
 		return result;
 	}
-    
+
+	/**
+	 * 處理資料驗證過程中發生的例外。
+	 *
+	 * @param req 發生例外時的 HTTP 請求物件。
+	 * @param e 驗證失敗所拋出的 ConstraintViolationException。
+	 * @param model Spring MVC 的 Model 物件，用於傳遞資料到 View。
+	 * @return 回傳帶有錯誤訊息的 {@link ModelAndView}，顯示在員工列表頁面上。
+	 */
 	@ExceptionHandler(value = { ConstraintViolationException.class })
-	//@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ModelAndView handleError(HttpServletRequest req,ConstraintViolationException e,Model model) {
-	    Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-	    StringBuilder strBuilder = new StringBuilder();
-	    for (ConstraintViolation<?> violation : violations ) {
-	          strBuilder.append(violation.getMessage() + "<br>");
-	    }
-	    //==== 以下第92~96行是當前面第77行返回 /src/main/resources/templates/back-end/emp/select_page.html用的 ====   
-//	    model.addAttribute("empVO", new EmpVO());
-//    	EmpService empSvc = new EmpService();
+	public ModelAndView handleError(HttpServletRequest req, ConstraintViolationException e, Model model) {
+		
+		// 取得所有驗證錯誤
+		Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+		StringBuilder strBuilder = new StringBuilder();
+		
+		// 將所有錯誤訊息組合成 HTML 顯示格式
+		for (ConstraintViolation<?> violation : violations) {
+			strBuilder.append(violation.getMessage() + "<br>");
+		}
+		
+		// 將員工列表資料重新載入，避免 View 資料遺失
 		List<StaffVO> list = staffSvc.getAll();
-		model.addAttribute("staffListData", list);     // for select_page.html 第97 109行用
+		model.addAttribute("staffListData", list);
+		
+		// 組合錯誤訊息
 		String message = strBuilder.toString();
-	    return new ModelAndView("admin/staff/stafflist", "errorMessage", "請修正以下錯誤:<br>"+message);
+		logger.info("handleError - 驗證欄位錯誤: {}",message);
+		
+		return new ModelAndView("admin/staff/stafflist", "errorMessage", "請修正以下錯誤:<br>" + message);
 	}
-	
+
 }
