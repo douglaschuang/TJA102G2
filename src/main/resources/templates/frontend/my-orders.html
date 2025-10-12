@@ -1,171 +1,182 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
-  <th:block th:fragment="extraHead">
-  	<link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
-  </th:block>
-  <style>
-  	/* 初始狀態：白底紅字 */
-	.btn-outline-danger {
-	  color: #dc3545 !important;
-	  border-color: #dc3545 !important;
-	  background-color: transparent !important;
-	  transition: all 0.2s ease-in-out;
-	}
-	
-	/* 滑鼠移入：紅底白字 */
-	.btn-outline-danger:hover,
-	.btn-outline-danger:focus {
-	  color: #fff !important;
-	  background-color: #dc3545 !important;
-	  border-color: #dc3545 !important;
-	}
-	
-	/* 點擊瞬間（active 狀態）：維持紅底白字 */
-	.btn-outline-danger:active {
-	  color: #fff !important;
-	  background-color: #c82333 !important; /* 比紅底略深 */
-	  border-color: #bd2130 !important;
-	}
-  </style>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead">
+	<link rel="stylesheet"
+		href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.min.css">
+</th:block>
+
+<!-- 額外：調整「匯出 PDF」按鈕樣式（Bootstrap outline-danger 的 hover/active 行為微調） -->
+<style>
+/* 初始狀態：白底紅字 */
+.btn-outline-danger {
+	color: #dc3545 !important;
+	border-color: #dc3545 !important;
+	background-color: transparent !important;
+	transition: all 0.2s ease-in-out;
+}
+
+/* 滑鼠移入：紅底白字 */
+.btn-outline-danger:hover, .btn-outline-danger:focus {
+	color: #fff !important;
+	background-color: #dc3545 !important;
+	border-color: #dc3545 !important;
+}
+
+/* 點擊瞬間（active 狀態）：維持紅底白字 */
+.btn-outline-danger:active {
+	color: #fff !important;
+	background-color: #c82333 !important; /* 比紅底略深 */
+	border-color: #bd2130 !important;
+}
+</style>
 </head>
 
-<body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
-<section th:fragment="content">
-<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('我的訂單')}"></div>
+<!--
+  使用前台 layout（frontend/layout）包住 body：
+  - 第一個參數：導覽列啟用的選單 key（這裡 'about' 只是沿用樣板鍵值）
+  - 第二個參數：主內容 content 片段
+  - 第三個參數：頁尾前可插入的 JS 片段
+  - 第四個參數：footer 樣式 key（'footer-one'）
+-->
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div
+			th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('我的訂單')}"></div>
 
-
-
-	<!-- page wrapper -->
-	<div class="my-account-area mb-130 mb-md-70 mb-sm-70 mb-xs-70 mb-xxs-70">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="row">
-						<div class="col-lg-12 col-md-12">
-							<div class="myaccount-tab-menu nav" role="tablist">
-								<!-- <a href="#dashboad" class="active" data-bs-toggle="tab">Dashboard</a> -->
-								<a href="#orders" class="active" data-bs-toggle="tab">訂單查詢</a>
-								<!-- 全部匯出 -->
-								<!-- <a href="/orders/export/pdf" class="btn btn-danger btn-sm">
-									<i class="bi bi-file-earmark-pdf"></i> 下載全部訂單 PDF
-								</a> -->
-<!-- 								<a href="#payment-method" data-bs-toggle="tab">付款方式</a> -->
-<!-- 								<a href="#address-edit" data-bs-toggle="tab">地址</a> -->
-<!-- 								<a href="#account-info" data-bs-toggle="tab">帳戶詳情</a> -->
-								<!-- <a th:href="@{/shop/customer-login}">Logout</a> -->
+		<!-- 外框（會員專區通用樣式） -->
+		<div class="my-account-area mb-130 mb-md-70 mb-sm-70 mb-xs-70 mb-xxs-70">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="row">
+							<!-- 上方 tabs（這裡只有「訂單查詢」） -->
+							<div class="col-lg-12 col-md-12">
+								<div class="myaccount-tab-menu nav" role="tablist">
+									<a href="#orders" class="active" data-bs-toggle="tab">訂單查詢</a>
+								</div>
 							</div>
-						</div>
 
-						<div class="col-lg-12 col-md-12">
-							<div class="tab-content" id="myaccountContent">
-								<!-- <div class="tab-pane fade show active" id="dashboad"
-									role="tabpanel">
-									<div class="myaccount-content">
-										<h3>Dashboard</h3>
-										<div class="welcome">
-											<p>
-												Hello, <strong>Alex Tuntuni</strong> (If Not <strong>Tuntuni
-													!</strong><a th:href="@{/shop/customer-login}" class="logout">
-													Logout</a>)
-											</p>
-										</div>
-										<p class="mb-0">From your account dashboard. you can
-											easily check & view your recent orders, manage your shipping
-											and billing addresses and edit your password and account
-											details.</p>
-									</div>
-								</div> -->
-
-								<div class="tab-pane fade show active" id="orders" role="tabpanel">
-									<div class="myaccount-content">
-										<h3>我的訂單</h3>
-										<div class="myaccount-table table-responsive text-center">
-											<table id="myOrdersTable" class="table table-bordered">
-												<thead class="thead-light">
-													<tr>
-														<th>訂單日期</th>
-														<th>訂單編號</th>
-														<th>訂單狀態</th>
-														<th>訂單總額</th>
-														<th>備註</th>
-														<th>訂單明細</th>
-													</tr>
-												</thead>
-												<tbody>
-													<tr th:each="order: ${orders}">
-														<td th:text="${#temporals.format(order.orderTime, 'yyyy-MM-dd HH:mm')}"></td>
-														<td th:text="${order.orderNo}"></td>
-														<td class="text-center" th:switch="${order.status}">
-															<span th:case="0" class="text-muted">已取消</span>
-															<span th:case="1" class="text-warning">未付款</span>
-															<span th:case="2" class="text-primary">已付款</span>
-															<span th:case="3" class="text-info">已出貨</span>
-															<span th:case="4" class="text-success">已收貨</span>
-															<span th:case="5" class="text-danger">退款中</span>
-															<span th:case="6" class="text-secondary">已退款</span>
-															<span th:case="*" class="text-dark">未知狀態</span>
-														</td>
-														<td th:text="'$' + ${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')}"></td>
-														<td th:text="${order.remark}"></td>
-														<td class="text-nowrap">
-										                	<a class="btn btn-sm btn-outline-success"
-										                       th:href="@{/my-order-detail/{id}(id=${order.orderId})}">
-										                    	<i class="bi bi-journal-medical"></i> 訂單明細
-										                  </a>
-										                  
-										                  <a class="btn btn-sm btn-outline-danger"
-												             th:href="@{/my-orders/{orderNo}/export/pdf(orderNo=${order.orderNo})}"
-												             title="下載此訂單 PDF"
-												             >
-												          	<i class="bi bi-file-earmark-pdf"></i> 匯出PDF
-												          </a>
-										                </td>
-													</tr>
-												</tbody>
-											</table>
+							<!-- 右側內容 -->
+							<div class="col-lg-12 col-md-12">
+								<div class="tab-content" id="myaccountContent">
+								
+									<!-- 訂單清單 tab -->
+									<div class="tab-pane fade show active" id="orders"
+										role="tabpanel">
+										<div class="myaccount-content">
+											<h3>我的訂單</h3>
+											
+											<!-- 訂單表格（DataTables 套件渲染） -->
+											<div class="myaccount-table table-responsive text-center">
+												<table id="myOrdersTable" class="table table-bordered">
+													<thead class="thead-light">
+														<tr>
+															<th>訂單日期</th>
+															<th>訂單編號</th>
+															<th>訂單狀態</th>
+															<th>訂單總額</th>
+															<th>備註</th>
+															<th>訂單明細</th>
+														</tr>
+													</thead>
+													<tbody>
+														<!-- 逐筆輸出 orders（Controller 提供） -->
+														<tr th:each="order: ${orders}">
+															<!-- 下單時間格式化 -->
+															<td th:text="${#temporals.format(order.orderTime, 'yyyy-MM-dd HH:mm')}"></td>
+															<td th:text="${order.orderNo}"></td>
+															
+															<!-- 狀態以 switch 決定 badge 顏色文字 -->
+															<td class="text-center" th:switch="${order.status}">
+																<span th:case="0" class="text-muted">已取消</span> 
+																<span th:case="1" class="text-warning">未付款</span> 
+																<span th:case="2" class="text-primary">已付款</span> 
+																<span th:case="3" class="text-info">已出貨</span> 
+																<span th:case="4" class="text-success">已收貨</span> 
+																<span th:case="5" class="text-danger">退款中</span> 
+																<span th:case="6" class="text-secondary">已退款</span> 
+																<span th:case="*" class="text-dark">未知狀態</span>
+															</td>
+															
+															<!-- 金額格式化（千分位，無小數點） -->
+															<td th:text="'$' + ${#numbers.formatDecimal(order.amount, 0, 'COMMA', 0, 'POINT')}"></td>
+															
+															<!-- 備註 -->
+															<td th:text="${order.remark}"></td>
+															
+															<!-- 操作：訂單明細 / 匯出 PDF -->
+															<td class="text-nowrap">
+																<!-- 查看明細：導到 /my-order-detail/{id} -->
+																<a class="btn btn-sm btn-outline-success"
+																   th:href="@{/my-order-detail/{id}(id=${order.orderId})}">
+																	<i class="bi bi-journal-medical"></i>
+																	訂單明細
+																</a> 
+																
+																<!-- 匯出單筆訂單 PDF -->
+																<a class="btn btn-sm btn-outline-danger"
+																   th:href="@{/my-orders/{orderNo}/export/pdf(orderNo=${order.orderNo})}"
+																   title="下載此訂單 PDF"> 
+																	<i class="bi bi-file-earmark-pdf"></i> 
+																	匯出PDF
+																</a>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<!-- /tab content -->
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- end page wrapper -->
-</section>
+	</section>
 	<th:block th:fragment="extraJs">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
-    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const sel = '#myOrdersTable';
-          if ($.fn.DataTable.isDataTable(sel)) return; // 防止重複初始化
-          $(sel).DataTable({
-            retrieve: true,
-            lengthMenu: [5, 10, 20, 50],
-         // 不要搜尋框：拿掉 f，並把元件排版在同一行
-            dom: "<'d-flex justify-content-between align-items-center mb-2'l i>t<'d-flex justify-content-between align-items-center mt-2'p>",
-            searching: false,
-            order: [0, 'desc'],
-            language: {
-              lengthMenu:"顯示 _MENU_ 筆結果",
-              info:"顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
-              infoEmpty:"顯示第 0 至 0 筆結果，共 0 筆",
-              infoFiltered:"",
-              paginate:{ first:"第一頁", previous:"上一頁", next:"下一頁", last:"最後一頁" },
-              aria:{ sortAscending:": 升冪排列", sortDescending:": 降冪排列" }
-            }
-          });
-        });
-    </script>
-  </th:block>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script src="https://cdn.datatables.net/2.0.7/js/dataTables.min.js"></script>
+		<script
+			src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.min.js"></script>
+		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+		<script>
+			document.addEventListener('DOMContentLoaded',function() {
+				const sel = '#myOrdersTable';
+				if ($.fn.DataTable.isDataTable(sel))
+					return; // 防止重複初始化
+				$(sel).DataTable({
+					retrieve : true,
+					lengthMenu : [ 5, 10, 20,50 ],
+					// 排版：左側顯示每頁筆數 / 右側顯示資訊，表格下方顯示分頁
+					dom : "<'d-flex justify-content-between align-items-center mb-2'l i>t<'d-flex justify-content-between align-items-center mt-2'p>",
+					searching : false,      // 關閉搜尋框
+					order : [ 0, 'desc' ],  // 以第 1 欄（日期）倒序
+					language : {
+						lengthMenu : "顯示 _MENU_ 筆結果",
+						info : "顯示第 _START_ 至 _END_ 筆結果，共 <span class='text-danger'>_TOTAL_</span> 筆",
+						infoEmpty : "顯示第 0 至 0 筆結果，共 0 筆",
+						infoFiltered : "",
+						paginate : {
+							first : "第一頁",
+							previous : "上一頁",
+							next : "下一頁",
+							last : "最後一頁"
+						},
+						aria : {
+							sortAscending : ": 升冪排列",
+							sortDescending : ": 降冪排列"
+						}
+					}
+				});
+			});
+		</script>
+	</th:block>
 </body>
 </html>

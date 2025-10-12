@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/ecpay")
 public class ECPayController {
 
-    // 測試環境金鑰
+    /** ↓↓↓ 綠界金鑰 & API 設定（從 application.properties / yml 讀取） */
     @Value("${ecpay.merchant.id}")
     private String merchantId;
 
@@ -42,10 +42,10 @@ public class ECPayController {
     private String apiUrl;
 
     @Value("${ecpay.return.url}")
-    private String returnUrl;
+    private String returnUrl;     // Server 端通知
 
     @Value("${ecpay.result.url}")
-    private String resultUrl;
+    private String resultUrl;     // 前端結果頁
 
     @Autowired
     private OrdersService ordersSvc;
@@ -56,7 +56,22 @@ public class ECPayController {
     @Autowired
     private OrdersRepository ordersRepo;
     
-    // 送去綠界
+    /**
+     * 將訂單送去綠界（產生自動送出的 form）
+     * 來源：前端 checkout 頁的 form 提交
+     *
+     * 參數：
+     * - orderNo：我們系統中的訂單編號（createPendingOrder 產生）
+     * - amount：總金額
+     * - itemName：綠界用的商品字串（A x2#B x1）
+     * - dto：收件資訊（電話/地址/Email...）
+     *
+     * 流程：
+     *  1.檢查表單驗證（有錯回 checkout 頁）
+     *  2.將收件資訊更新到訂單（避免之後沒資料）
+     *  3.組綠界參數，計算 CheckMacValue
+     *  4.交給 /frontend/ecpaySubmit.html 自動送出 POST 到綠界
+     */
     @PostMapping("/checkout")
     public String checkout(@RequestParam("orderNo") String orderNo,
     					   @RequestParam("amount") String amount,
@@ -70,9 +85,10 @@ public class ECPayController {
     		// 回到結帳頁，並顯示驗證錯誤（你可以把錯誤渲染到畫面）
             model.addAttribute("errors", result.getAllErrors());
             // 同時記得把購物車/總金額等資料再放回去（略）
-            return "frontend/checkout"; // 你的 Thymeleaf 模板名稱
+            return "frontend/checkout"; // Thymeleaf 模板名稱
     	}
     	
+    	/** 1.先把收件資訊寫回訂單（後面通知/對帳才不缺資料） */
     	ordersSvc.updateOrderContact(
     			dto.getOrderNo(),
     	        dto.getRecipient(),
@@ -81,38 +97,42 @@ public class ECPayController {
     	        dto.getEmail()
     	);
     	
-//        String tradeNo = "EC" + System.currentTimeMillis(); // 訂單編號
         String tradeDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
+        /** 2.組綠界參數 */
         Map<String, String> params = new HashMap<>();
         params.put("MerchantID", merchantId);
-        params.put("MerchantTradeNo", orderNo); // orders訂單編號
+        params.put("MerchantTradeNo", orderNo);     // orders訂單編號
         params.put("MerchantTradeDate", tradeDate);
         params.put("PaymentType", "aio");
         params.put("TotalAmount", amount);
         params.put("TradeDesc", "測試交易描述");
         params.put("ItemName", itemName);
-        params.put("ReturnURL", returnUrl);  // Server端接收付款結果
-        params.put("OrderResultURL", resultUrl); // 前端顯示付款結果
-        params.put("ChoosePayment", "Credit"); // 一次付清
+        params.put("ReturnURL", returnUrl);         // Server端接收付款結果
+        params.put("OrderResultURL", resultUrl);    // 前端顯示付款結果
+        params.put("ChoosePayment", "Credit");      // 一次付清
         params.put("EncryptType", "1");
-        
-        // 加入模擬付款參數
-//        params.put("SimulatePaid", "1");
+//        params.put("SimulatePaid", "1");            // 加入模擬付款參數，測試用可打開
 
-        // 計算檢查碼
+        /** 3.計算檢查碼 */
         String checkMacValue = ECPayCheckMacValue.generate(params, hashKey, hashIV);
         params.put("CheckMacValue", checkMacValue);
 
         System.out.println("送去綠界 orderNo=" + orderNo);
         
+        /** 4.丟給 ecpaySubmit 自動送出 */
         model.addAttribute("params", params);
         model.addAttribute("action", apiUrl);
 
         return "/frontend/ecpaySubmit"; // 轉到自動送出的form
     }
 
-    // 付款完成通知 (Server to Server)
+    /**
+     * 綠界付款完成通知（Server to Server）
+     * - 綠界以 POST 呼叫這個端點（ReturnURL），不經過使用者瀏覽器
+     * - 收到 RtnCode=1 → 視為付款成功 → 更新訂單狀態與金額、付款時間
+     * - 回傳字串 "1|OK" 代表已收到（綠界規定）
+     */
     @PostMapping("/notify")
     @ResponseBody
     public String paymentNotify(@RequestParam Map<String, String> req) {
@@ -135,7 +155,11 @@ public class ECPayController {
         }
     }
 
-    // 前端回傳 (付款完成頁)
+    /**
+     * 前端回傳（使用者瀏覽器導回的結果頁，OrderResultURL）
+     * - 這裡也會再做一次「標記已付款」與「清購物車」的保險處理
+     * - 無論如何都導回「result」頁顯示結果
+     */
     @PostMapping("/result")
     public String paymentResult(@RequestParam Map<String, String> req,
     							HttpSession session,
@@ -153,14 +177,14 @@ public class ECPayController {
         } catch (Exception ignore) {}
 
         try {
-            // 1) 設成已付款；第一次回來才會寫 pay_time=now；update_time=now
+            /** 1.設成已付款；第一次回來才會寫 pay_time=now；update_time=now */
             ordersSvc.markPaidOnResult(orderNo, paidAmt);
         } catch (Exception e) {
             // 不讓使用者看到錯誤頁，但最好在伺服器看 Log，避免中斷導回
             e.printStackTrace();
         }
 
-        // 2) 用 orderNo 反查 memberId，清會員購物車（不依賴瀏覽器 session）
+        /** 2.用 orderNo 反查 memberId，清空該會員購物車（或訪客 session 的購物車） */
         try {
         	OrdersVO order = ordersRepo.findByOrderNo(orderNo)
         		    .orElseThrow(() -> new RuntimeException("找不到訂單: " + orderNo));
@@ -179,12 +203,12 @@ public class ECPayController {
             e.printStackTrace();
         }
 
-        // 3) 印完整回傳參數（除錯用）
+        /** 3.印完整回傳參數（除錯用） */
         System.out.println("Result 回來 MerchantTradeNo=" + orderNo);
         System.out.println("=== ECPay Result 全部回傳 ===");
         req.forEach((k, v) -> System.out.println(k + " = " + v));
 
-        // 4) 回商城
+        /** 4.回商城前結果頁 */
         return "result";
     }
 }

@@ -11,8 +11,10 @@
     </script> -->
 </head>
 <body>
+	<!-- 顯示付款成功訊息（Controller 傳入 message） -->
     <h2>付款成功！</h2>
     <p th:text="${message}"></p>
+    <!-- 自動倒數返回商城 -->
     <p id="countdown">3 秒後將自動返回購物車頁面...</p>
     
     <!-- <script>
@@ -31,6 +33,7 @@
 </script> -->
 
 	<script>
+		 // 倒數 3 秒後導回商城列表（使用 location.origin，避免寫死 localhost）
 	    const target = location.origin + '/shop/left'; // 不要寫 localhost
 	    let seconds = 3;
 	    const el = document.getElementById('countdown');

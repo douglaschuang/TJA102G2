@@ -1,194 +1,161 @@
 <!DOCTYPE html>
 <html class="no-js" lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
-  <th:block th:fragment="extraHead"></th:block>
+<head
+	th:replace="~{frontend/layout :: head('BabyMate', ~{::extraHead})}">
+<th:block th:fragment="extraHead"></th:block>
 </head>
 
-<body th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
-<section th:fragment="content">
-<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('訂單資訊')}"></div>
+<body
+	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	<section th:fragment="content">
+		<div
+			th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('訂單資訊')}"></div>
 
+		<!-- 結帳頁包裹 -->
+		<div class="checkout-page-area mb-130">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="lezada-form">
+							<!-- 表單送往 /ecpay/checkout（你的 ECPay Controller） -->
+							<!-- 使用 novalidate + 客製前端驗證（Bootstrap 顯示樣式） -->
+							<form th:action="@{/ecpay/checkout}" method="post"
+								class="checkout-form  needs-validation" novalidate>
+								<div class="row row-40">
 
+									<!-- 左側：配送資訊 -->
+									<div class="col-lg-7 mb-20">
+										<div id="billing-form" class="mb-40">
+											<h4 class="checkout-title">配送資訊</h4>
 
-	<!-- page wrapper -->
-	<div class="checkout-page-area mb-130">
-		<div class="container">
-			<div class="row">
-				<div class="col-12">
-					<div class="lezada-form">
-						<!-- Checkout Form s-->
-						<form th:action="@{/ecpay/checkout}" method="post" class="checkout-form  needs-validation" novalidate>
-							<div class="row row-40">
-								<div class="col-lg-7 mb-20">
-									<!-- Billing Address -->
-									<div id="billing-form" class="mb-40">
-										<h4 class="checkout-title">配送資訊</h4>
-										<div class="row">
-											<div class="col-md-6 col-12 mb-20">
-												<label>姓名*</label>
-												<input type="text" class="form-control" name="recipient" placeholder="全名" required>
-												<div class="invalid-feedback">請填寫收件人</div>
+											<div class="row">
+												<!-- 收件人 -->
+												<div class="col-md-6 col-12 mb-20">
+													<label>姓名*</label> <input type="text" class="form-control"
+														name="recipient" placeholder="全名" required>
+													<div class="invalid-feedback">請填寫收件人</div>
+												</div>
+
+												<!-- 手機 -->
+												<div class="col-md-6 col-12 mb-20">
+													<label>電話號碼*</label> <input type="text"
+														class="form-control" name="phone"
+														placeholder="手機號碼（09xxxxxxxx）" required minlength="10"
+														maxlength="10" pattern="^(?!([0-9])\1{9})09\d{8}$"
+														title="請輸入有效的手機號碼（09 開頭，共 10 碼）">
+													<div class="invalid-feedback">請輸入有效的手機號碼</div>
+												</div>
+
+												<!-- Email（選填） -->
+												<div class="col-12 mb-20">
+													<label>電子郵件</label> <input type="email"
+														class="form-control" name="email" placeholder="Email">
+													<div class="invalid-feedback">Email 格式不正確</div>
+												</div>
+
+												<!-- 地址（twzipcode 組合 + 詳細地址 + hidden 完整地址） -->
+												<div class="col-12 mb-20">
+													<label>地址*</label>
+
+													<!-- twzipcode 套件容器（縣市 / 區 / 郵遞區號） -->
+													<div id="twzipcode" class="form-row mb-2"></div>
+
+													<!-- 詳細地址 -->
+													<input type="text" class="form-control" id="addrDetail"
+														placeholder="請輸入巷、弄、號、樓等詳細地址" required
+														pattern="^[\u4e00-\u9fa5a-zA-Z0-9\s#\-]+$"
+														title="請輸入正確的地址 (需包含文字或號碼)">
+													<div class="invalid-feedback">請填寫詳細地址</div>
+
+													<!-- 隱藏欄位：把完整地址（郵遞區號+縣市+區+詳細）組起來提交 -->
+													<input type="hidden" name="address" id="fullAddress">
+												</div>
 											</div>
-
-											<div class="col-md-6 col-12 mb-20">
-												<label>電話號碼*</label> 
-												<input type="text" class="form-control" name="phone" placeholder="手機號碼（09xxxxxxxx）" required minlength="10" maxlength="10" pattern="^(?!([0-9])\1{9})09\d{8}$" title="請輸入有效的手機號碼（09 開頭，共 10 碼）">
-												<div class="invalid-feedback">請輸入有效的手機號碼</div>
-											</div>
-
-											<div class="col-12 mb-20">
-												<label>電子郵件</label> 
-												<input type="email" class="form-control" name="email" placeholder="Email">
-												<div class="invalid-feedback">Email 格式不正確</div>
-											</div>
-
-										<div class="col-12 mb-20">
-										    <label>地址*</label>
-										    <div id="twzipcode" class="form-row mb-2"></div>
-										    <input type="text" class="form-control" id="addrDetail" placeholder="請輸入巷、弄、號、樓等詳細地址" required pattern="^[\u4e00-\u9fa5a-zA-Z0-9\s#\-]+$" title="請輸入正確的地址 (需包含文字或號碼)">
-										    <div class="invalid-feedback">請填寫詳細地址</div>
-										    
-										    <!-- 隱藏完整地址 -->
-										    <input type="hidden" name="address" id="fullAddress">
-										</div>
 										</div>
 									</div>
 
-									<!-- Shipping Address -->
-									<!-- <div id="shipping-form" class="mb-40">
-										<h4 class="checkout-title">Shipping Address</h4>
+									<!-- 右側：訂單明細 + 付款 -->
+									<div class="col-lg-5">
 										<div class="row">
-											<div class="col-md-6 col-12 mb-20">
-												<label>First Name*</label> <input type="text"
-													placeholder="First Name">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Last Name*</label> <input type="text"
-													placeholder="Last Name">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Email Address*</label> <input type="email"
-													placeholder="Email Address">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Phone no*</label> <input type="text"
-													placeholder="Phone number">
-											</div>
-											<div class="col-12 mb-20">
-												<label>Company Name</label> <input type="text"
-													placeholder="Company Name">
-											</div>
-											<div class="col-12 mb-20">
-												<label>Address*</label> <input type="text"
-													placeholder="Address line 1"> <input type="text"
-													placeholder="Address line 2">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Country*</label> <select class="nice-select">
-													<option>Bangladesh</option>
-													<option>China</option>
-													<option>country</option>
-													<option>India</option>
-													<option>Japan</option>
-												</select>
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Town/City*</label> <input type="text"
-													placeholder="Town/City">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>State*</label> <input type="text" placeholder="State">
-											</div>
-											<div class="col-md-6 col-12 mb-20">
-												<label>Zip Code*</label> <input type="text"
-													placeholder="Zip Code">
-											</div>
-										</div>
-									</div> -->
-								</div>
 
-								<div class="col-lg-5">
-									<div class="row">
-										<!-- Cart Total -->
-										<div class="col-12 mb-60">
-											<h4 class="checkout-title">訂單明細</h4>
-											
-											<!-- 若購物車為空 -->
-											<div class="cart-table" th:if="${#lists.isEmpty(cartItems)}">
-												<p>目前沒有商品</p>
-											</div>
-											
-											<!-- 購物車有商品 -->
-											<div class="cart-table" th:if="${!#lists.isEmpty(cartItems)}">
-												<table>
-													<thead>
-														<tr>
-															<th style="width:250px;">商品</th>
-															<th style="width:100px;">數量</th>
-															<th style="width:100px;">金額</th>
-														</tr>
-													</thead>
-													<tbody>
-														<tr th:each="item : ${cartItems}">
-															<td>
-																<a th:href="@{'/shop/product-basic?id=' + ${item.productId}}" th:text="${item.productName}">商品名稱</a>
-															</td>
-															<td th:text="${item.quantity}">1</td>
-															<td th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')}">0.00</td>
-														</tr>
-													</tbody>
-												</table>
-												<!-- 商品總金額 -->
-												<h4>
-													<strong>商品總金額：</strong>
-													<span th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
-												</h4>
-												
-												<!-- 運費 -->
-												<!-- <h4>
-													<strong>運費：</strong>
-													<span>$0</span>
-												</h4> -->
+											<!-- 購物車清單 -->
+											<div class="col-12 mb-60">
+												<h4 class="checkout-title">訂單明細</h4>
 
-												<!-- 總付款金額 -->
-											    <h4>
-											      <strong>總付款金額：</strong>
-											      <span th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
-											    </h4>
-											</div>
-										</div>
-
-										<!-- Payment Method -->
-										<div class="col-12">
-											<!-- <h4 class="checkout-title">付款方式</h4>
-											<div class="checkout-payment-method">
-												<div class="single-method">
-													<input type="radio" id="payment_paypal"
-														name="payment-method" value="paypal"> <label
-														for="payment_paypal">信用卡</label>
-													<p data-method="paypal">即將前往測試用綠界ECPay支付</p>
+												<!-- 若購物車為空 -->
+												<div class="cart-table" th:if="${#lists.isEmpty(cartItems)}">
+													<p>目前沒有商品</p>
 												</div>
-											</div> -->
-											<div>
-												<!-- <label>訂單編號：</label> -->
-													<input type="hidden" name="orderNo" th:value="${orderNo}"><br><br>
-												<!-- <label>訂單金額：</label> -->
-													<input type="hidden" name="amount" th:value="${total}" required><br><br>
-    
-    											<!-- <label>商品名稱：</label> -->
-													<input type="hidden" name="itemName" th:value="${itemName}" required><br><br>
-											</div>
-											<button class="lezada-button lezada-button--medium mt-30" type="submit">確認結帳</button>
-										</div>
-										
-										<!-- Stripe Checkout Test -->
-										<!-- <div>
-										  <h2>Stripe Checkout 範例</h2>
-    									  <button id="checkoutBtn">立即付款 $20</button>
-    									</div> -->
 
-    									<script>
+												<!-- 若購物車有商品 -->
+												<div class="cart-table"
+													th:if="${!#lists.isEmpty(cartItems)}">
+													<table>
+														<thead>
+															<tr>
+																<th style="width: 250px;">商品</th>
+																<th style="width: 100px;">數量</th>
+																<th style="width: 100px;">金額</th>
+															</tr>
+														</thead>
+														<tbody>
+															<!-- 逐筆輸出購物車 -->
+															<tr th:each="item : ${cartItems}">
+																<td><a
+																	th:href="@{'/shop/product-basic?id=' + ${item.productId}}"
+																	th:text="${item.productName}">商品名稱</a></td>
+																<td th:text="${item.quantity}">1</td>
+																<td
+																	th:text="${#numbers.formatDecimal(item.totalPrice, 0, 'COMMA', 0, 'POINT')}">0.00</td>
+															</tr>
+														</tbody>
+													</table>
+
+													<!-- 總金額（商品總金額 / 總付款金額） -->
+													<h4>
+														<strong>商品總金額：</strong> <span
+															th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
+													</h4>
+
+													<h4>
+														<strong>總付款金額：</strong> <span
+															th:text="@{'$' + ${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT')}}">$0.00</span>
+													</h4>
+												</div>
+											</div>
+
+											<!-- 支付提交區 -->
+											<div class="col-12">
+												<div>
+													<!-- 
+														隱藏 ECPay 所需欄位：orderNo / amount / itemName
+                         								這些值由 Controller 填充，前端不允許修改 
+                         							-->
+													<!-- <label>訂單編號：</label> -->
+													<input type="hidden" name="orderNo" th:value="${orderNo}"><br>
+													<br>
+													<!-- <label>訂單金額：</label> -->
+													<input type="hidden" name="amount" th:value="${total}"
+														required><br> <br>
+
+													<!-- <label>商品名稱：</label> -->
+													<input type="hidden" name="itemName" th:value="${itemName}"
+														required><br> <br>
+												</div>
+
+												<!-- 真正送出到 /ecpay/checkout -->
+												<button class="lezada-button lezada-button--medium mt-30"
+													type="submit">確認結帳</button>
+											</div>
+
+											<!-- 若要測 Stripe，這段 JS 範例可保留註解區（略） -->
+											<!-- <div>
+										 	 <h2>Stripe Checkout 範例</h2>
+    									 	 <button id="checkoutBtn">立即付款 $20</button>
+    										</div> -->
+
+											<script>
         									const checkoutButton = document.getElementById("checkoutBtn");
         									console.log("get checkout btn");
         									checkoutButton.addEventListener("click", function () {
@@ -210,86 +177,90 @@
         									});
         									console.log("fetch finished");
    			 							</script>
+										</div>
 									</div>
 								</div>
-							</div>
-							
-	<!-- 						<script>
-  document.querySelector('.checkout-form').addEventListener('submit', function (e) {
-    const amountEl = this.querySelector('input[name="amount"]');
-    const itemNameEl = this.querySelector('input[name="itemName"]');
 
-    console.log('[ECPay submit] amount=', amountEl?.value, ' itemName=', itemNameEl?.value);
-
-    // 先做基本驗證：整數金額 + 非空商品名
-    const amount = String(amountEl?.value || '').trim();
-    const itemName = String(itemNameEl?.value || '').trim();
-
-    // 金額必須是「只有數字」的整數（綠界 TotalAmount 不能有小數或逗號）
-    if (!/^\d+$/.test(amount)) {
-      e.preventDefault();
-      alert('金額格式錯誤，需為整數（新台幣、無小數、無逗號）。目前值：' + amount);
-      return;
-    }
-    if (!itemName) {
-      e.preventDefault();
-      alert('商品名稱不得為空');
-      return;
-    }
-  });
-</script> -->
-						</form>
+								<!-- <script>
+								  document.querySelector('.checkout-form').addEventListener('submit', function (e) {
+								    const amountEl = this.querySelector('input[name="amount"]');
+								    const itemNameEl = this.querySelector('input[name="itemName"]');
+								
+								    console.log('[ECPay submit] amount=', amountEl?.value, ' itemName=', itemNameEl?.value);
+								
+								    // 先做基本驗證：整數金額 + 非空商品名
+								    const amount = String(amountEl?.value || '').trim();
+								    const itemName = String(itemNameEl?.value || '').trim();
+								
+								    // 金額必須是「只有數字」的整數（綠界 TotalAmount 不能有小數或逗號）
+								    if (!/^\d+$/.test(amount)) {
+								      e.preventDefault();
+								      alert('金額格式錯誤，需為整數（新台幣、無小數、無逗號）。目前值：' + amount);
+								      return;
+								    }
+								    if (!itemName) {
+								      e.preventDefault();
+								      alert('商品名稱不得為空');
+								      return;
+								    }
+								  });
+								</script> -->
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<!-- end page wrapper -->
-</section>
-<th:block th:fragment="extraJs">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
-    <!-- 郵遞區號、地址用（外部 CDN 保留） -->
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
-	<!-- 手機號碼驗證 -->
-	<script>
+	</section>
+	<th:block th:fragment="extraJs">
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+		<!-- 郵遞區號、地址用（外部 CDN 保留） -->
+		<!-- jQuery + Bootstrap + twzipcode 依賴（外部 CDN） -->
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
+		
+		<!-- 手機號碼驗證：只允許數字、最多 10 碼 -->
+		<script>
 		document.querySelector('input[name="phone"]').addEventListener('input', function(){
 		  this.value = this.value.replace(/\D/g, '').slice(0, 10); // 只留數字、最多10碼
 		});
-	</script>
-	
-	<!-- 初始化 twzipcode -->
-	<script>
+		</script>
+
+		<!-- twzipcode 初始化（縣市/區/郵遞區號輸出到三個 select/input） -->
+		<script>
 		$("#twzipcode").twzipcode({
-			zipcodeBeforeCounty: true,             // 郵遞區號排在最前面
+			zipcodeBeforeCounty: true,             				   // 郵遞區號排在最前面
 		    css: ['form-control', 'form-control', 'form-control'], // 讓 select 有 Bootstrap 樣式
 		    zipcodeName: 'zipcode',
-		    countyName: 'county',     // select 的 name 屬性
+		    countyName: 'county',                                  // select 的 name 屬性
 		    districtName: 'district'
 		});
 		
-		// 強制 required
+		// 強制 required（Bootstrap 驗證顯示）
 		$('[name="county"]').attr("required", true);
 		$('[name="district"]').attr("required", true);
-	</script>
-	<!-- 驗證 + 組完整地址 -->
-	<script>
+		</script>
+		
+		<!-- 前端驗證 + 組完整地址（送出前） -->
+		<script>
 	    (function () {
 	      const form = document.querySelector('.checkout-form');
 	
 	      form.addEventListener('submit', function (e) {
+	    	// 取出三段（郵遞區號/縣市/鄉鎮） + 詳細地址
 	        const zip = $('[name="zipcode"]').val() || '';
 	        const county = $('[name="county"]').val() || '';
 	        const district = $('[name="district"]').val() || '';
 	        const detail = document.getElementById('addrDetail').value.trim();
 	
-	   	    // 組完整地址
+	     	// 組合完整地址 -> 放到 hidden 欄位
 	        const full = `${zip}${county}${district}${detail}`;
 	        document.getElementById('fullAddress').value = full;
 	
+	        // 自訂驗證：必填 / 格式
 	        let valid = true;
 	        
 	     	// 縣市必填
@@ -316,6 +287,7 @@
 		      document.getElementById('addrDetail').classList.remove("is-invalid");
 		    }
 		
+	        // 若不通過，阻止送出；並套用 Bootstrap 的 was-validated 樣式
 		    if (!valid || !form.checkValidity()) {
 		      e.preventDefault();
 		      e.stopPropagation();
@@ -325,6 +297,6 @@
 	      }, false);
 	    })();
 	  </script>
-  </th:block>
+	</th:block>
 </body>
 </html>

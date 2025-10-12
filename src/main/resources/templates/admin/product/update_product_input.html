@@ -4,127 +4,180 @@
 <head th:replace="~{admin/layout :: head(~{::extraHead})}"></head>
 
 <body class="sidebar-expand-lg bg-body-tertiary">
-  <!-- 本頁額外 CSS（可留空） -->
-  <th:block th:fragment="extraHead"></th:block>
+	<!-- 本頁額外 CSS（可留空） -->
+	<th:block th:fragment="extraHead"></th:block>
 
-  <!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
-  <div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
+	<!-- 用一個容器交給 layout；重點：用「命名參數」傳 content / extraJs -->
+	<div th:replace="~{admin/layout :: layout(content=~{::content}, extraJs=~{::extraJs})}">
 
-    <!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
-    <section th:fragment="content">
+		<!-- 主要內容（只給 layout 插入，不會在這裡再渲染一次） -->
+		<section th:fragment="content">
 			<div class="app-content">
-				<!--begin::Container-->
 				<div class="container-fluid">
 					<!-- 商品介面 -->
 					<div class="card mb-4">
 						<h3>修改商品：</h3>
+						<!-- 表單：
+							 1) th:object 綁定後端的 productVO
+							 2) th:action="@{update}" → 送到 /admin/product/update（POST）
+							 3) enctype=multipart/form-data 以支援圖片上傳 -->
 						<form th:action="@{update}" method="post" th:object="${productVO}"
 							enctype="multipart/form-data">
-							<!-- 修改商品一定要有綁定主鍵，否則會變成自動在新增一筆！！！ -->
-  							<input type="hidden" th:field="*{productId}"/> 
-							
+							<!-- 修改商品必須帶主鍵（productId），否則 save() 會新增而非更新 -->
+							<input type="hidden" th:field="*{productId}" />
+
+							<!-- 商品編號（對應 ProductVO.productNo） -->
 							<div>
 								<label class="col-sm-2 col-form-label">商品編號：</label> 
-								<input type="text" style="width: 600px" th:field="*{productNo}" onclick="hideContent('product_no.errors');" /> 
-								<span th:if="${#fields.hasErrors('productNo')}" th:errors="*{productNo}"
-									class="error" id="productNo.errors"></span>
+								<!-- th:field 會自動綁定值、處理回填與錯誤樣式 -->
+								<input
+									type="text" style="width: 600px" th:field="*{productNo}"
+									onclick="hideContent('product_no.errors');" /> 
+								<!-- 顯示後端驗證錯誤（Bean Validation） -->
+								<span
+									th:if="${#fields.hasErrors('productNo')}"
+									th:errors="*{productNo}" class="error" id="productNo.errors">
+								</span>
 							</div>
 
+							<!-- 商品名稱（對應 ProductVO.productName） -->
 							<div>
 								<label class="col-sm-2 col-form-label">商品名稱：</label> 
-								<input type="text" style="width: 600px" th:field="*{productName}" onclick="hideContent('product_name.errors');" /> 
-								<span th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"
-									class="error" id="productName.errors" ></span>
+								<input
+									type="text" style="width: 600px" th:field="*{productName}"
+									onclick="hideContent('product_name.errors');" /> 
+								<span
+									th:if="${#fields.hasErrors('productName')}"
+									th:errors="*{productName}" class="error"
+									id="productName.errors">
+								</span>
 							</div>
 
+							<!-- 商品類別（select 綁定關聯的 categoryVO.categoryId；選項由 categoryListData 提供） -->
 							<div>
-								<label class="col-sm-2 col-form-label">商品類別：</label> 
-								<select th:field="*{categoryVO.categoryId}" style="width: 600px; height:30px;">
+								<label class="col-sm-2 col-form-label">商品類別：</label> <select
+									th:field="*{categoryVO.categoryId}"
+									style="width: 600px; height: 30px;">
+									<!-- 逐筆輸出類別選項，顯示「ID-[名稱]」 -->
 									<option th:each="categoryVO : ${categoryListData}"
-										th:value="${categoryVO.categoryId}" th:text="${categoryVO.categoryId} + '-[' + ${categoryVO.categoryName} + ']'" >
+										th:value="${categoryVO.categoryId}"
+										th:text="${categoryVO.categoryId} + '-[' + ${categoryVO.categoryName} + ']'">
 									</option>
 								</select>
-								<!-- <span th:if="${#fields.hasErrors('deptVO.deptno')}" th:errors="*{deptVO.deptno}" class="error" id="deptVO.deptno.errors"></span> -->
 							</div>
-					
+
+							<!-- 價格（對應 ProductVO.price） -->
 							<div>
 								<label class="col-sm-2 col-form-label">價格：</label> 
-								<input type="text" th:field="*{price}" onclick="hideContent('price.errors');" style="width: 600px" /> 
+								<input
+									type="text" th:field="*{price}"
+									onclick="hideContent('price.errors');" style="width: 600px" />
 								<span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
-									  class="error" id="price.errors"></span>
+									class="error" id="price.errors">
+								</span>
 							</div>
-							
+
+							<!-- 狀態（上/下架；對應 ProductVO.status，1=上架、0=下架） -->
 							<div class="mb-3 row">
-							    <label for="status" class="col-sm-2 col-form-label">狀態：</label>
-							    <div class="col-sm-10">
-							        <select th:field="*{status}" style="width: 600px; height:30px;">
-							            <option value="1">1-[上架]</option>
-							            <option value="0">0-[下架]</option>
-							        </select>
-							        <span th:if="${#fields.hasErrors('status')}" 
-							              th:errors="*{status}" 
-							              class="error"></span>
-							    </div>
+								<label for="status" class="col-sm-2 col-form-label">狀態：</label>
+								<div class="col-sm-10">
+									<select th:field="*{status}"
+										style="width: 600px; height: 30px;">
+										<option value="1">1-[上架]</option>
+										<option value="0">0-[下架]</option>
+									</select> 
+								<!-- 顯示狀態欄位的驗證錯誤（若有） -->
+								<span th:if="${#fields.hasErrors('status')}"
+										th:errors="*{status}" class="error">
+								</span>
+								</div>
 							</div>
+							<!-- 商品圖片上傳區塊：
+								 - th:field 綁定 productIcon（byte[]）
+								 - 若未上傳新圖，後端在 ProductController#update 會沿用舊圖
+								 - 下方 <img> 會顯示當前已存在的圖片（由 /product/DBGifReader 讀 BLOB） -->
 							<div>
-							<div id="blob_holder">
-								<label class="col-sm-2 col-form-label">商品圖片：</label> 
-								
-								<input type="file" th:field="*{productIcon}" onclick="previewImage()" onchange="hideContent('productIcon.errors');" /> 
-								<span
-									class="error" th:utext="${errorMessage}" id="productIcon.errors"></span>
-								<!-- 錯誤信息errorMessage來自EmpController.java的第60行 -->
-								
-								<img th:if="${productVO.productId != null}" th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}"
-     								 alt="已上傳圖片" style="max-width:200px"></div>
+								<div id="blob_holder">
+									<label class="col-sm-2 col-form-label">商品圖片：</label> 
+									<input
+										type="file" th:field="*{productIcon}" onclick="previewImage()"
+										onchange="hideContent('productIcon.errors');" /> 
+									<!-- 顯示後端塞入的錯誤訊息（例如未選圖） -->
+									<!-- 錯誤信息 errorMessage 可能由後端 Controller 設定 -->
+									<span
+										class="error" th:utext="${errorMessage}"
+										id="productIcon.errors">
+									</span>
+
+									<!-- 若已有 productId（代表是編輯既有商品），則顯示目前圖片預覽 -->
+									<img th:if="${productVO.productId != null}"
+										th:src="@{/product/DBGifReader} + '?productId=' + ${productVO.productId}"
+										alt="已上傳圖片" style="max-width: 200px">
+								</div>
 							</div>
-							
+
+							<!-- 特色說明（對應 ProductVO.featureDesc） -->
 							<div>
-								<label class="col-sm-2 col-form-label">特色說明：</label> 
-								<textarea type="text" th:field="*{featureDesc}" onclick="hideContent('feature_desc.errors');"
-										  rows="4" style="max-height: 500px; min-height: 120px; max-width:2000px; min-width: 600px;"></textarea>
-								<span th:if="${#fields.hasErrors('featureDesc')}" th:errors="*{featureDesc}"
-									class="error" id="featureDesc.errors"></span>
+								<label class="col-sm-2 col-form-label">特色說明：</label>
+								<textarea type="text" th:field="*{featureDesc}"
+										  onclick="hideContent('feature_desc.errors');" rows="4"
+										  style="max-height: 500px; min-height: 120px; max-width: 2000px; min-width: 600px;">
+								</textarea>
+								<span th:if="${#fields.hasErrors('featureDesc')}"
+									  th:errors="*{featureDesc}" class="error"
+									  id="featureDesc.errors">
+								</span>
 							</div>
-							
+
+							<!-- 規格說明（對應 ProductVO.specDesc） -->
 							<div>
-								<label class="col-sm-2 col-form-label">規格說明：</label> 
-								<textarea type="text" th:field="*{specDesc}" onclick="hideContent('spec_desc.errors');" 
-										  rows="4" style="max-height: 500px; min-height: 120px; max-width:2000px; min-width: 600px;"></textarea>
-								<span th:if="${#fields.hasErrors('specDesc')}" th:errors="*{specDesc}"
-									class="error" id="specDesc.errors"></span>
+								<label class="col-sm-2 col-form-label">規格說明：</label>
+								<textarea type="text" th:field="*{specDesc}"
+										  onclick="hideContent('spec_desc.errors');" rows="4"
+										  style="max-height: 500px; min-height: 120px; max-width: 2000px; min-width: 600px;">
+								</textarea>
+								<span th:if="${#fields.hasErrors('specDesc')}"
+									  th:errors="*{specDesc}" class="error" id="specDesc.errors">
+								</span>
 							</div>
-							
+
+							<!-- 注意事項（對應 ProductVO.note） -->
 							<div>
-								<label class="col-sm-2 col-form-label">注意事項：</label> 
-								<textarea type="text" th:field="*{note}" onclick="hideContent('note.errors');"
-										  rows="4" style="max-height: 500px; min-height: 120px; max-width:2000px; min-width: 600px;"></textarea>
+								<label class="col-sm-2 col-form-label">注意事項：</label>
+								<textarea type="text" th:field="*{note}"
+									onclick="hideContent('note.errors');" rows="4"
+									style="max-height: 500px; min-height: 120px; max-width: 2000px; min-width: 600px;"></textarea>
 								<span th:if="${#fields.hasErrors('note')}" th:errors="*{note}"
 									class="error" id="note.errors"></span>
 							</div>
-							
-							<div>
-								<label class="col-sm-2 col-form-label">備註：</label> 
-								<textarea type="text" th:field="*{remark}" onclick="hideContent('status.errors');"
-										  rows="4" style="max-height: 500px; min-height: 120px; max-width:2000px; min-width: 600px;"></textarea> 
-								<span th:if="${#fields.hasErrors('remark')}" th:errors="*{remark}"
-									class="error" id="remark.errors"></span>
-							</div>
-							
 
+							<!-- 備註（對應 ProductVO.remark） -->
+							<div>
+								<label class="col-sm-2 col-form-label">備註：</label>
+								<textarea type="text" th:field="*{remark}"
+										  onclick="hideContent('status.errors');" rows="4"
+										  style="max-height: 500px; min-height: 120px; max-width: 2000px; min-width: 600px;">
+								</textarea>
+								<span th:if="${#fields.hasErrors('remark')}"
+									  th:errors="*{remark}" class="error" id="remark.errors">
+								</span>
+							</div>
+
+							<!-- 送出/返回 操作 -->
 							<div class="col-12 d-flex gap-2">
+								<!-- 送出修改：提交到 /admin/product/update -->
 								<button class="btn btn-primary" type="submit">送出修改</button>
+								<!-- 返回上架區列表 -->
 								<a class="btn btn-secondary" th:href="@{listAllProduct}">返回</a>
 							</div>
 						</form>
 					</div>
 				</div>
-				<!-- /.col-md-6 -->
 			</div>
-    </section>
+		</section>
 
-    <!-- 本頁額外 JS（可留空） -->
-    <th:block th:fragment="extraJs"></th:block>
-  </div>
+		<!-- 本頁額外 JS（可留空） -->
+		<th:block th:fragment="extraJs"></th:block>
+	</div>
 </body>
 </html>

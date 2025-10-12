@@ -1,6 +1,6 @@
 package com.babymate.category.model;
 
-import java.sql.Date;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,9 +22,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 
+/**
+ * 商品分類資料實體 (CategoryVO)
+ * 對應資料表：CATEGORY
+ * 關聯：
+ *   一個分類 CategoryVO → 多個商品 ProductVO (OneToMany)
+ */
 @Entity
 @Table(name = "CATEGORY")
-public class CategoryVO implements java.io.Serializable{
+public class CategoryVO implements Serializable{
 	private static final long SerialVersionUID = 1L;
 	
 	private Integer categoryId;
@@ -35,6 +41,7 @@ public class CategoryVO implements java.io.Serializable{
 	public CategoryVO() {
 	}
 	
+	/** 主鍵設定 */
 	@Id
 	@Column(name = "CATEGORY_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,6 +76,7 @@ public class CategoryVO implements java.io.Serializable{
 		this.updateTime = updateTime;
 	}
 	
+	/** 將更新時間格式化成字串(不存DB) */ 
 	@Transient // Hibernate/JPA: 這個屬性不會映射到資料庫欄位，只在程式中使用
 	public String getUpdateTimeStr() { // 將 Java 物件的 Timestamp 欄位 (UpdateTime) 格式化成字串，方便前端顯示。
 	    if (updateTime != null) {
@@ -77,6 +85,7 @@ public class CategoryVO implements java.io.Serializable{
 	    return null;
 	}
 
+	/** 一對多關聯：一個分類包含多個商品 */
 	@OneToMany(cascade=CascadeType.ALL,
 			   fetch=FetchType.EAGER,
 			   mappedBy="categoryVO")

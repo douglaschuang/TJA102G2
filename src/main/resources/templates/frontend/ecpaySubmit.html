@@ -1,18 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>ECPay Submit</title>
+<meta charset="UTF-8">
+<title>ECPay Submit</title>
 </head>
 <body>
-<form th:action="${action}" method="post" id="ecpayForm">
-    <th:block th:each="entry : ${params}">
-        <input type="hidden" th:name="${entry.key}" th:value="${entry.value}" />
-    </th:block>
-</form>
-<p>正在前往綠界付款頁...</p>
-<script>
-    document.getElementById("ecpayForm").submit();
-</script>
+	<!--
+ 		 這頁的目標：
+ 		 1. 從後端帶入 action 與 params（ECPay 要求的表單欄位）
+ 		 2. 自動以 POST 方式送出到綠界，避免使用者多一步點擊
+	-->
+
+	<!-- 表單：
+     	 - th:action 綁定送出目標（ECPay 的支付網址）
+     	 - method 必須是 POST（綠界需求）
+     	 - id 給 JS 自動 submit 使用
+	-->
+	<form th:action="${action}" method="post" id="ecpayForm">
+		<!-- 逐一把 params Map 的 key/value 輸出為 hidden input -->
+		<th:block th:each="entry : ${params}">
+			<!-- name 使用 entry.key、value 使用 entry.value -->
+			<input type="hidden" th:name="${entry.key}" th:value="${entry.value}" />
+		</th:block>
+	</form>
+
+	<!-- 簡單提示使用者：將前往綠界頁面 -->
+	<p>正在前往綠界付款頁...</p>
+	<script>
+		// 頁面載入後立即送出表單（無需使用者操作）
+		document.getElementById("ecpayForm").submit();
+	</script>
 </body>
 </html>

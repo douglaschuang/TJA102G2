@@ -45,11 +45,6 @@ public class OrdersService {
 		return null;
 	}
 	
-	//	抓取MamberId，要用在確認該會員才可檢視自己訂單資料 
-	public List<OrdersVO> getOrdersByMemberIdDesc(Integer memberId){
-		return repository.findByMemberVO_MemberIdOrderByOrderTimeDesc(memberId);
-	}
-	
 //	 public Map<Integer, Integer> getCountMap() {
 //	        List<Object[]> resultList = repository.countRecordsGroupByOrderId();
 //
@@ -62,12 +57,19 @@ public class OrdersService {
 //	        return countMap;
 //	    }
 
+	/** 依會員查訂單（新→舊）：給前台「我的訂單」頁面使用 */
+	public List<OrdersVO> getOrdersByMemberIdDesc(Integer memberId){
+		return repository.findByMemberVO_MemberIdOrderByOrderTimeDesc(memberId);
+	}
+	
 	/**
-     * 建立「未付款」訂單（進入結帳頁時或按下去綠界前建立）
-     * 注意：
-     * - payTime 不要填；等待綠界回傳成功再寫入
-     * - status = 1（依你 my-orders.html 的對應：1=未付款、2=已付款、0=已取消）
-     */
+	 * 【建立未付款訂單】（進入結帳頁或送綠界前建立）
+	 * - 產生 orderNo（以時間 yyyyMMddHHmmssSSS）
+	 * - 狀態 status=1（依 my-orders.html 的對應：1=未付款、2=已付款、0=已取消）
+	 * - 金額 amount = 購物車小計
+	 * - 立即寫入訂單明細（每個商品一筆 detail）
+	 * - payTime 先不填，待綠界回傳成功再寫
+	 */
 	@Transactional
     public OrdersVO createPendingOrder(MemberVO member,
                                        BigDecimal total,
@@ -81,12 +83,12 @@ public class OrdersService {
         LocalDateTime now = LocalDateTime.now();
         order.setOrderTime(now);
 
-        // 用 orderTime 轉成字串當作 orderNo
+        /** 訂單編號（用 orderTime 轉成字串當作 orderNo，新增訂單時存入DB */
         String orderNo = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
         order.setOrderNo(orderNo);
         
-        order.setStatus(1); // 1=未付款（對應 my-orders.html）
-        order.setAmount(total);
+        order.setStatus(1);       // 1=未付款（對應 my-orders.html）
+        order.setAmount(total);   // 小計金額
         order.setRecipient(recipient == null ? "" : recipient);
         order.setAddress(address == null ? "" : address);
         order.setPhone(phone == null ? "" : phone);
@@ -96,7 +98,7 @@ public class OrdersService {
 
         OrdersVO saved = repository.save(order);
 
-        // 明細
+        /** 建立每一筆明細（商品、數量、單價） */
         items.forEach(i -> {
         	BigDecimal unitPrice = (i.getPrice() == null) ? BigDecimal.ZERO : i.getPrice();
             orderDetailSvc.addDetail(
@@ -110,6 +112,12 @@ public class OrdersService {
         return saved;
     }
 
+	/**
+     * 【伺服器通知時標記已付款】ReturnURL (Server-to-Server)
+     * - status=2（已付款）
+     * - payTime=綠界通知時間（呼叫端傳入）
+     * - amount=以綠界回傳金額為準
+     */
     @Transactional
     public void markPaidByOrderNo(String orderNo, BigDecimal paidAmt, LocalDateTime payTime) {
         OrdersVO order = repository.findByOrderNo(orderNo)
@@ -121,6 +129,7 @@ public class OrdersService {
         repository.save(order);
     }
     
+    /** （選擇性）將訂單改為取消 */
     @Transactional
     public void markCancelIfExists(String orderNo, String reason) {
         repository.findByOrderNo(orderNo).ifPresent(o -> {
@@ -132,6 +141,11 @@ public class OrdersService {
         });
     }
     
+    /**
+     * 【前端回傳時標記已付款】OrderResultURL（保險再標一次）
+     * - 若已是已付款就不覆寫 payTime（冪等）
+     * - 以頁面金額為準或不覆寫視需求（你目前：若有 paidAmt 就覆寫）
+     */
     @Transactional
     public void markPaidOnResult(String orderNo, BigDecimal paidAmt) {
         OrdersVO order = repository.findByOrderNo(orderNo)
@@ -159,10 +173,9 @@ public class OrdersService {
     }
 
     /**
-     * 只更新訂單的配送/聯絡資訊：
-     * - recipient / address / phone 必填（後端再保險檢查）
-     * - email 可為空（若空就存空字串或沿用原值，依需求）
-     * - 不修改 status、payTime、amount
+     * 【更新訂單聯絡/收件資訊】（送綠界前）
+     * - ECPayController.checkout() 會先呼叫它，把前端表單收件人/電話/地址/Email 補齊
+     * - 只動聯絡欄位與 updateTime，不動 status/payTime/amount
      */
     @Transactional
     public void updateOrderContact(String orderNo,
@@ -173,7 +186,7 @@ public class OrdersService {
         OrdersVO order = repository.findByOrderNo(orderNo)
             .orElseThrow(() -> new IllegalArgumentException("找不到訂單 orderNo=" + orderNo));
 
-        // 基本保險（前端/DTO已驗過，這裡再簡單守一次）
+        // 簡單校驗：確保三個欄位有值
         if (!StringUtils.hasText(recipient)) {
             throw new IllegalArgumentException("收件人不可空白");
         }
@@ -199,9 +212,14 @@ public class OrdersService {
         repository.save(order);
     }
     
-    // 查詢單筆訂單（依訂單編號）
+    /** 依訂單編號查單筆：PDF 匯出與 Result/Notify 都會用到 */
     public OrdersVO findByOrderNo(String orderNo) {
         return repository.findByOrderNo(orderNo)
         		.orElseThrow(() -> new RuntimeException("找不到訂單 orderNo=" + orderNo));
+    }
+    
+    /** 小工具：把 null 轉空字串 */
+    private static String nv(String s){ 
+    	return s == null ? "" : s; 
     }
 }

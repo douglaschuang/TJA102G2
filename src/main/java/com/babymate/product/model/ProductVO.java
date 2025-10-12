@@ -1,5 +1,6 @@
 package com.babymate.product.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -23,9 +24,18 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * 商品資料實體 (ProductVO)
+ * 
+ * 對應資料表：PRODUCT
+ * 功能：
+ *  - 後台管理頁面顯示商品資訊
+ *  - 前台商品詳情與分類顯示
+ *  - 自動驗證欄位是否正確（@NotNull、@DecimalMin...）
+ */
 @Entity
 @Table(name = "PRODUCT")
-public class ProductVO implements java.io.Serializable{
+public class ProductVO implements Serializable{
 	private Integer productId;
 	private String productNo;
 	private String productName;
@@ -39,12 +49,11 @@ public class ProductVO implements java.io.Serializable{
 	private String note;
 	private String remark;
 	private Timestamp updateTime;
-//	private Set<FavoriteProductVO> favoriteProducts = new HashSet<FavoriteProductVO>();
-//	private Set<OrderDetailVO> orderDetails = new HashSet<OrderDetailVO>();
 	
 	public ProductVO() {
 	}
 	
+	/** 主鍵設定 */
 	@Id
 	@Column(name = "PRODUCT_ID")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +85,7 @@ public class ProductVO implements java.io.Serializable{
 		this.productName = productName;
 	}
 	
+	/** 關聯到CategoryVO */
 	@ManyToOne
 	@JoinColumn(name = "CATEGORY_ID")
 	public CategoryVO getCategoryVO() {
@@ -109,6 +119,7 @@ public class ProductVO implements java.io.Serializable{
 		this.status = status;
 	}
 	
+	/** 用於後台商品管理顯示狀態文字(上架 / 下架) */
 	@Transient
 	public String getStatusStr() {
 		if(status == null) 
@@ -127,6 +138,7 @@ public class ProductVO implements java.io.Serializable{
 		this.statusUpdateTime = statusUpdateTime;
 	}
 	
+	/** 將狀態更新時間格式化成字串(不存DB) */
 	@Transient // Hibernate/JPA: 這個屬性不會映射到資料庫欄位，只在程式中使用
 	public String getStatusUpdateTimeStr() { // 將 Java 物件的 Timestamp 欄位 (statusUpdateTime) 格式化成字串，方便前端顯示。
 	    if (statusUpdateTime != null) {
@@ -192,6 +204,8 @@ public class ProductVO implements java.io.Serializable{
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
+	
+	/** 將更新時間格式化成字串(不存DB) */
 	@Transient // Hibernate/JPA: 這個屬性不會映射到資料庫欄位，只在程式中使用
 	public String getUpdateTimeStr() { // 將 Java 物件的 Timestamp 欄位 (UpdateTime) 格式化成字串，方便前端顯示。
 	    if (updateTime != null) {
@@ -199,25 +213,4 @@ public class ProductVO implements java.io.Serializable{
 	    }
 	    return null;
 	}
-//	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="productVO")
-//	@OrderBy("favoriteProductId asc")
-//	public Set<FavoriteProductVO> getFavoriteProducts() {
-//		return favoriteProducts;
-//	}
-//
-//	public void setFavoriteProducts(Set<FavoriteProductVO> favoriteProducts) {
-//		this.favoriteProducts = favoriteProducts;
-//	}
-//
-//	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="productVO")
-//	@OrderBy("orderDetailId asc")
-//	public Set<OrderDetailVO> getOrderDetails() {
-//		return orderDetails;
-//	}
-//
-//	public void setOrderDetails(Set<OrderDetailVO> orderDetails) {
-//		this.orderDetails = orderDetails;
-//	}
-
-	
 }
