@@ -26,7 +26,10 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categorySvc;
 	
-	//===========addCategory.html=================
+	/**
+	 * 顯示後台新增分類頁面
+	 * addCategory.html
+	 */
 	@GetMapping("/addCategory")
 	public String addCategory(Model model) { 
 		CategoryVO categoryVO = new CategoryVO();
@@ -36,23 +39,31 @@ public class CategoryController {
 		return "admin/category/addCategory";
 	}
 	
+	/**
+	 * 後台新增分類動作
+	 * - @Valid：驗證 CategoryVO 欄位（類別名稱不得為空）
+	 * - BindingResult：承接驗證結果
+	 */
 	@PostMapping("insert")
 	public String insert(@Valid @ModelAttribute CategoryVO categoryVO, BindingResult result, ModelMap model) {
 		
-		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
+		/*************************** 1.接收請求參數 - 驗證失敗 → 回新增頁面 ********************/
 		if(result.hasErrors()) {
 			return "admin/category/addCategory";
 		}
-		/*************************** 2.開始新增資料 *****************************************/
+		/*************************** 2.通過驗證 → 新增資料 **********************************/
 		categorySvc.addCategory(categoryVO);
-		/*************************** 3.新增完成,準備轉交(Send the Success view) **************/
+		/*************************** 3.新增完成 → 導回列表頁 ********************************/
 		List<CategoryVO> list = categorySvc.getAll();
 		model.addAttribute("categoryListData", list);
 		model.addAttribute("success", "-(新增成功)");
 		return "redirect:/admin/category/listAllCategory";
 	}
 	
-	//===========listAllCategory.html=================
+	/**
+	 * 顯示分類清單
+	 * listAllCategory.html
+	 */
 	@GetMapping("listAllCategory")
 	public String listAllCategory(ModelMap model) {
 		List<CategoryVO> list = categorySvc.getAll();
@@ -62,8 +73,10 @@ public class CategoryController {
 		return "admin/category/listAllCategory";
 	}
 	
-	
-	//===========getOne_For_update=================
+	/**
+	 * 查詢單一分類資料 → 前往修改頁面
+	 * getOne_For_update
+	 */
 	@PostMapping("getOne_For_Update")
 	public String getOne_For_Update(@RequestParam("category_id") String categoryId, ModelMap model) {
 		/*************************** 1.接收請求參數 - 輸入格式的錯誤處理 ************************/
@@ -77,7 +90,10 @@ public class CategoryController {
 		return "admin/category/updateCategory";
 	}
 	
-	//===========updateCategory.html=================
+	/**
+	 * 修改分類資料
+	 * updateCategory.html
+	 */
 	@PostMapping("update")
 	public String update(@Valid CategoryVO categoryVO, BindingResult result, ModelMap model) throws IOException{
 		

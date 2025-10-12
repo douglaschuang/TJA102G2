@@ -8,26 +8,31 @@ import jakarta.validation.constraints.Pattern;
 
 public class ChectOutRequestDTO {
 	
+	/** 綁定隱藏欄位，從 session/currentOrderNo 帶回 */
 	@NotBlank(message = "訂單編號遺失，請重新結帳")
 	private String orderNo;
 	
+	/** 收件人姓名 */
 	@NotBlank(message = "請填寫收件人")
 	private String recipient;
 	
-	// 前端送來的完整地址(zipcode+縣市+鄉鎮+詳細地址)
+	/** 前端送來的完整地址(zipcode+縣市+鄉鎮+詳細地址) */
 	@NotBlank(message = "請填寫地址")
 	private String address;
 	
+	/** 使用手機號碼格式09XX-XXX-XXX */
 	@NotBlank(message = "請填寫聯絡電話")
 	@Pattern(regexp = "^(?!([0-9])\\1{9})09\\d{8}$", message = "電話格式不正確（需 09 開頭共 10 碼）")
 	private String phone;
 	
-	// 可空白，有填才驗
+	/** 可空白，有填才驗 */
 	@Email(message = "Email 格式不正確")
 	private String email;
 	
+	/** 綠界的商品字串(A x2#B x1)*/
 	private String itemName;
 	
+	/** 總金額（前端顯示/驗證，實際仍以後端計算為準） */
 	private BigDecimal amount;
 
 	public String getOrderNo() {

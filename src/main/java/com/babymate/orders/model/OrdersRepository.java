@@ -57,9 +57,10 @@ JpaSpecificationExecutor<OrdersVO> {
     LIMIT 5
   """, nativeQuery = true)
   List<Object[]> topSellingProductsSince(@Param("since") LocalDateTime since);
-  // 依各自會員訂單查詢(按訂單編號排序)
+  
+  /** 前台我的訂單：依各自會員訂單查詢(按訂單編號排序) */
   List<OrdersVO> findByMemberVO_MemberIdOrderByOrderTimeDesc(Integer memberId);
 
-  // 依訂單編號查詢單筆訂單(PDF匯出用)
+  /** 依訂單編號查單筆（PDF 匯出、Result/Notify 都會用） */
   Optional<OrdersVO> findByOrderNo(String orderNo);
 }

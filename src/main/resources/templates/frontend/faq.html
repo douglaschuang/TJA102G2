@@ -6,94 +6,113 @@
 <th:block th:fragment="extraHead"></th:block>
 </head>
 
+<!-- 整個 body 交給前台共用 layout 渲染：
+     參數：
+       1) 'about' → 目前選單/頁面代碼（供版型做高亮）
+       2) ~{::content} → 本頁主要內容片段
+       3) ~{::extraJs} → 本頁額外 JS 片段
+       4) 'footer-one' → 使用哪個 footer 片段樣式 -->
 <body
 	th:replace="~{frontend/layout :: layout('about', ~{::content}, ~{::extraJs}, 'footer-one')}">
+	
+	<!-- ===== 主要內容開始（會被 layout 插到正確位置，不在此重複渲染） ===== -->
 	<section th:fragment="content">
+		<!-- 引入前台共用 breadcrumb 片段並傳入標題文字 -->
 		<div th:replace="~{frontend/fragments/breadcrumb :: breadcrumb('F.A.Q')}"></div>
 
-
-
-		<!-- page wrapper -->
+		<!-- FAQ 主體區塊 -->
 		<div class="my-account-area mb-130 mb-md-70 mb-sm-70 mb-xs-70 mb-xxs-70">
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="row">
 						
-							<!-- Tabs(上方選單) -->
+							<!-- 上方分頁選單（Bootstrap Tabs） -->
 							<div class="col-lg-12 col-md-12">
 								<div class="myaccount-tab-menu nav mb-4" role="tablist">
-									<a href="#shopping-and-orders" class="active" data-bs-toggle="tab">購物與訂單</a>
-									<a href="#shipping-and-returns" data-bs-toggle="tab">配送與退貨</a>
-									<a href="#product-and-safety" data-bs-toggle="tab">產品與安全</a>
+									<!-- data-bs-toggle="tab" 觸發 Bootstrap 分頁；href 對應下方 tab-pane 的 id -->
+									<a href="#shopping-and-orders" class="active" data-bs-toggle="tab">購物與訂單</a> 
+									<a href="#shipping-and-returns" data-bs-toggle="tab">配送與退貨</a> 
+									<a href="#product-and-safety" data-bs-toggle="tab">產品與安全</a> 
 									<a href="#parenting-knowledge" data-bs-toggle="tab">育兒知識</a>
 								</div>
 							</div>
-							
-							<!-- FAQ content -->
+
+							<!-- FAQ 內容外層 -->
 							<div class="faq-area">
+								<!-- Bootstrap tab 容器 -->
 								<div class="tab-content" id="faqTabsContent">
 									<div class="row">
 										<div class="col-lg-12">
 											<div class="faq-wrapper">
-						
-												<!-- 購物與訂單(預設開啟) -->
-												<div class="tab-pane fade show active" id="shopping-and-orders" role="tabpanel">
+											
+												<!-- ===== 分頁一：購物與訂單（預設顯示 show active） ===== -->
+												<div class="tab-pane fade show active"
+													id="shopping-and-orders" role="tabpanel">
 													<div class="single-faq mb-80">
 														<h2 class="faq-title mb-20">購物與訂單</h2>
 														
+														<!-- 手風琴（Accordion）：同組使用相同 data-bs-parent 控制單開單關 -->
 														<div class="accordion" id="accordion-shopping-orders">
-															<!-- Q1 -->
+															
+															<!-- Q1：下單後是否可修改/合併 -->
 															<div class="card">
 																<div class="card-header" id="shopping-q1-h">
 																	<h5 class="mb-0">
+																		<!-- data-bs-target 對應下方內容區塊 id；aria-* 提升可及性 -->
 																		<button class="btn btn-link" data-bs-toggle="collapse"
-																			data-bs-target="#shopping-q1" aria-expanded="true"
-																			aria-controls="shopping-q1">
-																			下單後可以修改或合併訂單嗎？
+																				data-bs-target="#shopping-q1" aria-expanded="true"
+																				aria-controls="shopping-q1">
+																				下單後可以修改或合併訂單嗎？
 																		</button>
 																	</h5>
 																</div>
 																<div id="shopping-q1" class="collapse"
-																	aria-labelledby="shopping-q1-h" data-bs-parent="#accordion-shopping-orders">
+																	 aria-labelledby="shopping-q1-h"
+																	 data-bs-parent="#accordion-shopping-orders">
 																	<div class="card-body">
 																		<p>為確保出貨時效，訂單成立後無法修改或合併；若需變更可申請取消後重新下單（尚未出貨者）。</p>
 																	</div>
 																</div>
 															</div>
-							
-															<!-- Q2 -->
+
+															<!-- Q2：付款方式 -->
 															<div class="card">
 																<div class="card-header" id="shopping-q2-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#shopping-q2"
-																			aria-expanded="false" aria-controls="shopping-q2">
-																			有哪些付款方式？
+																				data-bs-toggle="collapse"
+																				data-bs-target="#shopping-q2" aria-expanded="false"
+																				aria-controls="shopping-q2">
+																				有哪些付款方式？
 																		</button>
 																	</h5>
 																</div>
 																<div id="shopping-q2" class="collapse"
-																	aria-labelledby="shopping-q2-h" data-bs-parent="#accordion-shopping-orders">
+																	 aria-labelledby="shopping-q2-h"
+																	 data-bs-parent="#accordion-shopping-orders">
 																	<div class="card-body">
-																		<p>信用卡（VISA/Master/JCB）、ATM 虛擬帳號、超商代碼、行動支付（Apple Pay/Google Pay）。依結帳頁顯示為準。</p>
+																		<p>信用卡（VISA/Master/JCB）、ATM 虛擬帳號、超商代碼、行動支付（Apple
+																		   Pay/Google Pay）。依結帳頁顯示為準。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q3 -->
+
+															<!-- Q3：查詢訂單狀態 -->
 															<div class="card">
 																<div class="card-header" id="shopping-q3-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#shopping-q3"
-																			aria-expanded="false" aria-controls="shopping-q3">
-																			我要如何查詢目前訂單處理狀況？
+																				data-bs-toggle="collapse"
+																				data-bs-target="#shopping-q3" aria-expanded="false"
+																				aria-controls="shopping-q3">
+																				我要如何查詢目前訂單處理狀況？
 																		</button>
 																	</h5>
 																</div>
 																<div id="shopping-q3" class="collapse"
-																	aria-labelledby="shopping-q3-h" data-bs-parent="#accordion-shopping-orders">
+																	 aria-labelledby="shopping-q3-h"
+																	 data-bs-parent="#accordion-shopping-orders">
 																	<div class="card-body">
 																		<p>您可以在我的會員 -> 我的訂單查詢目前訂單狀況。</p>
 																	</div>
@@ -102,444 +121,465 @@
 														</div>
 													</div>
 												</div>
-												
-												<!-- 配送與退貨 -->
-												<div class="tab-pane fade" id="shipping-and-returns" role="tabpanel">
+
+												 <!-- ===== 分頁二：配送與退貨 ===== -->
+												<div class="tab-pane fade" id="shipping-and-returns"
+													role="tabpanel">
 													<div class="single-faq mb-80">
 														<h2 class="faq-title mb-20">配送與退貨</h2>
-														
+
 														<div class="accordion" id="accordion-shipping-returns">
-															<!-- Q1 -->
+															<!-- Q1：指定送貨地點 -->
 															<div class="card">
 																<div class="card-header" id="ship-q1-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#ship-q1"
-																			aria-expanded="false" aria-controls="ship-q1">
-																			我可以指定送貨地點嗎？
+																				data-bs-toggle="collapse" data-bs-target="#ship-q1"
+																				aria-expanded="false" aria-controls="ship-q1">
+																				我可以指定送貨地點嗎？
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q1" class="collapse"
-																	aria-labelledby="ship-q1-h" data-bs-parent="#accordion-shipping-returns">
+																	 aria-labelledby="ship-q1-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>您可以再填寫訂單資料時的收件欄位，輸入您指定的送貨地址。</p>
 																	</div>
 																</div>
 															</div>
-							
-															<!-- Q2 -->
+
+															<!-- Q2：離島配送 -->
 															<div class="card">
 																<div class="card-header" id="ship-q2-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#ship-q2"
-																			aria-expanded="false" aria-controls="ship-q2">
-																			請問可以離島配送嗎？
+																				data-bs-toggle="collapse" data-bs-target="#ship-q2"
+																				aria-expanded="false" aria-controls="ship-q2">
+																				請問可以離島配送嗎？
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q2" class="collapse"
-																	aria-labelledby="ship-q2-h" data-bs-parent="#accordion-shipping-returns">
+																 	 aria-labelledby="ship-q2-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>目前為小本經營，尚未開發到配送至離島，請見諒！</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q3 -->
+
+															<!-- Q3：配送方式與時間 -->
 															<div class="card">
 																<div class="card-header" id="ship-q3-h">
 																	<h5 class="mb-0">
-																		<button class="btn btn-link collapsed" 
-																			data-bs-toggle="collapse" data-bs-target="#ship-q3" 
-																			aria-expanded="false" aria-controls="ship-q3">
-																			配送方式與時間?
+																		<button class="btn btn-link collapsed"
+																				data-bs-toggle="collapse" data-bs-target="#ship-q3"
+																				aria-expanded="false" aria-controls="ship-q3">
+																				配送方式與時間?
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q3" class="collapse"
-																	aria-labelledby="ship-q3-h" data-bs-parent="#accordion-shipping-returns">
+																	 aria-labelledby="ship-q3-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>目前本公司僅提供宅配，現貨約1-3個工作天出貨，偏遠地區與旺季可能會再延長。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q4 -->
+
+															<!-- Q4：運費計算 -->
 															<div class="card">
 																<div class="card-header" id="ship-q4-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#ship-q4"
-																			aria-expanded="false" aria-controls="ship-q4">
-																			運費如何計算?
+																				data-bs-toggle="collapse" data-bs-target="#ship-q4"
+																				aria-expanded="false" aria-controls="ship-q4">
+																				運費如何計算?
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q4" class="collapse"
-																	aria-labelledby="ship-q4-h" data-bs-parent="#accordion-shipping-returns">
+																 	 aria-labelledby="ship-q4-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>目前商品皆包含運費在內，直接下單即可。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q5 -->
+
+															<!-- Q5：指定到貨時間 -->
 															<div class="card">
 																<div class="card-header" id="ship-q5-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#ship-q5"
-																			aria-expanded="false" aria-controls="ship-q5">
-																			可以指定到貨時間嗎？
+																				data-bs-toggle="collapse" data-bs-target="#ship-q5"
+																				aria-expanded="false" aria-controls="ship-q5">
+																				可以指定到貨時間嗎？
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q5" class="collapse"
-																	aria-labelledby="ship-q5-h" data-bs-parent="#accordion-shipping-returns">
+																	 aria-labelledby="ship-q5-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>宅配僅能依物流時間為準；如無法收貨物時，待物流廠商電話詢問時，可再與物流廠商協調取貨時段。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q6 -->
+
+															<!-- Q6：七日鑑賞期例外 -->
 															<div class="card">
 																<div class="card-header" id="ship-q6-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#ship-q6"
-																			aria-expanded="false" aria-controls="ship-q6">
-																			哪些商品不適用7日鑑賞期？
+																				data-bs-toggle="collapse" data-bs-target="#ship-q6"
+																				aria-expanded="false" aria-controls="ship-q6">
+																				哪些商品不適用7日鑑賞期？
 																		</button>
 																	</h5>
 																</div>
 																<div id="ship-q6" class="collapse"
-																	aria-labelledby="ship-q6-h" data-bs-parent="#accordion-shipping-returns">
+																	 aria-labelledby="ship-q6-h"
+																	 data-bs-parent="#accordion-shipping-returns">
 																	<div class="card-body">
 																		<p>個人衛生用品(如奶嘴、吸乳器耗材、內著)、食品與拆封即消耗品，一經拆封恕不退換，除非商品瑕疵。</p>
 																	</div>
 																</div>
 															</div>
-							
 														</div>
 													</div>
 												</div>
-												
-												<!-- 產品與安全 -->
-												<div class="tab-pane fade" id="product-and-safety" role="tabpanel">
+
+												<!-- ===== 分頁三：產品與安全 ===== -->
+												<div class="tab-pane fade" id="product-and-safety"
+													role="tabpanel">
 													<div class="single-faq mb-80">
 														<h2 class="faq-title mb-20">產品與安全</h2>
-														
+
 														<div class="accordion" id="accordion-product-safety">
-														
+															<!-- Q1：奶粉保存 -->
 															<div class="card">
 																<div class="card-header" id="prod-q1-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link" data-bs-toggle="collapse"
-																			data-bs-target="#prod-q1" aria-expanded="true"
-																			aria-controls="prod-q1">
-																			嬰兒奶粉如何保存?
+																				data-bs-target="#prod-q1" aria-expanded="true"
+																				aria-controls="prod-q1">
+																				嬰兒奶粉如何保存?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q1" class="collapse"
-																	aria-labelledby="prod-q1-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q1-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>未開封放陰涼乾燥處；開封後緊蓋罐蓋並於4週內用畢。避免高溫與潮濕環境。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q2 -->
+
+															<!-- Q2：奶瓶消毒 -->
 															<div class="card">
 																<div class="card-header" id="prod-q2-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q2"
-																			aria-expanded="false" aria-controls="prod-q2">
-																			奶瓶消毒建議?
+																				data-bs-toggle="collapse" data-bs-target="#prod-q2"
+																				aria-expanded="false" aria-controls="prod-q2">
+																				奶瓶消毒建議?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q2" class="collapse"
-																	aria-labelledby="prod-q2-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q2-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>首次使用請完整清洗消毒；建議使用消毒鍋，可確保嬰幼兒食品安全及健康。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q3 -->
+
+															<!-- Q3：奶嘴更換 -->
 															<div class="card">
 																<div class="card-header" id="prod-q3-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q3"
-																			aria-expanded="false" aria-controls="prod-q3">
-																			奶嘴該多久更換一次?
+																				data-bs-toggle="collapse" data-bs-target="#prod-q3"
+																				aria-expanded="false" aria-controls="prod-q3">
+																				奶嘴該多久更換一次?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q3" class="collapse"
-																	aria-labelledby="prod-q3-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q3-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>建議3個月或出現咬痕、變形等立即更換；尺寸可依各廠牌說明使用</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q4 -->
+
+															<!-- Q4：尿布尺寸 -->
 															<div class="card">
 																<div class="card-header" id="prod-q4-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q4"
-																			aria-expanded="false" aria-controls="prod-q4">
-																			尿布尺寸該如何選?
+																				data-bs-toggle="collapse" data-bs-target="#prod-q4"
+																				aria-expanded="false" aria-controls="prod-q4">
+																				尿布尺寸該如何選?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q4" class="collapse"
-																	aria-labelledby="prod-q4-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q4-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>以體重為主、腰圍腿圍合且不留紅痕為佳，如要挑選尿布時，可依各大廠牌建議使用體重來挑選尺寸。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q5 -->
+
+															<!-- Q5：褲型尿布 -->
 															<div class="card">
 																<div class="card-header" id="prod-q5-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q5"
-																			aria-expanded="false" aria-controls="prod-q5">
-																			小孩多久可以穿褲型尿布?
+																				data-bs-toggle="collapse" data-bs-target="#prod-q5"
+																				aria-expanded="false" aria-controls="prod-q5">
+																				小孩多久可以穿褲型尿布?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q5" class="collapse"
-																	aria-labelledby="prod-q5-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q5-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>嬰幼兒6個月就可以更換褲型尿布，小孩約1歲後，活動力漸漸變好，褲型尿布會比較好更換。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q6 -->
+
+															<!-- Q6：清潔用品選擇 -->
 															<div class="card">
 																<div class="card-header" id="prod-q6-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q6"
-																			aria-expanded="false" aria-controls="prod-q6">
-																			嬰幼兒洗髮沐浴乳如何選?
+																				data-bs-toggle="collapse" data-bs-target="#prod-q6"
+																				aria-expanded="false" aria-controls="prod-q6">
+																				嬰幼兒洗髮沐浴乳如何選?
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q6" class="collapse"
-																	aria-labelledby="prod-q6-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q6-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>各大品牌內容均有說明適用年齡，新生兒洗髮沐浴露可參考各大品牌建議使用。</p>
 																	</div>
 																</div>
 															</div>
-															
+
+															<!-- Q7：保養品刺激性 -->
 															<div class="card">
 																<div class="card-header" id="prod-q7-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q7"
-																			aria-expanded="false" aria-controls="prod-q7-h">
-																			嬰幼兒保養品會不會刺激？
+																				data-bs-toggle="collapse" data-bs-target="#prod-q7"
+																				aria-expanded="false" aria-controls="prod-q7-h">
+																				嬰幼兒保養品會不會刺激？
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q7" class="collapse"
-																	aria-labelledby="prod-q7-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q7-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>選擇無香或低敏配方、通過基礎敏感測試之品牌；首次使用先在小範圍試用24小時觀察。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q8 -->
+
+															<!-- Q8：推車/汽座注意 -->
 															<div class="card">
 																<div class="card-header" id="prod-q8-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#prod-q8"
-																			aria-expanded="false" aria-controls="prod-q8">
-																			推車/汽座需要注意什麼？
+																				data-bs-toggle="collapse" data-bs-target="#prod-q8"
+																				aria-expanded="false" aria-controls="prod-q8">
+																				推車/汽座需要注意什麼？
 																		</button>
 																	</h5>
 																</div>
 																<div id="prod-q8" class="collapse"
-																	aria-labelledby="prod-q8-h" data-bs-parent="#accordion-product-safety">
+																	 aria-labelledby="prod-q8-h"
+																	 data-bs-parent="#accordion-product-safety">
 																	<div class="card-body">
 																		<p>依年齡體重選型號，安裝遵循說明書；汽座須正確固定，寶寶肩帶貼合、夾扣在腋下水平。</p>
 																	</div>
 																</div>
 															</div>
-															
 														</div>
 													</div>
 												</div>
-												
-												<!-- 育兒知識 -->
-												<div class="tab-pane fade" id="parenting-knowledge" role="tabpanel">
+
+												<!-- ===== 分頁四：育兒知識 ===== -->
+												<div class="tab-pane fade" id="parenting-knowledge"
+													role="tabpanel">
 													<div class="single-faq mb-80">
 														<h2 class="faq-title mb-20">育兒知識</h2>
-														
+
 														<div class="accordion" id="accordion-parenting">
-															
-															<!-- Q1 -->
+															<!-- Q1：新生兒喝奶 -->
 															<div class="card">
 																<div class="card-header" id="parent-q1-h">
 																	<h5 class="mb-0">
-																		<button class="btn btn-link"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q1" 
-																			aria-expanded="false" aria-controls="parent-q1">
-																			新生兒要喝多少奶、多久餵一次?
+																		<button class="btn btn-link" data-bs-toggle="collapse"
+																				data-bs-target="#parent-q1" aria-expanded="false"
+																				aria-controls="parent-q1">
+																				新生兒要喝多少奶、多久餵一次?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q1" class="collapse"
-																	aria-labelledby="parent-q1-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q1-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>多數新生兒出生時，2-3小時喝30ml；實際一體重與飢餓訊號做調整，按需餵最重要。</p>
 																	</div>
 																</div>
 															</div>
-							
-															<!-- Q2 -->
+
+															<!-- Q2：副食品 -->
 															<div class="card">
 																<div class="card-header" id="parent-q2-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q2"
-																			aria-expanded="false" aria-controls="parent-q2-h">
-																			副食品何時開始食用?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q2"
+																				aria-expanded="false" aria-controls="parent-q2-h">
+																				副食品何時開始食用?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q2" class="collapse"
-																	aria-labelledby="parent-q2-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q2-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>約6個月、具抬頭坐穩、對食物有興趣、能將食物由舌前推至後舌時可嘗試；初期建議以一種食物、量由少到多餵食，讓嬰幼兒可先行適應一種食材，再增加其他食材。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q3 -->
+
+															<!-- Q3：睡眠環境 -->
 															<div class="card">
 																<div class="card-header" id="parent-q3-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q3"
-																			aria-expanded="false" aria-controls="parent-q3">
-																			寶寶睡眠環境要如何佈置?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q3"
+																				aria-expanded="false" aria-controls="parent-q3">
+																				寶寶睡眠環境要如何佈置?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q3" class="collapse"
-																	aria-labelledby="parent-q3-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q3-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>平坦硬床、仰睡、無枕頭與鬆散被褥、避免二手菸環境；讓寶寶與照顧者同室不同床更安全。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q4 -->
+
+															<!-- Q4：發燒處理 -->
 															<div class="card">
 																<div class="card-header" id="parent-q4-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q4"
-																			aria-expanded="false" aria-controls="parent-q4">
-																			發燒怎麼處理?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q4"
+																				aria-expanded="false" aria-controls="parent-q4">
+																				發燒怎麼處理?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q4" class="collapse"
-																	aria-labelledby="parent-q4-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q4-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
-																		<p>滿 3 個月以上以耳溫/額溫 38°C 以上視為發燒；觀察活動力與進食；若不滿 3 個月、精神差、抽搐或脫水徵象請立即就醫。</p>
+																		<p>滿 3 個月以上以耳溫/額溫 38°C 以上視為發燒；觀察活動力與進食；若不滿 3
+																			個月、精神差、抽搐或脫水徵象請立即就醫。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q5 -->
+
+															<!-- Q5：母乳/配方奶 -->
 															<div class="card">
 																<div class="card-header" id="parent-q5-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q5"
-																			aria-expanded="false" aria-controls="parent-q5">
-																			母乳與配方奶如何選擇?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q5"
+																				aria-expanded="false" aria-controls="parent-q5">
+																				母乳與配方奶如何選擇?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q5" class="collapse"
-																	aria-labelledby="parent-q5-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q5-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>母乳包含多種營養成分，故母乳是首選；每位媽媽可能因環境及情緒變化，產出母乳量不固定，如寶寶餓的話，可再搭配配方奶。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q6 -->
+
+															<!-- Q6：便便顏色 -->
 															<div class="card">
 																<div class="card-header" id="parent-q6-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q6"
-																			aria-expanded="false" aria-controls="parent-q6">
-																			寶寶便便顏色正常嗎?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q6"
+																				aria-expanded="false" aria-controls="parent-q6">
+																				寶寶便便顏色正常嗎?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q6" class="collapse"
-																	aria-labelledby="parent-q6-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q6-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>黃糊狀最常見；若白灰色、柏油黑（非初生胎便）、鮮紅血絲持續，請盡快就醫。</p>
 																	</div>
 																</div>
 															</div>
-															
-															<!-- Q7 -->
+
+															<!-- Q7：居家常備用品 -->
 															<div class="card">
 																<div class="card-header" id="parent-q7-h">
 																	<h5 class="mb-0">
 																		<button class="btn btn-link collapsed"
-																			data-bs-toggle="collapse" data-bs-target="#parent-q7"
-																			aria-expanded="false" aria-controls="parent-q7">
-																			居家常備哪些育兒用品?
+																				data-bs-toggle="collapse" data-bs-target="#parent-q7"
+																				aria-expanded="false" aria-controls="parent-q7">
+																				居家常備哪些育兒用品?
 																		</button>
 																	</h5>
 																</div>
 																<div id="parent-q7" class="collapse"
-																	aria-labelledby="parent-q7-h" data-bs-parent="#accordion-parenting">
+																	 aria-labelledby="parent-q7-h"
+																	 data-bs-parent="#accordion-parenting">
 																	<div class="card-body">
 																		<p>電子體溫計、退熱貼或溫水擦拭用物、嬰兒指甲剪、生理食鹽水與吸鼻器、尿布疹膏、基礎保濕乳。</p>
 																	</div>
 																</div>
 															</div>
-							
 														</div>
 													</div>
 												</div>
 											</div>
-											<!-- faq-wrapper -->
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-	
-						<!-- CTA -->
+
+						<!-- 促呼區（CTA）：引導用戶諮詢 -->
 						<div class="cta-area pt-50 pb-50">
 							<div class="container">
 								<div class="row">
@@ -548,10 +588,11 @@
 											<div class="cta-title">
 												<h2>還沒解決您的問題?</h2>
 											</div>
-<div class="cta-button">
-    <a th:href="@{/contact}"
-        class="lezada-button lezada-button--medium lezada-cta-button">聯絡我們</a>
-</div>
+											<div class="cta-button">
+												<!-- 連到聯絡我們頁（Thymeleaf 產生 /contact 路徑） -->
+												<a th:href="@{/contact}"
+													class="lezada-button lezada-button--medium lezada-cta-button">聯絡我們</a>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -561,21 +602,20 @@
 				</div>
 			</div>
 		</div>
-		<!-- end page wrapper -->
-</section>
-<th:block th:fragment="extraJs">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
-    <script>
-	    // 可選：網址帶 #hash 時，直接開對應分頁
-	    document.addEventListener('DOMContentLoaded', function () {
-	      const hash = window.location.hash;
-	      if (hash) {
-	        const trigger = document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
-	        if (trigger) new bootstrap.Tab(trigger).show();
-	      }
-	    });
-  </script>
-</th:block>
+	</section>
+	<th:block th:fragment="extraJs">
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<!-- 如果還有你的頁面圖表初始化 JS，可放這裡 -->
+		<script>
+			// 可選：網址帶 #hash 時，直接開對應分頁
+			document.addEventListener('DOMContentLoaded',function() {
+				const hash = window.location.hash;
+				if (hash) {
+					const trigger = document.querySelector(`a[data-bs-toggle="tab"][href="${hash}"]`);
+					if (trigger) new bootstrap.Tab(trigger).show();
+				}
+			});
+		</script>
+	</th:block>
 </body>
 </html>

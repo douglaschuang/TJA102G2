@@ -42,6 +42,12 @@ public class OrdersFrontEndController {
 	@Autowired
 	private OrdersService ordersSvc;
 	
+	/**
+	 * 【我的訂單列表】（前台）
+	 * - 先檢查 session 是否有登入會員
+	 * - 以 memberId 查詢該會員的所有訂單（時間新→舊）
+	 * - 丟到樣板 frontend/my-orders.html 顯示
+	 */
 	@GetMapping
 	public String myOrders(HttpSession session, ModelMap model) {
 		MemberVO member = (MemberVO) session.getAttribute("member");
@@ -55,9 +61,11 @@ public class OrdersFrontEndController {
 	}
 	
 	/**
-	 * 下載指定訂單的 PDF 明細
-	 * 範例路徑：/orders/{orderNo}/export/pdf
-	 * 例如：/orders/202510050001/export/pdf
+	 * 【下載訂單 PDF】
+	 * - 路徑：/my-orders/{orderNo}/export/pdf
+	 * - 用 orderNo 找訂單，找不到回 404
+	 * - 使用 iText 產生 PDF（中文字型用 resources/fonts/NotoSansTC-Regular.ttf）
+	 * - 明細來源：order.getOrderDetails()
 	 */
 	@GetMapping("/{orderNo}/export/pdf")
 	public void exportOrderToPdf(@PathVariable String orderNo,
@@ -73,13 +81,13 @@ public class OrdersFrontEndController {
 	    response.setHeader("Content-Disposition", "attachment; filename=" + orderNo + ".pdf");
 
 	    try (OutputStream out = response.getOutputStream()) {
-	        // 1. 設定文件與頁面邊界
+	        /** 1. 設定文件與頁面邊界 */
 	        Document document = new Document(PageSize.A4, 36, 36, 48, 36);
 	        PdfWriter.getInstance(document, out);
 	        document.open();
 
-	        // 2. 中文字型（請先把 NotoSansTC-Regular.ttf 放到 resources/fonts/）
-	        //    用 ClassPathResource 取實體路徑
+	        /** 2. 中文字型中文字型用 resources/fonts/NotoSansTC-Regular.ttf） */
+	        /**    用 ClassPathResource 取實體路徑 */
 	        BaseFont bf;
 	        try (var fontStream = new ClassPathResource("fonts/NotoSansTC-Regular.ttf")
 	        						  .getInputStream()) {
@@ -87,23 +95,23 @@ public class OrdersFrontEndController {
 	        		bf = BaseFont.createFont("NotoSansTC-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, true, fontBytes, null);
 	        }
 	        
-	        // 3. 設定字型樣式
+	        /** 3. 設定字型樣式 */
 	        Font titleFont = new Font(bf, 18, Font.BOLD);
 	        Font hFont     = new Font(bf, 12, Font.BOLD);
 	        Font bodyFont  = new Font(bf, 12);
 
-	        // 4. 標題
+	        /** 4. 標題 */
 	        Paragraph title = new Paragraph("訂單明細", titleFont);
 	        title.setAlignment(Element.ALIGN_CENTER);
 	        title.setSpacingAfter(10f);
 	        document.add(title);
 
-	        // 5. 基本資料（左邊欄位名、右邊值）
+	        /** 5. 訂單基本資料（左邊欄位名、右邊值） */
 	        PdfPTable infoTable = new PdfPTable(2);
 	        infoTable.setWidths(new float[]{1.4f, 3.6f});
 	        infoTable.setWidthPercentage(100);
 	        addRow(infoTable, "訂單編號：", order.getOrderNo(), hFont, bodyFont);
-	        // 將 LocalDateTime 格式化為 yyyy-MM-dd HH:mm:ss
+	        /** 將 LocalDateTime 格式化為 yyyy-MM-dd HH:mm:ss */
 	        String formattedTime = order.getOrderTime() != null
 	            ? order.getOrderTime().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 	            : "";
@@ -115,7 +123,7 @@ public class OrdersFrontEndController {
 
 	        document.add(Chunk.NEWLINE);
 
-	        // 6. 商品明細表
+	        /** 6. 商品明細表(名稱/數量/單價/小計) */
 	        PdfPTable table = new PdfPTable(4);
 	        table.setWidths(new float[]{3.5f, 1.0f, 1.2f, 1.2f});
 	        table.setWidthPercentage(100);
@@ -144,7 +152,7 @@ public class OrdersFrontEndController {
 	        document.add(table);
 	        document.add(Chunk.NEWLINE);
 
-	        // 7. 總金額
+	        /** 7. 總金額 */
 	        Paragraph total = new Paragraph("總金額：NT$" +
 	        					  nf.format(order.getAmount()), new Font(bf, 14, Font.BOLD));
 	        total.setAlignment(Element.ALIGN_RIGHT);
@@ -152,12 +160,13 @@ public class OrdersFrontEndController {
 
 	        document.close();
 	    } catch (Exception e) {
-	        // 可視情況記錄 log
+	        /** 可視情況記錄 log */
 	        throw new IOException(e);
 	    }
 	}
 
-	/** 工具方法們（可放同一個 Controller 底下） */
+	/** 下方是產 PDF 的小工具方法（只做排版、不動商業邏輯） */
+	/** addRow / addHeader / addCellLeft / addCellCenter / addCellRight / nullToEmpty */
 	private static void addRow(PdfPTable t, String k, String v, Font kf, Font vf){
 	    PdfPCell c1 = new PdfPCell(new Phrase(k, kf));
 	    c1.setBorder(Rectangle.NO_BORDER);
