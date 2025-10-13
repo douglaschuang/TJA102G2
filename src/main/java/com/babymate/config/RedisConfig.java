@@ -1,53 +1,69 @@
 package com.babymate.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+/**
+ * RedisConfig
+ * 
+ * <p>
+ * 此設定類別用來建立 Redis 連線工廠與 RedisTemplate。
+ * </p>
+ * 
+ * <ul>
+ * <li>使用 {@link LettuceConnectionFactory} 作為 Redis 連線驅動。</li>
+ * <li>設定 key 與 value 的序列化方式，以確保資料可正確儲存與讀取。</li>
+ * <li>value 採用 {@link GenericJackson2JsonRedisSerializer} 將物件序列化為 JSON。</li>
+ * </ul>
+ */
 @Configuration
 public class RedisConfig {
 
-    @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
-    }
+	private static final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
+	
+	/**
+	 * 建立 Redis 連線工廠 (使用 Lettuce)
+	 * 
+	 * @return Redis 連線工廠實例
+	 */
+	@Bean
+	public LettuceConnectionFactory redisConnectionFactory() {
+		// 使用預設設定 (可於 application.properties 設定 host、port、password)
+		LettuceConnectionFactory factory = new LettuceConnectionFactory();
+		logger.info("RedisConnectionFactory 初始化完成");
+		
+		return factory;
+	}
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
+	/**
+	 * 建立 RedisTemplate，提供 Spring 操作 Redis 的高階封裝。
+	 * 
+	 * @param connectionFactory Redis 連線工廠
+	 * @return 配置完成的 RedisTemplate 實例
+	 */
+	@Bean
+	public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+		RedisTemplate<String, Object> template = new RedisTemplate<>();
+		template.setConnectionFactory(connectionFactory);
 
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+		// 設定 key 為 String 序列化器
+		template.setKeySerializer(new StringRedisSerializer());
+		// 設定 value 為 JSON 序列化器
+		template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+		// 設定 Hash key/value 的序列化方式
+		template.setHashKeySerializer(new StringRedisSerializer());
+		template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
-        template.afterPropertiesSet();
-        return template;
-    }
-    
-//    @Bean
-//    @Primary
-//    public ObjectMapper objectMapper() {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        // ✅ 註冊 Java 8 時間模組
-//        objectMapper.registerModule(new JavaTimeModule());
-//
-//        // ✅ 禁用 timestamp（預設是 true，會變成 [年,月,日...] 陣列）
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//
-//        // ✅ 可選：自動註冊其他模組（ex: parameter names, JDK8 模組等）
-//        objectMapper.findAndRegisterModules();
-//
-//        return objectMapper;
-//    }
+		// 初始化設定
+		template.afterPropertiesSet();
+		logger.info("Redis 已連線至主機：{}:{}", connectionFactory.getHostName(), connectionFactory.getPort());
+		logger.info("RedisTemplate 已建立完成，Key 使用 String，Value 使用 JSON");
+		return template;
+	}
 }

@@ -238,18 +238,17 @@ public class MemberVO implements Serializable {
 		int picSize = 0;
 
 		try {
-		    picSize = profilePicture.length;
+			picSize = profilePicture.length;
 		} catch (NullPointerException e) {
-		    System.err.println("Profile picture is null.");
+			System.err.println("Profile picture is null.");
 		}
 
 		return "Member [memberId=" + memberId + ", account=" + account + ", password=" + password + ", name=" + name
 				+ ", emailVerified=" + emailVerified + ", registerDate=" + registerDate + ", lastLoginTime="
 				+ lastLoginTime + ", accountStatus=" + accountStatus + ", phone=" + phone + ", recipientName="
 				+ recipientName + ", address=" + address + ", gender=" + gender + ", birthday=" + birthday
-				+ ", profilePicture size=" + picSize + ", emailAuthToken="
-				+ emailAuthToken + ", pwdResetToken=" + pwdResetToken + ", pwdResetExpire=" + pwdResetExpire
-				+ ", updateDate=" + updateDate + "]";
+				+ ", profilePicture size=" + picSize + ", emailAuthToken=" + emailAuthToken + ", pwdResetToken="
+				+ pwdResetToken + ", pwdResetExpire=" + pwdResetExpire + ", updateDate=" + updateDate + "]";
 	}
 
 	public enum Gender {
