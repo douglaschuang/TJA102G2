@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,8 +34,6 @@ public class CartController {
 	private ProductService productSvc;
 	
     private final CartService cartService;
-    
-    private static final Logger logger = LoggerFactory.getLogger(CartController.class);
     
     private static final String CART_KEY_MEMBER_PREFIX = "cart:member:";
     private static final String CART_KEY_SESSION_PREFIX = "cart:session:";
@@ -270,13 +266,11 @@ public class CartController {
         return ResponseEntity.ok(result);
     }
 
-    // 在綠界結帳跳回商城頁面時session已經丟失，getCartKey(session)會拿不到對應的會員或session購物車
-//    @DeleteMapping("/clear/{memberId}")
-//    public void clearCart(@PathVariable Integer memberId, HttpSession session) {
-//    	String cartkey = getCartKey(session);
-//        cartService.clearCart(cartkey);
-//    }
-    
+    /**
+     * 刪除指定會員Id的購物車。
+     *
+     * @param memberId 要刪除購物車的會員Id。
+     */
     @DeleteMapping("/clear/{memberId}")
     public void clearCart(@PathVariable Integer memberId) {
         String cartKey = "cart:member:" + memberId;
