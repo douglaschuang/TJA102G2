@@ -80,9 +80,8 @@ public class CartVO {
 
 	@Override
 	public String toString() {
-		return "CartVO [cartId=" + cartId + ", member=" + member.getMemberId() + ", product=" + product.getProductId() + ", quantity=" + quantity
-				+ ", updateTime=" + updateTime + "]";
+		return "CartVO [cartId=" + cartId + ", member=" + member.getMemberId() + ", product=" + product.getProductId()
+				+ ", quantity=" + quantity + ", updateTime=" + updateTime + "]";
 	}
-	
-	
+
 }
